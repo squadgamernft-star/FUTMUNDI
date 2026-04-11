@@ -37,7 +37,6 @@
             position: relative;
         }
 
-        /* ── FONDO ANIMADO MEJORADO ── */
         .flags-bg {
             position: fixed;
             inset: 0;
@@ -51,26 +50,13 @@
                 linear-gradient(160deg, #061206 0%, #0a1a0a 40%, #060f06 100%);
         }
 
-        /* Líneas de campo de fondo */
         .flags-bg::before {
             content: '';
             position: absolute;
             inset: 0;
             background:
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 120px,
-                    rgba(0,180,60,0.04) 120px,
-                    rgba(0,180,60,0.04) 122px
-                ),
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 120px,
-                    rgba(0,180,60,0.04) 120px,
-                    rgba(0,180,60,0.04) 122px
-                );
+                repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px),
+                repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px);
         }
 
         .flag-float {
@@ -90,7 +76,6 @@
             100% { transform: translateY(-105vh) rotate(-5deg) scale(1.1); opacity: 0; }
         }
 
-        /* Balones flotantes de fondo */
         .ball-float {
             position: absolute;
             font-size: 1.4em;
@@ -115,7 +100,6 @@
             min-height: 100vh;
         }
 
-        /* ── LANGUAGE DROPDOWN ── */
         .lang-bar {
             background: rgba(0,0,0,0.8);
             border-bottom: 1px solid rgba(0,212,255,0.12);
@@ -176,7 +160,6 @@
         .lang-option:hover { background: rgba(0,212,255,0.08); color: #fff; }
         .lang-option.active { color: var(--cyan); background: rgba(0,212,255,0.05); }
 
-        /* ── TOP BAR ── */
         .top-bar {
             padding: 12px 25px;
             display: flex;
@@ -204,7 +187,6 @@
         }
         #ton-connect-button { z-index: 1000; }
 
-        /* ── MAIN ── */
         .main-content {
             flex: 1;
             display: flex;
@@ -267,7 +249,7 @@
             margin-bottom: 35px;
         }
 
-        /* ── IMAGEN CENTRAL: BALÓN + COPA ── */
+        /* ── IMAGEN CENTRAL MEJORADA ── */
         .car-container {
             position: relative;
             width: 100%;
@@ -289,22 +271,81 @@
             z-index: 1;
         }
 
-        /* SVG central balón+copa */
+        /* ── IMAGEN CENTRAL REAL ── */
         .central-hero {
             width: 100%;
             max-width: 460px;
             border-radius: 14px;
             border: 2px solid rgba(45,122,31,0.7);
             box-shadow: 0 0 50px rgba(45,122,31,0.5), 0 0 100px rgba(0,255,136,0.15);
-            background: #000;
             display: block;
             transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
             z-index: 2;
             cursor: pointer;
             overflow: hidden;
+            position: relative;
+            background: #000;
         }
         .central-hero:hover { transform: scale(1.03) translateY(-5px); }
-        .central-hero svg { display: block; width: 100%; }
+
+        /* Imagen real centrada */
+        .central-hero-img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        /* Overlay brillante sobre imagen central */
+        .central-hero-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,255,136,0.05) 0%,
+                transparent 40%,
+                transparent 60%,
+                rgba(0,0,0,0.55) 100%
+            );
+            pointer-events: none;
+        }
+
+        /* Badge FUTMUNDI sobre imagen */
+        .central-hero-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(0,255,136,0.5);
+            border-radius: 30px;
+            padding: 6px 20px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1em;
+            color: var(--green);
+            letter-spacing: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(0,255,136,0.6);
+        }
+
+        /* Brillo animado esquinas */
+        .central-hero::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 16px;
+            background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green));
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes borderGlow {
+            0%   { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
 
         .menu-column {
             display: flex;
@@ -355,7 +396,6 @@
             min-height: 24px; text-align: center; padding: 8px; font-weight: 600;
         }
 
-        /* ── BALONES DE ESTAMINA ── */
         .fuel-section { width: 100%; }
         .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
         .fuel-cartridges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
@@ -437,7 +477,6 @@
         .dur-med  { background: linear-gradient(90deg, var(--gold), #ffaa00); }
         .dur-low  { background: linear-gradient(90deg, var(--red), #ff6666); }
 
-        /* ── REWARD & LOGROS ── */
         .reward-sections { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
         .reward-section { background: var(--surface); border: 1px solid rgba(45,122,31,0.2); border-radius: 12px; padding: 14px; }
         .reward-section h4 { font-family: 'Orbitron', sans-serif; font-size: 0.72em; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
@@ -488,7 +527,6 @@
         .mant-btn { margin-top: 6px; padding: 5px 14px; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 6px; color: var(--green); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; transition: all 0.25s; }
         .mant-btn:hover { background: rgba(0,255,136,0.2); }
 
-        /* ── FUTSALA / PVP ── */
         .duel-mode-card { padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); background: var(--surface); margin-bottom: 14px; cursor: pointer; transition: all 0.3s; text-align: center; }
         .duel-mode-card:hover { border-color: var(--green); box-shadow: 0 0 18px rgba(0,255,136,0.12); transform: translateY(-3px); }
         .duel-mode-card .dm-icon { font-size: 2.5em; margin-bottom: 10px; }
@@ -546,7 +584,6 @@
         .withdraw-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, rgba(255,140,0,0.12), rgba(255,68,68,0.12)); border: 1px solid var(--orange); border-radius: 10px; color: var(--orange); font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 0.82em; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
         .withdraw-btn:hover { background: rgba(255,140,0,0.22); color: #fff; }
 
-        /* ── DEPÓSITO USDT ── */
         .gem-tiers { display: flex; flex-direction: column; gap: 11px; }
         .gem-tier { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; background: var(--surface); border-radius: 12px; border: 1px solid rgba(255,215,0,0.15); cursor: pointer; transition: all 0.3s; }
         .gem-tier:hover { border-color: var(--gold); box-shadow: 0 0 12px rgba(255,215,0,0.1); }
@@ -563,7 +600,6 @@
         .nivel-perks { display: flex; flex-direction: column; gap: 9px; margin-top: 16px; }
         .nivel-perk { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--surface); border-radius: 10px; font-size: 0.88em; }
 
-        /* ── VIDEO MATCH OVERLAY — MEJORADO ── */
         .video-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.97); backdrop-filter: blur(12px);
@@ -576,7 +612,6 @@
         .video-close-btn { margin-top: 14px; padding: 10px 30px; background: rgba(0,255,136,0.12); border: 1px solid var(--green); border-radius: 10px; color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; }
         .video-close-btn:hover { background: rgba(0,255,136,0.25); color: #fff; }
 
-        /* ── PLAYER SELECT MODAL ── */
         .player-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
         .player-select-card { background: var(--surface); border: 2px solid rgba(45,122,31,0.25); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s; text-align: center; }
         .player-select-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 0 16px rgba(0,255,136,0.2); }
@@ -587,7 +622,6 @@
         .player-select-info .ps-ovr { font-size: 0.78em; color: var(--gold); font-weight: 700; margin-top: 2px; }
         .player-select-info .ps-balls { font-size: 0.72em; color: var(--green); margin-top: 2px; }
 
-        /* ── DETAIL MODAL ── */
         .car-detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(16px); z-index: 1100; justify-content: center; align-items: center; padding: 20px; }
         .car-detail-overlay.active { display: flex; }
         .car-detail-modal { background: linear-gradient(145deg,#0e1a0e 0%,#080808 100%); border: 1px solid rgba(45,122,31,0.4); border-radius: 22px; max-width: 520px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 0 80px rgba(0,255,136,0.15); animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
@@ -642,7 +676,6 @@
 
 <body>
 
-<!-- FONDO ANIMADO -->
 <div class="flags-bg" id="flags-bg"></div>
 
 <div class="content-wrap">
@@ -700,14 +733,20 @@
                 <button class="word-btn" onclick="openModal('modal-nivel')">⬆️ <span data-i18n="m_level">Nivel</span></button>
             </div>
 
-            <!-- IMAGEN CENTRAL: BALÓN + COPA SVG -->
+            <!-- IMAGEN CENTRAL REAL -->
             <div class="car-container">
                 <div class="car-base-glow"></div>
                 <div class="central-hero" id="central-hero-wrap">
-                    <!-- SVG generado por JS -->
+                    <img
+                        class="central-hero-img"
+                        src="https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png"
+                        alt="FUTMUNDI"
+                        onerror="this.onerror=null;this.src='';this.parentElement.innerHTML=getFallbackSVG();"
+                    >
+                    <div class="central-hero-overlay"></div>
+                    <div class="central-hero-badge">⚽ FUTMUNDI NFT ⚽</div>
                 </div>
 
-                <!-- BALONES: uno por jugador -->
                 <div class="fuel-section">
                     <div class="fuel-label" data-i18n="fuel_label">⚽ Balones de Estamina por Jugador</div>
                     <div class="fuel-cartridges" id="fuel-cartridges"></div>
@@ -867,7 +906,6 @@
             </div>
             <div class="modal-body">
                 <div id="pvp-content">
-                    <!-- Tabla de ganancias PVP -->
                     <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
                         <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO</div>
                         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
@@ -929,7 +967,7 @@
         </div>
     </div>
 
-    <!-- PLANTILLA (GARAGE) -->
+    <!-- PLANTILLA -->
     <div class="modal-overlay" id="modal-garage">
         <div class="modal">
             <div class="modal-header">
@@ -981,7 +1019,7 @@
         </div>
     </div>
 
-    <!-- DEPOSITO — PUNTO 5: paquetes USDT -->
+    <!-- DEPOSITO -->
     <div class="modal-overlay" id="modal-deposito">
         <div class="modal">
             <div class="modal-header">
@@ -996,42 +1034,27 @@
                 <div class="gem-tiers">
                     <div class="gem-tier" onclick="comprarGemas(320,10)">
                         <div class="gem-tier-left"><span class="gem-tier-icon">💎</span>
-                            <div class="gem-tier-info">
-                                <h4>320 Gemas</h4>
-                                <p>Pack de inicio · Ficha a Neymar Jr.</p>
-                            </div>
+                            <div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio · Ficha a Neymar Jr.</p></div>
                         </div><span class="gem-tier-price">$10 USDT</span>
                     </div>
                     <div class="gem-tier" onclick="comprarGemas(1600,50)">
                         <div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span>
-                            <div class="gem-tier-info">
-                                <h4>1,600 Gemas</h4>
-                                <p>Pack popular · Ficha a James Rodríguez</p>
-                            </div>
+                            <div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular · Ficha a James Rodríguez</p></div>
                         </div><span class="gem-tier-price">$50 USDT</span>
                     </div>
                     <div class="gem-tier" onclick="comprarGemas(3200,100)">
                         <div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span>
-                            <div class="gem-tier-info">
-                                <h4>3,200 Gemas</h4>
-                                <p>Pack PRO · Ficha a Alexis Sánchez</p>
-                            </div>
+                            <div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO · Ficha a Alexis Sánchez</p></div>
                         </div><span class="gem-tier-price">$100 USDT</span>
                     </div>
                     <div class="gem-tier" onclick="comprarGemas(6400,200)">
                         <div class="gem-tier-left"><span class="gem-tier-icon">🏅</span>
-                            <div class="gem-tier-info">
-                                <h4>6,400 Gemas</h4>
-                                <p>Pack Élite · Ficha a Messi o CR7</p>
-                            </div>
+                            <div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite · Ficha a Messi o CR7</p></div>
                         </div><span class="gem-tier-price">$200 USDT</span>
                     </div>
                     <div class="gem-tier" onclick="comprarGemas(16000,500)">
                         <div class="gem-tier-left"><span class="gem-tier-icon">👑</span>
-                            <div class="gem-tier-info">
-                                <h4>16,000 Gemas</h4>
-                                <p>Pack Leyenda · Ficha a Mbappé + más</p>
-                            </div>
+                            <div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda · Ficha a Mbappé + más</p></div>
                         </div><span class="gem-tier-price">$500 USDT</span>
                     </div>
                 </div>
@@ -1107,7 +1130,7 @@
         </div>
     </div>
 
-    <!-- VIDEO MATCH OVERLAY — MEJORADO -->
+    <!-- VIDEO MATCH OVERLAY -->
     <div class="video-overlay" id="video-overlay">
         <div style="width:100%;max-width:640px">
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4em;color:var(--green);letter-spacing:4px;text-align:center;margin-bottom:8px" id="video-match-title">PARTIDO EN CURSO</div>
@@ -1118,7 +1141,7 @@
         </div>
     </div>
 
-    <!-- SELECTOR DE JUGADOR PARA PARTIDA -->
+    <!-- SELECTOR DE JUGADOR -->
     <div class="modal-overlay" id="modal-select-player">
         <div class="modal" style="max-width:500px">
             <div class="modal-header">
@@ -1142,8 +1165,10 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
     <script>
+
+    // ── BASE URL GITHUB ───────────────────────────────────────────────────
+    const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
 
     // ── IDIOMAS ───────────────────────────────────────────────────────────
     const TRANSLATIONS = {
@@ -1185,7 +1210,7 @@
         if (!wrap.contains(e.target)) { document.getElementById('lang-dropdown').classList.remove('open'); document.getElementById('lang-toggle-btn').classList.remove('open'); }
     });
 
-    // ── PUNTO 3: FONDO ANIMADO MEJORADO ──────────────────────────────────
+    // ── FONDO ANIMADO ─────────────────────────────────────────────────────
     const FLAG_DATA = [
         { flag:'🇧🇷', lane:5  }, { flag:'🇦🇷', lane:18 }, { flag:'🇵🇹', lane:31 },
         { flag:'🇬🇧', lane:44 }, { flag:'🇫🇷', lane:57 }, { flag:'🇩🇪', lane:70 },
@@ -1204,7 +1229,6 @@
             el.style.cssText = `left:${item.lane}%;animation-duration:${18 + i * 2.8}s;animation-delay:${-(i * 3.1)}s;`;
             bg.appendChild(el);
         });
-        // Balones flotantes decorativos
         const ballPositions = [8,22,38,52,68,82,12,45,77];
         ballPositions.forEach((lane, i) => {
             const el = document.createElement('div');
@@ -1215,128 +1239,6 @@
         });
     }
     buildFlagsBg();
-
-    // ── PUNTO 4: SVG CENTRAL BALÓN + COPA ────────────────────────────────
-    function buildCentralHero() {
-        const wrap = document.getElementById('central-hero-wrap');
-        wrap.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 540">
-<defs>
-<radialGradient id="bgH" cx="50%" cy="50%" r="70%">
-    <stop offset="0%" stop-color="#0a2010"/>
-    <stop offset="60%" stop-color="#061506"/>
-    <stop offset="100%" stop-color="#020802"/>
-</radialGradient>
-<radialGradient id="ballGrad" cx="35%" cy="30%" r="65%">
-    <stop offset="0%" stop-color="#ffffff"/>
-    <stop offset="40%" stop-color="#cccccc"/>
-    <stop offset="100%" stop-color="#888888"/>
-</radialGradient>
-<radialGradient id="cupGrad" cx="40%" cy="25%" r="70%">
-    <stop offset="0%" stop-color="#ffe066"/>
-    <stop offset="50%" stop-color="#ffd700"/>
-    <stop offset="100%" stop-color="#b8860b"/>
-</radialGradient>
-<filter id="glowF"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-<filter id="glow2"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-<filter id="dropSh"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="rgba(0,0,0,0.7)"/></filter>
-</defs>
-
-<!-- Fondo -->
-<rect width="460" height="540" fill="url(#bgH)" rx="14"/>
-
-<!-- Rayos de luz de fondo -->
-<g opacity="0.12">
-    <line x1="230" y1="60" x2="50"  y2="540" stroke="#00ff88" stroke-width="1"/>
-    <line x1="230" y1="60" x2="120" y2="540" stroke="#00ff88" stroke-width="0.8"/>
-    <line x1="230" y1="60" x2="230" y2="540" stroke="#00ff88" stroke-width="1.5"/>
-    <line x1="230" y1="60" x2="340" y2="540" stroke="#00ff88" stroke-width="0.8"/>
-    <line x1="230" y1="60" x2="410" y2="540" stroke="#00ff88" stroke-width="1"/>
-</g>
-
-<!-- Glow de fondo central -->
-<ellipse cx="230" cy="300" rx="160" ry="180" fill="rgba(0,255,136,0.06)" filter="url(#glowF)"/>
-
-<!-- ===== COPA DEL MUNDO ===== -->
-<g filter="url(#dropSh)">
-    <!-- Base -->
-    <rect x="175" y="375" width="110" height="18" rx="8" fill="url(#cupGrad)"/>
-    <rect x="195" y="358" width="70"  height="22" rx="5" fill="url(#cupGrad)"/>
-    <!-- Tallo -->
-    <rect x="217" y="295" width="26" height="68" rx="12" fill="url(#cupGrad)"/>
-    <!-- Cuerpo copa -->
-    <path d="M148 160 Q148 295 230 295 Q312 295 312 160 Z" fill="url(#cupGrad)"/>
-    <!-- Borde superior copa -->
-    <rect x="144" y="150" width="172" height="18" rx="9" fill="url(#cupGrad)"/>
-    <!-- Reflejo copa -->
-    <path d="M162 175 Q162 265 230 270" stroke="rgba(255,255,255,0.35)" stroke-width="6" fill="none" stroke-linecap="round"/>
-    <!-- Asas copa -->
-    <path d="M148 175 Q110 175 108 215 Q106 255 148 255" stroke="url(#cupGrad)" stroke-width="14" fill="none" stroke-linecap="round"/>
-    <path d="M312 175 Q350 175 352 215 Q354 255 312 255" stroke="url(#cupGrad)" stroke-width="14" fill="none" stroke-linecap="round"/>
-    <!-- Líneas decorativas copa -->
-    <line x1="190" y1="200" x2="270" y2="200" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-    <line x1="182" y1="230" x2="278" y2="230" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-    <line x1="178" y1="260" x2="282" y2="260" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-</g>
-
-<!-- Brillo copa -->
-<ellipse cx="230" cy="225" rx="82" ry="72" fill="rgba(255,220,0,0.07)" filter="url(#glow2)"/>
-
-<!-- ===== BALÓN GRANDE ===== -->
-<g transform="translate(230, 95)" filter="url(#dropSh)">
-    <circle r="70" fill="url(#ballGrad)"/>
-    <!-- Hexágonos negros del balón -->
-    <g fill="#111" opacity="0.85">
-        <!-- Centro -->
-        <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11"/>
-        <!-- Arriba -->
-        <polygon points="0,-64 16,-55 16,-38 0,-27 -16,-38 -16,-55" transform="rotate(0)"/>
-        <!-- Arriba-derecha -->
-        <polygon points="0,-64 16,-55 16,-38 0,-27 -16,-38 -16,-55" transform="rotate(60)"/>
-        <!-- Abajo-derecha -->
-        <polygon points="0,-64 16,-55 16,-38 0,-27 -16,-38 -16,-55" transform="rotate(120)"/>
-        <!-- Abajo -->
-        <polygon points="0,-64 16,-55 16,-38 0,-27 -16,-38 -16,-55" transform="rotate(180)"/>
-        <!-- Abajo-izquierda -->
-        <polygon points="0,-64 16,-55 16,-38 0,-27 -16,-38 -16,-55" transform="rotate(240)"/>
-        <!-- Arriba-izquierda -->
-        <polygon points="0,-64 16,-55 16,-38 0,-27 -16,-38 -16,-55" transform="rotate(300)"/>
-    </g>
-    <!-- Reflejo balón -->
-    <ellipse cx="-22" cy="-28" rx="20" ry="14" fill="rgba(255,255,255,0.4)" transform="rotate(-30,-22,-28)"/>
-    <!-- Animación rotación balón (vía CSS) -->
-</g>
-
-<!-- Glow balón -->
-<ellipse cx="230" cy="95" rx="78" ry="78" fill="rgba(255,255,255,0.06)" filter="url(#glowF)"/>
-
-<!-- Estrellas decorativas -->
-<g fill="#ffd700" opacity="0.9" filter="url(#glow2)">
-    <polygon points="230,455 232,462 240,462 234,467 236,474 230,470 224,474 226,467 220,462 228,462" transform="scale(0.9) translate(26,6)"/>
-    <polygon points="100,80 102,87 110,87 104,92 106,99 100,95 94,99 96,92 90,87 98,87" transform="scale(0.6) translate(80,30)"/>
-    <polygon points="360,80 362,87 370,87 364,92 366,99 360,95 354,99 356,92 350,87 358,87" transform="scale(0.6) translate(-80,30)"/>
-    <polygon points="55,280 57,286 64,286 59,290 61,296 55,292 49,296 51,290 46,286 53,286" transform="scale(0.5)"/>
-    <polygon points="405,280 407,286 414,286 409,290 411,296 405,292 399,296 401,290 396,286 403,286" transform="scale(0.5) translate(-540,0)"/>
-</g>
-
-<!-- Partículas verdes -->
-<g fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.5">
-    <circle cx="60"  cy="120" r="3"/>
-    <circle cx="400" cy="150" r="2"/>
-    <circle cx="80"  cy="420" r="2.5"/>
-    <circle cx="380" cy="400" r="3"/>
-    <circle cx="130" cy="50"  r="2"/>
-    <circle cx="330" cy="60"  r="2.5"/>
-</g>
-
-<!-- Texto FUTMUNDI en la copa -->
-<text x="230" y="248" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="16" fill="rgba(0,0,0,0.5)" letter-spacing="3">FUTMUNDI</text>
-
-<!-- MARCO BRILLANTE -->
-<rect width="460" height="540" fill="none" stroke="rgba(0,255,136,0.4)" stroke-width="2" rx="14"/>
-<rect x="2" y="2" width="456" height="536" fill="none" stroke="rgba(255,215,0,0.1)" stroke-width="1" rx="13"/>
-</svg>`;
-    }
-    buildCentralHero();
 
     // ── ESTADO ────────────────────────────────────────────────────────────
     let gemas = 3900;
@@ -1356,25 +1258,34 @@
     let _matchResultPending = null;
     let _pvpModeSelected = 'liga';
 
-    // ── CATÁLOGO ──────────────────────────────────────────────────────────
+    // ── CATÁLOGO CON IMÁGENES REALES DE GITHUB ────────────────────────────
     const PLAYERS = [
-        { nombre:"Neymar Jr.",      pais:"Brasil",    flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",      gemsMin:8,    gemsMax:15,    gemsWin:2, gemsDraw:1, color1:"#009c3b", color2:"#002776" },
-        { nombre:"James Rodríguez", pais:"Colombia",  flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista",  gemsMin:35,   gemsMax:80,    gemsWin:2, gemsDraw:1, color1:"#fcd116", color2:"#003087" },
-        { nombre:"Alexis Sánchez",  pais:"Chile",     flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",      gemsMin:80,   gemsMax:160,   gemsWin:2, gemsDraw:1, color1:"#d52b1e", color2:"#ffffff" },
-        { nombre:"Lionel Messi",    pais:"Argentina", flag:"🇦🇷", precio:6900,   hp:88, pos:"Delantero",      gemsMin:180,  gemsMax:380,   gemsWin:2, gemsDraw:1, color1:"#74acdf", color2:"#ffffff" },
-        { nombre:"Cristiano R.",    pais:"Portugal",  flag:"🇵🇹", precio:9900,   hp:90, pos:"Delantero",      gemsMin:270,  gemsMax:580,   gemsWin:2, gemsDraw:1, color1:"#006600", color2:"#ff0000" },
-        { nombre:"Harry Kane",      pais:"Inglaterra",flag:"🇬🇧", precio:12000,  hp:91, pos:"Delantero",      gemsMin:320,  gemsMax:750,   gemsWin:2, gemsDraw:1, color1:"#ffffff", color2:"#cf142b" },
-        { nombre:"Mbappé",          pais:"Francia",   flag:"🇫🇷", precio:18000,  hp:93, pos:"Extremo",        gemsMin:450,  gemsMax:1000,  gemsWin:2, gemsDraw:1, color1:"#002395", color2:"#ed2939" },
-        { nombre:"Pedri",           pais:"España",    flag:"🇪🇸", precio:22500,  hp:92, pos:"Mediocampista",  gemsMin:550,  gemsMax:1400,  gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400" },
-        { nombre:"Vinícius Jr.",    pais:"Brasil",    flag:"🇧🇷", precio:30000,  hp:94, pos:"Extremo",        gemsMin:810,  gemsMax:2000,  gemsWin:2, gemsDraw:1, color1:"#009c3b", color2:"#ffd700" },
-        { nombre:"Erling Haaland", pais:"Noruega",   flag:"🇳🇴", precio:45000,  hp:95, pos:"Delantero",      gemsMin:1220, gemsMax:2740,  gemsWin:2, gemsDraw:1, color1:"#ef2b2d", color2:"#ffffff" },
-        { nombre:"Rodri",          pais:"España",    flag:"🇪🇸", precio:75000,  hp:96, pos:"Pivote",         gemsMin:2020, gemsMax:4540,  gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400" },
-        { nombre:"Bellingham",     pais:"Inglaterra",flag:"🇬🇧", precio:150000, hp:97, pos:"Mediocampista",  gemsMin:4050, gemsMax:9100,  gemsWin:2, gemsDraw:1, color1:"#cf142b", color2:"#ffffff" },
-        { nombre:"Lamine Yamal",   pais:"España",    flag:"🇪🇸", precio:255000, hp:98, pos:"Extremo",        gemsMin:6080, gemsMax:14160, gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400" },
-        { nombre:"Balón de Oro NFT",pais:"Mundo",    flag:"🌍", precio:420000, hp:99, pos:"Leyenda",        gemsMin:11350,gemsMax:26700, gemsWin:2, gemsDraw:1, color1:"#ffd700", color2:"#ff8c00" },
+        { nombre:"Neymar Jr.",      pais:"Brasil",    flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#009c3b", color2:"#002776", img: null },
+        { nombre:"James Rodríguez", pais:"Colombia",  flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", gemsWin:2, gemsDraw:1, color1:"#fcd116", color2:"#003087", img: "james_rodriguez_1600_gemas.png" },
+        { nombre:"Alexis Sánchez",  pais:"Chile",     flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#d52b1e", color2:"#ffffff", img: "alexis_sanchez_3300_gemas.png" },
+        { nombre:"Lionel Messi",    pais:"Argentina", flag:"🇦🇷", precio:6900,   hp:88, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#74acdf", color2:"#ffffff", img: null },
+        { nombre:"Cristiano R.",    pais:"Portugal",  flag:"🇵🇹", precio:9900,   hp:90, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#006600", color2:"#ff0000", img: null },
+        { nombre:"Harry Kane",      pais:"Inglaterra",flag:"🇬🇧", precio:12000,  hp:91, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#ffffff", color2:"#cf142b", img: "harry_kane_6900_gemas.png" },
+        { nombre:"Mbappé",          pais:"Francia",   flag:"🇫🇷", precio:18000,  hp:93, pos:"Extremo",       gemsWin:2, gemsDraw:1, color1:"#002395", color2:"#ed2939", img: "mbappe_150000_gemas.png" },
+        { nombre:"Pedri",           pais:"España",    flag:"🇪🇸", precio:22500,  hp:92, pos:"Mediocampista", gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400", img: "Pedri_9900_gemas.jpg" },
+        { nombre:"Vinícius Jr.",    pais:"Brasil",    flag:"🇧🇷", precio:30000,  hp:94, pos:"Extremo",       gemsWin:2, gemsDraw:1, color1:"#009c3b", color2:"#ffd700", img: "Vinicius_Jr_12000_gemas.jpg" },
+        { nombre:"Erling Haaland",  pais:"Noruega",   flag:"🇳🇴", precio:45000,  hp:95, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#ef2b2d", color2:"#ffffff", img: "Haaland_75000_gemas.jpg" },
+        { nombre:"Rodri",           pais:"España",    flag:"🇪🇸", precio:75000,  hp:96, pos:"Pivote",        gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400", img: "Rodri_18000_gemas.png" },
+        { nombre:"Bellingham",      pais:"Inglaterra",flag:"🇬🇧", precio:150000, hp:97, pos:"Mediocampista", gemsWin:2, gemsDraw:1, color1:"#cf142b", color2:"#ffffff", img: null },
+        { nombre:"Lamine Yamal",    pais:"España",    flag:"🇪🇸", precio:255000, hp:98, pos:"Extremo",       gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400", img: null },
+        { nombre:"Balón de Oro NFT",pais:"Mundo",     flag:"🌍",  precio:420000, hp:99, pos:"Leyenda",       gemsWin:2, gemsDraw:1, color1:"#ffd700", color2:"#ff8c00", img: null },
     ];
 
-    // ── SVG JUGADORES ─────────────────────────────────────────────────────
+    // ── IMAGEN DE JUGADOR: real o SVG fallback ────────────────────────────
+    function playerImgSrc(idx) {
+        const c = PLAYERS[idx];
+        if (c.img) {
+            return GITHUB_IMG + c.img;
+        }
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(generatePlayerSVG(c));
+    }
+
+    // ── SVG FALLBACK JUGADORES ────────────────────────────────────────────
     function generatePlayerSVG(player) {
         const { color1, color2, flag, pais, pos, hp } = player;
         const countryBgs = {
@@ -1387,12 +1298,11 @@
         const [bg1,bg2,bg3] = countryBgs[pais]||['#1a1a1a','#333','#555'];
         return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
 <defs>
-<radialGradient id="bgG${pais}" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="${bg2}" stop-opacity="0.9"/><stop offset="60%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg3}"/></radialGradient>
+<radialGradient id="bgG${pais.replace(/\s/g,'')}" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="${bg2}" stop-opacity="0.9"/><stop offset="60%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg3}"/></radialGradient>
 <filter id="gFx"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 <filter id="sFx"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.6)"/></filter>
 </defs>
-<rect width="300" height="380" fill="url(#bgG${pais})" rx="16"/>
-<line x1="0" y1="100" x2="300" y2="0" stroke="${bg2}" stroke-width="40" opacity="0.15"/>
+<rect width="300" height="380" fill="url(#bgG${pais.replace(/\s/g,'')})" rx="16"/>
 <circle cx="155" cy="185" r="105" fill="${color1}" opacity="0.18" filter="url(#gFx)"/>
 <ellipse cx="155" cy="355" rx="55" ry="10" fill="rgba(0,0,0,0.3)"/>
 <rect x="118" y="290" width="22" height="50" rx="10" fill="${color2}" filter="url(#sFx)"/>
@@ -1402,14 +1312,11 @@
 <path d="M112 265 Q130 290 148 265 L158 265 Q176 290 178 265 L185 240 Q150 255 115 240 Z" fill="${color1}" filter="url(#sFx)"/>
 <path d="M115 170 Q95 175 90 200 L100 240 Q150 255 200 240 L208 200 Q204 175 185 170 Z" fill="${color1}" filter="url(#sFx)"/>
 <path d="M140 170 L137 250 L148 250 L150 170Z" fill="${color2}" opacity="0.6"/>
-<path d="M115 170 Q90 185 88 210 L100 215 Q110 195 118 185Z" fill="${color1}"/>
-<path d="M185 170 Q210 185 210 210 L198 215 Q190 195 182 185Z" fill="${color1}"/>
 <circle cx="94" cy="215" r="10" fill="#FDBCB4"/>
 <circle cx="205" cy="215" r="10" fill="#FDBCB4"/>
 <ellipse cx="150" cy="128" rx="52" ry="50" fill="#FDBCB4" filter="url(#sFx)"/>
 <ellipse cx="150" cy="90" rx="52" ry="28" fill="${color1}"/>
 <rect x="98" y="80" width="104" height="30" rx="5" fill="${color1}"/>
-<rect x="98" y="88" width="14" height="45" rx="7" fill="${color1}"/>
 <ellipse cx="130" cy="128" rx="14" ry="16" fill="white"/>
 <circle cx="130" cy="130" r="10" fill="#2d4a7a"/>
 <circle cx="130" cy="128" r="6" fill="#111"/>
@@ -1418,8 +1325,6 @@
 <circle cx="168" cy="130" r="10" fill="#2d4a7a"/>
 <circle cx="168" cy="128" r="6" fill="#111"/>
 <circle cx="164" cy="124" r="3" fill="white"/>
-<path d="M118 112 Q130 107 140 112" stroke="#6b4226" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M158 112 Q168 107 180 112" stroke="#6b4226" stroke-width="3" fill="none" stroke-linecap="round"/>
 <path d="M136 146 Q150 158 164 146" stroke="#cc6666" stroke-width="3" fill="none" stroke-linecap="round"/>
 <rect x="10" y="10" width="40" height="28" rx="6" fill="rgba(0,0,0,0.6)"/>
 <text x="30" y="30" text-anchor="middle" font-size="18">${flag}</text>
@@ -1429,9 +1334,6 @@
 <text x="257" y="349" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffd700">OVR</text>
 <text x="257" y="362" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#ffd700">${hp}</text>
 </svg>`;
-    }
-    function playerImgSrc(idx) {
-        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(generatePlayerSVG(PLAYERS[idx]));
     }
 
     // ── HELPERS ───────────────────────────────────────────────────────────
@@ -1520,21 +1422,18 @@
         saveState();
     }
 
-    // ── DURABILIDAD ───────────────────────────────────────────────────────
     function getDurabilidad(idx) { if(durabilidades[idx]===undefined) durabilidades[idx]=100; return parseFloat(durabilidades[idx].toFixed(1)); }
     function colorDurabilidad(pct) { return pct>=60?'dur-high':pct>=30?'dur-med':'dur-low'; }
     function reducirDurabilidad(idx) { if(durabilidades[idx]===undefined) durabilidades[idx]=100; durabilidades[idx]=Math.max(0,durabilidades[idx]-0.8); }
     function repararDurabilidad(idx) { durabilidades[idx]=100; }
 
-    // ── PUNTO 1: CALCULAR GEMAS — victoria=2, empate=1, derrota=0 ─────────
     function calcularGemasPartida(idx, resultado) {
         if (idx === undefined || idx === null) return 0;
-        if (resultado === 'loss') return 0;          // DERROTA → 0 gemas
-        if (resultado === 'draw') return 1;          // EMPATE  → 1 gema fija por balón
-        return 2;                                    // VICTORIA → 2 gemas fijas por balón
+        if (resultado === 'loss') return 0;
+        if (resultado === 'draw') return 1;
+        return 2;
     }
 
-    // ── GUARDAR / CARGAR ──────────────────────────────────────────────────
     function saveState() {
         localStorage.setItem('tg_gemas', gemas.toString());
         localStorage.setItem('tg_hp', hp.toString());
@@ -1656,9 +1555,14 @@
     function buildMarket() {
         $id('car-market-grid').innerHTML = PLAYERS.map((c,i) => {
             const comprado = carrosComprados.includes(i);
+            const imgSrc = playerImgSrc(i);
+            const hasRealImg = !!c.img;
             return `<div class="car-card" id="card-${i}">
-<div class="car-card-img-wrap" onclick="openCarDetail(${i}, false)">
-    <img class="car-card-img" src="${playerImgSrc(i)}" alt="${c.nombre}">
+<div class="car-card-img-wrap" onclick="openCarDetail(${i}, false)" style="position:relative;">
+    <img class="car-card-img" src="${imgSrc}" alt="${c.nombre}"
+         onerror="this.onerror=null;this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(generatePlayerSVG(c))}';"
+         style="object-fit:${hasRealImg?'cover':'cover'};">
+    ${hasRealImg?`<div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">NFT</div>`:''}
 </div>
 <div class="car-card-info">
     <div class="car-card-name">${c.nombre}</div>
@@ -1691,7 +1595,7 @@
         mostrarMensaje(`✅ ¡${c.nombre} fichado! +${c.hp} OVR · +4 balones de estamina`,'#00ff88');
     }
 
-    // ── SELECCIÓN DE JUGADOR PARA PARTIDA ─────────────────────────────────
+    // ── SELECCIÓN DE JUGADOR ──────────────────────────────────────────────
     function abrirSeleccionJugadorPVP(modo) {
         _pvpModeSelected = modo;
         _currentMatchMode = 'pvp';
@@ -1720,7 +1624,7 @@
             return `<div class="player-select-card${_currentMatchPlayer===idx?' selected':''}"
                 onclick="${hasBall?`selectPlayerForMatch(${idx})`:`mostrarMensaje('⚽ ${c.nombre} no tiene balones','#ffaa00')`}"
                 style="${hasBall?'':'opacity:0.45;cursor:not-allowed'}">
-<img src="${playerImgSrc(idx)}" alt="${c.nombre}">
+<img src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(generatePlayerSVG(c))}';">
 <div class="player-select-info">
     <h5>${c.nombre}</h5>
     <div class="ps-ovr">⚡ OVR ${c.hp}</div>
@@ -1752,7 +1656,7 @@
         iniciarVideoPartida();
     }
 
-    // ── PUNTO 2: VIDEO PARTIDO MEJORADO ───────────────────────────────────
+    // ── VIDEO PARTIDO ─────────────────────────────────────────────────────
     let _matchAnimFrame = null;
 
     function iniciarVideoPartida() {
@@ -1782,83 +1686,49 @@
 
         const canvas = $id('match-canvas');
         const ctx = canvas.getContext('2d');
-
-        // PUNTO 2: Partido más rápido (90 frames ≈ 3s a 30fps)
         const DURATION = 90;
         let t = 0;
 
-        // 5 jugadores por equipo
-        const TEAM_A = [
-            {x:80, y:180, role:'delantero'},{x:110,y:100,role:'extremo'},{x:110,y:260,role:'extremo'},
-            {x:60, y:150,role:'mediocampista'},{x:60,y:210,role:'mediocampista'}
-        ];
-        const TEAM_B = [
-            {x:560,y:180,role:'delantero'},{x:530,y:100,role:'extremo'},{x:530,y:260,role:'extremo'},
-            {x:580,y:150,role:'mediocampista'},{x:580,y:210,role:'mediocampista'}
-        ];
+        const TEAM_A = [{x:80,y:180},{x:110,y:100},{x:110,y:260},{x:60,y:150},{x:60,y:210}];
+        const TEAM_B = [{x:560,y:180},{x:530,y:100},{x:530,y:260},{x:580,y:150},{x:580,y:210}];
 
         let ballX=320, ballY=180;
 
-        // Eventos de gol y tarjetas
         const totalGoals = playerGoals + oppGoals;
         const scoreEvents = [];
         for(let g=0;g<totalGoals;g++){
             scoreEvents.push({frame:Math.floor(10+g*(DURATION/(totalGoals+1))),isPlayer:g<playerGoals});
         }
-        // Tarjetas (amarilla/roja aleatoria)
-        const cardEvents = [];
-        const numCards = Math.floor(Math.random()*3);
-        for(let c=0;c<numCards;c++){
-            cardEvents.push({
-                frame: Math.floor(15+c*(DURATION/4)),
-                isPlayer: Math.random()<0.5,
-                isRed: Math.random()<0.2,
-                timer: 0
-            });
-        }
 
         let activeScoreEvents = [];
-        let activeCardEvents = [];
 
         function drawPitch(ctx, w, h) {
-            // Césped degradado
             const grd = ctx.createLinearGradient(0,0,w,0);
             grd.addColorStop(0,'#1a4a1a'); grd.addColorStop(0.5,'#1e5420'); grd.addColorStop(1,'#1a4a1a');
             ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
-            // Rayas
             for(let i=0;i<8;i++){
                 ctx.fillStyle=i%2?'rgba(0,0,0,0.06)':'transparent';
                 ctx.fillRect(i*(w/8),0,w/8,h);
             }
-            // Líneas blancas
             ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=2;
             ctx.strokeRect(30,25,w-60,h-50);
             ctx.beginPath();ctx.moveTo(w/2,25);ctx.lineTo(w/2,h-25);ctx.stroke();
             ctx.beginPath();ctx.arc(w/2,h/2,50,0,Math.PI*2);ctx.stroke();
-            ctx.fillStyle='rgba(255,255,255,0.1)';ctx.beginPath();ctx.arc(w/2,h/2,4,0,Math.PI*2);ctx.fill();
-            // Porterías
             ctx.strokeStyle='rgba(255,255,255,0.5)';
             ctx.strokeRect(30,h/2-38,20,76);
             ctx.strokeRect(w-50,h/2-38,20,76);
-            // Áreas
             ctx.strokeStyle='rgba(255,255,255,0.25)';
             ctx.strokeRect(30,h/2-65,55,130);
             ctx.strokeRect(w-85,h/2-65,55,130);
-            ctx.strokeRect(30,h/2-28,22,56);
-            ctx.strokeRect(w-52,h/2-28,22,56);
         }
 
-        function drawPlayer5(ctx, x, y, color1, color2, num, isOpp) {
-            // Sombra
+        function drawPlayer5(ctx, x, y, color1, color2, num) {
             ctx.fillStyle='rgba(0,0,0,0.3)';
             ctx.beginPath();ctx.ellipse(x,y+18,11,5,0,0,Math.PI*2);ctx.fill();
-            // Cuerpo
             ctx.fillStyle=color1;
             ctx.beginPath();ctx.ellipse(x,y+6,9,13,0,0,Math.PI*2);ctx.fill();
-            // Cabeza
             ctx.fillStyle='#FDBCB4';
             ctx.beginPath();ctx.arc(x,y-10,9,0,Math.PI*2);ctx.fill();
-            // Número
             ctx.fillStyle=color2; ctx.font='bold 7px sans-serif'; ctx.textAlign='center';
             ctx.fillText(String(num),x,y+10);
         }
@@ -1878,52 +1748,29 @@
             drawPitch(ctx,640,360);
 
             const prog = t/DURATION;
-
-            // Mover balón
             ballX = 320 + Math.sin(t*0.25)*140*Math.cos(t*0.08);
             ballY = 180 + Math.cos(t*0.2)*80;
 
-            // Eventos gol
             scoreEvents.forEach(ev=>{
                 if(t===ev.frame) activeScoreEvents.push({...ev,timer:28});
             });
             activeScoreEvents = activeScoreEvents.filter(s=>(s.timer--)>0);
 
-            // Eventos tarjeta
-            cardEvents.forEach(ev=>{
-                if(t===ev.frame && ev.timer===0) { ev.timer=30; activeCardEvents.push({...ev,lifetime:30}); }
-            });
-            activeCardEvents = activeCardEvents.filter(c=>(c.lifetime--)>0);
-
-            // Dibujar equipo A (5 jugadores)
-            const p = PLAYERS[playerIdx];
             TEAM_A.forEach((base,pi)=>{
                 const pos = getPlayerPos(TEAM_A,pi,t);
-                drawPlayer5(ctx,pos.x,pos.y,p.color1,p.color2,pi+1,false);
+                drawPlayer5(ctx,pos.x,pos.y,player.color1,player.color2,pi+1);
             });
-            // Dibujar equipo B (5 jugadores)
             TEAM_B.forEach((base,pi)=>{
                 const pos = getPlayerPos(TEAM_B,pi,t);
-                drawPlayer5(ctx,pos.x,pos.y,'#e0e0e0','#555',pi+1,true);
+                drawPlayer5(ctx,pos.x,pos.y,'#e0e0e0','#555',pi+1);
             });
 
-            // Balón
             ctx.save();
             ctx.fillStyle='#fff';
             ctx.beginPath();ctx.arc(ballX,ballY,9,0,Math.PI*2);ctx.fill();
             ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.stroke();
-            // Hexágonos balón
-            ctx.strokeStyle='#555';ctx.lineWidth=0.7;
-            for(let i=0;i<6;i++){
-                const a=(i*Math.PI*2/6)+t*0.18;
-                ctx.beginPath();
-                ctx.moveTo(ballX+9*Math.cos(a),ballY+9*Math.sin(a));
-                ctx.lineTo(ballX+9*Math.cos(a+Math.PI/3),ballY+9*Math.sin(a+Math.PI/3));
-                ctx.stroke();
-            }
             ctx.restore();
 
-            // Marcador moderno
             ctx.fillStyle='rgba(0,0,0,0.82)';
             roundRect2(ctx,200,6,240,40,12); ctx.fill();
             ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;
@@ -1931,25 +1778,16 @@
             const curPG = scoreEvents.filter(e=>e.isPlayer&&e.frame<=t).length;
             const curOG = scoreEvents.filter(e=>!e.isPlayer&&e.frame<=t).length;
             ctx.fillStyle='#fff'; ctx.font='bold 13px Orbitron,monospace'; ctx.textAlign='center';
-            ctx.fillText(`${p.nombre.split(' ')[0]}  ${curPG} — ${curOG}  OPO`,320,21);
-            // Barra de tiempo
+            ctx.fillText(`${player.nombre.split(' ')[0]}  ${curPG} — ${curOG}  OPO`,320,21);
             ctx.fillStyle='rgba(0,255,136,0.6)';
             ctx.fillRect(204,36,Math.floor(232*prog),5);
 
-            // Minuto
             const minuto = Math.floor(prog*90);
             ctx.fillStyle='rgba(0,0,0,0.75)';
             roundRect2(ctx,4,4,52,22,7);ctx.fill();
             ctx.fillStyle='#00ff88';ctx.font='bold 11px monospace';ctx.textAlign='center';
             ctx.fillText(`${minuto}'`,30,19);
 
-            // NFT ID arriba derecha
-            ctx.fillStyle='rgba(0,0,0,0.65)';
-            roundRect2(ctx,490,4,146,18,6);ctx.fill();
-            ctx.fillStyle='rgba(0,212,255,0.8)';ctx.font='9px Orbitron,monospace';ctx.textAlign='center';
-            ctx.fillText(`NFT: ${nftId}`,563,16);
-
-            // Mensajes de gol
             activeScoreEvents.forEach(s=>{
                 const alpha=s.timer/28;
                 const rise=(28-s.timer)*3;
@@ -1960,23 +1798,6 @@
                 ctx.textAlign='center';
                 ctx.shadowColor=s.isPlayer?'#00ff88':'#ff4444'; ctx.shadowBlur=12;
                 ctx.fillText(s.isPlayer?'⚽ GOL!':'⚽ GOL IA',320,210-rise);
-                ctx.restore();
-            });
-
-            // Tarjetas
-            activeCardEvents.forEach((card,ci)=>{
-                const alpha=card.lifetime/30;
-                ctx.save();
-                ctx.globalAlpha=alpha;
-                const cx=card.isPlayer?150:490;
-                const cy=80+ci*50;
-                ctx.fillStyle=card.isRed?'#ff2222':'#ffcc00';
-                ctx.beginPath();
-                ctx.roundRect(cx-12,cy-20,24,34,4);
-                ctx.fill();
-                ctx.strokeStyle='rgba(0,0,0,0.5)';ctx.lineWidth=1.5;ctx.stroke();
-                ctx.fillStyle='rgba(0,0,0,0.7)';ctx.font='8px sans-serif';ctx.textAlign='center';
-                ctx.fillText(card.isRed?'🟥':'🟨',cx,cy);
                 ctx.restore();
             });
 
@@ -1999,11 +1820,8 @@
 
     function mostrarResultadoVideo() {
         const {playerIdx, player, playerGoals, oppGoals, resultado} = _matchResultPending;
-
         statsPartidas += 2;
         puntaje += resultado==='win'?5:resultado==='draw'?2:1;
-
-        // PUNTO 1: gemas fijas: victoria=2, empate=1, derrota=0
         const gemsGanadas = calcularGemasPartida(playerIdx, resultado);
         if(gemsGanadas>0) gemas += gemsGanadas;
         actualizarUI();
@@ -2056,26 +1874,20 @@
     function buildFutsalaBody() {
         const body=$id('futsala-body');
         body.innerHTML=`
-<div class="futsala-info-box">
-    ✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; +2 pts estadísticas + 💎 gemas por resultado
-</div>
-<!-- Tabla de ganancias -->
+<div class="futsala-info-box">✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; +2 pts estadísticas + 💎 gemas por resultado</div>
 <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
     <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
         <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;">
-            <div style="font-size:1.3em">🏆</div>
-            <div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div>
+            <div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div>
             <div style="color:#aaa;font-size:0.78em;margin-top:3px">+2 💎 / balón</div>
         </div>
         <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;">
-            <div style="font-size:1.3em">🤝</div>
-            <div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div>
+            <div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div>
             <div style="color:#aaa;font-size:0.78em;margin-top:3px">+1 💎 / balón</div>
         </div>
         <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;">
-            <div style="font-size:1.3em">❌</div>
-            <div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div>
+            <div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div>
             <div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div>
         </div>
     </div>
@@ -2102,7 +1914,7 @@
 </div>`;
     }
 
-    // ── RECOMPENSAS POR ACTIVIDADES ───────────────────────────────────────
+    // ── RECOMPENSAS ───────────────────────────────────────────────────────
     const REWARD_SECTIONS = [
         {icon:'⚽',key:'penales',label:'Penales',desc:'Ejecuta penales en Futsala',pts_req:10,reward_gems:1,level_req:1},
         {icon:'🎯',key:'pases',label:'Pases',desc:'Acumula asistencias en partidas',pts_req:20,reward_gems:2,level_req:1},
@@ -2280,7 +2092,9 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
             if(idx!==undefined){
                 const c=PLAYERS[idx]; const dur=getDurabilidad(idx); const durCls=colorDurabilidad(dur);
                 html+=`<div class="garage-slot-card occupied" onclick="openCarDetail(${idx},true)">
-<img src="${playerImgSrc(idx)}" alt="${c.nombre}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:7px;display:block;margin-bottom:6px;border:1px solid rgba(45,122,31,0.3)">
+<img src="${playerImgSrc(idx)}" alt="${c.nombre}"
+     onerror="this.onerror=null;this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(generatePlayerSVG(c))}';"
+     style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:7px;display:block;margin-bottom:6px;border:1px solid rgba(45,122,31,0.3)">
 <div class="gs-name">${c.nombre}</div>
 <div style="font-size:0.7em;color:#888;margin-top:2px">${c.flag} OVR ${c.hp}</div>
 <div class="dur-bar-wrap" style="padding:0 2px;margin-top:5px">
@@ -2303,7 +2117,8 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
             const c=PLAYERS[idx]; const dur=getDurabilidad(idx); const dc=colorDurabilidad(dur);
             const balls=getBallonesJugador(idx); const llenos=balls.filter(Boolean).length;
             return `<div class="mant-item">
-<span class="mant-icon">${c.flag}</span>
+<img src="${playerImgSrc(idx)}" alt="${c.nombre}" style="width:60px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(45,122,31,0.3)"
+     onerror="this.onerror=null;this.style.display='none';">
 <div class="mant-info">
     <h4>${c.nombre}</h4>
     <p>⚡ OVR ${c.hp} · ${c.pos} · ⚽ ${llenos}/4 balones</p>
@@ -2338,7 +2153,6 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
         } catch(e){ mostrarMensaje('❌ Transacción cancelada','#ff4444'); }
     }
 
-    // ── TORNEO ────────────────────────────────────────────────────────────
     async function pagarTorneo() {
         if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00'); tonConnectUI.openModal(); return; }
         const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(1e9))}]};
@@ -2346,7 +2160,6 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
         catch(e){ mostrarMensaje('❌ Cancelado','#ff4444'); }
     }
 
-    // ── RETIRO ────────────────────────────────────────────────────────────
     function retirar() {
         if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00'); closeModal('modal-retiro'); tonConnectUI.openModal(); return; }
         const cant=parseFloat($id('retiro-cantidad').value)||0;
@@ -2356,7 +2169,6 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
         closeModal('modal-retiro');
     }
 
-    // ── COMPRAR GEMAS (USDT) — PUNTO 5 ───────────────────────────────────
     async function comprarGemas(cantidad, usdtAmount) {
         if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00'); closeModal('modal-deposito'); tonConnectUI.openModal(); return; }
         mostrarMensaje(`⏳ Procesando $${usdtAmount} USDT...`,'#00d4ff');
@@ -2397,7 +2209,6 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
     buildFutsalaBody();
     applyTranslations();
 
-    // Canvas roundRect polyfill
     if(!CanvasRenderingContext2D.prototype.roundRect){
         CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
             this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);
