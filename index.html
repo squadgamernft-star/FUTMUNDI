@@ -1,453 +1,94 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FUTMUNDI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --cyan: #00d4ff;
-            --green: #00ff88;
-            --orange: #ff8c00;
-            --red: #ff4444;
-            --gold: #ffd700;
-            --purple: #a855f7;
-            --grass: #2d7a1f;
-            --grass2: #3aaa28;
+            --cyan: #00d4ff; --green: #00ff88; --orange: #ff8c00;
+            --red: #ff4444; --gold: #ffd700; --purple: #a855f7;
+            --grass: #2d7a1f; --grass2: #3aaa28;
             --surface: rgba(255,255,255,0.04);
             --border: rgba(0,212,255,0.2);
         }
-
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background: #060f06;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .flags-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse at 20% 20%, rgba(0,200,80,0.18) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 80%, rgba(0,100,255,0.14) 0%, transparent 55%),
-                radial-gradient(ellipse at 50% 50%, rgba(0,150,50,0.10) 0%, transparent 70%),
-                linear-gradient(160deg, #061206 0%, #0a1a0a 40%, #060f06 100%);
-        }
-
-        .flags-bg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px),
-                repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px);
-        }
-
-        .flag-float {
-            position: absolute;
-            font-size: 2.2em;
-            opacity: 0;
-            animation: floatFlag linear infinite;
-            will-change: transform, opacity;
-            filter: drop-shadow(0 0 8px rgba(0,255,136,0.3));
-        }
-
-        @keyframes floatFlag {
-            0%   { transform: translateY(105vh) rotate(-5deg) scale(0.85); opacity: 0; }
-            8%   { opacity: 0.22; }
-            50%  { transform: translateY(0vh) rotate(5deg) scale(1.0); opacity: 0.22; }
-            92%  { opacity: 0.22; }
-            100% { transform: translateY(-105vh) rotate(-5deg) scale(1.1); opacity: 0; }
-        }
-
-        .ball-float {
-            position: absolute;
-            font-size: 1.4em;
-            opacity: 0;
-            animation: floatBall ease-in-out infinite;
-            will-change: transform, opacity;
-        }
-
-        @keyframes floatBall {
-            0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            10%  { opacity: 0.12; }
-            50%  { transform: translateY(-60px) translateX(30px) rotate(180deg); opacity: 0.18; }
-            90%  { opacity: 0.12; }
-            100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0; }
-        }
-
-        .content-wrap {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .lang-bar {
-            background: rgba(0,0,0,0.8);
-            border-bottom: 1px solid rgba(0,212,255,0.12);
-            padding: 6px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
+        body { font-family: 'Rajdhani', sans-serif; background: #060f06; color: white; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 20% 20%, rgba(0,200,80,0.18) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(0,100,255,0.14) 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, rgba(0,150,50,0.10) 0%, transparent 70%), linear-gradient(160deg, #061206 0%, #0a1a0a 40%, #060f06 100%); }
+        .flags-bg::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px), repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px); }
+        .flag-float { position: absolute; font-size: 2.2em; opacity: 0; animation: floatFlag linear infinite; will-change: transform, opacity; filter: drop-shadow(0 0 8px rgba(0,255,136,0.3)); }
+        @keyframes floatFlag { 0% { transform: translateY(105vh) rotate(-5deg) scale(0.85); opacity: 0; } 8% { opacity: 0.22; } 50% { transform: translateY(0vh) rotate(5deg) scale(1.0); opacity: 0.22; } 92% { opacity: 0.22; } 100% { transform: translateY(-105vh) rotate(-5deg) scale(1.1); opacity: 0; } }
+        .ball-float { position: absolute; font-size: 1.4em; opacity: 0; animation: floatBall ease-in-out infinite; will-change: transform, opacity; }
+        @keyframes floatBall { 0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.12; } 50% { transform: translateY(-60px) translateX(30px) rotate(180deg); opacity: 0.18; } 90% { opacity: 0.12; } 100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0; } }
+        .content-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+        .lang-bar { background: rgba(0,0,0,0.8); border-bottom: 1px solid rgba(0,212,255,0.12); padding: 6px 18px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
         .lang-dropdown-wrap { position: relative; }
-
-        .lang-toggle-btn {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(0,212,255,0.25);
-            border-radius: 20px;
-            color: var(--cyan);
-            font-size: 0.78em;
-            padding: 5px 13px;
-            cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
+        .lang-toggle-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(0,212,255,0.25); border-radius: 20px; color: var(--cyan); font-size: 0.78em; padding: 5px 13px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .lang-toggle-btn:hover { background: rgba(0,212,255,0.12); }
         .lang-toggle-btn .arrow { font-size: 0.7em; transition: transform 0.2s; display: inline-block; }
         .lang-toggle-btn.open .arrow { transform: rotate(180deg); }
-
-        .lang-dropdown {
-            display: none;
-            position: absolute;
-            top: calc(100% + 6px);
-            right: 0;
-            background: rgba(8,18,8,0.97);
-            border: 1px solid rgba(0,212,255,0.2);
-            border-radius: 12px;
-            min-width: 140px;
-            z-index: 9999;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            animation: dropIn 0.2s ease;
-        }
+        .lang-dropdown { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: rgba(8,18,8,0.97); border: 1px solid rgba(0,212,255,0.2); border-radius: 12px; min-width: 140px; z-index: 9999; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.6); animation: dropIn 0.2s ease; }
         @keyframes dropIn { from { opacity:0; transform:translateY(-6px) } to { opacity:1; transform:translateY(0) } }
         .lang-dropdown.open { display: block; }
-
-        .lang-option {
-            display: flex; align-items: center; gap: 9px;
-            padding: 9px 14px; cursor: pointer;
-            font-size: 0.82em; font-weight: 600; color: #bbb;
-            transition: all 0.15s;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-        }
+        .lang-option { display: flex; align-items: center; gap: 9px; padding: 9px 14px; cursor: pointer; font-size: 0.82em; font-weight: 600; color: #bbb; transition: all 0.15s; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .lang-option:last-child { border-bottom: none; }
         .lang-option:hover { background: rgba(0,212,255,0.08); color: #fff; }
         .lang-option.active { color: var(--cyan); background: rgba(0,212,255,0.05); }
-
-        .top-bar {
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.75);
-            border-bottom: 1px solid rgba(45,122,31,0.4);
-            backdrop-filter: blur(14px);
-            flex-wrap: wrap;
-            gap: 12px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .stats-container {
-            display: flex; gap: 18px; flex-wrap: wrap;
-            color: #888; font-size: 0.8em;
-            text-transform: uppercase; letter-spacing: 0.8px;
-        }
+        .top-bar { padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.75); border-bottom: 1px solid rgba(45,122,31,0.4); backdrop-filter: blur(14px); flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 100; }
+        .stats-container { display: flex; gap: 18px; flex-wrap: wrap; color: #888; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.8px; }
         .stats-container span { display: flex; align-items: center; gap: 5px; }
-        .stats-container strong {
-            color: var(--green); font-weight: 700; font-size: 1.1em;
-            text-shadow: 0 0 8px rgba(0,255,136,0.4);
-        }
+        .stats-container strong { color: var(--green); font-weight: 700; font-size: 1.1em; text-shadow: 0 0 8px rgba(0,255,136,0.4); }
         #ton-connect-button { z-index: 1000; }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 25px 20px 40px;
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .title-container {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3.2em;
-            font-weight: 400;
-            background: linear-gradient(90deg, var(--green), #7fff00, var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .h1-ball {
-            display: inline-block;
-            -webkit-text-fill-color: initial;
-            background: none;
-            font-size: 0.85em;
-            animation: spinBall 4s linear infinite;
-            filter: drop-shadow(0 0 10px rgba(0,255,136,0.6));
-        }
-
-        @keyframes spinBall {
-            0%   { transform: rotate(0deg) scale(1); }
-            50%  { transform: rotate(180deg) scale(1.1); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-
-        .title-sub {
-            font-size: 0.82em; color: #888; letter-spacing: 3px;
-            text-transform: uppercase; margin-top: 4px;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .layout-grid {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-            margin-bottom: 35px;
-        }
-
-        /* ── IMAGEN CENTRAL MEJORADA ── */
-        .car-container {
-            position: relative;
-            width: 100%;
-            max-width: 460px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .car-base-glow {
-            position: absolute;
-            bottom: 65px;
-            width: 75%;
-            height: 18px;
-            background: var(--green);
-            filter: blur(35px);
-            opacity: 0.35;
-            z-index: 1;
-        }
-
-        /* ── IMAGEN CENTRAL REAL ── */
-        .central-hero {
-            width: 100%;
-            max-width: 460px;
-            border-radius: 14px;
-            border: 2px solid rgba(45,122,31,0.7);
-            box-shadow: 0 0 50px rgba(45,122,31,0.5), 0 0 100px rgba(0,255,136,0.15);
-            display: block;
-            transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-            z-index: 2;
-            cursor: pointer;
-            overflow: hidden;
-            position: relative;
-            background: #000;
-        }
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 25px 20px 40px; width: 100%; max-width: 1100px; margin: 0 auto; }
+        .title-container { text-align: center; margin-bottom: 35px; }
+        h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3.2em; font-weight: 400; background: linear-gradient(90deg, var(--green), #7fff00, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 8px; line-height: 1; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .h1-ball { display: inline-block; -webkit-text-fill-color: initial; background: none; font-size: 0.85em; animation: spinBall 4s linear infinite; filter: drop-shadow(0 0 10px rgba(0,255,136,0.6)); }
+        @keyframes spinBall { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+        .title-sub { font-size: 0.82em; color: #888; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+        .layout-grid { display: flex; width: 100%; justify-content: center; align-items: center; gap: 50px; margin-bottom: 35px; }
+        .car-container { position: relative; width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+        .car-base-glow { position: absolute; bottom: 65px; width: 75%; height: 18px; background: var(--green); filter: blur(35px); opacity: 0.35; z-index: 1; }
+        .central-hero { width: 100%; max-width: 460px; border-radius: 14px; border: 2px solid rgba(45,122,31,0.7); box-shadow: 0 0 50px rgba(45,122,31,0.5), 0 0 100px rgba(0,255,136,0.15); display: block; transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); z-index: 2; cursor: pointer; overflow: hidden; position: relative; background: #000; }
         .central-hero:hover { transform: scale(1.03) translateY(-5px); }
-
-        /* Imagen real centrada */
-        .central-hero-img {
-            width: 100%;
-            display: block;
-            object-fit: cover;
-            border-radius: 14px;
-        }
-
-        /* Overlay brillante sobre imagen central */
-        .central-hero-overlay {
-            position: absolute;
-            inset: 0;
-            border-radius: 14px;
-            background: linear-gradient(
-                to bottom,
-                rgba(0,255,136,0.05) 0%,
-                transparent 40%,
-                transparent 60%,
-                rgba(0,0,0,0.55) 100%
-            );
-            pointer-events: none;
-        }
-
-        /* Badge FUTMUNDI sobre imagen */
-        .central-hero-badge {
-            position: absolute;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            border: 1px solid rgba(0,255,136,0.5);
-            border-radius: 30px;
-            padding: 6px 20px;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.1em;
-            color: var(--green);
-            letter-spacing: 4px;
-            white-space: nowrap;
-            pointer-events: none;
-            text-shadow: 0 0 10px rgba(0,255,136,0.6);
-        }
-
-        /* Brillo animado esquinas */
-        .central-hero::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 16px;
-            background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green));
-            z-index: -1;
-            animation: borderGlow 3s linear infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes borderGlow {
-            0%   { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-
-        .menu-column {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            min-width: 200px;
-        }
-
-        .word-btn {
-            background: transparent; color: #ccc; border: none;
-            padding: 10px 12px; font-size: 1.05em; font-weight: 600;
-            font-family: 'Rajdhani', sans-serif; cursor: pointer;
-            position: relative; text-align: center;
-            transition: all 0.3s ease;
-            text-transform: capitalize; letter-spacing: 1px; outline: none;
-        }
-        .word-btn::after {
-            content: ''; position: absolute; bottom: 0; left: 50%;
-            transform: translateX(-50%); width: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--green), transparent);
-            transition: width 0.35s ease, opacity 0.35s ease; opacity: 0;
-        }
+        .central-hero-img { width: 100%; display: block; object-fit: cover; border-radius: 14px; }
+        .central-hero-overlay { position: absolute; inset: 0; border-radius: 14px; background: linear-gradient(to bottom, rgba(0,255,136,0.05) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.55) 100%); pointer-events: none; }
+        .central-hero-badge { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 1px solid rgba(0,255,136,0.5); border-radius: 30px; padding: 6px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1em; color: var(--green); letter-spacing: 4px; white-space: nowrap; pointer-events: none; text-shadow: 0 0 10px rgba(0,255,136,0.6); }
+        .central-hero::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 16px; background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green)); z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.6; }
+        @keyframes borderGlow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+        .menu-column { display: flex; flex-direction: column; gap: 22px; min-width: 200px; }
+        .word-btn { background: transparent; color: #ccc; border: none; padding: 10px 12px; font-size: 1.05em; font-weight: 600; font-family: 'Rajdhani', sans-serif; cursor: pointer; position: relative; text-align: center; transition: all 0.3s ease; text-transform: capitalize; letter-spacing: 1px; outline: none; }
+        .word-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); transition: width 0.35s ease, opacity 0.35s ease; opacity: 0; }
         .word-btn:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.7), 0 0 22px rgba(0,255,136,0.5); transform: translateY(-2px); }
         .word-btn:hover::after { width: 80%; opacity: 1; }
-
-        .primary-btn {
-            background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12));
-            border: 1px solid rgba(45,122,31,0.7);
-            color: var(--green); padding: 14px 28px; border-radius: 10px;
-            font-weight: 700; font-size: 1em; font-family: 'Orbitron', sans-serif;
-            cursor: pointer; transition: all 0.3s ease;
-            text-transform: uppercase; letter-spacing: 2px;
-            width: 100%; position: relative; overflow: hidden; z-index: 3;
-        }
-        .primary-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            transform: skewX(-20deg); transition: 0.5s;
-        }
+        .primary-btn { background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12)); border: 1px solid rgba(45,122,31,0.7); color: var(--green); padding: 14px 28px; border-radius: 10px; font-weight: 700; font-size: 1em; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; width: 100%; position: relative; overflow: hidden; z-index: 3; }
+        .primary-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transform: skewX(-20deg); transition: 0.5s; }
         .primary-btn:hover::before { left: 150%; }
-        .primary-btn:hover {
-            background: linear-gradient(135deg, rgba(45,122,31,0.35), rgba(0,200,80,0.25));
-            box-shadow: 0 0 25px rgba(0,255,136,0.4); color: #fff;
-        }
-
-        #status-msg {
-            margin-top: 18px; font-size: 1em; color: #888;
-            min-height: 24px; text-align: center; padding: 8px; font-weight: 600;
-        }
-
+        .primary-btn:hover { background: linear-gradient(135deg, rgba(45,122,31,0.35), rgba(0,200,80,0.25)); box-shadow: 0 0 25px rgba(0,255,136,0.4); color: #fff; }
+        #status-msg { margin-top: 18px; font-size: 1em; color: #888; min-height: 24px; text-align: center; padding: 8px; font-weight: 600; }
         .fuel-section { width: 100%; }
         .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
         .fuel-cartridges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
         .fuel-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .fuel-group-label { font-size: 0.6em; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
         .fuel-player-row { display: flex; gap: 5px; }
-        .fuel-cartridge {
-            width: 32px; height: 32px; border-radius: 50%;
-            border: 2px solid rgba(45,122,31,0.4);
-            background: rgba(45,122,31,0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1em; transition: all 0.3s;
-        }
-        .fuel-cartridge.full {
-            background: radial-gradient(circle at 35% 35%, #fff 0%, #444 60%, #000 100%);
-            border-color: var(--green);
-            box-shadow: 0 0 8px rgba(0,255,136,0.5);
-            animation: ballGlow 2s ease-in-out infinite;
-        }
+        .fuel-cartridge { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(45,122,31,0.4); background: rgba(45,122,31,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.1em; transition: all 0.3s; }
+        .fuel-cartridge.full { background: radial-gradient(circle at 35% 35%, #fff 0%, #444 60%, #000 100%); border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,136,0.5); animation: ballGlow 2s ease-in-out infinite; }
         .fuel-cartridge.empty { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); filter: grayscale(1) opacity(0.3); }
         @keyframes ballGlow { 0%,100% { box-shadow: 0 0 6px rgba(0,255,136,0.4) } 50% { box-shadow: 0 0 14px rgba(0,255,136,0.8) } }
 
         /* ── MODALES ── */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.88); backdrop-filter: blur(8px);
-            z-index: 999; justify-content: center; align-items: center; padding: 20px;
-        }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-
-        .modal {
-            background: linear-gradient(145deg, #0a130a 0%, #060d06 100%);
-            border: 1px solid rgba(45,122,31,0.3);
-            border-radius: 18px; max-width: 750px; width: 100%;
-            max-height: 88vh; overflow-y: auto;
-            box-shadow: 0 0 60px rgba(0,255,136,0.1);
-            animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
-        }
+        .modal { background: linear-gradient(145deg, #0a130a 0%, #060d06 100%); border: 1px solid rgba(45,122,31,0.3); border-radius: 18px; max-width: 750px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 0 60px rgba(0,255,136,0.1); animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
         @keyframes modalIn { from { opacity:0; transform:scale(0.85) translateY(30px); } to { opacity:1; transform:scale(1) translateY(0); } }
-
-        .modal-header {
-            padding: 18px 22px 14px;
-            border-bottom: 1px solid rgba(45,122,31,0.25);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; background: #0a130a;
-            border-radius: 18px 18px 0 0; z-index: 2;
-        }
+        .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid rgba(45,122,31,0.25); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #0a130a; border-radius: 18px 18px 0 0; z-index: 2; }
         .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3em; font-weight: 400; color: var(--green); letter-spacing: 3px; text-transform: uppercase; }
         .modal-close { background: none; border: none; color: #888; font-size: 1.6em; cursor: pointer; transition: color 0.2s, transform 0.2s; line-height: 1; }
         .modal-close:hover { color: var(--red); transform: rotate(90deg); }
         .modal-body { padding: 20px; }
-
         .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 4px; flex-wrap: wrap; }
         .tab-btn { flex: 1; min-width: 60px; padding: 8px 6px; border: none; background: transparent; color: #888; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.82em; letter-spacing: 0.5px; cursor: pointer; border-radius: 7px; transition: all 0.25s; text-transform: uppercase; }
         .tab-btn.active { background: rgba(45,122,31,0.2); color: var(--green); }
@@ -455,8 +96,8 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
+        /* ── MARKETPLACE ── */
         .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; }
-
         .car-card { background: var(--surface); border: 1px solid rgba(45,122,31,0.2); border-radius: 12px; overflow: hidden; transition: all 0.3s; }
         .car-card:hover { border-color: rgba(45,122,31,0.6); transform: translateY(-4px); box-shadow: 0 0 20px rgba(0,255,136,0.12); }
         .car-card-img-wrap { position: relative; overflow: hidden; cursor: zoom-in; }
@@ -464,19 +105,58 @@
         .car-card-info { padding: 10px 12px; }
         .car-card-name { font-family: 'Orbitron', sans-serif; font-size: 0.6em; font-weight: 700; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
         .car-card-country { font-size: 0.85em; color: #aaa; margin: 2px 0; }
-        .car-card-price { display: flex; align-items: center; gap: 5px; font-size: 0.95em; font-weight: 700; color: var(--gold); margin: 5px 0 8px; }
+        .car-card-price { display: flex; align-items: center; gap: 5px; font-size: 0.95em; font-weight: 700; color: var(--gold); margin: 5px 0 4px; }
+        /* NFT quantity selector */
+        .nft-qty-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .nft-qty-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid rgba(45,122,31,0.4); background: rgba(45,122,31,0.1); color: var(--green); font-size: 1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; line-height: 1; padding: 0; }
+        .nft-qty-btn:hover { background: rgba(45,122,31,0.3); }
+        .nft-qty-num { font-family: 'Orbitron', sans-serif; font-size: 0.75em; color: var(--gold); font-weight: 700; min-width: 18px; text-align: center; }
+        .nft-qty-max { font-size: 0.6em; color: #555; }
         .buy-car-btn { width: 100%; padding: 8px; background: linear-gradient(135deg, rgba(45,122,31,0.15), rgba(0,200,80,0.1)); border: 1px solid rgba(45,122,31,0.4); border-radius: 8px; color: var(--green); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.88em; cursor: pointer; text-transform: uppercase; transition: all 0.25s; }
         .buy-car-btn:hover { background: rgba(45,122,31,0.3); color: #fff; }
         .buy-car-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
         .dur-bar-wrap { margin-top: 6px; }
         .dur-bar-label { display: flex; justify-content: space-between; font-size: 0.72em; color: #888; margin-bottom: 3px; }
         .dur-bar-bg { background: rgba(255,255,255,0.07); border-radius: 50px; height: 5px; overflow: hidden; }
         .dur-bar-fill { height: 100%; border-radius: 50px; transition: width 0.5s ease; }
         .dur-high { background: linear-gradient(90deg, var(--green), #00ff88cc); }
-        .dur-med  { background: linear-gradient(90deg, var(--gold), #ffaa00); }
-        .dur-low  { background: linear-gradient(90deg, var(--red), #ff6666); }
+        .dur-med { background: linear-gradient(90deg, var(--gold), #ffaa00); }
+        .dur-low { background: linear-gradient(90deg, var(--red), #ff6666); }
 
+        /* ── GARAGE / SQUAD ── */
+        .squad-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .squad-slots-section { }
+        .squad-slots-section h3 { font-family: 'Orbitron', sans-serif; font-size: 0.72em; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+        .squad-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .squad-slot { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; aspect-ratio: 3/4; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7em; color: #444; cursor: pointer; transition: all 0.25s; overflow: hidden; position: relative; }
+        .squad-slot.occupied { border-color: rgba(45,122,31,0.4); }
+        .squad-slot.occupied:hover { border-color: var(--green); box-shadow: 0 0 12px rgba(0,255,136,0.2); }
+        .squad-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .squad-slot-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%); padding: 4px; }
+        .squad-slot-name { font-size: 0.55em; color: #fff; font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .squad-slot-ovr { font-size: 0.5em; color: var(--gold); text-align: center; }
+        .squad-slot-qty { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); border-radius: 4px; font-size: 0.55em; color: var(--gold); font-weight: 700; padding: 1px 4px; font-family: 'Orbitron', sans-serif; }
+        .squad-slot-empty-icon { font-size: 1.8em; margin-bottom: 4px; opacity: 0.3; }
+
+        /* ── EQUIPMENT PANEL ── */
+        .equipment-panel { background: rgba(255,255,255,0.02); border: 1px solid rgba(0,212,255,0.15); border-radius: 14px; padding: 14px; }
+        .equipment-panel h3 { font-family: 'Orbitron', sans-serif; font-size: 0.72em; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; text-align: center; }
+        .equipment-preview { display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+        .equipment-player-img { width: 90px; height: 120px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(45,122,31,0.5); box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+        .equipment-player-placeholder { width: 90px; height: 120px; border-radius: 10px; border: 2px dashed rgba(45,122,31,0.3); display: flex; align-items: center; justify-content: center; font-size: 2em; color: #333; }
+        .equipment-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .equip-slot { background: rgba(255,255,255,0.04); border: 1px dashed rgba(0,212,255,0.2); border-radius: 10px; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: all 0.25s; min-height: 70px; justify-content: center; }
+        .equip-slot:hover { border-color: rgba(0,212,255,0.5); background: rgba(0,212,255,0.06); }
+        .equip-slot.equipped { border-color: rgba(0,255,136,0.4); border-style: solid; background: rgba(0,255,136,0.05); }
+        .equip-slot-icon { font-size: 1.5em; }
+        .equip-slot-label { font-size: 0.6em; color: #888; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+        .equip-slot-name { font-size: 0.62em; color: var(--green); font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .equip-bonus { margin-top: 12px; padding: 8px; background: rgba(255,215,0,0.06); border: 1px solid rgba(255,215,0,0.15); border-radius: 8px; }
+        .equip-bonus-title { font-size: 0.62em; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; text-align: center; }
+        .equip-bonus-row { font-size: 0.72em; color: #aaa; display: flex; justify-content: space-between; padding: 2px 0; }
+        .equip-bonus-val { color: var(--green); font-weight: 700; }
+
+        /* ── RECOMPENSAS ── */
         .reward-sections { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
         .reward-section { background: var(--surface); border: 1px solid rgba(45,122,31,0.2); border-radius: 12px; padding: 14px; }
         .reward-section h4 { font-family: 'Orbitron', sans-serif; font-size: 0.72em; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
@@ -485,7 +165,6 @@
         .reward-stat-value { font-weight: 700; color: var(--gold); font-size: 0.9em; }
         .pts-bar-bg { background: rgba(255,255,255,0.07); border-radius: 50px; height: 7px; overflow: hidden; margin-top: 4px; }
         .pts-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--green), var(--gold)); transition: width 0.5s; }
-
         .reward-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
         .reward-day { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 9px; padding: 8px 2px; text-align: center; font-size: 0.7em; color: #888; transition: all 0.25s; }
         .reward-day.claimed { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.06); }
@@ -493,11 +172,11 @@
         .reward-day.gold-day { border-color: var(--gold); color: var(--gold); }
         .reward-day.gold-day.claimed { background: rgba(255,215,0,0.07); }
         .reward-day .day-icon { font-size: 1.1em; display: block; margin-bottom: 2px; }
-
         .claim-reward-btn { width: 100%; margin-top: 14px; padding: 12px; background: linear-gradient(135deg, rgba(0,255,136,0.12), rgba(45,122,31,0.12)); border: 1px solid var(--green); border-radius: 10px; color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
         .claim-reward-btn:hover { background: rgba(0,255,136,0.22); color: #fff; }
         .claim-reward-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+        /* ── LOGROS ── */
         .logros-list { display: flex; flex-direction: column; gap: 10px; }
         .logro-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
         .logro-item.desbloqueado { border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.04); }
@@ -509,13 +188,7 @@
         .logro-progress-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 50px; }
         .logro-reward { text-align: right; font-weight: 700; white-space: nowrap; }
 
-        .garage-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin-bottom: 16px; }
-        .garage-slot-card { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 11px 6px; text-align: center; font-size: 0.76em; color: #555; transition: all 0.25s; cursor: pointer; }
-        .garage-slot-card.occupied { border-color: rgba(45,122,31,0.4); color: var(--green); }
-        .garage-slot-card.occupied:hover { border-color: var(--green); box-shadow: 0 0 12px rgba(0,255,136,0.2); }
-        .garage-slot-card .gs-icon { font-size: 1.7em; margin-bottom: 4px; }
-        .garage-slot-card .gs-name { font-weight: 700; font-size: 0.88em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
+        /* ── MANT/TRAIN ── */
         .mant-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--surface); border-radius: 12px; border: 1px solid rgba(255,255,255,0.07); margin-bottom: 12px; }
         .mant-icon { font-size: 2em; }
         .mant-info { flex: 1; }
@@ -527,63 +200,31 @@
         .mant-btn { margin-top: 6px; padding: 5px 14px; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 6px; color: var(--green); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; transition: all 0.25s; }
         .mant-btn:hover { background: rgba(0,255,136,0.2); }
 
+        /* ── DUEL/MATCH ── */
         .duel-mode-card { padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); background: var(--surface); margin-bottom: 14px; cursor: pointer; transition: all 0.3s; text-align: center; }
         .duel-mode-card:hover { border-color: var(--green); box-shadow: 0 0 18px rgba(0,255,136,0.12); transform: translateY(-3px); }
         .duel-mode-card .dm-icon { font-size: 2.5em; margin-bottom: 10px; }
         .duel-mode-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3em; color: var(--green); letter-spacing: 3px; margin-bottom: 8px; }
         .duel-mode-card p { font-size: 0.86em; color: #888; line-height: 1.6; }
-
         .prizes-row { display: flex; gap: 8px; margin-top: 12px; }
         .prize-badge { flex: 1; padding: 9px 4px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 0.8em; }
-        .prize-badge.gold-p   { background: rgba(255,215,0,0.1);   border: 1px solid rgba(255,215,0,0.3);   color: var(--gold); }
+        .prize-badge.gold-p { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3); color: var(--gold); }
         .prize-badge.silver-p { background: rgba(192,192,192,0.07); border: 1px solid rgba(192,192,192,0.2); color: #bbb; }
-        .prize-badge.bronze-p { background: rgba(205,127,50,0.08);  border: 1px solid rgba(205,127,50,0.25); color: #cd7f32; }
+        .prize-badge.bronze-p { background: rgba(205,127,50,0.08); border: 1px solid rgba(205,127,50,0.25); color: #cd7f32; }
 
-        .match-result-box { background: linear-gradient(135deg,#0a1a0a,#060d06); border: 1px solid rgba(0,255,136,0.3); border-radius: 16px; padding: 20px; margin-top: 14px; }
-        .match-event { font-size: 0.82em; color: #888; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-        .match-event:last-child { border-bottom: none; }
-        .match-event.goal { color: var(--green); font-weight: 700; }
-        .match-winner-banner { text-align: center; padding: 12px; background: rgba(0,255,136,0.08); border-radius: 10px; margin-top: 10px; }
-        .match-winner-banner h4 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3em; color: var(--gold); letter-spacing: 3px; }
-
-        .pvp-player-vs { display: flex; align-items: center; justify-content: space-around; margin: 14px 0; }
-        .pvp-player-card { background: var(--surface); border: 1px solid rgba(45,122,31,0.3); border-radius: 12px; padding: 14px; text-align: center; width: 42%; }
-        .pvp-vs { font-family: 'Bebas Neue', sans-serif; font-size: 2em; color: var(--gold); }
-
-        .map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .map-card { border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.3s; background: var(--surface); }
-        .map-card:hover { border-color: var(--orange); box-shadow: 0 0 18px rgba(255,140,0,0.15); transform: translateY(-3px); }
-        .map-card-img { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 2.8em; }
-        .map-card-info { padding: 11px 13px; }
-        .map-card-info h4 { font-family: 'Orbitron', sans-serif; font-size: 0.7em; color: var(--orange); letter-spacing: 1.5px; }
-        .map-card-info p { font-size: 0.8em; color: #888; margin-top: 4px; line-height: 1.5; }
-        .map-card-info .map-tag { display: inline-block; margin-top: 5px; padding: 2px 8px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); border-radius: 20px; font-size: 0.72em; color: var(--cyan); }
-
-        .futsala-info-box { padding: 13px; background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.2); border-radius: 10px; font-size: 0.86em; color: var(--green); line-height: 1.7; margin-bottom: 14px; }
-
-        .tournament-banner { background: linear-gradient(135deg, rgba(255,140,0,0.1), rgba(255,68,68,0.1)); border: 1px solid rgba(255,140,0,0.3); border-radius: 14px; padding: 18px; text-align: center; margin-bottom: 16px; }
-        .tournament-banner h3 { font-family: 'Bebas Neue', sans-serif; color: var(--orange); margin-bottom: 8px; letter-spacing: 3px; font-size: 1.5em; }
-        .tournament-banner .t-prize { font-size: 1.8em; font-weight: 700; color: var(--gold); }
-
-        .tournament-entry { background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2); border-radius: 12px; padding: 18px; margin-top: 14px; text-align: center; }
-        .tournament-entry h4 { font-family: 'Orbitron', sans-serif; font-size: 0.82em; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 10px; }
-        .tournament-entry p { font-size: 0.86em; color: #888; margin-bottom: 14px; line-height: 1.6; }
-
-        .torneo-pay-btn { padding: 13px 26px; background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,140,0,0.12)); border: 1px solid var(--gold); border-radius: 10px; color: var(--gold); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
-        .torneo-pay-btn:hover { background: rgba(255,215,0,0.22); color: #fff; }
-
+        /* ── RANKING ── */
         .rank-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .rank-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
         .rank-pos { font-family: 'Orbitron', sans-serif; font-size: 1em; color: var(--green); font-weight: 700; width: 28px; text-align: center; }
         .rank-name { flex: 1; font-weight: 600; font-size: 0.93em; }
         .rank-score { color: var(--gold); font-weight: 700; font-size: 0.88em; white-space: nowrap; }
 
+        /* ── DEPOSIT/WITHDRAW ── */
         .withdraw-label { font-size: 0.84em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
         .withdraw-input { width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(45,122,31,0.3); border-radius: 10px; color: #fff; font-size: 0.95em; font-family: 'Rajdhani', sans-serif; outline: none; transition: border-color 0.3s; margin-bottom: 14px; }
         .withdraw-input:focus { border-color: var(--green); }
         .withdraw-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, rgba(255,140,0,0.12), rgba(255,68,68,0.12)); border: 1px solid var(--orange); border-radius: 10px; color: var(--orange); font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 0.82em; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
         .withdraw-btn:hover { background: rgba(255,140,0,0.22); color: #fff; }
-
         .gem-tiers { display: flex; flex-direction: column; gap: 11px; }
         .gem-tier { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; background: var(--surface); border-radius: 12px; border: 1px solid rgba(255,215,0,0.15); cursor: pointer; transition: all 0.3s; }
         .gem-tier:hover { border-color: var(--gold); box-shadow: 0 0 12px rgba(255,215,0,0.1); }
@@ -593,6 +234,17 @@
         .gem-tier-info p { font-size: 0.78em; color: #888; margin-top: 2px; }
         .gem-tier-price { font-family: 'Orbitron', sans-serif; font-size: 0.84em; color: var(--cyan); font-weight: 700; }
 
+        /* ── TORNEO ── */
+        .tournament-banner { background: linear-gradient(135deg, rgba(255,140,0,0.1), rgba(255,68,68,0.1)); border: 1px solid rgba(255,140,0,0.3); border-radius: 14px; padding: 18px; text-align: center; margin-bottom: 16px; }
+        .tournament-banner h3 { font-family: 'Bebas Neue', sans-serif; color: var(--orange); margin-bottom: 8px; letter-spacing: 3px; font-size: 1.5em; }
+        .tournament-banner .t-prize { font-size: 1.8em; font-weight: 700; color: var(--gold); }
+        .tournament-entry { background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2); border-radius: 12px; padding: 18px; margin-top: 14px; text-align: center; }
+        .tournament-entry h4 { font-family: 'Orbitron', sans-serif; font-size: 0.82em; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 10px; }
+        .tournament-entry p { font-size: 0.86em; color: #888; margin-bottom: 14px; line-height: 1.6; }
+        .torneo-pay-btn { padding: 13px 26px; background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,140,0,0.12)); border: 1px solid var(--gold); border-radius: 10px; color: var(--gold); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
+        .torneo-pay-btn:hover { background: rgba(255,215,0,0.22); color: #fff; }
+
+        /* ── NIVEL ── */
         .nivel-bar-wrap { margin: 14px 0; }
         .nivel-bar-label { display: flex; justify-content: space-between; font-size: 0.84em; color: #888; margin-bottom: 7px; }
         .nivel-bar-bg { background: rgba(255,255,255,0.07); border-radius: 50px; height: 10px; overflow: hidden; }
@@ -600,19 +252,15 @@
         .nivel-perks { display: flex; flex-direction: column; gap: 9px; margin-top: 16px; }
         .nivel-perk { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--surface); border-radius: 10px; font-size: 0.88em; }
 
-        .video-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.97); backdrop-filter: blur(12px);
-            z-index: 1200; justify-content: center; align-items: center; padding: 16px;
-            flex-direction: column;
-        }
+        /* ── VIDEO ── */
+        .video-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.97); backdrop-filter: blur(12px); z-index: 1200; justify-content: center; align-items: center; padding: 16px; flex-direction: column; }
         .video-overlay.active { display: flex; }
         .video-canvas { width: 100%; max-width: 640px; height: 360px; border-radius: 16px; border: 2px solid rgba(0,255,136,0.3); box-shadow: 0 0 60px rgba(0,255,136,0.2); display: block; background: #000; }
-        .video-result { margin-top: 16px; text-align: center; }
         .video-close-btn { margin-top: 14px; padding: 10px 30px; background: rgba(0,255,136,0.12); border: 1px solid var(--green); border-radius: 10px; color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; }
         .video-close-btn:hover { background: rgba(0,255,136,0.25); color: #fff; }
 
-        .player-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
+        /* ── PLAYER SELECT ── */
+        .player-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px; }
         .player-select-card { background: var(--surface); border: 2px solid rgba(45,122,31,0.25); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s; text-align: center; }
         .player-select-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 0 16px rgba(0,255,136,0.2); }
         .player-select-card.selected { border-color: var(--cyan); box-shadow: 0 0 16px rgba(0,212,255,0.3); }
@@ -622,6 +270,7 @@
         .player-select-info .ps-ovr { font-size: 0.78em; color: var(--gold); font-weight: 700; margin-top: 2px; }
         .player-select-info .ps-balls { font-size: 0.72em; color: var(--green); margin-top: 2px; }
 
+        /* ── DETAIL MODAL ── */
         .car-detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(16px); z-index: 1100; justify-content: center; align-items: center; padding: 20px; }
         .car-detail-overlay.active { display: flex; }
         .car-detail-modal { background: linear-gradient(145deg,#0e1a0e 0%,#080808 100%); border: 1px solid rgba(45,122,31,0.4); border-radius: 22px; max-width: 520px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 0 80px rgba(0,255,136,0.15); animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
@@ -644,9 +293,17 @@
         .car-stat-card.stat-fuel .stat-value { color: var(--orange); }
         .car-stat-card.stat-earn .stat-value { color: var(--gold); }
         .car-detail-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 14px 0; }
-
         .info-box { padding: 11px 14px; background: rgba(255,140,0,0.07); border: 1px solid rgba(255,140,0,0.2); border-radius: 10px; font-size: 0.83em; color: #ffaa00; line-height: 1.6; }
         .coming-soon-box { padding: 12px; background: var(--surface); border-radius: 10px; text-align: center; color: #666; font-size: 0.84em; margin-top: 12px; }
+        .futsala-info-box { padding: 13px; background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.2); border-radius: 10px; font-size: 0.86em; color: var(--green); line-height: 1.7; margin-bottom: 14px; }
+        .map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .map-card { border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.3s; background: var(--surface); }
+        .map-card:hover { border-color: var(--orange); box-shadow: 0 0 18px rgba(255,140,0,0.15); transform: translateY(-3px); }
+        .map-card-img { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 2.8em; }
+        .map-card-info { padding: 11px 13px; }
+        .map-card-info h4 { font-family: 'Orbitron', sans-serif; font-size: 0.7em; color: var(--orange); letter-spacing: 1.5px; }
+        .map-card-info p { font-size: 0.8em; color: #888; margin-top: 4px; line-height: 1.5; }
+        .map-card-info .map-tag { display: inline-block; margin-top: 5px; padding: 2px 8px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); border-radius: 20px; font-size: 0.72em; color: var(--cyan); }
 
         .modal::-webkit-scrollbar { width: 4px; }
         .modal::-webkit-scrollbar-track { background: transparent; }
@@ -656,11 +313,12 @@
             .layout-grid { flex-direction: column; gap: 35px; }
             .menu-column { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
             .car-container { order: -1; max-width: 88%; }
+            .squad-layout { grid-template-columns: 1fr; }
         }
         @media (max-width: 580px) {
             .market-grid { grid-template-columns: repeat(2, 1fr); }
             .map-grid { grid-template-columns: 1fr; }
-            .garage-grid { grid-template-columns: repeat(3, 1fr); }
+            .squad-slots { grid-template-columns: repeat(4, 1fr); }
             .reward-grid { grid-template-columns: repeat(5, 1fr); }
             .prizes-row { flex-direction: column; }
         }
@@ -673,7 +331,6 @@
         }
     </style>
 </head>
-
 <body>
 
 <div class="flags-bg" id="flags-bg"></div>
@@ -688,7 +345,7 @@
                 <span class="arrow">▼</span>
             </button>
             <div class="lang-dropdown" id="lang-dropdown">
-                <div class="lang-option active"  onclick="setLang('es','🇪🇸','ES')">🇪🇸 Español</div>
+                <div class="lang-option active" onclick="setLang('es','🇪🇸','ES')">🇪🇸 Español</div>
                 <div class="lang-option" onclick="setLang('en','🇬🇧','EN')">🇬🇧 English</div>
                 <div class="lang-option" onclick="setLang('pt','🇵🇹','PT')">🇵🇹 Português</div>
                 <div class="lang-option" onclick="setLang('fr','🇫🇷','FR')">🇫🇷 Français</div>
@@ -703,11 +360,11 @@
     <!-- TOP BAR -->
     <div class="top-bar">
         <div class="stats-container">
-            <span data-i18n="pts">Puntos:</span>&nbsp;<strong id="puntaje">0</strong>
-            <span data-i18n="lvl">Nivel:</span>&nbsp;<strong id="nivel-stat">1</strong>
-            <span data-i18n="gems">Gemas:</span>&nbsp;<strong id="gemas-stat">3900.0</strong>&nbsp;💎
-            <span data-i18n="form">Forma:</span>&nbsp;<strong id="gasolina">100%</strong>
-            <span data-i18n="ovr">Overall:</span>&nbsp;<strong id="hp-stat">0</strong>
+            <span><span data-i18n="pts">Puntos:</span>&nbsp;<strong id="puntaje">0</strong></span>
+            <span><span data-i18n="lvl">Nivel:</span>&nbsp;<strong id="nivel-stat">1</strong></span>
+            <span><span data-i18n="gems">Gemas:</span>&nbsp;<strong id="gemas-stat">3900.0</strong>&nbsp;💎</span>
+            <span><span data-i18n="form">Forma:</span>&nbsp;<strong id="gasolina">100%</strong></span>
+            <span><span data-i18n="ovr">Overall:</span>&nbsp;<strong id="hp-stat">0</strong></span>
         </div>
         <div id="ton-connect-button"></div>
     </div>
@@ -733,25 +390,17 @@
                 <button class="word-btn" onclick="openModal('modal-nivel')">⬆️ <span data-i18n="m_level">Nivel</span></button>
             </div>
 
-            <!-- IMAGEN CENTRAL REAL -->
             <div class="car-container">
                 <div class="car-base-glow"></div>
                 <div class="central-hero" id="central-hero-wrap">
-                    <img
-                        class="central-hero-img"
-                        src="https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png"
-                        alt="FUTMUNDI"
-                        onerror="this.onerror=null;this.src='';this.parentElement.innerHTML=getFallbackSVG();"
-                    >
+                    <img class="central-hero-img" src="https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png" alt="FUTMUNDI" onerror="this.onerror=null;this.style.display='none';">
                     <div class="central-hero-overlay"></div>
                     <div class="central-hero-badge">⚽ FUTMUNDI NFT ⚽</div>
                 </div>
-
                 <div class="fuel-section">
                     <div class="fuel-label" data-i18n="fuel_label">⚽ Balones de Estamina por Jugador</div>
                     <div class="fuel-cartridges" id="fuel-cartridges"></div>
                 </div>
-
                 <button class="primary-btn" onclick="openModal('modal-duelo-urbano')">🏟️ FutCancha</button>
             </div>
 
@@ -778,8 +427,10 @@
                 <button class="modal-close" onclick="closeModal('modal-marketplace')">✕</button>
             </div>
             <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:14px;"><span data-i18n="gems">Gemas</span>:
-                    <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
+                <p style="color:#888;font-size:0.86em;margin-bottom:6px;"><span data-i18n="gems">Gemas</span>: <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
+                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:var(--green)">
+                    ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT tiene sus propios 4 balones de estamina.
+                </div>
                 <div class="tab-bar">
                     <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 <span data-i18n="m_players">Futbolistas</span></button>
                     <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
@@ -800,7 +451,7 @@
     <div class="modal-overlay" id="modal-recompensa-pts">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title">⚽ <span data-i18n="m_rewards">Recompensas por Actividades</span></span>
+                <span class="modal-title">⚽ Recompensas por Actividades</span>
                 <button class="modal-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
             </div>
             <div class="modal-body">
@@ -883,7 +534,7 @@
     <div class="modal-overlay" id="modal-retiro">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title">💸 <span data-i18n="m_withdraw">Retiro de Gemas</span></span>
+                <span class="modal-title">💸 Retiro de Gemas</span>
                 <button class="modal-close" onclick="closeModal('modal-retiro')">✕</button>
             </div>
             <div class="modal-body">
@@ -905,49 +556,35 @@
                 <button class="modal-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
             </div>
             <div class="modal-body">
-                <div id="pvp-content">
-                    <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-                        <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                            <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;">
-                                <div style="font-size:1.3em">🏆</div>
-                                <div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div>
-                                <div style="color:#aaa;font-size:0.78em;margin-top:3px">+2 💎 / balón</div>
-                            </div>
-                            <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;">
-                                <div style="font-size:1.3em">🤝</div>
-                                <div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div>
-                                <div style="color:#aaa;font-size:0.78em;margin-top:3px">+1 💎 / balón</div>
-                            </div>
-                            <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;">
-                                <div style="font-size:1.3em">❌</div>
-                                <div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div>
-                                <div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div>
-                            </div>
-                        </div>
+                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">+2 💎 / balón</div></div>
+                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">+1 💎 / balón</div></div>
+                        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
                     </div>
-                    <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
-                        <div class="dm-icon">🏆</div>
-                        <h3>Liga Mundial</h3>
-                        <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
-                        <div class="prizes-row">
-                            <div class="prize-badge gold-p">🥇 Victoria<br><small>+2 💎 / balón</small></div>
-                            <div class="prize-badge silver-p">🤝 Empate<br><small>+1 💎 / balón</small></div>
-                            <div class="prize-badge bronze-p">❌ Derrota<br><small>0 💎</small></div>
-                        </div>
-                    </div>
-                    <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
-                        <div class="dm-icon">⚽</div>
-                        <h3>Partido Amistoso</h3>
-                        <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
-                        <div class="prizes-row">
-                            <div class="prize-badge gold-p">🥇 Victoria<br><small>+2 💎 / balón</small></div>
-                            <div class="prize-badge silver-p">🤝 Empate<br><small>+1 💎 / balón</small></div>
-                            <div class="prize-badge bronze-p">❌ Derrota<br><small>0 💎</small></div>
-                        </div>
-                    </div>
-                    <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina y reduce la forma física del jugador.</div>
                 </div>
+                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
+                    <div class="dm-icon">🏆</div>
+                    <h3>Liga Mundial</h3>
+                    <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
+                    <div class="prizes-row">
+                        <div class="prize-badge gold-p">🥇 Victoria<br><small>+2 💎 / balón</small></div>
+                        <div class="prize-badge silver-p">🤝 Empate<br><small>+1 💎 / balón</small></div>
+                        <div class="prize-badge bronze-p">❌ Derrota<br><small>0 💎</small></div>
+                    </div>
+                </div>
+                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
+                    <div class="dm-icon">⚽</div>
+                    <h3>Partido Amistoso</h3>
+                    <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
+                    <div class="prizes-row">
+                        <div class="prize-badge gold-p">🥇 Victoria<br><small>+2 💎 / balón</small></div>
+                        <div class="prize-badge silver-p">🤝 Empate<br><small>+1 💎 / balón</small></div>
+                        <div class="prize-badge bronze-p">❌ Derrota<br><small>0 💎</small></div>
+                    </div>
+                </div>
+                <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina y reduce la forma física del jugador.</div>
             </div>
         </div>
     </div>
@@ -967,9 +604,9 @@
         </div>
     </div>
 
-    <!-- PLANTILLA -->
+    <!-- PLANTILLA / SQUAD -->
     <div class="modal-overlay" id="modal-garage">
-        <div class="modal">
+        <div class="modal" style="max-width:900px;">
             <div class="modal-header">
                 <span class="modal-title">👕 <span data-i18n="m_squad">Mi Plantilla</span></span>
                 <button class="modal-close" onclick="closeModal('modal-garage')">✕</button>
@@ -977,15 +614,57 @@
             <div class="modal-body">
                 <div class="tab-bar">
                     <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 <span data-i18n="m_players">Futbolistas</span></button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🦵</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','trajes')">🏅</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🦵 Protectores</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','trajes')">🏅 Insignias</button>
                 </div>
                 <div id="garage-vehiculos" class="tab-panel active">
-                    <p style="color:#888;font-size:0.82em;margin-bottom:10px;">20 slots de plantilla disponibles</p>
-                    <div class="garage-grid" id="garage-grid-vehicles"></div>
-                    <button class="primary-btn" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 <span data-i18n="m_market">Ir al Marketplace</span></button>
+                    <div class="squad-layout">
+                        <!-- SQUAD SLOTS LEFT -->
+                        <div class="squad-slots-section">
+                            <h3>📋 Plantilla — 20 Slots NFT</h3>
+                            <div class="squad-slots" id="garage-grid-vehicles"></div>
+                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
+                        </div>
+                        <!-- EQUIPMENT RIGHT -->
+                        <div class="equipment-panel">
+                            <h3>⚙️ Equipamiento</h3>
+                            <div class="equipment-preview" id="equip-preview">
+                                <div class="equipment-player-placeholder">🧑</div>
+                            </div>
+                            <p style="font-size:0.72em;color:#555;text-align:center;margin-bottom:10px;" id="equip-player-name">Selecciona un jugador de la plantilla</p>
+                            <div class="equipment-slots">
+                                <div class="equip-slot" id="equip-slot-uniform" onclick="openEquipModal('uniforme')">
+                                    <div class="equip-slot-icon">👕</div>
+                                    <div class="equip-slot-label">Uniforme</div>
+                                    <div class="equip-slot-name" id="equip-uniform-name">— Vacío —</div>
+                                </div>
+                                <div class="equip-slot" id="equip-slot-tenis" onclick="openEquipModal('tenis')">
+                                    <div class="equip-slot-icon">👟</div>
+                                    <div class="equip-slot-label">Tenis</div>
+                                    <div class="equip-slot-name" id="equip-tenis-name">— Vacío —</div>
+                                </div>
+                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')">
+                                    <div class="equip-slot-icon">🦵</div>
+                                    <div class="equip-slot-label">Protectores</div>
+                                    <div class="equip-slot-name" id="equip-protector-name">— Vacío —</div>
+                                </div>
+                                <div class="equip-slot" id="equip-slot-insignia" onclick="openEquipModal('insignia')">
+                                    <div class="equip-slot-icon">🏅</div>
+                                    <div class="equip-slot-label">Insignia</div>
+                                    <div class="equip-slot-name" id="equip-insignia-name">— Vacío —</div>
+                                </div>
+                            </div>
+                            <div class="equip-bonus" id="equip-bonus-panel">
+                                <div class="equip-bonus-title">⚡ Bonificaciones Activas</div>
+                                <div class="equip-bonus-row"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
+                                <div class="equip-bonus-row"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
+                                <div class="equip-bonus-row"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
+                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">+2💎 vic</span></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="garage-cascos" class="tab-panel"><div class="coming-soon-box">⏳ Uniformes próximamente</div></div>
                 <div id="garage-guantes" class="tab-panel"><div class="coming-soon-box">⏳ Tenis próximamente</div></div>
@@ -1032,31 +711,11 @@
                     💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
                 </div>
                 <div class="gem-tiers">
-                    <div class="gem-tier" onclick="comprarGemas(320,10)">
-                        <div class="gem-tier-left"><span class="gem-tier-icon">💎</span>
-                            <div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio · Ficha a Neymar Jr.</p></div>
-                        </div><span class="gem-tier-price">$10 USDT</span>
-                    </div>
-                    <div class="gem-tier" onclick="comprarGemas(1600,50)">
-                        <div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span>
-                            <div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular · Ficha a James Rodríguez</p></div>
-                        </div><span class="gem-tier-price">$50 USDT</span>
-                    </div>
-                    <div class="gem-tier" onclick="comprarGemas(3200,100)">
-                        <div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span>
-                            <div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO · Ficha a Alexis Sánchez</p></div>
-                        </div><span class="gem-tier-price">$100 USDT</span>
-                    </div>
-                    <div class="gem-tier" onclick="comprarGemas(6400,200)">
-                        <div class="gem-tier-left"><span class="gem-tier-icon">🏅</span>
-                            <div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite · Ficha a Messi o CR7</p></div>
-                        </div><span class="gem-tier-price">$200 USDT</span>
-                    </div>
-                    <div class="gem-tier" onclick="comprarGemas(16000,500)">
-                        <div class="gem-tier-left"><span class="gem-tier-icon">👑</span>
-                            <div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda · Ficha a Mbappé + más</p></div>
-                        </div><span class="gem-tier-price">$500 USDT</span>
-                    </div>
+                    <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio · Ficha a Neymar Jr.</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular · Ficha a James Rodríguez</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO · Ficha a Alexis Sánchez</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite · Ficha a Messi o CR7</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda · Ficha a Mbappé + más</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
                 </div>
             </div>
         </div>
@@ -1166,22 +825,20 @@
     </div>
 
     <script>
-
-    // ── BASE URL GITHUB ───────────────────────────────────────────────────
+    // ── GITHUB BASE URL ───────────────────────────────────────────────────
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
 
     // ── IDIOMAS ───────────────────────────────────────────────────────────
     const TRANSLATIONS = {
-        es: { tagline:'El juego de fútbol NFT más épico del mundo', pts:'Puntos', lvl:'Nivel', gems:'Gemas', form:'Forma', ovr:'Overall', m_players:'Futbolistas', m_market:'Marketplace', m_rewards:'Recompensas', m_daily:'Recompensa Diaria', m_achiev:'Logros', m_level:'Nivel', m_squad:'Mi Plantilla', m_tourn:'Torneo', m_rank:'Ranking', m_train:'Entrenamiento', m_deposit:'Depósito', m_withdraw:'Retiro', fuel_label:'⚽ Balones de Estamina por Jugador', rewards_desc:'Juega partidas y acumula 100 puntos de estadísticas para desbloquear recompensas. Cada partida jugada = 2 pts.', daily_desc:'💎 Días impares: gemas | 🪙 Días pares: moneda oro', current_level:'Nivel actual', claim_btn:'Reclamar Recompensa', train_desc:'El entrenamiento recupera la estamina al 100%, mejora el rendimiento +10% y repara el estado físico del jugador.', deposit_desc:'Compra gemas con USDT para fichar futbolistas en el marketplace.', withdraw_btn:'Solicitar Retiro', you:'Tú' },
+        es: { tagline:'El juego de fútbol NFT más épico del mundo', pts:'Puntos', lvl:'Nivel', gems:'Gemas', form:'Forma', ovr:'Overall', m_players:'Futbolistas', m_market:'Marketplace', m_rewards:'Recompensas', m_daily:'Recompensa Diaria', m_achiev:'Logros', m_level:'Nivel', m_squad:'Mi Plantilla', m_tourn:'Torneo', m_rank:'Ranking', m_train:'Entrenamiento', m_deposit:'Depósito', m_withdraw:'Retiro', fuel_label:'⚽ Balones de Estamina por Jugador', rewards_desc:'Juega partidas y acumula 100 puntos para desbloquear recompensas.', daily_desc:'💎 Días impares: gemas | 🪙 Días pares: moneda oro', current_level:'Nivel actual', claim_btn:'Reclamar Recompensa', train_desc:'El entrenamiento recupera la estamina al 100%, mejora el rendimiento +10% y repara el estado físico del jugador.', deposit_desc:'Compra gemas con USDT para fichar futbolistas en el marketplace.', withdraw_btn:'Solicitar Retiro', you:'Tú' },
         en: { tagline:'The most epic NFT soccer game in the world', pts:'Points', lvl:'Level', gems:'Gems', form:'Form', ovr:'Overall', m_players:'Players', m_market:'Marketplace', m_rewards:'Rewards', m_daily:'Daily Reward', m_achiev:'Achievements', m_level:'Level', m_squad:'My Squad', m_tourn:'Tournament', m_rank:'Ranking', m_train:'Training', m_deposit:'Deposit', m_withdraw:'Withdraw', fuel_label:'⚽ Stamina Balls per Player', rewards_desc:'Play matches and accumulate 100 stats points to unlock rewards.', daily_desc:'💎 Odd days: gems | 🪙 Even days: gold coins', current_level:'Current Level', claim_btn:'Claim Reward', train_desc:'Training restores stamina to 100%, improves performance +10%.', deposit_desc:'Buy gems with USDT to sign players in the marketplace.', withdraw_btn:'Request Withdrawal', you:'You' },
-        pt: { tagline:'O jogo de futebol NFT mais épico do mundo', pts:'Pontos', lvl:'Nível', gems:'Gemas', form:'Forma', ovr:'Overall', m_players:'Jogadores', m_market:'Marketplace', m_rewards:'Recompensas', m_daily:'Recompensa Diária', m_achiev:'Conquistas', m_level:'Nível', m_squad:'Meu Elenco', m_tourn:'Torneio', m_rank:'Ranking', m_train:'Treinamento', m_deposit:'Depósito', m_withdraw:'Saque', fuel_label:'⚽ Bolas de Estamina por Jogador', rewards_desc:'Jogue partidas e acumule 100 pontos.', daily_desc:'💎 Dias ímpares: gemas | 🪙 Dias pares: ouro', current_level:'Nível atual', claim_btn:'Resgatar Recompensa', train_desc:'O treinamento restaura a estamina a 100%.', deposit_desc:'Compre gemas com USDT.', withdraw_btn:'Solicitar Saque', you:'Você' },
-        fr: { tagline:'Le jeu de football NFT le plus épique du monde', pts:'Points', lvl:'Niveau', gems:'Gemmes', form:'Forme', ovr:'Overall', m_players:'Joueurs', m_market:'Marketplace', m_rewards:'Récompenses', m_daily:'Récompense Quotidienne', m_achiev:'Succès', m_level:'Niveau', m_squad:'Mon Effectif', m_tourn:'Tournoi', m_rank:'Classement', m_train:'Entraînement', m_deposit:'Dépôt', m_withdraw:'Retrait', fuel_label:'⚽ Ballons d\'Endurance', rewards_desc:'Jouez des matchs et accumulez 100 points.', daily_desc:'💎 Jours impairs: gemmes | 🪙 Jours pairs: or', current_level:'Niveau actuel', claim_btn:'Réclamer la Récompense', train_desc:'L\'entraînement restaure l\'endurance à 100%.', deposit_desc:'Achetez des gemmes avec USDT.', withdraw_btn:'Demander un Retrait', you:'Vous' },
-        de: { tagline:'Das epischste NFT-Fußballspiel der Welt', pts:'Punkte', lvl:'Level', gems:'Edelsteine', form:'Form', ovr:'Overall', m_players:'Spieler', m_market:'Marktplatz', m_rewards:'Belohnungen', m_daily:'Tägliche Belohnung', m_achiev:'Leistungen', m_level:'Level', m_squad:'Mein Kader', m_tourn:'Turnier', m_rank:'Rangliste', m_train:'Training', m_deposit:'Einzahlung', m_withdraw:'Auszahlung', fuel_label:'⚽ Ausdauerbälle', rewards_desc:'Spiele Matches und sammle 100 Punkte.', daily_desc:'💎 Ungerade: Edelsteine | 🪙 Gerade: Gold', current_level:'Aktuelles Level', claim_btn:'Belohnung Beanspruchen', train_desc:'Training stellt die Ausdauer auf 100%.', deposit_desc:'Kaufe Edelsteine mit USDT.', withdraw_btn:'Auszahlung Beantragen', you:'Du' },
-        it: { tagline:'Il gioco di calcio NFT più epico del mondo', pts:'Punti', lvl:'Livello', gems:'Gemme', form:'Forma', ovr:'Overall', m_players:'Giocatori', m_market:'Marketplace', m_rewards:'Ricompense', m_daily:'Ricompensa Giornaliera', m_achiev:'Obiettivi', m_level:'Livello', m_squad:'La Mia Rosa', m_tourn:'Torneo', m_rank:'Classifica', m_train:'Allenamento', m_deposit:'Deposito', m_withdraw:'Prelievo', fuel_label:'⚽ Palloni Resistenza', rewards_desc:'Gioca partite e accumula 100 punti.', daily_desc:'💎 Giorni dispari: gemme | 🪙 Giorni pari: oro', current_level:'Livello attuale', claim_btn:'Reclama Ricompensa', train_desc:'L\'allenamento ripristina la resistenza al 100%.', deposit_desc:'Acquista gemme con USDT.', withdraw_btn:'Richiedi Prelievo', you:'Tu' },
+        pt: { tagline:'O jogo de futebol NFT mais épico do mundo', pts:'Pontos', lvl:'Nível', gems:'Gemas', form:'Forma', ovr:'Overall', m_players:'Jogadores', m_market:'Marketplace', m_rewards:'Recompensas', m_daily:'Recompensa Diária', m_achiev:'Conquistas', m_level:'Nível', m_squad:'Meu Elenco', m_tourn:'Torneio', m_rank:'Ranking', m_train:'Treinamento', m_deposit:'Depósito', m_withdraw:'Saque', fuel_label:'⚽ Bolas de Estamina', rewards_desc:'Jogue partidas e acumule 100 pontos.', daily_desc:'💎 Dias ímpares: gemas | 🪙 Dias pares: ouro', current_level:'Nível atual', claim_btn:'Resgatar Recompensa', train_desc:'O treinamento restaura a estamina a 100%.', deposit_desc:'Compre gemas com USDT.', withdraw_btn:'Solicitar Saque', you:'Você' },
+        fr: { tagline:'Le jeu de football NFT le plus épique du monde', pts:'Points', lvl:'Niveau', gems:'Gemmes', form:'Forme', ovr:'Overall', m_players:'Joueurs', m_market:'Marketplace', m_rewards:'Récompenses', m_daily:'Récompense Quotidienne', m_achiev:'Succès', m_level:'Niveau', m_squad:'Mon Effectif', m_tourn:'Tournoi', m_rank:'Classement', m_train:'Entraînement', m_deposit:'Dépôt', m_withdraw:'Retrait', fuel_label:'⚽ Ballons d\'Endurance', rewards_desc:'Jouez des matchs et accumulez 100 points.', daily_desc:'💎 Jours impairs: gemmes | 🪙 Jours pairs: or', current_level:'Niveau actuel', claim_btn:'Réclamer', train_desc:'L\'entraînement restaure l\'endurance à 100%.', deposit_desc:'Achetez des gemmes avec USDT.', withdraw_btn:'Demander un Retrait', you:'Vous' },
+        de: { tagline:'Das epischste NFT-Fußballspiel der Welt', pts:'Punkte', lvl:'Level', gems:'Edelsteine', form:'Form', ovr:'Overall', m_players:'Spieler', m_market:'Marktplatz', m_rewards:'Belohnungen', m_daily:'Tägliche Belohnung', m_achiev:'Leistungen', m_level:'Level', m_squad:'Mein Kader', m_tourn:'Turnier', m_rank:'Rangliste', m_train:'Training', m_deposit:'Einzahlung', m_withdraw:'Auszahlung', fuel_label:'⚽ Ausdauerbälle', rewards_desc:'Spiele Matches und sammle 100 Punkte.', daily_desc:'💎 Ungerade: Edelsteine | 🪙 Gerade: Gold', current_level:'Aktuelles Level', claim_btn:'Beanspruchen', train_desc:'Training stellt die Ausdauer auf 100%.', deposit_desc:'Kaufe Edelsteine mit USDT.', withdraw_btn:'Auszahlung beantragen', you:'Du' },
+        it: { tagline:'Il gioco di calcio NFT più epico del mondo', pts:'Punti', lvl:'Livello', gems:'Gemme', form:'Forma', ovr:'Overall', m_players:'Giocatori', m_market:'Marketplace', m_rewards:'Ricompense', m_daily:'Ricompensa Giornaliera', m_achiev:'Obiettivi', m_level:'Livello', m_squad:'La Mia Rosa', m_tourn:'Torneo', m_rank:'Classifica', m_train:'Allenamento', m_deposit:'Deposito', m_withdraw:'Prelievo', fuel_label:'⚽ Palloni Resistenza', rewards_desc:'Gioca partite e accumula 100 punti.', daily_desc:'💎 Giorni dispari: gemme | 🪙 Giorni pari: oro', current_level:'Livello attuale', claim_btn:'Reclama', train_desc:'L\'allenamento ripristina la resistenza al 100%.', deposit_desc:'Acquista gemme con USDT.', withdraw_btn:'Richiedi Prelievo', you:'Tu' },
         ja: { tagline:'世界最高のNFTサッカーゲーム', pts:'ポイント', lvl:'レベル', gems:'ジェム', form:'フォーム', ovr:'総合力', m_players:'選手', m_market:'マーケット', m_rewards:'報酬', m_daily:'デイリー報酬', m_achiev:'実績', m_level:'レベル', m_squad:'マイチーム', m_tourn:'トーナメント', m_rank:'ランキング', m_train:'トレーニング', m_deposit:'入金', m_withdraw:'出金', fuel_label:'⚽ スタミナボール', rewards_desc:'試合をプレイし100ポイントを獲得。', daily_desc:'💎 奇数日：ジェム | 🪙 偶数日：ゴールド', current_level:'現在のレベル', claim_btn:'報酬を獲得', train_desc:'トレーニングでスタミナ100%回復。', deposit_desc:'USDTでジェムを購入。', withdraw_btn:'出金を依頼', you:'あなた' },
         sv: { tagline:'Världens mest episka NFT-fotbollsspel', pts:'Poäng', lvl:'Nivå', gems:'Juveler', form:'Form', ovr:'Overall', m_players:'Spelare', m_market:'Marknadsplats', m_rewards:'Belöningar', m_daily:'Daglig Belöning', m_achiev:'Prestationer', m_level:'Nivå', m_squad:'Mitt Lag', m_tourn:'Turnering', m_rank:'Rankning', m_train:'Träning', m_deposit:'Insättning', m_withdraw:'Uttag', fuel_label:'⚽ Uthållighetsboll', rewards_desc:'Spela matcher och samla 100 poäng.', daily_desc:'💎 Udda dagar: juveler | 🪙 Jämna dagar: guld', current_level:'Nuvarande nivå', claim_btn:'Hämta Belöning', train_desc:'Träning återställer uthålligheten till 100%.', deposit_desc:'Köp juveler med USDT.', withdraw_btn:'Begär Uttag', you:'Du' }
     };
-
     let currentLang = 'es';
     function applyTranslations() {
         const T = TRANSLATIONS[currentLang];
@@ -1210,82 +867,51 @@
         if (!wrap.contains(e.target)) { document.getElementById('lang-dropdown').classList.remove('open'); document.getElementById('lang-toggle-btn').classList.remove('open'); }
     });
 
-    // ── FONDO ANIMADO ─────────────────────────────────────────────────────
+    // ── BACKGROUND ────────────────────────────────────────────────────────
     const FLAG_DATA = [
-        { flag:'🇧🇷', lane:5  }, { flag:'🇦🇷', lane:18 }, { flag:'🇵🇹', lane:31 },
-        { flag:'🇬🇧', lane:44 }, { flag:'🇫🇷', lane:57 }, { flag:'🇩🇪', lane:70 },
-        { flag:'🇪🇸', lane:83 }, { flag:'🇺🇸', lane:10 }, { flag:'🇲🇽', lane:24 },
-        { flag:'🇯🇵', lane:37 }, { flag:'🇨🇴', lane:63 }, { flag:'🇦🇺', lane:90 },
-        { flag:'🇮🇹', lane:15 }, { flag:'🇳🇱', lane:50 }, { flag:'🇰🇷', lane:75 },
-        { flag:'🇨🇱', lane:30 },
+        {flag:'🇧🇷',lane:5},{flag:'🇦🇷',lane:18},{flag:'🇵🇹',lane:31},{flag:'🇬🇧',lane:44},
+        {flag:'🇫🇷',lane:57},{flag:'🇩🇪',lane:70},{flag:'🇪🇸',lane:83},{flag:'🇺🇸',lane:10},
+        {flag:'🇲🇽',lane:24},{flag:'🇯🇵',lane:37},{flag:'🇨🇴',lane:63},{flag:'🇦🇺',lane:90},
+        {flag:'🇮🇹',lane:15},{flag:'🇳🇱',lane:50},{flag:'🇰🇷',lane:75},{flag:'🇨🇱',lane:30},
     ];
-
     function buildFlagsBg() {
         const bg = document.getElementById('flags-bg');
         FLAG_DATA.forEach((item, i) => {
             const el = document.createElement('div');
-            el.className = 'flag-float';
-            el.textContent = item.flag;
+            el.className = 'flag-float'; el.textContent = item.flag;
             el.style.cssText = `left:${item.lane}%;animation-duration:${18 + i * 2.8}s;animation-delay:${-(i * 3.1)}s;`;
             bg.appendChild(el);
         });
-        const ballPositions = [8,22,38,52,68,82,12,45,77];
-        ballPositions.forEach((lane, i) => {
+        [8,22,38,52,68,82,12,45,77].forEach((lane, i) => {
             const el = document.createElement('div');
-            el.className = 'ball-float';
-            el.textContent = '⚽';
+            el.className = 'ball-float'; el.textContent = '⚽';
             el.style.cssText = `left:${lane}%;top:${15 + i * 9}%;animation-duration:${6 + i * 1.5}s;animation-delay:${-(i * 0.8)}s;font-size:${1.2 + (i % 3) * 0.4}em;`;
             bg.appendChild(el);
         });
     }
     buildFlagsBg();
 
-    // ── ESTADO ────────────────────────────────────────────────────────────
-    let gemas = 3900;
-    let hp = 0;
-    let puntaje = 0;
-    let nivel = 1;
-    let statsPartidas = 0;
-    let carrosComprados = [];
-    let durabilidades = {};
-    let ballonesPorJugador = {};
-
-    const WALLET = "UQCObIMiCLIWIdT9FVPZWz5jAWocxqhu6bYzwtJzEkkHAsaY";
-
-    let _currentMatchMode = 'pve';
-    let _currentMatchCancha = '';
-    let _currentMatchPlayer = null;
-    let _matchResultPending = null;
-    let _pvpModeSelected = 'liga';
-
-    // ── CATÁLOGO CON IMÁGENES REALES DE GITHUB ────────────────────────────
+    // ── CATÁLOGO DE JUGADORES ─────────────────────────────────────────────
+    // Precios según nombre del archivo de imagen
     const PLAYERS = [
-        { nombre:"Neymar Jr.",      pais:"Brasil",    flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#009c3b", color2:"#002776", img: null },
-        { nombre:"James Rodríguez", pais:"Colombia",  flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", gemsWin:2, gemsDraw:1, color1:"#fcd116", color2:"#003087", img: "james_rodriguez_1600_gemas.png" },
-        { nombre:"Alexis Sánchez",  pais:"Chile",     flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#d52b1e", color2:"#ffffff", img: "alexis_sanchez_3300_gemas.png" },
-        { nombre:"Lionel Messi",    pais:"Argentina", flag:"🇦🇷", precio:6900,   hp:88, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#74acdf", color2:"#ffffff", img: null },
-        { nombre:"Cristiano R.",    pais:"Portugal",  flag:"🇵🇹", precio:9900,   hp:90, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#006600", color2:"#ff0000", img: null },
-        { nombre:"Harry Kane",      pais:"Inglaterra",flag:"🇬🇧", precio:12000,  hp:91, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#ffffff", color2:"#cf142b", img: "harry_kane_6900_gemas.png" },
-        { nombre:"Mbappé",          pais:"Francia",   flag:"🇫🇷", precio:18000,  hp:93, pos:"Extremo",       gemsWin:2, gemsDraw:1, color1:"#002395", color2:"#ed2939", img: "mbappe_150000_gemas.png" },
-        { nombre:"Pedri",           pais:"España",    flag:"🇪🇸", precio:22500,  hp:92, pos:"Mediocampista", gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400", img: "Pedri_9900_gemas.jpg" },
-        { nombre:"Vinícius Jr.",    pais:"Brasil",    flag:"🇧🇷", precio:30000,  hp:94, pos:"Extremo",       gemsWin:2, gemsDraw:1, color1:"#009c3b", color2:"#ffd700", img: "Vinicius_Jr_12000_gemas.jpg" },
-        { nombre:"Erling Haaland",  pais:"Noruega",   flag:"🇳🇴", precio:45000,  hp:95, pos:"Delantero",     gemsWin:2, gemsDraw:1, color1:"#ef2b2d", color2:"#ffffff", img: "Haaland_75000_gemas.jpg" },
-        { nombre:"Rodri",           pais:"España",    flag:"🇪🇸", precio:75000,  hp:96, pos:"Pivote",        gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400", img: "Rodri_18000_gemas.png" },
-        { nombre:"Bellingham",      pais:"Inglaterra",flag:"🇬🇧", precio:150000, hp:97, pos:"Mediocampista", gemsWin:2, gemsDraw:1, color1:"#cf142b", color2:"#ffffff", img: null },
-        { nombre:"Lamine Yamal",    pais:"España",    flag:"🇪🇸", precio:255000, hp:98, pos:"Extremo",       gemsWin:2, gemsDraw:1, color1:"#c60b1e", color2:"#ffc400", img: null },
-        { nombre:"Balón de Oro NFT",pais:"Mundo",     flag:"🌍",  precio:420000, hp:99, pos:"Leyenda",       gemsWin:2, gemsDraw:1, color1:"#ffd700", color2:"#ff8c00", img: null },
+        { nombre:"Neymar Jr.",      pais:"Brasil",    flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     color1:"#009c3b", color2:"#002776", img:"neymar_jr_320_gemas.png" },
+        { nombre:"James Rodríguez", pais:"Colombia",  flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", color1:"#fcd116", color2:"#003087", img:"james_rodriguez_1600_gemas.png" },
+        { nombre:"Alexis Sánchez",  pais:"Chile",     flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",     color1:"#d52b1e", color2:"#ffffff", img:"alexis_sanchez_3300_gemas.png" },
+        { nombre:"Harry Kane",      pais:"Inglaterra",flag:"🇬🇧", precio:6900,   hp:84, pos:"Delantero",     color1:"#ffffff", color2:"#cf142b", img:"harry_kane_6900_gemas.png" },
+        { nombre:"Pedri",           pais:"España",    flag:"🇪🇸", precio:9900,   hp:86, pos:"Mediocampista", color1:"#c60b1e", color2:"#ffc400", img:"Pedri_9900_gemas.jpg" },
+        { nombre:"Vinícius Jr.",    pais:"Brasil",    flag:"🇧🇷", precio:12000,  hp:88, pos:"Extremo",       color1:"#009c3b", color2:"#ffd700", img:"Vinicius_Jr_12000_gemas.jpg" },
+        { nombre:"Rodri",           pais:"España",    flag:"🇪🇸", precio:18000,  hp:89, pos:"Pivote",        color1:"#c60b1e", color2:"#ffc400", img:"Rodri_18000_gemas.png" },
+        { nombre:"Haaland",         pais:"Noruega",   flag:"🇳🇴", precio:75000,  hp:91, pos:"Delantero",     color1:"#ef2b2d", color2:"#ffffff", img:"Haaland_75000_gemas.jpg" },
+        { nombre:"Mbappé",          pais:"Francia",   flag:"🇫🇷", precio:150000, hp:93, pos:"Extremo",       color1:"#002395", color2:"#ed2939", img:"mbappe_150000_gemas.png" },
+        { nombre:"Lionel Messi",    pais:"Argentina", flag:"🇦🇷", precio:255000, hp:96, pos:"Delantero",     color1:"#74acdf", color2:"#ffffff", img:null },
+        { nombre:"Cristiano R.",    pais:"Portugal",  flag:"🇵🇹", precio:420000, hp:97, pos:"Delantero",     color1:"#006600", color2:"#ff0000", img:null },
+        { nombre:"Lamine Yamal",    pais:"España",    flag:"🇪🇸", precio:680000, hp:98, pos:"Extremo",       color1:"#c60b1e", color2:"#ffc400", img:null },
+        { nombre:"Balón de Oro NFT",pais:"Mundo",     flag:"🌍",  precio:999999, hp:99, pos:"Leyenda",       color1:"#ffd700", color2:"#ff8c00", img:null },
     ];
 
-    // ── IMAGEN DE JUGADOR: real o SVG fallback ────────────────────────────
-    function playerImgSrc(idx) {
-        const c = PLAYERS[idx];
-        if (c.img) {
-            return GITHUB_IMG + c.img;
-        }
-        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(generatePlayerSVG(c));
-    }
+    const MAX_PER_PLAYER = 20; // máximo NFTs por jugador
 
-    // ── SVG FALLBACK JUGADORES ────────────────────────────────────────────
+    // ── SVG FALLBACK ──────────────────────────────────────────────────────
     function generatePlayerSVG(player) {
         const { color1, color2, flag, pais, pos, hp } = player;
         const countryBgs = {
@@ -1296,35 +922,17 @@
             'Noruega':['#ef2b2d','#ffffff','#002868'],'Mundo':['#ffd700','#ff8c00','#ffa500'],
         };
         const [bg1,bg2,bg3] = countryBgs[pais]||['#1a1a1a','#333','#555'];
+        const safeId = pais.replace(/\s/g,'');
         return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
-<defs>
-<radialGradient id="bgG${pais.replace(/\s/g,'')}" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="${bg2}" stop-opacity="0.9"/><stop offset="60%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg3}"/></radialGradient>
-<filter id="gFx"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-<filter id="sFx"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.6)"/></filter>
-</defs>
-<rect width="300" height="380" fill="url(#bgG${pais.replace(/\s/g,'')})" rx="16"/>
-<circle cx="155" cy="185" r="105" fill="${color1}" opacity="0.18" filter="url(#gFx)"/>
-<ellipse cx="155" cy="355" rx="55" ry="10" fill="rgba(0,0,0,0.3)"/>
-<rect x="118" y="290" width="22" height="50" rx="10" fill="${color2}" filter="url(#sFx)"/>
-<rect x="108" y="330" width="28" height="18" rx="7" fill="#111"/>
-<rect x="152" y="285" width="22" height="55" rx="10" fill="${color2}" filter="url(#sFx)"/>
-<rect x="148" y="332" width="28" height="18" rx="7" fill="#111"/>
-<path d="M112 265 Q130 290 148 265 L158 265 Q176 290 178 265 L185 240 Q150 255 115 240 Z" fill="${color1}" filter="url(#sFx)"/>
-<path d="M115 170 Q95 175 90 200 L100 240 Q150 255 200 240 L208 200 Q204 175 185 170 Z" fill="${color1}" filter="url(#sFx)"/>
-<path d="M140 170 L137 250 L148 250 L150 170Z" fill="${color2}" opacity="0.6"/>
-<circle cx="94" cy="215" r="10" fill="#FDBCB4"/>
-<circle cx="205" cy="215" r="10" fill="#FDBCB4"/>
-<ellipse cx="150" cy="128" rx="52" ry="50" fill="#FDBCB4" filter="url(#sFx)"/>
+<defs><radialGradient id="bg${safeId}" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="${bg2}" stop-opacity="0.9"/><stop offset="60%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg3}"/></radialGradient></defs>
+<rect width="300" height="380" fill="url(#bg${safeId})" rx="16"/>
+<circle cx="155" cy="185" r="105" fill="${color1}" opacity="0.18"/>
+<ellipse cx="150" cy="128" rx="52" ry="50" fill="#FDBCB4"/>
 <ellipse cx="150" cy="90" rx="52" ry="28" fill="${color1}"/>
-<rect x="98" y="80" width="104" height="30" rx="5" fill="${color1}"/>
-<ellipse cx="130" cy="128" rx="14" ry="16" fill="white"/>
-<circle cx="130" cy="130" r="10" fill="#2d4a7a"/>
-<circle cx="130" cy="128" r="6" fill="#111"/>
-<circle cx="126" cy="124" r="3" fill="white"/>
-<ellipse cx="168" cy="128" rx="14" ry="16" fill="white"/>
-<circle cx="168" cy="130" r="10" fill="#2d4a7a"/>
-<circle cx="168" cy="128" r="6" fill="#111"/>
-<circle cx="164" cy="124" r="3" fill="white"/>
+<path d="M112 265 Q130 290 148 265 L158 265 Q176 290 178 265 L185 240 Q150 255 115 240 Z" fill="${color1}"/>
+<path d="M115 170 Q95 175 90 200 L100 240 Q150 255 200 240 L208 200 Q204 175 185 170 Z" fill="${color1}"/>
+<ellipse cx="130" cy="128" rx="14" ry="16" fill="white"/><circle cx="130" cy="128" r="6" fill="#111"/><circle cx="126" cy="124" r="3" fill="white"/>
+<ellipse cx="168" cy="128" rx="14" ry="16" fill="white"/><circle cx="168" cy="128" r="6" fill="#111"/><circle cx="164" cy="124" r="3" fill="white"/>
 <path d="M136 146 Q150 158 164 146" stroke="#cc6666" stroke-width="3" fill="none" stroke-linecap="round"/>
 <rect x="10" y="10" width="40" height="28" rx="6" fill="rgba(0,0,0,0.6)"/>
 <text x="30" y="30" text-anchor="middle" font-size="18">${flag}</text>
@@ -1336,102 +944,81 @@
 </svg>`;
     }
 
-    // ── HELPERS ───────────────────────────────────────────────────────────
+    function playerImgSrc(idx) {
+        const c = PLAYERS[idx];
+        if (c.img) return GITHUB_IMG + c.img;
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(generatePlayerSVG(c));
+    }
+    function playerImgFallback(c) {
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(generatePlayerSVG(c));
+    }
+
+    // ── ESTADO ────────────────────────────────────────────────────────────
     const $id = id => document.getElementById(id);
     const statusMsg = $id('status-msg');
+    let gemas = 3900, hp = 0, puntaje = 0, nivel = 1, statsPartidas = 0;
+    // carrosComprados: array of { idx, qty } objects — one entry per player type
+    let carrosComprados = []; // [{idx, qty}, ...]
+    let durabilidades = {};   // key: "idx_copy" e.g. "0_0", "0_1" etc.
+    let ballonesPorJugador = {}; // key: "idx_copy"
+    let _currentMatchMode = 'pve', _currentMatchCancha = '', _currentMatchPlayer = null;
+    let _matchResultPending = null, _pvpModeSelected = 'liga';
+    let _selectedSquadSlot = null; // {idx, copy} for equipment panel
+    let _equipamiento = {}; // key: "idx_copy" -> {uniforme, tenis, protector, insignia}
+    let _marketQty = {}; // idx -> qty selected in market (1-20)
+    const WALLET = "UQCObIMiCLIWIdT9FVPZWz5jAWocxqhu6bYzwtJzEkkHAsaY";
 
-    function generatePlayerId(idx) {
-        return 'FM-' + String(2025000 + idx * 137 + 43).padStart(8,'0');
+    function getPlayerEntry(idx) { return carrosComprados.find(e => e.idx === idx); }
+    function getPlayerQty(idx) { const e = getPlayerEntry(idx); return e ? e.qty : 0; }
+
+    function generatePlayerId(idx, copy=0) {
+        return 'FM-' + String(2025000 + idx * 137 + copy * 31 + 43).padStart(8,'0');
     }
 
-    function mostrarMensaje(texto, color='#888') {
-        statusMsg.textContent = texto;
-        statusMsg.style.color = color;
-        statusMsg.style.textShadow = `0 0 10px ${color}55`;
-        clearTimeout(mostrarMensaje._t);
-        mostrarMensaje._t = setTimeout(() => { statusMsg.textContent = ''; }, 5000);
-    }
+    function slotKey(idx, copy) { return `${idx}_${copy}`; }
 
-    // ── BALONES POR JUGADOR ───────────────────────────────────────────────
-    function getBallonesJugador(idx) {
-        if (!ballonesPorJugador[idx]) ballonesPorJugador[idx] = [true,true,true,true];
-        return ballonesPorJugador[idx];
+    function getBallonesJugador(idx, copy=0) {
+        const k = slotKey(idx, copy);
+        if (!ballonesPorJugador[k]) ballonesPorJugador[k] = [true,true,true,true];
+        return ballonesPorJugador[k];
     }
-    function totalBallonesDisponibles() {
-        return carrosComprados.reduce((sum, idx) => sum + getBallonesJugador(idx).filter(Boolean).length, 0);
-    }
-    function consumirBalonJugador(idx) {
-        const balls = getBallonesJugador(idx);
+    function consumirBalonJugador(idx, copy=0) {
+        const balls = getBallonesJugador(idx, copy);
         const pos = balls.findIndex(b => b === true);
         if (pos === -1) return false;
         balls[pos] = false;
-        ballonesPorJugador[idx] = balls;
+        ballonesPorJugador[slotKey(idx, copy)] = balls;
         return true;
     }
-
-    function checkDailyBallRecharge() {
-        const now = new Date();
-        const todayKey = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
-        const lastRecharge = localStorage.getItem('tg_ball_recharge_day');
-        if (lastRecharge === todayKey) return;
-        const nowHourUTC = now.getUTCHours();
-        if (nowHourUTC >= 7) {
-            carrosComprados.forEach(idx => { ballonesPorJugador[idx] = [true,true,true,true]; });
-            localStorage.setItem('tg_ball_recharge_day', todayKey);
-            saveState();
-            mostrarMensaje(`⚽ ¡Balones recargados! ${carrosComprados.length * 4} balones disponibles`, '#00ff88');
-        }
+    function totalBallonesDisponibles() {
+        return carrosComprados.reduce((sum, e) => {
+            for (let c = 0; c < e.qty; c++) {
+                sum += getBallonesJugador(e.idx, c).filter(Boolean).length;
+            }
+            return sum;
+        }, 0);
+    }
+    function totalBallonesMax() {
+        return carrosComprados.reduce((sum, e) => sum + e.qty * 4, 0);
     }
 
-    function actualizarFuelUI() {
-        const container = $id('fuel-cartridges');
-        if (!container) return;
-        if (carrosComprados.length === 0) {
-            container.innerHTML = `<div style="color:#555;font-size:0.82em;text-align:center;width:100%">Ficha jugadores para obtener balones</div>`;
-            return;
-        }
-        container.innerHTML = carrosComprados.slice(0,5).map(idx => {
-            const c = PLAYERS[idx];
-            const balls = getBallonesJugador(idx);
-            const ballsHTML = balls.map((b,bi) =>
-                `<div class="fuel-cartridge ${b?'full':'empty'}" title="${c.nombre} - Balón ${bi+1}">${b?'⚽':''}</div>`
-            ).join('');
-            return `<div class="fuel-group"><div class="fuel-player-row">${ballsHTML}</div><div class="fuel-group-label">${c.flag} ${c.nombre.split(' ')[0]}</div></div>`;
-        }).join('');
-        if (carrosComprados.length > 5) container.innerHTML += `<div style="color:#555;font-size:0.72em;align-self:center">+${carrosComprados.length-5} más...</div>`;
+    function getDurabilidad(idx, copy=0) {
+        const k = slotKey(idx, copy);
+        if (durabilidades[k] === undefined) durabilidades[k] = 100;
+        return parseFloat(parseFloat(durabilidades[k]).toFixed(1));
     }
-
-    function actualizarGasolina() {
-        if (carrosComprados.length === 0) { $id('gasolina').textContent = '—'; return; }
-        const total = carrosComprados.length * 4;
-        const llenos = totalBallonesDisponibles();
-        $id('gasolina').textContent = Math.round((llenos/total)*100) + '%';
+    function reducirDurabilidad(idx, copy=0) {
+        const k = slotKey(idx, copy);
+        if (durabilidades[k] === undefined) durabilidades[k] = 100;
+        durabilidades[k] = Math.max(0, durabilidades[k] - 0.8);
     }
+    function repararDurabilidad(idx, copy=0) { durabilidades[slotKey(idx, copy)] = 100; }
+    function colorDurabilidad(pct) { return pct >= 60 ? 'dur-high' : pct >= 30 ? 'dur-med' : 'dur-low'; }
 
-    function actualizarUI() {
-        $id('gemas-stat').textContent = gemas.toFixed(1);
-        $id('hp-stat').textContent = hp;
-        $id('puntaje').textContent = puntaje;
-        $id('nivel-stat').textContent = nivel;
-        $id('modal-nivel-num').textContent = nivel;
-        const md = $id('market-gemas-display'); if(md) md.textContent = gemas.toFixed(1)+' 💎';
-        const mr = $id('my-rank-score'); if(mr) mr.textContent = puntaje+' pts';
-        const cpd = $id('current-pts-display'); if(cpd) cpd.textContent = statsPartidas;
-        actualizarGasolina();
-        actualizarFuelUI();
-        saveState();
-    }
-
-    function getDurabilidad(idx) { if(durabilidades[idx]===undefined) durabilidades[idx]=100; return parseFloat(durabilidades[idx].toFixed(1)); }
-    function colorDurabilidad(pct) { return pct>=60?'dur-high':pct>=30?'dur-med':'dur-low'; }
-    function reducirDurabilidad(idx) { if(durabilidades[idx]===undefined) durabilidades[idx]=100; durabilidades[idx]=Math.max(0,durabilidades[idx]-0.8); }
-    function repararDurabilidad(idx) { durabilidades[idx]=100; }
-
-    function calcularGemasPartida(idx, resultado) {
-        if (idx === undefined || idx === null) return 0;
-        if (resultado === 'loss') return 0;
-        if (resultado === 'draw') return 1;
-        return 2;
+    function mostrarMensaje(texto, color='#888') {
+        statusMsg.textContent = texto; statusMsg.style.color = color;
+        clearTimeout(mostrarMensaje._t);
+        mostrarMensaje._t = setTimeout(() => { statusMsg.textContent = ''; }, 5000);
     }
 
     function saveState() {
@@ -1443,6 +1030,7 @@
         localStorage.setItem('tg_carros', JSON.stringify(carrosComprados));
         localStorage.setItem('tg_durabilidades', JSON.stringify(durabilidades));
         localStorage.setItem('tg_ballones', JSON.stringify(ballonesPorJugador));
+        localStorage.setItem('tg_equipamiento', JSON.stringify(_equipamiento));
     }
     function loadState() {
         gemas = parseFloat(localStorage.getItem('tg_gemas') || '3900');
@@ -1450,16 +1038,75 @@
         puntaje = parseInt(localStorage.getItem('tg_puntaje') || '0');
         nivel = parseInt(localStorage.getItem('tg_nivel') || '1');
         statsPartidas = parseInt(localStorage.getItem('tg_stats_partidas') || '0');
-        const c = localStorage.getItem('tg_carros'); if(c) carrosComprados = JSON.parse(c);
-        const d = localStorage.getItem('tg_durabilidades'); if(d) durabilidades = JSON.parse(d);
-        const b = localStorage.getItem('tg_ballones'); if(b) ballonesPorJugador = JSON.parse(b);
+        const c = localStorage.getItem('tg_carros');
+        if (c) {
+            const parsed = JSON.parse(c);
+            // Backward compat: old format was array of numbers
+            if (parsed.length && typeof parsed[0] === 'number') {
+                carrosComprados = parsed.map(idx => ({ idx, qty: 1 }));
+            } else {
+                carrosComprados = parsed;
+            }
+        }
+        const d = localStorage.getItem('tg_durabilidades'); if (d) durabilidades = JSON.parse(d);
+        const b = localStorage.getItem('tg_ballones'); if (b) ballonesPorJugador = JSON.parse(b);
+        const eq = localStorage.getItem('tg_equipamiento'); if (eq) _equipamiento = JSON.parse(eq);
+    }
+
+    function checkDailyBallRecharge() {
+        const now = new Date();
+        const todayKey = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
+        const lastRecharge = localStorage.getItem('tg_ball_recharge_day');
+        if (lastRecharge === todayKey) return;
+        if (now.getUTCHours() >= 7) {
+            carrosComprados.forEach(e => {
+                for (let c = 0; c < e.qty; c++) {
+                    ballonesPorJugador[slotKey(e.idx, c)] = [true,true,true,true];
+                }
+            });
+            localStorage.setItem('tg_ball_recharge_day', todayKey);
+            saveState();
+        }
+    }
+
+    function actualizarFuelUI() {
+        const container = $id('fuel-cartridges'); if (!container) return;
+        if (carrosComprados.length === 0) {
+            container.innerHTML = `<div style="color:#555;font-size:0.82em;text-align:center;width:100%">Ficha jugadores para obtener balones</div>`;
+            return;
+        }
+        container.innerHTML = carrosComprados.slice(0,4).map(e => {
+            const c = PLAYERS[e.idx];
+            // Show balls for copy 0 only in fuel bar for brevity
+            const balls = getBallonesJugador(e.idx, 0);
+            const ballsHTML = balls.map((b,bi) =>
+                `<div class="fuel-cartridge ${b?'full':'empty'}" title="${c.nombre} #1 - Balón ${bi+1}">${b?'⚽':''}</div>`
+            ).join('');
+            return `<div class="fuel-group"><div class="fuel-player-row">${ballsHTML}</div><div class="fuel-group-label">${c.flag} ${c.nombre.split(' ')[0]}${e.qty>1?` ×${e.qty}`:''}</div></div>`;
+        }).join('');
+        if (carrosComprados.length > 4) container.innerHTML += `<div style="color:#555;font-size:0.72em;align-self:center">+${carrosComprados.length-4} más...</div>`;
+    }
+
+    function actualizarUI() {
+        $id('gemas-stat').textContent = gemas.toFixed(1);
+        $id('hp-stat').textContent = hp;
+        $id('puntaje').textContent = puntaje;
+        $id('nivel-stat').textContent = nivel;
+        $id('modal-nivel-num').textContent = nivel;
+        const md = $id('market-gemas-display'); if(md) md.textContent = gemas.toFixed(1)+' 💎';
+        const mr = $id('my-rank-score'); if(mr) mr.textContent = puntaje+' pts';
+        const cpd = $id('current-pts-display'); if(cpd) cpd.textContent = statsPartidas;
+        // Forma
+        const tot = totalBallonesMax();
+        $id('gasolina').textContent = tot > 0 ? Math.round((totalBallonesDisponibles()/tot)*100)+'%' : '—';
+        actualizarFuelUI();
+        saveState();
     }
 
     // ── MODALES ───────────────────────────────────────────────────────────
     function openModal(id) {
         const el = $id(id); if(!el) return;
-        el.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        el.classList.add('active'); document.body.style.overflow = 'hidden';
         if(id==='modal-marketplace'){ actualizarUI(); buildMarket(); }
         if(id==='modal-recompensa') checkRewardStatus();
         if(id==='modal-recompensa-pts') buildRewardPts();
@@ -1470,8 +1117,7 @@
     }
     function closeModal(id) {
         const el = $id(id); if(!el) return;
-        el.classList.remove('active');
-        document.body.style.overflow = '';
+        el.classList.remove('active'); document.body.style.overflow = '';
     }
     document.querySelectorAll('.modal-overlay').forEach(ov => {
         ov.addEventListener('click', e => { if(e.target===ov) closeModal(ov.id); });
@@ -1485,15 +1131,183 @@
         if(panelEl) panelEl.classList.add('active');
     }
 
-    // ── DETAIL MODAL ──────────────────────────────────────────────────────
-    function openCarDetail(idx, fromGarage) {
-        const c = PLAYERS[idx];
-        const dur = getDurabilidad(idx);
-        const durCls = colorDurabilidad(dur);
-        const balls = getBallonesJugador(idx);
-        const fuelLlenos = balls.filter(Boolean).length;
-        const playerId = generatePlayerId(idx);
+    // ── MARKETPLACE ───────────────────────────────────────────────────────
+    function buildMarket() {
+        const md = $id('market-gemas-display'); if(md) md.textContent = gemas.toFixed(1)+' 💎';
+        $id('car-market-grid').innerHTML = PLAYERS.map((c,i) => {
+            const owned = getPlayerQty(i);
+            const remaining = MAX_PER_PLAYER - owned;
+            const imgSrc = playerImgSrc(i);
+            const hasRealImg = !!c.img;
+            if (!_marketQty[i]) _marketQty[i] = 1;
+            return `<div class="car-card" id="card-${i}">
+<div class="car-card-img-wrap" onclick="openCarDetail(${i}, false)">
+    <img class="car-card-img" src="${imgSrc}" alt="${c.nombre}"
+         onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'"
+         style="object-fit:cover">
+    ${hasRealImg?`<div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">NFT</div>`:''}
+    ${owned>0?`<div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.8);border:1px solid var(--gold);border-radius:4px;padding:2px 6px;font-size:0.55em;color:var(--gold);font-weight:800;font-family:'Orbitron',sans-serif">${owned}/${MAX_PER_PLAYER}</div>`:''}
+</div>
+<div class="car-card-info">
+    <div class="car-card-name">${c.nombre}</div>
+    <div class="car-card-country">${c.flag} ${c.pais} · ⚡ OVR ${c.hp}</div>
+    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px">🏆+2💎 🤝+1💎 ❌0💎</div>
+    <div class="car-card-price">💎 ${c.precio.toLocaleString()}</div>
+    ${remaining > 0 ? `
+    <div class="nft-qty-row">
+        <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},-1)">−</button>
+        <span class="nft-qty-num" id="mkt-qty-${i}">${_marketQty[i]||1}</span>
+        <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},1)">+</button>
+        <span class="nft-qty-max">(máx ${remaining})</span>
+    </div>
+    <div style="font-size:0.68em;color:var(--gold);margin-bottom:6px">Total: 💎 <span id="mkt-total-${i}">${((c.precio)*(_marketQty[i]||1)).toLocaleString()}</span></div>
+    <button class="buy-car-btn" id="buy-btn-${i}" onclick="comprarCarro(${i})">⚽ Fichar ×<span id="mkt-qty-label-${i}">${_marketQty[i]||1}</span></button>
+    ` : `<button class="buy-car-btn" disabled>✅ Máximo alcanzado (${MAX_PER_PLAYER})</button>`}
+</div>
+</div>`;
+        }).join('');
+    }
 
+    function cambiarQtyMarket(idx, delta) {
+        const owned = getPlayerQty(idx);
+        const remaining = MAX_PER_PLAYER - owned;
+        if (!_marketQty[idx]) _marketQty[idx] = 1;
+        _marketQty[idx] = Math.max(1, Math.min(remaining, _marketQty[idx] + delta));
+        const q = _marketQty[idx];
+        const el = $id(`mkt-qty-${idx}`); if(el) el.textContent = q;
+        const tl = $id(`mkt-total-${idx}`); if(tl) tl.textContent = (PLAYERS[idx].precio * q).toLocaleString();
+        const ll = $id(`mkt-qty-label-${idx}`); if(ll) ll.textContent = q;
+    }
+
+    function comprarCarro(idx) {
+        const c = PLAYERS[idx];
+        const qty = _marketQty[idx] || 1;
+        const owned = getPlayerQty(idx);
+        const remaining = MAX_PER_PLAYER - owned;
+        if (qty > remaining) { mostrarMensaje(`⚠️ Solo puedes comprar ${remaining} más de este jugador`, '#ffaa00'); return; }
+        const totalCost = c.precio * qty;
+        if (gemas < totalCost) { mostrarMensaje(`❌ Faltan ${(totalCost-gemas).toFixed(1)} 💎 para ${qty}× ${c.nombre}`, '#ff4444'); return; }
+        gemas -= totalCost;
+        // Add to carrosComprados
+        const entry = getPlayerEntry(idx);
+        const startCopy = owned;
+        if (entry) {
+            entry.qty += qty;
+        } else {
+            carrosComprados.push({ idx, qty });
+        }
+        hp += c.hp * qty;
+        puntaje += Math.round(c.precio / 10) * qty;
+        // Init balls and durabilidad for new copies
+        for (let copy = startCopy; copy < startCopy + qty; copy++) {
+            durabilidades[slotKey(idx, copy)] = 100;
+            ballonesPorJugador[slotKey(idx, copy)] = [true,true,true,true];
+        }
+        actualizarUI();
+        buildMarket();
+        buildLogros();
+        mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado${qty>1?'s':''}! +${c.hp*qty} OVR · +${qty*4} balones`, '#00ff88');
+    }
+
+    // ── GARAGE / SQUAD ────────────────────────────────────────────────────
+    let _selectedEquipSlot = null;
+
+    function buildGarage() {
+        let html = '';
+        let slotNum = 0;
+        for (const entry of carrosComprados) {
+            for (let copy = 0; copy < entry.qty && slotNum < 20; copy++, slotNum++) {
+                const c = PLAYERS[entry.idx];
+                const dur = getDurabilidad(entry.idx, copy);
+                const durCls = colorDurabilidad(dur);
+                const key = slotKey(entry.idx, copy);
+                const isSelected = _selectedSquadSlot && _selectedSquadSlot.idx === entry.idx && _selectedSquadSlot.copy === copy;
+                html += `<div class="squad-slot occupied${isSelected?' selected':''}" onclick="selectSquadSlot(${entry.idx},${copy})" style="${isSelected?'border-color:var(--cyan);box-shadow:0 0 14px rgba(0,212,255,0.4)':''}">
+<img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}"
+     onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'"
+     style="width:100%;height:100%;object-fit:cover;display:block">
+<div class="squad-slot-overlay">
+    <div class="squad-slot-name">${c.nombre}</div>
+    <div class="squad-slot-ovr">OVR ${c.hp}</div>
+</div>
+${entry.qty > 1 ? `<div class="squad-slot-qty">#${copy+1}</div>` : ''}
+</div>`;
+            }
+        }
+        // Empty slots up to 20
+        while (slotNum < 20) {
+            html += `<div class="squad-slot" onclick="closeModal('modal-garage');openModal('modal-marketplace')"><div class="squad-slot-empty-icon">➕</div><div style="font-size:0.55em;color:#333">Slot ${slotNum+1}</div></div>`;
+            slotNum++;
+        }
+        $id('garage-grid-vehicles').innerHTML = html;
+        updateEquipPanel();
+    }
+
+    function selectSquadSlot(idx, copy) {
+        _selectedSquadSlot = { idx, copy };
+        buildGarage();
+    }
+
+    function updateEquipPanel() {
+        const preview = $id('equip-preview');
+        const nameEl = $id('equip-player-name');
+        if (!_selectedSquadSlot) {
+            preview.innerHTML = '<div class="equipment-player-placeholder">🧑</div>';
+            nameEl.textContent = 'Selecciona un jugador de la plantilla';
+            $id('eb-ovr').textContent = '0';
+            $id('eb-spd').textContent = '+0%';
+            $id('eb-def').textContent = '+0%';
+            $id('eb-gems').textContent = '+2💎 vic';
+            return;
+        }
+        const { idx, copy } = _selectedSquadSlot;
+        const c = PLAYERS[idx];
+        const key = slotKey(idx, copy);
+        const eq = _equipamiento[key] || {};
+        preview.innerHTML = `<img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">`
+        nameEl.textContent = `${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''} · OVR ${c.hp}`;
+
+        // Update equip slots
+        const slots = ['uniforme','tenis','protector','insignia'];
+        slots.forEach(type => {
+            const slotEl = $id(`equip-slot-${type}`);
+            const nameSlotEl = $id(`equip-${type}-name`);
+            if (eq[type]) {
+                slotEl.classList.add('equipped');
+                nameSlotEl.textContent = eq[type];
+                nameSlotEl.style.color = 'var(--green)';
+            } else {
+                slotEl.classList.remove('equipped');
+                nameSlotEl.textContent = '— Vacío —';
+                nameSlotEl.style.color = '#555';
+            }
+        });
+
+        // Bonus
+        const bonuses = { spd: 0, def: 0 };
+        if (eq.uniforme) bonuses.spd += 3;
+        if (eq.tenis) bonuses.spd += 2;
+        if (eq.protector) bonuses.def += 4;
+        if (eq.insignia) { bonuses.spd += 1; bonuses.def += 1; }
+        $id('eb-ovr').textContent = c.hp + Object.values(bonuses).reduce((a,b)=>a+b,0);
+        $id('eb-spd').textContent = `+${bonuses.spd}%`;
+        $id('eb-def').textContent = `+${bonuses.def}%`;
+        $id('eb-gems').textContent = '+2💎 vic';
+    }
+
+    function openEquipModal(type) {
+        if (!_selectedSquadSlot) { mostrarMensaje('⚠️ Selecciona primero un jugador de la plantilla', '#ffaa00'); return; }
+        mostrarMensaje(`🔜 Equipamiento "${type}" — próximamente en el Marketplace`, '#00d4ff');
+    }
+
+    // ── PLAYER DETAIL ─────────────────────────────────────────────────────
+    function openCarDetail(idx, fromGarage, copy=0) {
+        const c = PLAYERS[idx];
+        const dur = getDurabilidad(idx, copy);
+        const durCls = colorDurabilidad(dur);
+        const balls = getBallonesJugador(idx, copy);
+        const fuelLlenos = balls.filter(Boolean).length;
+        const playerId = generatePlayerId(idx, copy);
         $id('car-detail-img').src = playerImgSrc(idx);
         $id('car-detail-name').textContent = c.nombre;
         $id('car-detail-country-flag').textContent = c.flag + ' ' + c.pais;
@@ -1503,47 +1317,26 @@
         $id('car-detail-dur').style.color = dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)';
         $id('car-detail-fuel').textContent = fuelLlenos + ' / 4';
         $id('car-detail-earn').textContent = '+2💎 vic / +1💎 emp';
-
-        const spd = Math.round(c.hp*0.9+3);
-        const def = Math.round(c.hp*0.6+5);
-        const phy = Math.round(c.hp*0.75+4);
+        const spd = Math.round(c.hp*0.9+3), def = Math.round(c.hp*0.6+5), phy = Math.round(c.hp*0.75+4);
         $id('car-detail-extra-stats').innerHTML = `
-<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center">
-    <div style="font-size:1.2em">⚡</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Velocidad</div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--cyan);font-weight:700">${spd}</div>
-</div>
-<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center">
-    <div style="font-size:1.2em">🛡️</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Defensa</div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--orange);font-weight:700">${def}</div>
-</div>
-<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center">
-    <div style="font-size:1.2em">💪</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Físico</div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--purple);font-weight:700">${phy}</div>
-</div>`;
-
+<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">⚡</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Velocidad</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--cyan);font-weight:700">${spd}</div></div>
+<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">🛡️</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Defensa</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--orange);font-weight:700">${def}</div></div>
+<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">💪</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Físico</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--purple);font-weight:700">${phy}</div></div>`;
         $id('car-detail-dur-bar').innerHTML = `
 <div style="display:flex;justify-content:space-between;font-size:0.78em;color:#888;margin-bottom:5px"><span>💪 Forma Física</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div>
-<div style="background:rgba(255,255,255,0.07);border-radius:50px;height:8px;overflow:hidden"><div class="dur-bar-fill ${durCls}" style="width:${dur}%;height:100%;border-radius:50px;transition:width 0.5s"></div></div>
-<div style="font-size:0.72em;color:#555;margin-top:4px;text-align:center">📉 −0.8% por partido · Recupera con entrenamiento</div>`;
-
+<div style="background:rgba(255,255,255,0.07);border-radius:50px;height:8px;overflow:hidden"><div class="dur-bar-fill ${durCls}" style="width:${dur}%"></div></div>`;
         let dots = '';
-        for(let i=0;i<4;i++){
-            const ll = balls[i];
-            dots += `<div style="width:32px;height:32px;border-radius:50%;border:2px solid ${ll?'var(--green)':'rgba(255,255,255,0.1)'};background:${ll?'radial-gradient(circle at 35% 35%, #fff 0%, #444 60%, #000 100%)':'rgba(255,255,255,0.03)'};display:flex;align-items:center;justify-content:center;font-size:1.1em;box-shadow:${ll?'0 0 8px rgba(0,255,136,0.4)':'none'}">${ll?'⚽':''}</div>`;
-        }
+        for(let i=0;i<4;i++){ const ll=balls[i]; dots += `<div style="width:32px;height:32px;border-radius:50%;border:2px solid ${ll?'var(--green)':'rgba(255,255,255,0.1)'};background:${ll?'radial-gradient(circle at 35% 35%, #fff 0%, #444 60%, #000 100%)':'rgba(255,255,255,0.03)'};display:flex;align-items:center;justify-content:center;font-size:1.1em">${ll?'⚽':''}</div>`; }
         $id('car-detail-fuel-dots').innerHTML = dots;
-
-        const idHtml = `<div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:0.8em;color:#888">
-🆔 <strong style="color:var(--cyan);font-family:'Orbitron',sans-serif">${playerId}</strong>
-</div>`;
-
-        if(fromGarage){
+        const idHtml = `<div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:0.8em;color:#888">🆔 <strong style="color:var(--cyan);font-family:'Orbitron',sans-serif">${playerId}</strong></div>`;
+        if (fromGarage) {
             $id('car-detail-action-btn').innerHTML = idHtml + `<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-mantenimiento')">🏋️ Ir a Entrenamiento</button>`;
         } else {
-            const comprado = carrosComprados.includes(idx);
-            $id('car-detail-action-btn').innerHTML = idHtml + (comprado
-                ? `<button class="primary-btn" style="font-size:0.82em;opacity:0.5;cursor:default">✅ Ya está en tu Plantilla</button>`
-                : `<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();comprarCarro(${idx})">💎 Fichar por ${c.precio.toLocaleString()} gemas</button>`);
+            const owned = getPlayerQty(idx);
+            const remaining = MAX_PER_PLAYER - owned;
+            $id('car-detail-action-btn').innerHTML = idHtml + (remaining > 0
+                ? `<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-marketplace')">💎 Ver en Marketplace (${owned}/${MAX_PER_PLAYER} poseídos)</button>`
+                : `<button class="primary-btn" style="font-size:0.82em;opacity:0.5;cursor:default">✅ Máximo alcanzado (${MAX_PER_PLAYER}/${MAX_PER_PLAYER})</button>`);
         }
         $id('modal-car-detail').classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1551,366 +1344,181 @@
     function closeCarDetail() { $id('modal-car-detail').classList.remove('active'); document.body.style.overflow = ''; }
     $id('modal-car-detail').addEventListener('click', e => { if(e.target===$id('modal-car-detail')) closeCarDetail(); });
 
-    // ── MARKETPLACE ───────────────────────────────────────────────────────
-    function buildMarket() {
-        $id('car-market-grid').innerHTML = PLAYERS.map((c,i) => {
-            const comprado = carrosComprados.includes(i);
-            const imgSrc = playerImgSrc(i);
-            const hasRealImg = !!c.img;
-            return `<div class="car-card" id="card-${i}">
-<div class="car-card-img-wrap" onclick="openCarDetail(${i}, false)" style="position:relative;">
-    <img class="car-card-img" src="${imgSrc}" alt="${c.nombre}"
-         onerror="this.onerror=null;this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(generatePlayerSVG(c))}';"
-         style="object-fit:${hasRealImg?'cover':'cover'};">
-    ${hasRealImg?`<div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">NFT</div>`:''}
-</div>
-<div class="car-card-info">
-    <div class="car-card-name">${c.nombre}</div>
-    <div class="car-card-country">${c.flag} ${c.pais}</div>
-    <div style="font-size:0.74em;color:#888;margin-bottom:2px">⚡ OVR ${c.hp} · <span style="color:var(--green)">🏆+2💎 🤝+1💎 ❌0💎</span></div>
-    <div class="car-card-price">💎 ${c.precio.toLocaleString()}</div>
-    <button class="buy-car-btn" id="buy-btn-${i}" onclick="comprarCarro(${i})" ${comprado?'disabled':''}>
-        ${comprado?'✅ Fichado':'⚽ Fichar'}
-    </button>
-</div>
-</div>`;
-        }).join('');
-    }
-
-    function comprarCarro(idx) {
-        const c = PLAYERS[idx];
-        if(carrosComprados.includes(idx)){ mostrarMensaje('⚠️ Ya fichaste este jugador','#ffaa00'); return; }
-        if(gemas<c.precio){ mostrarMensaje(`❌ Faltan ${(c.precio-gemas).toFixed(1)} 💎`,'#ff4444'); return; }
-        gemas -= c.precio;
-        hp += c.hp;
-        puntaje += Math.round(c.precio/10);
-        carrosComprados.push(idx);
-        durabilidades[idx] = 100;
-        ballonesPorJugador[idx] = [true,true,true,true];
-        actualizarUI();
-        const btn = $id(`buy-btn-${idx}`);
-        if(btn){ btn.textContent='✅ Fichado'; btn.disabled=true; }
-        buildLogros();
-        setTimeout(()=>openCarDetail(idx,true),400);
-        mostrarMensaje(`✅ ¡${c.nombre} fichado! +${c.hp} OVR · +4 balones de estamina`,'#00ff88');
-    }
-
-    // ── SELECCIÓN DE JUGADOR ──────────────────────────────────────────────
-    function abrirSeleccionJugadorPVP(modo) {
-        _pvpModeSelected = modo;
-        _currentMatchMode = 'pvp';
-        abrirModalSeleccionJugador('pvp');
-    }
-    function abrirSeleccionJugadorFutsala(cancha) {
-        _currentMatchCancha = cancha;
-        _currentMatchMode = 'pve';
-        abrirModalSeleccionJugador('pve');
-    }
+    // ── SELECTOR DE JUGADOR ───────────────────────────────────────────────
+    function abrirSeleccionJugadorPVP(modo) { _pvpModeSelected = modo; _currentMatchMode = 'pvp'; abrirModalSeleccionJugador('pvp'); }
+    function abrirSeleccionJugadorFutsala(cancha) { _currentMatchCancha = cancha; _currentMatchMode = 'pve'; abrirModalSeleccionJugador('pve'); }
     function abrirModalSeleccionJugador(mode) {
-        if(carrosComprados.length===0){ mostrarMensaje('⚠️ ¡Ficha un futbolista primero en el Marketplace!','#ffaa00'); return; }
+        if (carrosComprados.length === 0) { mostrarMensaje('⚠️ ¡Ficha un futbolista primero en el Marketplace!', '#ffaa00'); return; }
         $id('select-player-desc').textContent = mode==='pve'?'Selecciona el jugador para Futsala.':'Selecciona el jugador para FutCancha PVP.';
         $id('select-player-error').textContent = '';
         const diffSelect = $id('match-difficulty');
-        if(mode==='pve'){
-            diffSelect.style.display='block';
-            if(_currentMatchCancha){ const map={'Cancha Barrial':'barrial','Estadio Municipal':'municipal','Copa del Mundo':'copa','Noche de Gala':'gala'}; diffSelect.value=map[_currentMatchCancha]||'barrial'; }
-        } else { diffSelect.style.display='none'; }
+        if (mode==='pve') { diffSelect.style.display='block'; } else { diffSelect.style.display='none'; }
         const grid = $id('player-select-grid');
-        grid.innerHTML = carrosComprados.map(idx => {
-            const c = PLAYERS[idx];
-            const balls = getBallonesJugador(idx);
-            const llenos = balls.filter(Boolean).length;
-            const hasBall = llenos>0;
-            return `<div class="player-select-card${_currentMatchPlayer===idx?' selected':''}"
-                onclick="${hasBall?`selectPlayerForMatch(${idx})`:`mostrarMensaje('⚽ ${c.nombre} no tiene balones','#ffaa00')`}"
-                style="${hasBall?'':'opacity:0.45;cursor:not-allowed'}">
-<img src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(generatePlayerSVG(c))}';">
+        let html = '';
+        carrosComprados.forEach(entry => {
+            for (let copy = 0; copy < entry.qty; copy++) {
+                const c = PLAYERS[entry.idx];
+                const balls = getBallonesJugador(entry.idx, copy);
+                const llenos = balls.filter(Boolean).length;
+                const hasBall = llenos > 0;
+                const key = slotKey(entry.idx, copy);
+                const isSelected = _currentMatchPlayer && _currentMatchPlayer.idx === entry.idx && _currentMatchPlayer.copy === copy;
+                html += `<div class="player-select-card${isSelected?' selected':''}"
+                    onclick="${hasBall?`selectPlayerForMatch(${entry.idx},${copy})`:`mostrarMensaje('⚽ Sin balones disponibles','#ffaa00')`}"
+                    style="${hasBall?'':'opacity:0.45;cursor:not-allowed'}">
+<img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'" style="width:100%;aspect-ratio:3/4;object-fit:cover">
 <div class="player-select-info">
-    <h5>${c.nombre}</h5>
+    <h5>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h5>
     <div class="ps-ovr">⚡ OVR ${c.hp}</div>
     <div class="ps-balls">${llenos>0?'⚽'.repeat(llenos):'💤 Sin balones'}</div>
 </div>
 </div>`;
-        }).join('');
+            }
+        });
+        grid.innerHTML = html;
         openModal('modal-select-player');
     }
-    function selectPlayerForMatch(idx) {
-        _currentMatchPlayer = idx;
+    function selectPlayerForMatch(idx, copy=0) {
+        _currentMatchPlayer = { idx, copy };
         document.querySelectorAll('.player-select-card').forEach(c=>c.classList.remove('selected'));
-        const cards = document.querySelectorAll('.player-select-card');
-        const found = carrosComprados.map((pi,ci)=>({pi,ci})).find(x=>x.pi===idx);
-        if(found) cards[found.ci].classList.add('selected');
+        // Re-render to show selection
+        abrirModalSeleccionJugador(_currentMatchMode);
     }
     function confirmarJugadorYJugar() {
-        if(_currentMatchPlayer===null){ $id('select-player-error').textContent='⚠️ Elige un jugador primero'; return; }
-        const balls = getBallonesJugador(_currentMatchPlayer);
-        if(!balls.some(Boolean)){ $id('select-player-error').textContent='❌ Este jugador no tiene balones'; return; }
-        if(_currentMatchMode==='pve'){
+        if (!_currentMatchPlayer) { $id('select-player-error').textContent='⚠️ Elige un jugador primero'; return; }
+        const { idx, copy } = _currentMatchPlayer;
+        const balls = getBallonesJugador(idx, copy);
+        if (!balls.some(Boolean)) { $id('select-player-error').textContent='❌ Este jugador no tiene balones'; return; }
+        if (_currentMatchMode==='pve') {
             const diffMap={barrial:'Cancha Barrial',municipal:'Estadio Municipal',copa:'Copa del Mundo',gala:'Noche de Gala'};
             _currentMatchCancha = diffMap[$id('match-difficulty').value]||'Cancha Barrial';
         }
         closeModal('modal-select-player');
-        consumirBalonJugador(_currentMatchPlayer);
-        reducirDurabilidad(_currentMatchPlayer);
+        consumirBalonJugador(idx, copy);
+        reducirDurabilidad(idx, copy);
         actualizarUI();
         iniciarVideoPartida();
     }
 
     // ── VIDEO PARTIDO ─────────────────────────────────────────────────────
     let _matchAnimFrame = null;
-
     function iniciarVideoPartida() {
         const overlay = $id('video-overlay');
         overlay.classList.add('active');
-        const nftId = generatePlayerId(_currentMatchPlayer);
+        const { idx, copy } = _currentMatchPlayer;
+        const player = PLAYERS[idx];
+        const nftId = generatePlayerId(idx, copy);
         $id('video-match-title').textContent = _currentMatchMode==='pve'?`⚽ FUTSALA · ${_currentMatchCancha}`:'🏟️ FUTCANCHA PVP';
         $id('video-match-nft-id').textContent = `NFT ID: ${nftId}`;
         $id('video-result-box').style.display='none';
         $id('video-close-btn').style.display='none';
         document.body.style.overflow='hidden';
-
-        const playerIdx = _currentMatchPlayer;
-        const player = PLAYERS[playerIdx];
         let winChance = 0.55;
-        if(_currentMatchMode==='pve'){
-            const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36};
-            winChance=dm[_currentMatchCancha]||0.55;
-        }
+        if (_currentMatchMode==='pve') { const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36}; winChance=dm[_currentMatchCancha]||0.55; }
         const playerGoals = Math.floor(Math.random()*4);
-        const oppGoals = Math.random()<winChance
-            ? Math.max(0,playerGoals-Math.floor(Math.random()*2))
-            : playerGoals+1+Math.floor(Math.random()*2);
+        const oppGoals = Math.random()<winChance ? Math.max(0,playerGoals-Math.floor(Math.random()*2)) : playerGoals+1+Math.floor(Math.random()*2);
         const resultado = playerGoals>oppGoals?'win':playerGoals===oppGoals?'draw':'loss';
-
-        _matchResultPending = { playerIdx, player, playerGoals, oppGoals, resultado };
-
+        _matchResultPending = { idx, copy, player, playerGoals, oppGoals, resultado };
         const canvas = $id('match-canvas');
         const ctx = canvas.getContext('2d');
         const DURATION = 90;
         let t = 0;
-
         const TEAM_A = [{x:80,y:180},{x:110,y:100},{x:110,y:260},{x:60,y:150},{x:60,y:210}];
         const TEAM_B = [{x:560,y:180},{x:530,y:100},{x:530,y:260},{x:580,y:150},{x:580,y:210}];
-
         let ballX=320, ballY=180;
-
         const totalGoals = playerGoals + oppGoals;
         const scoreEvents = [];
-        for(let g=0;g<totalGoals;g++){
-            scoreEvents.push({frame:Math.floor(10+g*(DURATION/(totalGoals+1))),isPlayer:g<playerGoals});
-        }
-
+        for(let g=0;g<totalGoals;g++) scoreEvents.push({frame:Math.floor(10+g*(DURATION/(totalGoals+1))),isPlayer:g<playerGoals});
         let activeScoreEvents = [];
-
-        function drawPitch(ctx, w, h) {
+        function drawPitch(ctx,w,h) {
             const grd = ctx.createLinearGradient(0,0,w,0);
-            grd.addColorStop(0,'#1a4a1a'); grd.addColorStop(0.5,'#1e5420'); grd.addColorStop(1,'#1a4a1a');
-            ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
-            for(let i=0;i<8;i++){
-                ctx.fillStyle=i%2?'rgba(0,0,0,0.06)':'transparent';
-                ctx.fillRect(i*(w/8),0,w/8,h);
-            }
-            ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=2;
+            grd.addColorStop(0,'#1a4a1a');grd.addColorStop(0.5,'#1e5420');grd.addColorStop(1,'#1a4a1a');
+            ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
+            ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=2;
             ctx.strokeRect(30,25,w-60,h-50);
             ctx.beginPath();ctx.moveTo(w/2,25);ctx.lineTo(w/2,h-25);ctx.stroke();
             ctx.beginPath();ctx.arc(w/2,h/2,50,0,Math.PI*2);ctx.stroke();
             ctx.strokeStyle='rgba(255,255,255,0.5)';
-            ctx.strokeRect(30,h/2-38,20,76);
-            ctx.strokeRect(w-50,h/2-38,20,76);
-            ctx.strokeStyle='rgba(255,255,255,0.25)';
-            ctx.strokeRect(30,h/2-65,55,130);
-            ctx.strokeRect(w-85,h/2-65,55,130);
+            ctx.strokeRect(30,h/2-38,20,76);ctx.strokeRect(w-50,h/2-38,20,76);
         }
-
-        function drawPlayer5(ctx, x, y, color1, color2, num) {
-            ctx.fillStyle='rgba(0,0,0,0.3)';
-            ctx.beginPath();ctx.ellipse(x,y+18,11,5,0,0,Math.PI*2);ctx.fill();
-            ctx.fillStyle=color1;
-            ctx.beginPath();ctx.ellipse(x,y+6,9,13,0,0,Math.PI*2);ctx.fill();
-            ctx.fillStyle='#FDBCB4';
-            ctx.beginPath();ctx.arc(x,y-10,9,0,Math.PI*2);ctx.fill();
-            ctx.fillStyle=color2; ctx.font='bold 7px sans-serif'; ctx.textAlign='center';
-            ctx.fillText(String(num),x,y+10);
+        function drawPlayer5(ctx,x,y,c1,c2,num) {
+            ctx.fillStyle=c1;ctx.beginPath();ctx.ellipse(x,y+6,9,13,0,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#FDBCB4';ctx.beginPath();ctx.arc(x,y-10,9,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle=c2;ctx.font='bold 7px sans-serif';ctx.textAlign='center';ctx.fillText(String(num),x,y+10);
         }
-
-        function getPlayerPos(team, pIdx, t) {
-            const base = team[pIdx];
-            const wave = Math.sin(t*0.15+pIdx*1.2);
-            const wave2 = Math.cos(t*0.1+pIdx*0.8);
-            const isA = team===TEAM_A;
-            const dx = isA ? Math.min(wave*30,120) : Math.max(wave*30,-120);
-            const dy = wave2*20;
-            return { x: base.x+dx*(1-t/DURATION*0.3), y: base.y+dy };
+        function getPlayerPos(team,pIdx,t) {
+            const base=team[pIdx],isA=team===TEAM_A;
+            const wave=Math.sin(t*0.15+pIdx*1.2),wave2=Math.cos(t*0.1+pIdx*0.8);
+            const dx=isA?Math.min(wave*30,120):Math.max(wave*30,-120);
+            return {x:base.x+dx*(1-t/DURATION*0.3),y:base.y+wave2*20};
         }
-
+        function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
         function animate() {
-            ctx.clearRect(0,0,640,360);
-            drawPitch(ctx,640,360);
-
-            const prog = t/DURATION;
-            ballX = 320 + Math.sin(t*0.25)*140*Math.cos(t*0.08);
-            ballY = 180 + Math.cos(t*0.2)*80;
-
-            scoreEvents.forEach(ev=>{
-                if(t===ev.frame) activeScoreEvents.push({...ev,timer:28});
-            });
-            activeScoreEvents = activeScoreEvents.filter(s=>(s.timer--)>0);
-
-            TEAM_A.forEach((base,pi)=>{
-                const pos = getPlayerPos(TEAM_A,pi,t);
-                drawPlayer5(ctx,pos.x,pos.y,player.color1,player.color2,pi+1);
-            });
-            TEAM_B.forEach((base,pi)=>{
-                const pos = getPlayerPos(TEAM_B,pi,t);
-                drawPlayer5(ctx,pos.x,pos.y,'#e0e0e0','#555',pi+1);
-            });
-
-            ctx.save();
-            ctx.fillStyle='#fff';
-            ctx.beginPath();ctx.arc(ballX,ballY,9,0,Math.PI*2);ctx.fill();
-            ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.stroke();
-            ctx.restore();
-
-            ctx.fillStyle='rgba(0,0,0,0.82)';
-            roundRect2(ctx,200,6,240,40,12); ctx.fill();
-            ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;
-            roundRect2(ctx,200,6,240,40,12); ctx.stroke();
-            const curPG = scoreEvents.filter(e=>e.isPlayer&&e.frame<=t).length;
-            const curOG = scoreEvents.filter(e=>!e.isPlayer&&e.frame<=t).length;
-            ctx.fillStyle='#fff'; ctx.font='bold 13px Orbitron,monospace'; ctx.textAlign='center';
-            ctx.fillText(`${player.nombre.split(' ')[0]}  ${curPG} — ${curOG}  OPO`,320,21);
-            ctx.fillStyle='rgba(0,255,136,0.6)';
-            ctx.fillRect(204,36,Math.floor(232*prog),5);
-
-            const minuto = Math.floor(prog*90);
-            ctx.fillStyle='rgba(0,0,0,0.75)';
-            roundRect2(ctx,4,4,52,22,7);ctx.fill();
-            ctx.fillStyle='#00ff88';ctx.font='bold 11px monospace';ctx.textAlign='center';
-            ctx.fillText(`${minuto}'`,30,19);
-
-            activeScoreEvents.forEach(s=>{
-                const alpha=s.timer/28;
-                const rise=(28-s.timer)*3;
-                ctx.save();
-                ctx.globalAlpha=alpha;
-                ctx.fillStyle=s.isPlayer?'#00ff88':'#ff4444';
-                ctx.font=`bold ${22+Math.floor((28-s.timer)*0.3)}px Orbitron,sans-serif`;
-                ctx.textAlign='center';
-                ctx.shadowColor=s.isPlayer?'#00ff88':'#ff4444'; ctx.shadowBlur=12;
-                ctx.fillText(s.isPlayer?'⚽ GOL!':'⚽ GOL IA',320,210-rise);
-                ctx.restore();
-            });
-
+            ctx.clearRect(0,0,640,360);drawPitch(ctx,640,360);
+            const prog=t/DURATION;
+            ballX=320+Math.sin(t*0.25)*140*Math.cos(t*0.08);ballY=180+Math.cos(t*0.2)*80;
+            scoreEvents.forEach(ev=>{if(t===ev.frame) activeScoreEvents.push({...ev,timer:28});});
+            activeScoreEvents=activeScoreEvents.filter(s=>(s.timer--)>0);
+            TEAM_A.forEach((base,pi)=>{const pos=getPlayerPos(TEAM_A,pi,t);drawPlayer5(ctx,pos.x,pos.y,player.color1,player.color2,pi+1);});
+            TEAM_B.forEach((base,pi)=>{const pos=getPlayerPos(TEAM_B,pi,t);drawPlayer5(ctx,pos.x,pos.y,'#e0e0e0','#555',pi+1);});
+            ctx.save();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ballX,ballY,9,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.stroke();ctx.restore();
+            ctx.fillStyle='rgba(0,0,0,0.82)';rr(ctx,200,6,240,40,12);ctx.fill();ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;rr(ctx,200,6,240,40,12);ctx.stroke();
+            const curPG=scoreEvents.filter(e=>e.isPlayer&&e.frame<=t).length;const curOG=scoreEvents.filter(e=>!e.isPlayer&&e.frame<=t).length;
+            ctx.fillStyle='#fff';ctx.font='bold 13px Orbitron,monospace';ctx.textAlign='center';ctx.fillText(`${player.nombre.split(' ')[0]}  ${curPG} — ${curOG}  OPO`,320,21);
+            ctx.fillStyle='rgba(0,255,136,0.6)';ctx.fillRect(204,36,Math.floor(232*prog),5);
+            ctx.fillStyle='rgba(0,0,0,0.75)';rr(ctx,4,4,52,22,7);ctx.fill();ctx.fillStyle='#00ff88';ctx.font='bold 11px monospace';ctx.textAlign='center';ctx.fillText(`${Math.floor(prog*90)}'`,30,19);
+            activeScoreEvents.forEach(s=>{const alpha=s.timer/28,rise=(28-s.timer)*3;ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=s.isPlayer?'#00ff88':'#ff4444';ctx.font=`bold ${22+Math.floor((28-s.timer)*0.3)}px Orbitron,sans-serif`;ctx.textAlign='center';ctx.shadowColor=s.isPlayer?'#00ff88':'#ff4444';ctx.shadowBlur=12;ctx.fillText(s.isPlayer?'⚽ GOL!':'⚽ GOL IA',320,210-rise);ctx.restore();});
             t++;
-            if(t<DURATION){ _matchAnimFrame=requestAnimationFrame(animate); }
-            else { mostrarResultadoVideo(); }
+            if(t<DURATION){_matchAnimFrame=requestAnimationFrame(animate);}else{mostrarResultadoVideo();}
         }
-
-        function roundRect2(ctx,x,y,w,h,r){
-            ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
-            ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
-            ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
-            ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
-            ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
-        }
-
         if(_matchAnimFrame) cancelAnimationFrame(_matchAnimFrame);
         animate();
     }
-
     function mostrarResultadoVideo() {
-        const {playerIdx, player, playerGoals, oppGoals, resultado} = _matchResultPending;
-        statsPartidas += 2;
-        puntaje += resultado==='win'?5:resultado==='draw'?2:1;
-        const gemsGanadas = calcularGemasPartida(playerIdx, resultado);
-        if(gemsGanadas>0) gemas += gemsGanadas;
-        actualizarUI();
-        buildLogros();
-
-        const resultColor = resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
-        const resultText  = resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
-        const dur = getDurabilidad(playerIdx);
-        const nftId = generatePlayerId(playerIdx);
-
-        let oppName, oppFlag;
-        if(_currentMatchMode==='pve'){
-            oppName=`IA · ${_currentMatchCancha}`; oppFlag='🤖';
-        } else {
-            const names=['ProKick_99','FutMaster','GoalHunter','DribleKing','FreeKickPro'];
-            oppName=names[Math.floor(Math.random()*names.length)];
-            oppFlag=FLAG_DATA[Math.floor(Math.random()*FLAG_DATA.length)].flag;
-        }
-
-        const gemsMsg = resultado==='win'
-            ? `<span style="color:var(--green);font-weight:700">+${gemsGanadas} 💎 ganadas (victoria)</span>`
-            : resultado==='draw'
-                ? `<span style="color:var(--gold);font-weight:700">+${gemsGanadas} 💎 (empate)</span>`
-                : `<span style="color:var(--red);font-weight:700">0 💎 (derrota)</span>`;
-
+        const {idx,copy,player,playerGoals,oppGoals,resultado}=_matchResultPending;
+        statsPartidas+=2;puntaje+=resultado==='win'?5:resultado==='draw'?2:1;
+        const gemsGanadas=resultado==='win'?2:resultado==='draw'?1:0;
+        if(gemsGanadas>0) gemas+=gemsGanadas;
+        actualizarUI();buildLogros();
+        const resultColor=resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
+        const resultText=resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
+        const dur=getDurabilidad(idx,copy);const nftId=generatePlayerId(idx,copy);
+        let oppName,oppFlag;
+        if(_currentMatchMode==='pve'){oppName=`IA · ${_currentMatchCancha}`;oppFlag='🤖';}
+        else{const names=['ProKick_99','FutMaster','GoalHunter','DribleKing','FreeKickPro'];oppName=names[Math.floor(Math.random()*names.length)];oppFlag=FLAG_DATA[Math.floor(Math.random()*FLAG_DATA.length)].flag;}
+        const gemsMsg=resultado==='win'?`<span style="color:var(--green);font-weight:700">+${gemsGanadas} 💎 (victoria)</span>`:resultado==='draw'?`<span style="color:var(--gold);font-weight:700">+${gemsGanadas} 💎 (empate)</span>`:`<span style="color:var(--red);font-weight:700">0 💎 (derrota)</span>`;
         const rb=$id('video-result-box');
         rb.style.display='block';
-        rb.innerHTML=`
-<div style="background:linear-gradient(135deg,#0a1a0a,#060d06);border:2px solid ${resultColor};border-radius:16px;padding:18px;text-align:center">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:${resultColor};letter-spacing:4px">${resultText}</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5em;color:var(--gold);line-height:1.1;margin:8px 0">${playerGoals} — ${oppGoals}</div>
-    <div style="font-size:0.88em;color:#aaa;margin-bottom:6px">${player.flag} ${player.nombre} vs ${oppFlag} ${oppName}</div>
-    <div style="font-size:0.78em;color:var(--cyan);font-family:'Orbitron',sans-serif;margin-bottom:8px">NFT ID: ${nftId}</div>
-    <div style="font-size:1em;margin:8px 0">${gemsMsg}</div>
-    <div style="font-size:0.8em;color:#888">+2 pts estadística · Forma física: ${dur}%</div>
-    <div style="font-size:0.75em;color:#555;margin-top:4px">⚽ Balón consumido · 💪 Forma física -0.8%</div>
+        rb.innerHTML=`<div style="background:linear-gradient(135deg,#0a1a0a,#060d06);border:2px solid ${resultColor};border-radius:16px;padding:18px;text-align:center">
+<div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:${resultColor};letter-spacing:4px">${resultText}</div>
+<div style="font-family:'Bebas Neue',sans-serif;font-size:3.5em;color:var(--gold);line-height:1.1;margin:8px 0">${playerGoals} — ${oppGoals}</div>
+<div style="font-size:0.88em;color:#aaa;margin-bottom:6px">${player.flag} ${player.nombre} vs ${oppFlag} ${oppName}</div>
+<div style="font-size:0.78em;color:var(--cyan);font-family:'Orbitron',sans-serif;margin-bottom:8px">NFT ID: ${nftId}</div>
+<div style="font-size:1em;margin:8px 0">${gemsMsg}</div>
+<div style="font-size:0.8em;color:#888">+2 pts estadística · Forma física: ${dur}%</div>
 </div>`;
         $id('video-close-btn').style.display='inline-block';
     }
+    function cerrarVideoPartida(){$id('video-overlay').classList.remove('active');document.body.style.overflow='';if(_matchAnimFrame) cancelAnimationFrame(_matchAnimFrame);_currentMatchPlayer=null;_matchResultPending=null;}
 
-    function cerrarVideoPartida() {
-        $id('video-overlay').classList.remove('active');
-        document.body.style.overflow='';
-        if(_matchAnimFrame) cancelAnimationFrame(_matchAnimFrame);
-        _currentMatchPlayer=null;
-        _matchResultPending=null;
-    }
-
-    // ── FUTSALA BODY ──────────────────────────────────────────────────────
+    // ── FUTSALA ───────────────────────────────────────────────────────────
     function buildFutsalaBody() {
-        const body=$id('futsala-body');
-        body.innerHTML=`
+        $id('futsala-body').innerHTML=`
 <div class="futsala-info-box">✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; +2 pts estadísticas + 💎 gemas por resultado</div>
 <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;">
-            <div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div>
-            <div style="color:#aaa;font-size:0.78em;margin-top:3px">+2 💎 / balón</div>
-        </div>
-        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;">
-            <div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div>
-            <div style="color:#aaa;font-size:0.78em;margin-top:3px">+1 💎 / balón</div>
-        </div>
-        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;">
-            <div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div>
-            <div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div>
-        </div>
-    </div>
-</div>
+<div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">+2 💎 / balón</div></div>
+    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">+1 💎 / balón</div></div>
+    <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
+</div></div>
 <div class="info-box" style="margin-bottom:12px;">⚠️ Cada partida consume 1 balón · Forma física −0.8%</div>
 <p style="color:#888;font-size:0.84em;margin-bottom:12px;">Elige una cancha y compite:</p>
 <div class="map-grid">
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Cancha Barrial')">
-        <div class="map-card-img" style="background:linear-gradient(135deg,#0a1a0a,#1a3a1a)">🏟️</div>
-        <div class="map-card-info"><h4>Cancha Barrial</h4><p>Partidos rápidos en cancha local.</p><span class="map-tag">⭐ Fácil · +2 pts</span></div>
-    </div>
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Estadio Municipal')">
-        <div class="map-card-img" style="background:linear-gradient(135deg,#1a1a0a,#3a2a0a)">🏟️</div>
-        <div class="map-card-info"><h4>Estadio Municipal</h4><p>Tácticas variadas y mayor presión.</p><span class="map-tag">⭐⭐ Medio · +2 pts</span></div>
-    </div>
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Copa del Mundo')">
-        <div class="map-card-img" style="background:linear-gradient(135deg,#1a0a0a,#3a0a0a)">🏆</div>
-        <div class="map-card-info"><h4>Copa del Mundo</h4><p>Alta dificultad. Más gemas al ganar.</p><span class="map-tag">⭐⭐⭐ Difícil · +2 pts</span></div>
-    </div>
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Noche de Gala')">
-        <div class="map-card-img" style="background:linear-gradient(135deg,#0a0a1a,#0a1a3a)">🌃</div>
-        <div class="map-card-info"><h4>Noche de Gala</h4><p>Estadio nocturno. El reto máximo.</p><span class="map-tag">⭐⭐⭐⭐ Experto · +2 pts</span></div>
-    </div>
+    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Cancha Barrial')"><div class="map-card-img" style="background:linear-gradient(135deg,#0a1a0a,#1a3a1a)">🏟️</div><div class="map-card-info"><h4>Cancha Barrial</h4><p>Partidos rápidos en cancha local.</p><span class="map-tag">⭐ Fácil · +2 pts</span></div></div>
+    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Estadio Municipal')"><div class="map-card-img" style="background:linear-gradient(135deg,#1a1a0a,#3a2a0a)">🏟️</div><div class="map-card-info"><h4>Estadio Municipal</h4><p>Tácticas variadas y mayor presión.</p><span class="map-tag">⭐⭐ Medio · +2 pts</span></div></div>
+    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Copa del Mundo')"><div class="map-card-img" style="background:linear-gradient(135deg,#1a0a0a,#3a0a0a)">🏆</div><div class="map-card-info"><h4>Copa del Mundo</h4><p>Alta dificultad.</p><span class="map-tag">⭐⭐⭐ Difícil · +2 pts</span></div></div>
+    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Noche de Gala')"><div class="map-card-img" style="background:linear-gradient(135deg,#0a0a1a,#0a1a3a)">🌃</div><div class="map-card-info"><h4>Noche de Gala</h4><p>El reto máximo.</p><span class="map-tag">⭐⭐⭐⭐ Experto · +2 pts</span></div></div>
 </div>`;
     }
 
@@ -1925,280 +1533,86 @@
         {icon:'🌟',key:'hattrick',label:'Hat-tricks',desc:'Logra 3 goles en un mismo partido',pts_req:80,reward_gems:20,level_req:5},
         {icon:'👑',key:'maestro',label:'Maestro',desc:'Domina todas las estadísticas',pts_req:100,reward_gems:50,level_req:10},
     ];
-
     function buildRewardPts() {
         actualizarUI();
-        const claimedSections = JSON.parse(localStorage.getItem('tg_claimed_sections')||'{}');
+        const cs=JSON.parse(localStorage.getItem('tg_claimed_sections')||'{}');
         let html='';
         REWARD_SECTIONS.forEach(s=>{
-            const claimed=!!claimedSections[s.key];
+            const claimed=!!cs[s.key];
             const canClaim=statsPartidas>=s.pts_req&&nivel>=s.level_req&&!claimed;
-            const lockedLevel=nivel<s.level_req;
             const pct=Math.min(100,Math.round((statsPartidas/s.pts_req)*100));
-            html+=`<div class="reward-section">
-<h4>${s.icon} ${s.label}</h4>
+            html+=`<div class="reward-section"><h4>${s.icon} ${s.label}</h4>
 <div class="reward-stat-row"><div class="reward-stat-label">${s.desc}</div><div class="reward-stat-value">${claimed?'✅ Reclamado':`+${s.reward_gems} 💎`}</div></div>
 <div style="font-size:0.76em;color:#888;margin-bottom:8px">Nivel ${s.level_req} req. · ${s.pts_req} pts req. · Tus pts: <span style="color:var(--cyan)">${statsPartidas}</span></div>
 <div class="pts-bar-bg"><div class="pts-bar-fill" style="width:${pct}%"></div></div>
 ${!claimed?`<button style="width:100%;margin-top:10px;padding:9px;background:${canClaim?'rgba(0,255,136,0.12)':'rgba(255,255,255,0.04)'};border:1px solid ${canClaim?'var(--green)':'rgba(255,255,255,0.1)'};border-radius:8px;color:${canClaim?'var(--green)':'#555'};font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84em;cursor:${canClaim?'pointer':'not-allowed'};text-transform:uppercase" onclick="${canClaim?`claimSection('${s.key}',${s.reward_gems})`:'void(0)'}">
-${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.reward_gems+' 💎':'⏳ Juega más partidas'}</button>`:''}
+${nivel<s.level_req?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.reward_gems+' 💎':'⏳ Juega más partidas'}</button>`:''}
 </div>`;
         });
         $id('reward-pts-sections').innerHTML=html;
     }
-    function claimSection(key, gems) {
-        const cs=JSON.parse(localStorage.getItem('tg_claimed_sections')||'{}');
-        if(cs[key]) return;
-        gemas+=gems; cs[key]=true;
-        localStorage.setItem('tg_claimed_sections',JSON.stringify(cs));
-        actualizarUI(); buildRewardPts();
-        mostrarMensaje(`✅ +${gems} 💎 añadidas!`,'#00ff88');
-    }
+    function claimSection(key,gems){const cs=JSON.parse(localStorage.getItem('tg_claimed_sections')||'{}');if(cs[key])return;gemas+=gems;cs[key]=true;localStorage.setItem('tg_claimed_sections',JSON.stringify(cs));actualizarUI();buildRewardPts();mostrarMensaje(`✅ +${gems} 💎 añadidas!`,'#00ff88');}
 
     // ── RECOMPENSA DIARIA ─────────────────────────────────────────────────
-    function getDailyRewardGems(dia) { if(dia===30) return 25; if(dia%2===1) return 1; return 0; }
-    function buildRewardDays() {
-        const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1');
-        let html='';
-        for(let d=1;d<=30;d++){
-            const claimed=d<diaActual; const isToday=d===diaActual;
-            const isGold=d%2===0&&d!==30; const isDay30=d===30;
-            let cls='reward-day';
-            if(isDay30) cls+=' special'; else if(isGold) cls+=' gold-day';
-            if(claimed) cls+=' claimed'; if(isToday) cls+=' today';
-            const icon=isDay30?'👑':isGold?'🪙':'💎';
-            const gems=getDailyRewardGems(d);
-            const label=isDay30?'25💎':isGold?'🪙':`${gems}💎`;
-            html+=`<div class="${cls}"><span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${label}</small></div>`;
-        }
-        $id('reward-days-grid').innerHTML=html;
-    }
-    function checkRewardStatus() {
-        buildRewardDays();
-        const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0');
-        const now=Date.now(); const cooldown=24*60*60*1000;
-        const canClaim=now-lastClaim>=cooldown||lastClaim===0;
-        const btn=$id('btn-claim-reward');
-        if(btn){ btn.disabled=!canClaim; btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve'; }
-        updateDailyTimer(cooldown-(now-lastClaim),canClaim);
-    }
-    function updateDailyTimer(msRestante, canClaim) {
-        const el=$id('daily-timer-display'); if(!el) return;
-        if(canClaim){ el.textContent='✅ ¡Recompensa disponible ahora!'; el.style.color='var(--green)'; return; }
-        const h=Math.floor(msRestante/3600000);
-        const m=Math.floor((msRestante%3600000)/60000);
-        const s=Math.floor((msRestante%60000)/1000);
-        el.textContent=`⏱ ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
-        el.style.color='#666';
-    }
-    setInterval(()=>{
-        const modal=$id('modal-recompensa');
-        if(modal&&modal.classList.contains('active')){
-            const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0');
-            const elapsed=Date.now()-lastClaim; const cooldown=24*60*60*1000;
-            const canClaim=elapsed>=cooldown||lastClaim===0;
-            updateDailyTimer(cooldown-elapsed,canClaim);
-            const btn=$id('btn-claim-reward');
-            if(btn){ btn.disabled=!canClaim; btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve'; }
-        }
-    },1000);
-    function claimReward() {
-        const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0');
-        const now=Date.now(); const cooldown=24*60*60*1000;
-        if(now-lastClaim<cooldown&&lastClaim!==0){ mostrarMensaje('⚠️ Vuelve en 24h','#ffaa00'); return; }
-        const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1');
-        const gemsGanadas=getDailyRewardGems(diaActual);
-        const isDay30=diaActual===30; const isGold=diaActual%2===0&&!isDay30;
-        gemas+=gemsGanadas;
-        let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎`:isGold?'🪙 ¡Moneda de oro!':`💎 +${gemsGanadas} gema`;
-        const sig=diaActual<30?diaActual+1:1;
-        localStorage.setItem('tg_reward_day',String(sig));
-        localStorage.setItem('tg_last_reward_ts',String(now));
-        puntaje+=1; actualizarUI(); buildRewardDays();
-        const btn=$id('btn-claim-reward');
-        if(btn){ btn.disabled=true; btn.textContent='✅ Reclamada — vuelve en 24h'; }
-        mostrarMensaje(msg,isDay30?'#a855f7':isGold?'#ffd700':'#00ff88');
-    }
+    function getDailyRewardGems(dia){if(dia===30)return 25;if(dia%2===1)return 1;return 0;}
+    function buildRewardDays(){const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1');let html='';for(let d=1;d<=30;d++){const claimed=d<diaActual,isToday=d===diaActual,isGold=d%2===0&&d!==30,isDay30=d===30;let cls='reward-day';if(isDay30) cls+=' special';else if(isGold) cls+=' gold-day';if(claimed) cls+=' claimed';if(isToday) cls+=' today';const icon=isDay30?'👑':isGold?'🪙':'💎';const label=isDay30?'25💎':isGold?'🪙':`${getDailyRewardGems(d)}💎`;html+=`<div class="${cls}"><span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${label}</small></div>`;}$id('reward-days-grid').innerHTML=html;}
+    function checkRewardStatus(){buildRewardDays();const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),now=Date.now(),cooldown=24*60*60*1000,canClaim=now-lastClaim>=cooldown||lastClaim===0;const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve';}updateDailyTimer(cooldown-(now-lastClaim),canClaim);}
+    function updateDailyTimer(msR,canClaim){const el=$id('daily-timer-display');if(!el)return;if(canClaim){el.textContent='✅ ¡Recompensa disponible ahora!';el.style.color='var(--green)';return;}const h=Math.floor(msR/3600000),m=Math.floor((msR%3600000)/60000),s=Math.floor((msR%60000)/1000);el.textContent=`⏱ ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;el.style.color='#666';}
+    setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active')){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),elapsed=Date.now()-lastClaim,cooldown=24*60*60*1000,canClaim=elapsed>=cooldown||lastClaim===0;updateDailyTimer(cooldown-elapsed,canClaim);const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve';}}},1000);
+    function claimReward(){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),now=Date.now(),cooldown=24*60*60*1000;if(now-lastClaim<cooldown&&lastClaim!==0){mostrarMensaje('⚠️ Vuelve en 24h','#ffaa00');return;}const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1'),gemsGanadas=getDailyRewardGems(diaActual),isDay30=diaActual===30,isGold=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎`:isGold?'🪙 ¡Moneda de oro!':`💎 +${gemsGanadas} gema`;const sig=diaActual<30?diaActual+1:1;localStorage.setItem('tg_reward_day',String(sig));localStorage.setItem('tg_last_reward_ts',String(now));puntaje+=1;actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✅ Reclamada — vuelve en 24h';}mostrarMensaje(msg,isDay30?'#a855f7':isGold?'#ffd700':'#00ff88');}
 
     // ── LOGROS ────────────────────────────────────────────────────────────
     const LOGROS = {
-        jugadores:[
-            {meta:1,icon:'⚽',t:'Primera Ficha',d:'Ficha tu primer jugador NFT',reward:5},
-            {meta:3,icon:'👕',t:'Pequeño Equipo',d:'Ficha 3 jugadores',reward:15},
-            {meta:5,icon:'🏆',t:'Mi Plantilla',d:'Ficha 5 jugadores',reward:30},
-            {meta:10,icon:'🌟',t:'Seleccionador',d:'Ficha 10 jugadores',reward:60},
-            {meta:14,icon:'👑',t:'Plantilla Completa',d:'Ficha todos los jugadores',reward:200},
-        ],
-        partidas:[
-            {meta:1,icon:'🏁',t:'Debut',d:'Juega tu primera partida',reward:2},
-            {meta:5,icon:'⚽',t:'Veterano',d:'Juega 5 partidas',reward:10},
-            {meta:10,icon:'🏃',t:'Habitual',d:'Juega 10 partidas',reward:25},
-            {meta:25,icon:'🏟️',t:'Profesional',d:'Juega 25 partidas',reward:60},
-            {meta:50,icon:'🏆',t:'Leyenda',d:'Juega 50 partidas',reward:150},
-        ],
-        goles:[
-            {meta:10,icon:'🥅',t:'Primer Gol',d:'Acumula 10 gemas',reward:2},
-            {meta:100,icon:'⚽',t:'Goleador',d:'Acumula 100 gemas',reward:10},
-            {meta:500,icon:'🌟',t:'Pichichi',d:'Acumula 500 gemas',reward:25},
-            {meta:1000,icon:'🏆',t:'Rey del Gol',d:'Acumula 1000 gemas',reward:50},
-            {meta:5000,icon:'👑',t:'Balón de Oro',d:'Acumula 5000 gemas',reward:200},
-        ],
-        racha:[
-            {meta:3,icon:'📅',t:'Racha Inicial',d:'3 días seguidos',reward:5},
-            {meta:7,icon:'🔥',t:'Semana Completa',d:'7 días seguidos',reward:15},
-            {meta:14,icon:'⚡',t:'Quincenal',d:'14 días seguidos',reward:30},
-            {meta:21,icon:'🌟',t:'Mes en Marcha',d:'21 días seguidos',reward:60},
-            {meta:30,icon:'👑',t:'Mes Perfecto',d:'30 días seguidos',reward:100},
-        ],
+        jugadores:[{meta:1,icon:'⚽',t:'Primera Ficha',d:'Ficha tu primer jugador NFT',reward:5},{meta:3,icon:'👕',t:'Pequeño Equipo',d:'Ficha 3 jugadores',reward:15},{meta:5,icon:'🏆',t:'Mi Plantilla',d:'Ficha 5 jugadores',reward:30},{meta:10,icon:'🌟',t:'Seleccionador',d:'Ficha 10 jugadores',reward:60},{meta:14,icon:'👑',t:'Plantilla Completa',d:'Ficha todos los jugadores',reward:200}],
+        partidas:[{meta:1,icon:'🏁',t:'Debut',d:'Juega tu primera partida',reward:2},{meta:5,icon:'⚽',t:'Veterano',d:'Juega 5 partidas',reward:10},{meta:10,icon:'🏃',t:'Habitual',d:'Juega 10 partidas',reward:25},{meta:25,icon:'🏟️',t:'Profesional',d:'Juega 25 partidas',reward:60},{meta:50,icon:'🏆',t:'Leyenda',d:'Juega 50 partidas',reward:150}],
+        goles:[{meta:10,icon:'🥅',t:'Primer Gol',d:'Acumula 10 gemas',reward:2},{meta:100,icon:'⚽',t:'Goleador',d:'Acumula 100 gemas',reward:10},{meta:500,icon:'🌟',t:'Pichichi',d:'Acumula 500 gemas',reward:25},{meta:1000,icon:'🏆',t:'Rey del Gol',d:'Acumula 1000 gemas',reward:50},{meta:5000,icon:'👑',t:'Balón de Oro',d:'Acumula 5000 gemas',reward:200}],
+        racha:[{meta:3,icon:'📅',t:'Racha Inicial',d:'3 días seguidos',reward:5},{meta:7,icon:'🔥',t:'Semana Completa',d:'7 días seguidos',reward:15},{meta:14,icon:'⚡',t:'Quincenal',d:'14 días seguidos',reward:30},{meta:21,icon:'🌟',t:'Mes en Marcha',d:'21 días seguidos',reward:60},{meta:30,icon:'👑',t:'Mes Perfecto',d:'30 días seguidos',reward:100}],
     };
-    function getProgresoLogro(tipo, meta) {
-        const map={jugadores:carrosComprados.length,partidas:Math.floor(statsPartidas/2),goles:Math.floor(gemas),racha:Math.max(0,parseInt(localStorage.getItem('tg_reward_day')||'1')-1)};
-        return {actual:map[tipo]||0,meta};
-    }
-    function buildLogrosList(tipo) {
-        const cL=JSON.parse(localStorage.getItem('tg_claimed_logros')||'{}');
-        $id(`logros-${tipo}-list`).innerHTML=LOGROS[tipo].map((l,li)=>{
-            const {actual,meta}=getProgresoLogro(tipo,l.meta);
-            const ok=actual>=meta; const key=`${tipo}_${li}`; const claimed=!!cL[key];
-            const canClaim=ok&&!claimed; const pct=Math.min(100,Math.round(actual/meta*100));
-            return `<div class="logro-item ${ok?'desbloqueado':''}">
-<span class="logro-icon">${l.icon}</span>
-<div class="logro-info"><h4>${l.t}</h4><p>${l.d} — ${actual}/${meta}</p>
-    <div class="logro-progress"><div class="logro-progress-fill" style="width:${pct}%"></div></div>
-</div>
-<div class="logro-reward">
-    ${claimed?`<span style="color:var(--green)">✅</span><br><small style="color:#555">Cobrado</small>`
-        :canClaim?`<button onclick="claimLogro('${tipo}',${li},${l.reward})" style="padding:5px 10px;background:rgba(0,255,136,0.12);border:1px solid var(--green);border-radius:6px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.78em;cursor:pointer">+${l.reward}💎</button>`
-            :`<span style="color:#555">🔒</span><br><small style="color:var(--gold)">+${l.reward}💎</small>`}
-</div>
-</div>`;
-        }).join('');
-    }
-    function claimLogro(tipo, idx, reward) {
-        const cL=JSON.parse(localStorage.getItem('tg_claimed_logros')||'{}');
-        const key=`${tipo}_${idx}`; if(cL[key]) return;
-        gemas+=reward; cL[key]=true;
-        localStorage.setItem('tg_claimed_logros',JSON.stringify(cL));
-        actualizarUI(); buildLogros();
-        mostrarMensaje(`🏅 +${reward} 💎 por logro!`,'#ffd700');
-    }
-    function buildLogros() { ['jugadores','partidas','goles','racha'].forEach(buildLogrosList); }
-
-    // ── GARAGE ────────────────────────────────────────────────────────────
-    function buildGarage() {
-        let html='';
-        for(let i=0;i<20;i++){
-            const idx=carrosComprados[i];
-            if(idx!==undefined){
-                const c=PLAYERS[idx]; const dur=getDurabilidad(idx); const durCls=colorDurabilidad(dur);
-                html+=`<div class="garage-slot-card occupied" onclick="openCarDetail(${idx},true)">
-<img src="${playerImgSrc(idx)}" alt="${c.nombre}"
-     onerror="this.onerror=null;this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(generatePlayerSVG(c))}';"
-     style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:7px;display:block;margin-bottom:6px;border:1px solid rgba(45,122,31,0.3)">
-<div class="gs-name">${c.nombre}</div>
-<div style="font-size:0.7em;color:#888;margin-top:2px">${c.flag} OVR ${c.hp}</div>
-<div class="dur-bar-wrap" style="padding:0 2px;margin-top:5px">
-    <div class="dur-bar-bg"><div class="dur-bar-fill ${durCls}" style="width:${dur}%"></div></div>
-    <div style="font-size:0.58em;text-align:center;margin-top:2px;color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</div>
-</div>
-</div>`;
-            } else {
-                html+=`<div class="garage-slot-card"><div class="gs-icon">➕</div><div class="gs-name">Slot ${i+1}</div></div>`;
-            }
-        }
-        $id('garage-grid-vehicles').innerHTML=html;
-    }
+    function getProgresoLogro(tipo,meta){const owned=carrosComprados.reduce((s,e)=>s+e.qty,0);const map={jugadores:owned,partidas:Math.floor(statsPartidas/2),goles:Math.floor(gemas),racha:Math.max(0,parseInt(localStorage.getItem('tg_reward_day')||'1')-1)};return{actual:map[tipo]||0,meta};}
+    function buildLogrosList(tipo){const cL=JSON.parse(localStorage.getItem('tg_claimed_logros')||'{}');$id(`logros-${tipo}-list`).innerHTML=LOGROS[tipo].map((l,li)=>{const{actual,meta}=getProgresoLogro(tipo,l.meta),ok=actual>=meta,key=`${tipo}_${li}`,claimed=!!cL[key],canClaim=ok&&!claimed,pct=Math.min(100,Math.round(actual/meta*100));return`<div class="logro-item ${ok?'desbloqueado':''}"><span class="logro-icon">${l.icon}</span><div class="logro-info"><h4>${l.t}</h4><p>${l.d} — ${actual}/${meta}</p><div class="logro-progress"><div class="logro-progress-fill" style="width:${pct}%"></div></div></div><div class="logro-reward">${claimed?`<span style="color:var(--green)">✅</span><br><small style="color:#555">Cobrado</small>`:canClaim?`<button onclick="claimLogro('${tipo}',${li},${l.reward})" style="padding:5px 10px;background:rgba(0,255,136,0.12);border:1px solid var(--green);border-radius:6px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.78em;cursor:pointer">+${l.reward}💎</button>`:`<span style="color:#555">🔒</span><br><small style="color:var(--gold)">+${l.reward}💎</small>`}</div></div>`;}).join('');}
+    function claimLogro(tipo,idx,reward){const cL=JSON.parse(localStorage.getItem('tg_claimed_logros')||'{}');const key=`${tipo}_${idx}`;if(cL[key])return;gemas+=reward;cL[key]=true;localStorage.setItem('tg_claimed_logros',JSON.stringify(cL));actualizarUI();buildLogros();mostrarMensaje(`🏅 +${reward} 💎 por logro!`,'#ffd700');}
+    function buildLogros(){['jugadores','partidas','goles','racha'].forEach(buildLogrosList);}
 
     // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
     function buildMantenimiento() {
         const lista=$id('mant-list');
-        if(!carrosComprados.length){ lista.innerHTML=`<div class="coming-soon-box">No tienes futbolistas. ¡Ficha uno en el <strong style="color:var(--green)">Marketplace</strong>!</div>`; return; }
-        lista.innerHTML=carrosComprados.map(idx=>{
-            const c=PLAYERS[idx]; const dur=getDurabilidad(idx); const dc=colorDurabilidad(dur);
-            const balls=getBallonesJugador(idx); const llenos=balls.filter(Boolean).length;
-            return `<div class="mant-item">
-<img src="${playerImgSrc(idx)}" alt="${c.nombre}" style="width:60px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(45,122,31,0.3)"
-     onerror="this.onerror=null;this.style.display='none';">
-<div class="mant-info">
-    <h4>${c.nombre}</h4>
-    <p>⚡ OVR ${c.hp} · ${c.pos} · ⚽ ${llenos}/4 balones</p>
-    <div class="dur-bar-wrap" style="margin-top:6px">
-        <div class="dur-bar-label"><span>💪 Forma</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div>
-        <div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div>
-    </div>
+        if(!carrosComprados.length){lista.innerHTML=`<div class="coming-soon-box">No tienes futbolistas. ¡Ficha uno en el <strong style="color:var(--green)">Marketplace</strong>!</div>`;return;}
+        let html='';
+        carrosComprados.forEach(entry=>{
+            for(let copy=0;copy<entry.qty;copy++){
+                const c=PLAYERS[entry.idx];const dur=getDurabilidad(entry.idx,copy);const dc=colorDurabilidad(dur);const balls=getBallonesJugador(entry.idx,copy);const llenos=balls.filter(Boolean).length;
+                html+=`<div class="mant-item">
+<img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" style="width:60px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(45,122,31,0.3)" onerror="this.style.display='none'">
+<div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} · ${c.pos} · ⚽ ${llenos}/4 balones</p>
+<div class="dur-bar-wrap" style="margin-top:6px"><div class="dur-bar-label"><span>💪 Forma</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div></div>
 </div>
-<div class="mant-price">
-    <strong>$${Math.ceil(c.precio/320)} USDT</strong>
-    <small>Entrenamiento</small>
-    <button class="mant-btn" onclick="pagarMantenimiento(${idx})">🏋️ Entrenar</button>
-</div>
+<div class="mant-price"><strong>$${Math.ceil(c.precio/320)} USDT</strong><small>Entrenamiento</small><button class="mant-btn" onclick="pagarMantenimiento(${entry.idx},${copy})">🏋️ Entrenar</button></div>
 </div>`;
-        }).join('');
+            }
+        });
+        lista.innerHTML=html;
     }
 
-    async function pagarMantenimiento(idx) {
+    async function pagarMantenimiento(idx,copy=0){
         const c=PLAYERS[idx];
-        if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00'); tonConnectUI.openModal(); return; }
+        if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');tonConnectUI.openModal();return;}
         const costo=Math.ceil(c.precio/320);
         mostrarMensaje(`⏳ Procesando $${costo} USDT...`,'#00d4ff');
         const ton=(costo/5).toFixed(4);
         const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
-        try {
-            await tonConnectUI.sendTransaction(tx);
-            repararDurabilidad(idx);
-            ballonesPorJugador[idx]=[true,true,true,true];
-            actualizarUI(); buildMantenimiento();
-            mostrarMensaje(`✅ ${c.nombre} entrenado al 100% + 4 balones recargados`,'#00ff88');
-            closeModal('modal-mantenimiento');
-        } catch(e){ mostrarMensaje('❌ Transacción cancelada','#ff4444'); }
+        try{await tonConnectUI.sendTransaction(tx);repararDurabilidad(idx,copy);ballonesPorJugador[slotKey(idx,copy)]=[true,true,true,true];actualizarUI();buildMantenimiento();mostrarMensaje(`✅ Entrenado al 100% + 4 balones recargados`,'#00ff88');closeModal('modal-mantenimiento');}
+        catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');}
     }
-
-    async function pagarTorneo() {
-        if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00'); tonConnectUI.openModal(); return; }
-        const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(1e9))}]};
-        try { await tonConnectUI.sendTransaction(tx); mostrarMensaje('✅ ¡Inscrito al torneo! 🏆','#ffd700'); closeModal('modal-torneo'); }
-        catch(e){ mostrarMensaje('❌ Cancelado','#ff4444'); }
-    }
-
-    function retirar() {
-        if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00'); closeModal('modal-retiro'); tonConnectUI.openModal(); return; }
-        const cant=parseFloat($id('retiro-cantidad').value)||0;
-        if(cant<500){ mostrarMensaje('❌ Mínimo 500 💎','#ff4444'); return; }
-        if(cant>gemas){ mostrarMensaje('❌ Saldo insuficiente','#ff4444'); return; }
-        mostrarMensaje('🔜 Retiro solicitado — Se procesará en 24h','#ffaa00');
-        closeModal('modal-retiro');
-    }
-
-    async function comprarGemas(cantidad, usdtAmount) {
-        if(!window.tonConnectUI||!tonConnectUI.connected){ mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00'); closeModal('modal-deposito'); tonConnectUI.openModal(); return; }
-        mostrarMensaje(`⏳ Procesando $${usdtAmount} USDT...`,'#00d4ff');
-        const tonAmount=(usdtAmount/5).toFixed(4);
-        const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(tonAmount)*1e9))}]};
-        try {
-            await tonConnectUI.sendTransaction(tx);
-            gemas+=cantidad; actualizarUI();
-            mostrarMensaje(`✅ +${cantidad} 💎 añadidas al balance!`,'#00ff88');
-            closeModal('modal-deposito');
-        } catch(e){ mostrarMensaje('❌ Cancelado','#ff4444'); }
-    }
+    async function pagarTorneo(){if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');tonConnectUI.openModal();return;}const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(1e9))}]};try{await tonConnectUI.sendTransaction(tx);mostrarMensaje('✅ ¡Inscrito al torneo! 🏆','#ffd700');closeModal('modal-torneo');}catch(e){mostrarMensaje('❌ Cancelado','#ff4444');}}
+    function retirar(){if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-retiro');tonConnectUI.openModal();return;}const cant=parseFloat($id('retiro-cantidad').value)||0;if(cant<500){mostrarMensaje('❌ Mínimo 500 💎','#ff4444');return;}if(cant>gemas){mostrarMensaje('❌ Saldo insuficiente','#ff4444');return;}mostrarMensaje('🔜 Retiro solicitado — Se procesará en 24h','#ffaa00');closeModal('modal-retiro');}
+    async function comprarGemas(cantidad,usdtAmount){if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-deposito');tonConnectUI.openModal();return;}mostrarMensaje(`⏳ Procesando $${usdtAmount} USDT...`,'#00d4ff');const tonAmount=(usdtAmount/5).toFixed(4);const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(tonAmount)*1e9))}]};try{await tonConnectUI.sendTransaction(tx);gemas+=cantidad;actualizarUI();mostrarMensaje(`✅ +${cantidad} 💎 añadidas al balance!`,'#00ff88');closeModal('modal-deposito');}catch(e){mostrarMensaje('❌ Cancelado','#ff4444');}}
 
     // ── TONCONNECT ────────────────────────────────────────────────────────
     let tonConnectUI;
-    try {
-        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',
-            buttonRootId:'ton-connect-button'
-        });
-        tonConnectUI.onStatusChange(w=>mostrarMensaje(w?'✅ Wallet conectada':'Wallet desconectada',w?'#00ff88':'#888'));
-    } catch(e){ console.warn('TonConnect no disponible:',e); }
+    try{tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});tonConnectUI.onStatusChange(w=>mostrarMensaje(w?'✅ Wallet conectada':'Wallet desconectada',w?'#00ff88':'#888'));}catch(e){console.warn('TonConnect no disponible:',e);}
 
     // ── TELEGRAM ──────────────────────────────────────────────────────────
-    if(window.Telegram?.WebApp){
-        Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
-        Telegram.WebApp.setHeaderColor('#060f06');
-        Telegram.WebApp.setBackgroundColor('#060f06');
-    }
+    if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#060f06');Telegram.WebApp.setBackgroundColor('#060f06');}
 
     // ── INIT ──────────────────────────────────────────────────────────────
     loadState();
@@ -2209,16 +1623,7 @@ ${lockedLevel?'🔒 Nivel '+s.level_req+' req.':canClaim?'✅ Reclamar +'+s.rewa
     buildFutsalaBody();
     applyTranslations();
 
-    if(!CanvasRenderingContext2D.prototype.roundRect){
-        CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
-            this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);
-            this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);
-            this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);
-            this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);
-            this.quadraticCurveTo(x,y,x+r,y);this.closePath();
-        };
-    }
-
+    if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
     </script>
 </div>
 </body>
