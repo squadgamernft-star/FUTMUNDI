@@ -69,7 +69,6 @@
         .primary-btn:hover { background: linear-gradient(135deg, rgba(45,122,31,0.35), rgba(0,200,80,0.25)); box-shadow: 0 0 25px rgba(0,255,136,0.4); color: #fff; }
         #status-msg { margin-top: 18px; font-size: 1em; color: #888; min-height: 24px; text-align: center; padding: 8px; font-weight: 600; }
 
-        /* ── BALONES SIMPLIFICADOS ── */
         .fuel-section { width: 100%; }
         .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
         .fuel-simple-display { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.25); border-radius: 12px; padding: 12px 20px; }
@@ -78,7 +77,6 @@
         .fuel-count { font-family: 'Orbitron', sans-serif; font-size: 2em; font-weight: 900; color: var(--green); text-shadow: 0 0 15px rgba(0,255,136,0.6); }
         .fuel-count-label { font-size: 0.72em; color: #666; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ── MODALES ── */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal { background: linear-gradient(145deg, #0a130a 0%, #060d06 100%); border: 1px solid rgba(45,122,31,0.3); border-radius: 18px; max-width: 750px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 0 60px rgba(0,255,136,0.1); animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
@@ -95,7 +93,6 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* ── MARKETPLACE ── */
         .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; }
         .car-card { background: var(--surface); border: 1px solid rgba(45,122,31,0.2); border-radius: 12px; overflow: hidden; transition: all 0.3s; }
         .car-card:hover { border-color: rgba(45,122,31,0.6); transform: translateY(-4px); box-shadow: 0 0 20px rgba(0,255,136,0.12); }
@@ -121,7 +118,6 @@
         .dur-med { background: linear-gradient(90deg, var(--gold), #ffaa00); }
         .dur-low { background: linear-gradient(90deg, var(--red), #ff6666); }
 
-        /* ── GARAGE / SQUAD ── */
         .squad-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .squad-slots-section h3 { font-family: 'Orbitron', sans-serif; font-size: 0.72em; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
         .squad-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -151,7 +147,6 @@
         .equip-bonus-row { font-size: 0.72em; color: #aaa; display: flex; justify-content: space-between; padding: 2px 0; }
         .equip-bonus-val { color: var(--green); font-weight: 700; }
 
-        /* ── RECOMPENSAS ── */
         .reward-sections { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
         .reward-section { background: var(--surface); border: 1px solid rgba(45,122,31,0.2); border-radius: 12px; padding: 14px; }
         .reward-section h4 { font-family: 'Orbitron', sans-serif; font-size: 0.72em; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
@@ -171,7 +166,6 @@
         .claim-reward-btn:hover { background: rgba(0,255,136,0.22); color: #fff; }
         .claim-reward-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* ── LOGROS ── */
         .logros-list { display: flex; flex-direction: column; gap: 10px; }
         .logro-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
         .logro-item.desbloqueado { border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.04); }
@@ -183,7 +177,6 @@
         .logro-progress-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 50px; }
         .logro-reward { text-align: right; font-weight: 700; white-space: nowrap; }
 
-        /* ── MANT/TRAIN ── */
         .mant-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--surface); border-radius: 12px; border: 1px solid rgba(255,255,255,0.07); margin-bottom: 12px; }
         .mant-icon { font-size: 2em; }
         .mant-info { flex: 1; }
@@ -195,7 +188,6 @@
         .mant-btn { margin-top: 6px; padding: 5px 14px; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 6px; color: var(--green); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; transition: all 0.25s; }
         .mant-btn:hover { background: rgba(0,255,136,0.2); }
 
-        /* ── DUEL/MATCH ── */
         .duel-mode-card { padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); background: var(--surface); margin-bottom: 14px; cursor: pointer; transition: all 0.3s; text-align: center; }
         .duel-mode-card:hover { border-color: var(--green); box-shadow: 0 0 18px rgba(0,255,136,0.12); transform: translateY(-3px); }
         .duel-mode-card .dm-icon { font-size: 2.5em; margin-bottom: 10px; }
@@ -207,14 +199,12 @@
         .prize-badge.silver-p { background: rgba(192,192,192,0.07); border: 1px solid rgba(192,192,192,0.2); color: #bbb; }
         .prize-badge.bronze-p { background: rgba(205,127,50,0.08); border: 1px solid rgba(205,127,50,0.25); color: #cd7f32; }
 
-        /* ── RANKING ── */
         .rank-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .rank-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
         .rank-pos { font-family: 'Orbitron', sans-serif; font-size: 1em; color: var(--green); font-weight: 700; width: 28px; text-align: center; }
         .rank-name { flex: 1; font-weight: 600; font-size: 0.93em; }
         .rank-score { color: var(--gold); font-weight: 700; font-size: 0.88em; white-space: nowrap; }
 
-        /* ── DEPOSIT/WITHDRAW ── */
         .withdraw-label { font-size: 0.84em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
         .withdraw-input { width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(45,122,31,0.3); border-radius: 10px; color: #fff; font-size: 0.95em; font-family: 'Rajdhani', sans-serif; outline: none; transition: border-color 0.3s; margin-bottom: 14px; }
         .withdraw-input:focus { border-color: var(--green); }
@@ -229,7 +219,6 @@
         .gem-tier-info p { font-size: 0.78em; color: #888; margin-top: 2px; }
         .gem-tier-price { font-family: 'Orbitron', sans-serif; font-size: 0.84em; color: var(--cyan); font-weight: 700; }
 
-        /* ── TORNEO MEJORADO ── */
         .tournament-banner { background: linear-gradient(135deg, rgba(255,140,0,0.1), rgba(255,68,68,0.1)); border: 1px solid rgba(255,140,0,0.3); border-radius: 14px; padding: 18px; text-align: center; margin-bottom: 16px; }
         .tournament-banner h3 { font-family: 'Bebas Neue', sans-serif; color: var(--orange); margin-bottom: 8px; letter-spacing: 3px; font-size: 1.5em; }
         .tournament-banner .t-prize { font-size: 1.8em; font-weight: 700; color: var(--gold); }
@@ -252,7 +241,6 @@
         .torneo-pay-btn { padding: 13px 26px; background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,140,0,0.12)); border: 1px solid var(--gold); border-radius: 10px; color: var(--gold); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
         .torneo-pay-btn:hover { background: rgba(255,215,0,0.22); color: #fff; }
 
-        /* ── NIVEL ── */
         .nivel-bar-wrap { margin: 14px 0; }
         .nivel-bar-label { display: flex; justify-content: space-between; font-size: 0.84em; color: #888; margin-bottom: 7px; }
         .nivel-bar-bg { background: rgba(255,255,255,0.07); border-radius: 50px; height: 10px; overflow: hidden; }
@@ -264,14 +252,12 @@
         .nivel-bonus-row { display: flex; justify-content: space-between; font-size: 0.85em; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .nivel-bonus-val { color: var(--gold); font-weight: 700; }
 
-        /* ── VIDEO ── */
         .video-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.97); backdrop-filter: blur(12px); z-index: 1200; justify-content: center; align-items: center; padding: 16px; flex-direction: column; }
         .video-overlay.active { display: flex; }
         .video-canvas { width: 100%; max-width: 640px; height: 360px; border-radius: 16px; border: 2px solid rgba(0,255,136,0.3); box-shadow: 0 0 60px rgba(0,255,136,0.2); display: block; background: #000; }
         .video-close-btn { margin-top: 14px; padding: 10px 30px; background: rgba(0,255,136,0.12); border: 1px solid var(--green); border-radius: 10px; color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; }
         .video-close-btn:hover { background: rgba(0,255,136,0.25); color: #fff; }
 
-        /* ── PLAYER SELECT ── */
         .player-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px; }
         .player-select-card { background: var(--surface); border: 2px solid rgba(45,122,31,0.25); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s; text-align: center; }
         .player-select-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 0 16px rgba(0,255,136,0.2); }
@@ -282,7 +268,6 @@
         .player-select-info .ps-ovr { font-size: 0.78em; color: var(--gold); font-weight: 700; margin-top: 2px; }
         .player-select-info .ps-balls { font-size: 0.82em; color: var(--green); margin-top: 2px; font-weight: 700; }
 
-        /* ── DETAIL MODAL ── */
         .car-detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(16px); z-index: 1100; justify-content: center; align-items: center; padding: 20px; }
         .car-detail-overlay.active { display: flex; }
         .car-detail-modal { background: linear-gradient(145deg,#0e1a0e 0%,#080808 100%); border: 1px solid rgba(45,122,31,0.4); border-radius: 22px; max-width: 520px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 0 80px rgba(0,255,136,0.15); animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
@@ -316,13 +301,6 @@
         .map-card-info h4 { font-family: 'Orbitron', sans-serif; font-size: 0.7em; color: var(--orange); letter-spacing: 1.5px; }
         .map-card-info p { font-size: 0.8em; color: #888; margin-top: 4px; line-height: 1.5; }
         .map-card-info .map-tag { display: inline-block; margin-top: 5px; padding: 2px 8px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); border-radius: 20px; font-size: 0.72em; color: var(--cyan); }
-
-        /* Goles reward table */
-        .goals-reward-table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
-        .goals-reward-table th { color: var(--cyan); font-family: 'Orbitron', sans-serif; font-size: 0.75em; letter-spacing: 1px; padding: 8px; border-bottom: 1px solid rgba(0,212,255,0.2); text-align: left; }
-        .goals-reward-table td { padding: 8px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #aaa; }
-        .goals-reward-table tr.active-row td { color: var(--green); background: rgba(0,255,136,0.05); }
-        .goals-reward-table tr.claimed-row td { color: #555; text-decoration: line-through; }
 
         .modal::-webkit-scrollbar { width: 4px; }
         .modal::-webkit-scrollbar-track { background: transparent; }
@@ -419,7 +397,6 @@
                     <div class="central-hero-badge">⚽ FUTMUNDI NFT ⚽</div>
                 </div>
 
-                <!-- BALONES SIMPLIFICADOS -->
                 <div class="fuel-section">
                     <div class="fuel-label">⚽ Balones de Estamina</div>
                     <div class="fuel-simple-display">
@@ -615,8 +592,8 @@
                 <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
                     <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO <span id="futcancha-nivel-bonus" style="color:var(--gold)"></span></div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">+2 💎</div></div>
-                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">+1 💎</div></div>
+                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">según jugador NFT</div></div>
+                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">según jugador NFT</div></div>
                         <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
                     </div>
                 </div>
@@ -689,7 +666,7 @@
                                 <div class="equip-bonus-row"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
                                 <div class="equip-bonus-row"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
                                 <div class="equip-bonus-row"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">+2💎 vic</span></div>
+                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">—</span></div>
                             </div>
                         </div>
                     </div>
@@ -760,7 +737,7 @@
         </div>
     </div>
 
-    <!-- TORNEO MEJORADO -->
+    <!-- TORNEO -->
     <div class="modal-overlay" id="modal-torneo">
         <div class="modal">
             <div class="modal-header">
@@ -780,37 +757,16 @@
                     </div>
                     <div id="torneo-status-label" style="font-size:0.82em;margin-top:4px;color:var(--green)">⏳ Cargando...</div>
                 </div>
-
-                <!-- PREMIOS -->
                 <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;text-align:center;">🏅 DISTRIBUCIÓN DE PREMIOS</div>
                 <div class="torneo-prizes-grid">
-                    <div class="torneo-prize-card p1">
-                        <div class="torneo-prize-pos" style="color:var(--gold)">🥇 1er Lugar</div>
-                        <div class="torneo-prize-gems">2,600 💎</div>
-                        <div class="torneo-prize-extras">👕 Uniforme exclusivo<br>👟 Zapatillas Pro<br>🎓 Coach Legendario</div>
-                    </div>
-                    <div class="torneo-prize-card p2">
-                        <div class="torneo-prize-pos" style="color:#c0c0c0">🥈 2do Lugar</div>
-                        <div class="torneo-prize-gems">1,500 💎</div>
-                        <div class="torneo-prize-extras">🐾 Mascota Especial<br>👟 Zapatillas</div>
-                    </div>
-                    <div class="torneo-prize-card p3">
-                        <div class="torneo-prize-pos" style="color:#cd7f32">🥉 3er Lugar</div>
-                        <div class="torneo-prize-gems">500 💎</div>
-                        <div class="torneo-prize-extras">🎖️ Insignia de Bronce</div>
-                    </div>
-                    <div class="torneo-prize-card p4">
-                        <div class="torneo-prize-pos" style="color:#aaa">4to Lugar</div>
-                        <div class="torneo-prize-gems">400 💎</div>
-                        <div class="torneo-prize-extras">🎫 Pase siguiente torneo</div>
-                    </div>
+                    <div class="torneo-prize-card p1"><div class="torneo-prize-pos" style="color:var(--gold)">🥇 1er Lugar</div><div class="torneo-prize-gems">2,600 💎</div><div class="torneo-prize-extras">👕 Uniforme exclusivo<br>👟 Zapatillas Pro<br>🎓 Coach Legendario</div></div>
+                    <div class="torneo-prize-card p2"><div class="torneo-prize-pos" style="color:#c0c0c0">🥈 2do Lugar</div><div class="torneo-prize-gems">1,500 💎</div><div class="torneo-prize-extras">🐾 Mascota Especial<br>👟 Zapatillas</div></div>
+                    <div class="torneo-prize-card p3"><div class="torneo-prize-pos" style="color:#cd7f32">🥉 3er Lugar</div><div class="torneo-prize-gems">500 💎</div><div class="torneo-prize-extras">🎖️ Insignia de Bronce</div></div>
+                    <div class="torneo-prize-card p4"><div class="torneo-prize-pos" style="color:#aaa">4to Lugar</div><div class="torneo-prize-gems">400 💎</div><div class="torneo-prize-extras">🎫 Pase siguiente torneo</div></div>
                 </div>
-
                 <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin:14px 0;font-size:0.82em;color:#aaa;">
                     📊 Al finalizar el torneo los puntos son verificados automáticamente. Los premios se acreditan en 24h.
-                    El nivel del jugador aumenta los puntos en partidas de torneo.
                 </div>
-
                 <div class="tournament-entry">
                     <h4>💳 INSCRIPCIÓN — $10 USD</h4>
                     <p>La inscripción se realiza a través del área de <strong style="color:var(--gold)">Depósito</strong>.<br>Deposita <strong style="color:var(--cyan)">$10 USDT</strong> y escribe <em>"TORNEO"</em> en el memo.</p>
@@ -837,7 +793,7 @@
                     <div class="car-stat-card stat-hp"><div class="stat-icon">⚡</div><div class="stat-label">Overall</div><div class="stat-value" id="car-detail-hp">—</div></div>
                     <div class="car-stat-card stat-dur"><div class="stat-icon">💪</div><div class="stat-label">Forma</div><div class="stat-value" id="car-detail-dur">100%</div></div>
                     <div class="car-stat-card stat-fuel"><div class="stat-icon">⚽</div><div class="stat-label">Balones</div><div class="stat-value" id="car-detail-fuel">4 / 4</div></div>
-                    <div class="car-stat-card stat-earn"><div class="stat-icon">💎</div><div class="stat-label">Gemas/vic</div><div class="stat-value" id="car-detail-earn">—</div></div>
+                    <div class="car-stat-card stat-earn"><div class="stat-icon">💎</div><div class="stat-label">Gemas/día</div><div class="stat-value" id="car-detail-earn">—</div></div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="car-detail-extra-stats"></div>
                 <div class="car-detail-divider"></div>
@@ -889,20 +845,21 @@
     const MAX_PER_PLAYER = 20;
 
     // ── CATÁLOGO DE JUGADORES ─────────────────────────────────────────────
+    // gemMin/gemMax = rango de gemas diarias generadas por este NFT
     const PLAYERS = [
-        { nombre:"Neymar Jr.",      pais:"Brasil",    flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     color1:"#009c3b", color2:"#002776", img:"Neymar_320_gemass.png" },
-        { nombre:"James Rodríguez", pais:"Colombia",  flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", color1:"#fcd116", color2:"#003087", img:"james_rodriguez_1600_gemas.png" },
-        { nombre:"Alexis Sánchez",  pais:"Chile",     flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",     color1:"#d52b1e", color2:"#ffffff", img:"Alexis_3300_gemass.png" },
-        { nombre:"Harry Kane",      pais:"Inglaterra",flag:"🇬🇧", precio:6900,   hp:84, pos:"Delantero",     color1:"#ffffff", color2:"#cf142b", img:"harry_kane_6900_gemas.png" },
-        { nombre:"Pedri",           pais:"España",    flag:"🇪🇸", precio:9900,   hp:86, pos:"Mediocampista", color1:"#c60b1e", color2:"#ffc400", img:"Pedri_9900_gemas.jpg" },
-        { nombre:"Vinícius Jr.",    pais:"Brasil",    flag:"🇧🇷", precio:12000,  hp:88, pos:"Extremo",       color1:"#009c3b", color2:"#ffd700", img:"Vinicius_Jr_12000_gemas.jpg" },
-        { nombre:"Rodri",           pais:"España",    flag:"🇪🇸", precio:18000,  hp:89, pos:"Pivote",        color1:"#c60b1e", color2:"#ffc400", img:"Rodri_18000_gemas.png" },
-        { nombre:"Haaland",         pais:"Noruega",   flag:"🇳🇴", precio:75000,  hp:91, pos:"Delantero",     color1:"#ef2b2d", color2:"#ffffff", img:"Haaland_75000_gemas.jpg" },
-        { nombre:"Mbappé",          pais:"Francia",   flag:"🇫🇷", precio:150000, hp:93, pos:"Extremo",       color1:"#002395", color2:"#ed2939", img:"mbappe_150000_gemas.png" },
-        { nombre:"Lionel Messi",    pais:"Argentina", flag:"🇦🇷", precio:255000, hp:96, pos:"Delantero",     color1:"#74acdf", color2:"#ffffff", img:"messi_255000_gemas.png" },
-        { nombre:"Cristiano R.",    pais:"Portugal",  flag:"🇵🇹", precio:420000, hp:97, pos:"Delantero",     color1:"#006600", color2:"#ff0000", img:"Cristiano_R_420000_gemas.png" },
-        { nombre:"Lamine Yamal",    pais:"España",    flag:"🇪🇸", precio:680000, hp:98, pos:"Extremo",       color1:"#c60b1e", color2:"#ffc400", img:"lamine_yamal_85000_gemas.png" },
-        { nombre:"Balón de Oro NFT",pais:"Mundo",     flag:"🌍",  precio:999999, hp:99, pos:"Leyenda",       color1:"#ffd700", color2:"#ff8c00", img:"bellingham_65000_gemass.png" },
+        { nombre:"Neymar Jr.",       pais:"Brasil",     flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     color1:"#009c3b", color2:"#002776", img:"Neymar_320_gemass.png",          gemMin:8,     gemMax:15     },
+        { nombre:"James Rodríguez",  pais:"Colombia",   flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", color1:"#fcd116", color2:"#003087", img:"james_rodriguez_1600_gemas.png",  gemMin:35,    gemMax:60     },
+        { nombre:"Alexis Sánchez",   pais:"Chile",      flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",     color1:"#d52b1e", color2:"#ffffff", img:"Alexis_3300_gemass.png",          gemMin:80,    gemMax:150    },
+        { nombre:"Harry Kane",       pais:"Inglaterra", flag:"🇬🇧", precio:6900,   hp:84, pos:"Delantero",     color1:"#ffffff", color2:"#cf142b", img:"harry_kane_6900_gemas.png",       gemMin:150,   gemMax:320    },
+        { nombre:"Pedri",            pais:"España",     flag:"🇪🇸", precio:9900,   hp:86, pos:"Mediocampista", color1:"#c60b1e", color2:"#ffc400", img:"Pedri_9900_gemas.jpg",            gemMin:230,   gemMax:500    },
+        { nombre:"Vinícius Jr.",     pais:"Brasil",     flag:"🇧🇷", precio:12000,  hp:88, pos:"Extremo",       color1:"#009c3b", color2:"#ffd700", img:"Vinicius_Jr_12000_gemas.jpg",     gemMin:325,   gemMax:750    },
+        { nombre:"Rodri",            pais:"España",     flag:"🇪🇸", precio:18000,  hp:89, pos:"Pivote",        color1:"#c60b1e", color2:"#ffc400", img:"Rodri_18000_gemas.png",           gemMin:420,   gemMax:980    },
+        { nombre:"Haaland",          pais:"Noruega",    flag:"🇳🇴", precio:75000,  hp:91, pos:"Delantero",     color1:"#ef2b2d", color2:"#ffffff", img:"Haaland_75000_gemas.jpg",         gemMin:2000,  gemMax:3800   },
+        { nombre:"Mbappé",           pais:"Francia",    flag:"🇫🇷", precio:150000, hp:93, pos:"Extremo",       color1:"#002395", color2:"#ed2939", img:"mbappe_150000_gemas.png",         gemMin:4000,  gemMax:8100   },
+        { nombre:"Lionel Messi",     pais:"Argentina",  flag:"🇦🇷", precio:255000, hp:96, pos:"Delantero",     color1:"#74acdf", color2:"#ffffff", img:"messi_255000_gemas.png",          gemMin:5000,  gemMax:13800  },
+        { nombre:"Cristiano R.",     pais:"Portugal",   flag:"🇵🇹", precio:420000, hp:97, pos:"Delantero",     color1:"#006600", color2:"#ff0000", img:"Cristiano_R_420000_gemas.png",    gemMin:10350, gemMax:21700  },
+        { nombre:"Lamine Yamal",     pais:"España",     flag:"🇪🇸", precio:680000, hp:98, pos:"Extremo",       color1:"#c60b1e", color2:"#ffc400", img:"lamine_yamal_85000_gemas.png",    gemMin:13320, gemMax:34800  },
+        { nombre:"Balón de Oro NFT", pais:"Mundo",      flag:"🌍",  precio:999999, hp:99, pos:"Leyenda",       color1:"#ffd700", color2:"#ff8c00", img:"bellingham_65000_gemass.png",     gemMin:24350, gemMax:53700  },
     ];
 
     // ── SVG FALLBACK ──────────────────────────────────────────────────────
@@ -920,7 +877,7 @@
     const $id = id => document.getElementById(id);
     const statusMsg = $id('status-msg');
     let gemas=3900, hp=0, puntaje=0, nivel=1, statsPartidas=0;
-    let totalGoals = 0; // goles acumulados total
+    let totalGoals = 0;
     let carrosComprados=[];
     let durabilidades={}, ballonesPorJugador={};
     let _currentMatchMode='pve', _currentMatchCancha='', _currentMatchPlayer=null;
@@ -930,9 +887,7 @@
     let _marketQty={};
 
     // ── SISTEMA DE NIVEL ──────────────────────────────────────────────────
-    // Nivel basado en cantidad total de NFTs
-    // 1 NFT = nivel 1, 3 NFT = nivel 2, 5 = nivel 3, 8 = nivel 4, 12 = nivel 5...
-    const NIVEL_THRESHOLDS = [0,1,3,5,8,12,17,23,30,38,47]; // NFTs para cada nivel
+    const NIVEL_THRESHOLDS = [0,1,3,5,8,12,17,23,30,38,47];
     function calcularNivel() {
         const totalNFTs = carrosComprados.reduce((s,e)=>s+e.qty,0);
         let nv = 1;
@@ -941,34 +896,25 @@
         }
         return nv;
     }
-    // Bonus por nivel: +0.1 gema por nivel sobre la base
     function gemasBonus() { return parseFloat(((nivel-1)*0.1).toFixed(1)); }
-    function nivelWinBonus() { return Math.min(0.15, (nivel-1)*0.02); } // hasta +15% prob victoria
+    function nivelWinBonus() { return Math.min(0.15, (nivel-1)*0.02); }
 
     // ── SISTEMA DE GOLES Y RECOMPENSAS ───────────────────────────────────
-    // Ciclos de 1000 goles. Cada 100 goles dentro del ciclo = recompensa
-    // ciclo 1: 100g=1💎, 200g=2💎...1000g=10💎
-    // ciclo 2: 1100g=1💎, 1200g=2💎... etc
     function getGoalCycleInfo() {
         const cycleSize = 1000;
-        const stepSize = 100;
         const cycle = Math.floor(totalGoals / cycleSize) + 1;
         const goalsInCycle = totalGoals % cycleSize;
-        const nextMilestone = Math.ceil((goalsInCycle+1)/stepSize)*stepSize;
-        return { cycle, goalsInCycle, nextMilestone };
+        return { cycle, goalsInCycle };
     }
-    // Returns array of milestones in current cycle with claim status
     function getGoalMilestones() {
         const info = getGoalCycleInfo();
         const claimedGoals = JSON.parse(localStorage.getItem('tg_claimed_goal_milestones')||'{}');
         const milestones = [];
         for(let m=100; m<=1000; m+=100) {
-            const gems = m/100; // 100g=1💎, 200g=2💎...1000g=10💎
-            const globalGoal = (info.cycle-1)*1000 + m;
+            const gems = m/100;
             const key = `cycle${info.cycle}_${m}`;
             milestones.push({
                 goalsNeeded: m,
-                globalGoal,
                 gems,
                 achieved: info.goalsInCycle >= m,
                 claimed: !!claimedGoals[key],
@@ -1031,7 +977,6 @@
         const d=localStorage.getItem('tg_durabilidades');if(d)durabilidades=JSON.parse(d);
         const b=localStorage.getItem('tg_ballones');if(b)ballonesPorJugador=JSON.parse(b);
         const eq=localStorage.getItem('tg_equipamiento');if(eq)_equipamiento=JSON.parse(eq);
-        // Recalcular nivel basado en NFTs
         nivel=calcularNivel();
     }
 
@@ -1055,18 +1000,16 @@
         const md=$id('market-gemas-display');if(md)md.textContent=gemas.toFixed(1)+' 💎';
         const mr=$id('my-rank-score');if(mr)mr.textContent=puntaje+' pts';
 
-        // Balones simplificados
         const totalBalls=totalBallonesDisponibles();
         const fuelEl=$id('fuel-count-display');if(fuelEl)fuelEl.textContent=totalBalls;
         const topForm=$id('gasolina');if(topForm)topForm.textContent=totalNFTs>0?`⚽${totalBalls}`:'—';
 
-        // Nivel bonus display
         const bonus=gemasBonus();
         const winB=Math.round(nivelWinBonus()*100);
         const nbGems=$id('nb-gems-bonus');if(nbGems)nbGems.textContent=`+${bonus.toFixed(1)} 💎`;
         const nbPts=$id('nb-pts-bonus');if(nbPts)nbPts.textContent=`+${nivel*2} pts`;
         const nbWin=$id('nb-win-bonus');if(nbWin)nbWin.textContent=`+${winB}%`;
-        // XP bar
+
         const currentThresh=NIVEL_THRESHOLDS[nivel-1]||0;
         const nextThresh=NIVEL_THRESHOLDS[nivel]||NIVEL_THRESHOLDS[NIVEL_THRESHOLDS.length-1];
         const xp=totalNFTs-currentThresh;const xpNeeded=nextThresh-currentThresh;
@@ -1074,12 +1017,11 @@
         const xpLabel=$id('nivel-xp-label');if(xpLabel)xpLabel.innerHTML=`<span>NFTs: ${totalNFTs}</span><span>Sig. nivel: ${nextThresh} NFTs</span>`;
         const barFill=$id('nivel-bar-fill');if(barFill)barFill.style.width=pct+'%';
 
-        // FutCancha bonus display
-        const pvpWin=$id('pvp-win-gems');if(pvpWin)pvpWin.textContent=`+${(2+bonus).toFixed(1)} 💎`;
-        const pvpDraw=$id('pvp-draw-gems');if(pvpDraw)pvpDraw.textContent=`+${(1+bonus).toFixed(1)} 💎`;
-        const fnb=$id('futcancha-nivel-bonus');if(fnb&&bonus>0)fnb.textContent=`(Niv.${nivel}: +${bonus.toFixed(1)}💎 bonus)`;
+        // FutCancha: show dynamic note
+        const fnb=$id('futcancha-nivel-bonus');
+        if(fnb)fnb.textContent=bonus>0?`(Niv.${nivel}: +${bonus.toFixed(1)}💎 bonus sobre rango NFT)`:'';
 
-        // Goals in reward modal
+        // Goals display
         const info=getGoalCycleInfo();
         const gd=$id('goals-display');if(gd)gd.textContent=totalGoals;
         const cd=$id('cycle-display');if(cd)cd.textContent=info.cycle;
@@ -1090,18 +1032,13 @@
 
     // ── TORNEO COUNTDOWN ──────────────────────────────────────────────────
     function updateTorneoCountdown(){
-        const now=new Date();const day=now.getUTCDay();// 0=Sun,1=Mon...5=Fri
-        // Tournament: Mon 00:00 UTC to Fri 00:00 UTC
-        let msUntilEnd,isActive;
+        const now=new Date();const day=now.getUTCDay();
         const midnight=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
-        // Find next Friday 00:00 UTC
         const daysUntilFri=(5-day+7)%7;
         let nextFri=new Date(midnight.getTime()+daysUntilFri*86400000);
         if(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0)nextFri=new Date(nextFri.getTime()+7*86400000);
-        // Is tournament active? Mon(1) to Thu(4) inclusive
-        isActive=(day>=1&&day<=4)||(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0);
-        if(day===0||(day===5&&now.getUTCHours()>0)){isActive=false;}// Sun or Fri after midnight
-        msUntilEnd=nextFri-now;
+        const isActive=(day>=1&&day<=4)||(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0);
+        let msUntilEnd=nextFri-now;
         if(msUntilEnd<0)msUntilEnd=0;
         const totalSec=Math.floor(msUntilEnd/1000);
         const days=Math.floor(totalSec/86400);const hours=Math.floor((totalSec%86400)/3600);const mins=Math.floor((totalSec%3600)/60);const secs=totalSec%60;
@@ -1109,10 +1046,7 @@
         const dEl=$id('tc-days');const hEl=$id('tc-hours');const mEl=$id('tc-mins');const sEl=$id('tc-secs');
         if(dEl)dEl.textContent=days;if(hEl)hEl.textContent=pad(hours);if(mEl)mEl.textContent=pad(mins);if(sEl)sEl.textContent=pad(secs);
         const statusEl=$id('torneo-status-label');
-        if(statusEl){
-            if(isActive){statusEl.textContent='🔴 TORNEO EN CURSO — ¡Compite ahora!';statusEl.style.color='var(--green)';}
-            else{statusEl.textContent='⏳ Próximo torneo: Lunes 00:00 UTC';statusEl.style.color='#888';}
-        }
+        if(statusEl){if(isActive){statusEl.textContent='🔴 TORNEO EN CURSO — ¡Compite ahora!';statusEl.style.color='var(--green)';}else{statusEl.textContent='⏳ Próximo torneo: Lunes 00:00 UTC';statusEl.style.color='#888';}}
     }
     setInterval(updateTorneoCountdown,1000);
 
@@ -1122,7 +1056,6 @@
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
 
-    // ── TORNEO: Ir a depósito ─────────────────────────────────────────────
     function irADepositoTorneo(){closeModal('modal-torneo');openModal('modal-deposito');mostrarMensaje('💎 Deposita $10 USDT con memo "TORNEO" para inscribirte','#ffd700');}
 
     // ── MARKETPLACE ───────────────────────────────────────────────────────
@@ -1140,7 +1073,7 @@
 <div class="car-card-info">
     <div class="car-card-name">${c.nombre}</div>
     <div class="car-card-country">${c.flag} ${c.pais} · ⚡ OVR ${c.hp}</div>
-    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px">🏆+2💎 🤝+1💎 ❌0💎</div>
+    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</div>
     <div class="car-card-price">💎 ${c.precio.toLocaleString()}</div>
     ${remaining>0?`
     <div class="nft-qty-row">
@@ -1168,7 +1101,7 @@
         for(let copy=startCopy;copy<startCopy+qty;copy++){durabilidades[slotKey(idx,copy)]=100;ballonesPorJugador[slotKey(idx,copy)]=[true,true,true,true];}
         nivel=calcularNivel();
         actualizarUI();buildMarket();buildLogros();
-        mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones`,'#00ff88');
+        mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`,'#00ff88');
     }
 
     // ── GARAGE ────────────────────────────────────────────────────────────
@@ -1191,14 +1124,15 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     function selectSquadSlot(idx,copy){_selectedSquadSlot={idx,copy};buildGarage();}
     function updateEquipPanel(){
         const preview=$id('equip-preview');const nameEl=$id('equip-player-name');
-        if(!_selectedSquadSlot){preview.innerHTML='<div class="equipment-player-placeholder">🧑</div>';nameEl.textContent='Selecciona un jugador';$id('eb-ovr').textContent='0';$id('eb-spd').textContent='+0%';$id('eb-def').textContent='+0%';$id('eb-gems').textContent='+2💎 vic';return;}
+        if(!_selectedSquadSlot){preview.innerHTML='<div class="equipment-player-placeholder">🧑</div>';nameEl.textContent='Selecciona un jugador';$id('eb-ovr').textContent='0';$id('eb-spd').textContent='+0%';$id('eb-def').textContent='+0%';$id('eb-gems').textContent='—';return;}
         const{idx,copy}=_selectedSquadSlot;const c=PLAYERS[idx];const key=slotKey(idx,copy);const eq=_equipamiento[key]||{};
         preview.innerHTML=`<img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">`
         nameEl.textContent=`${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''} · OVR ${c.hp}`;
         ['uniforme','tenis','protector','insignia'].forEach(type=>{const slotEl=$id(`equip-slot-${type}`);const nameSlotEl=$id(`equip-${type}-name`);if(eq[type]){slotEl.classList.add('equipped');nameSlotEl.textContent=eq[type];nameSlotEl.style.color='var(--green)';}else{slotEl.classList.remove('equipped');nameSlotEl.textContent='— Vacío —';nameSlotEl.style.color='#555';}});
         const bonuses={spd:0,def:0};if(eq.uniforme)bonuses.spd+=3;if(eq.tenis)bonuses.spd+=2;if(eq.protector)bonuses.def+=4;if(eq.insignia){bonuses.spd+=1;bonuses.def+=1;}
         $id('eb-ovr').textContent=c.hp+Object.values(bonuses).reduce((a,b)=>a+b,0);
-        $id('eb-spd').textContent=`+${bonuses.spd}%`;$id('eb-def').textContent=`+${bonuses.def}%`;$id('eb-gems').textContent='+2💎 vic';
+        $id('eb-spd').textContent=`+${bonuses.spd}%`;$id('eb-def').textContent=`+${bonuses.def}%`;
+        $id('eb-gems').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
     }
     function openEquipModal(type){if(!_selectedSquadSlot){mostrarMensaje('⚠️ Selecciona un jugador primero','#ffaa00');return;}mostrarMensaje(`🔜 Equipamiento "${type}" — próximamente`,'#00d4ff');}
 
@@ -1207,7 +1141,9 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const c=PLAYERS[idx];const dur=getDurabilidad(idx,copy);const durCls=colorDurabilidad(dur);const balls=getBallonesJugador(idx,copy);const fuelLlenos=balls.filter(Boolean).length;const playerId=generatePlayerId(idx,copy);
         $id('car-detail-img').src=playerImgSrc(idx);$id('car-detail-name').textContent=c.nombre;$id('car-detail-country-flag').textContent=c.flag+' '+c.pais;$id('car-detail-player-id').textContent='ID: '+playerId;
         $id('car-detail-hp').textContent=c.hp+' OVR';$id('car-detail-dur').textContent=dur+'%';$id('car-detail-dur').style.color=dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)';
-        $id('car-detail-fuel').textContent=fuelLlenos+' / 4';$id('car-detail-earn').textContent=`+${(2+gemasBonus()).toFixed(1)}💎 vic`;
+        $id('car-detail-fuel').textContent=fuelLlenos+' / 4';
+        // ── CORRECCIÓN CLAVE: mostrar rango de gemas del NFT ──
+        $id('car-detail-earn').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
         const spd=Math.round(c.hp*0.9+3),def=Math.round(c.hp*0.6+5),phy=Math.round(c.hp*0.75+4);
         $id('car-detail-extra-stats').innerHTML=`
 <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">⚡</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Velocidad</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--cyan);font-weight:700">${spd}</div></div>
@@ -1241,6 +1177,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 <div class="player-select-info">
     <h5>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h5>
     <div class="ps-ovr">⚡ OVR ${c.hp}</div>
+    <div style="font-size:0.7em;color:var(--gold);margin-top:1px">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎</div>
     <div class="ps-balls">${llenos>0?`⚽ ${llenos}`:'💤 Sin balones'}</div>
 </div>
 </div>`;
@@ -1269,7 +1206,6 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         $id('video-match-nft-id').textContent=`NFT ID: ${nftId}`;
         $id('video-result-box').style.display='none';$id('video-close-btn').style.display='none';
         document.body.style.overflow='hidden';
-        // Win chance: base + nivel bonus
         let winChance=0.55+nivelWinBonus();
         if(_currentMatchMode==='pve'){const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36};winChance=Math.min(0.92,(dm[_currentMatchCancha]||0.55)+nivelWinBonus());}
         const playerGoals=Math.floor(Math.random()*4);const oppGoals=Math.random()<winChance?Math.max(0,playerGoals-Math.floor(Math.random()*2)):playerGoals+1+Math.floor(Math.random()*2);
@@ -1310,22 +1246,41 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     function mostrarResultadoVideo(){
         const{idx,copy,player,playerGoals,oppGoals,resultado}=_matchResultPending;
         statsPartidas+=2;
-        // Sumar goles al total
         totalGoals+=playerGoals;
         puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
-        const baseGems=resultado==='win'?2:resultado==='draw'?1:0;
-        const gemsGanadas=parseFloat((baseGems+gemasBonus()).toFixed(1));
+
+        // ── CORRECCIÓN CLAVE: gemas según rango del jugador NFT ──
+        const gemMin=player.gemMin, gemMax=player.gemMax;
+        const bonus=gemasBonus();
+        let gemsGanadas=0;
+        if(resultado==='win'){
+            // Victoria: rango completo del NFT + bonus nivel
+            gemsGanadas=parseFloat((gemMin+Math.random()*(gemMax-gemMin)+bonus).toFixed(1));
+        } else if(resultado==='draw'){
+            // Empate: 40% del rango + bonus nivel
+            gemsGanadas=parseFloat((gemMin*0.4+Math.random()*(gemMax*0.4-gemMin*0.4)+bonus).toFixed(1));
+        }
+        // Derrota: 0 gemas
         if(gemsGanadas>0)gemas+=gemsGanadas;
         actualizarUI();buildLogros();
+
         const resultColor=resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
         const resultText=resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
         const dur=getDurabilidad(idx,copy);const nftId=generatePlayerId(idx,copy);
         let oppName,oppFlag;
         if(_currentMatchMode==='pve'){oppName=`IA · ${_currentMatchCancha}`;oppFlag='🤖';}
         else{const names=['ProKick_99','FutMaster','GoalHunter','DribleKing'];oppName=names[Math.floor(Math.random()*names.length)];oppFlag=['🇧🇷','🇦🇷','🇫🇷','🇩🇪'][Math.floor(Math.random()*4)];}
-        const gemsMsg=resultado==='win'?`<span style="color:var(--green);font-weight:700">+${gemsGanadas} 💎</span>`:resultado==='draw'?`<span style="color:var(--gold);font-weight:700">+${gemsGanadas} 💎</span>`:`<span style="color:var(--red);font-weight:700">0 💎</span>`;
-        const bonusNote=gemasBonus()>0?`<div style="font-size:0.74em;color:var(--cyan)">Bonus Nivel ${nivel}: +${gemasBonus().toFixed(1)} 💎</div>`:'';
+
+        const gemsMsg=resultado==='win'
+            ?`<span style="color:var(--green);font-weight:700">+${gemsGanadas} 💎 ganadas</span>`
+            :resultado==='draw'
+            ?`<span style="color:var(--gold);font-weight:700">+${gemsGanadas} 💎 ganadas</span>`
+            :`<span style="color:var(--red);font-weight:700">0 💎 (derrota)</span>`;
+
+        const rangeNote=`<div style="font-size:0.74em;color:#888;margin-top:2px">Rango NFT: ${gemMin.toLocaleString()}–${gemMax.toLocaleString()} 💎/día</div>`;
+        const bonusNote=bonus>0?`<div style="font-size:0.74em;color:var(--cyan)">Bonus Nivel ${nivel}: +${bonus.toFixed(1)} 💎</div>`:'';
         const goalNote=`<div style="font-size:0.74em;color:var(--gold)">⚽ Goles acumulados: ${totalGoals} (ciclo ${getGoalCycleInfo().cycle})</div>`;
+
         const rb=$id('video-result-box');rb.style.display='block';
         rb.innerHTML=`<div style="background:linear-gradient(135deg,#0a1a0a,#060d06);border:2px solid ${resultColor};border-radius:16px;padding:18px;text-align:center">
 <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:${resultColor};letter-spacing:4px">${resultText}</div>
@@ -1333,6 +1288,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 <div style="font-size:0.88em;color:#aaa;margin-bottom:6px">${player.flag} ${player.nombre} vs ${oppFlag} ${oppName}</div>
 <div style="font-size:0.78em;color:var(--cyan);font-family:'Orbitron',sans-serif;margin-bottom:8px">NFT ID: ${nftId}</div>
 <div style="font-size:1em;margin:8px 0">${gemsMsg}</div>
+${rangeNote}
 ${bonusNote}
 ${goalNote}
 <div style="font-size:0.8em;color:#888">+2 pts estadística · Forma física: ${dur}%</div>
@@ -1343,14 +1299,13 @@ ${goalNote}
 
     // ── FUTSALA ───────────────────────────────────────────────────────────
     function buildFutsalaBody(){
-        const bonus=gemasBonus();
         $id('futsala-body').innerHTML=`
-<div class="futsala-info-box">✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; +2 pts estadísticas + 💎 gemas por resultado</div>
+<div class="futsala-info-box">✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; Gemas según tu NFT + pts estadísticas</div>
 <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-<div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO ${bonus>0?`<span style="color:var(--gold)">(Niv.${nivel}: +${bonus.toFixed(1)}💎 bonus)</span>`:''}</div>
+<div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS — SEGÚN NFT SELECCIONADO</div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">+${(2+bonus).toFixed(1)} 💎</div></div>
-    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">+${(1+bonus).toFixed(1)} 💎</div></div>
+    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">rango del NFT</div></div>
+    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">40% del rango</div></div>
     <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
 </div></div>
 <div class="info-box" style="margin-bottom:12px;">⚠️ Cada partida consume 1 balón · Forma física −0.8%</div>
@@ -1363,7 +1318,7 @@ ${goalNote}
 </div>`;
     }
 
-    // ── RECOMPENSAS POR GOLES (nuevo sistema) ─────────────────────────────
+    // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
     function buildRewardPts(){
         actualizarUI();
         const milestones=getGoalMilestones();
@@ -1428,7 +1383,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 const c=PLAYERS[entry.idx];const dur=getDurabilidad(entry.idx,copy);const dc=colorDurabilidad(dur);const balls=getBallonesJugador(entry.idx,copy);const llenos=balls.filter(Boolean).length;
                 html+=`<div class="mant-item">
 <img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" style="width:60px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(45,122,31,0.3)" onerror="this.style.display='none'">
-<div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} · ${c.pos} · ⚽ ${llenos}/4</p>
+<div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} · ${c.pos} · ⚽ ${llenos}/4 · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</p>
 <div class="dur-bar-wrap" style="margin-top:6px"><div class="dur-bar-label"><span>💪 Forma</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div></div></div>
 <div class="mant-price"><strong>$${Math.ceil(c.precio/320)} USDT</strong><small>Entrenamiento</small><button class="mant-btn" onclick="pagarMantenimiento(${entry.idx},${copy})">🏋️ Entrenar</button></div>
 </div>`;
