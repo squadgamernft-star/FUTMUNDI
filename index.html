@@ -166,6 +166,33 @@
         .claim-reward-btn:hover { background: rgba(0,255,136,0.22); color: #fff; }
         .claim-reward-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+        /* ── LOGROS HABILIDADES ── */
+        .logros-skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+        .logro-skill-card { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; transition: all 0.3s; }
+        .logro-skill-card:hover { border-color: rgba(45,122,31,0.35); }
+        .logro-skill-card.desbloqueado { border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.03); }
+        .logro-skill-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .logro-skill-icon { font-size: 1.6em; min-width: 32px; text-align: center; }
+        .logro-skill-title { font-weight: 700; font-size: 0.95em; color: #fff; }
+        .logro-skill-pos { font-size: 0.72em; color: #888; margin-top: 2px; }
+        .logro-skill-count { font-family: 'Orbitron', sans-serif; font-size: 1.4em; font-weight: 900; color: var(--green); margin-left: auto; text-shadow: 0 0 10px rgba(0,255,136,0.4); }
+        .logro-skill-bar-wrap { margin-bottom: 10px; }
+        .logro-skill-bar-bg { background: rgba(255,255,255,0.07); border-radius: 50px; height: 6px; overflow: hidden; }
+        .logro-skill-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--green), var(--gold)); transition: width 0.5s; }
+        .logro-skill-milestones { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+        .logro-skill-milestone { padding: 3px 8px; border-radius: 20px; font-size: 0.62em; font-weight: 700; border: 1px solid; cursor: pointer; transition: all 0.2s; }
+        .logro-skill-milestone.achieved { border-color: var(--gold); color: var(--gold); background: rgba(255,215,0,0.08); }
+        .logro-skill-milestone.claimable { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.12); animation: pulse-green 1.5s infinite; }
+        @keyframes pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0); } 50% { box-shadow: 0 0 8px 2px rgba(0,255,136,0.35); } }
+        .logro-skill-milestone.claimed { border-color: #333; color: #555; background: rgba(255,255,255,0.03); text-decoration: line-through; }
+        .logro-skill-milestone.locked { border-color: #222; color: #444; background: transparent; cursor: default; }
+        .logro-skill-add-btn { width: 100%; padding: 7px; background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; color: var(--cyan); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; text-transform: uppercase; transition: all 0.25s; }
+        .logro-skill-add-btn:hover { background: rgba(0,212,255,0.15); color: #fff; }
+        .logro-skill-totals { background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.2); border-radius: 12px; padding: 14px; margin-bottom: 14px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+        .logro-total-item { text-align: center; }
+        .logro-total-num { font-family: 'Orbitron', sans-serif; font-size: 1.4em; font-weight: 900; color: var(--green); }
+        .logro-total-label { font-size: 0.68em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
         .logros-list { display: flex; flex-direction: column; gap: 10px; }
         .logro-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
         .logro-item.desbloqueado { border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.04); }
@@ -312,6 +339,7 @@
             .car-container { order: -1; max-width: 88%; }
             .squad-layout { grid-template-columns: 1fr; }
             .torneo-prizes-grid { grid-template-columns: 1fr 1fr; }
+            .logros-skill-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 580px) {
             .market-grid { grid-template-columns: repeat(2, 1fr); }
@@ -506,24 +534,28 @@
         </div>
     </div>
 
-    <!-- LOGROS -->
+    <!-- LOGROS — SISTEMA DE HABILIDADES -->
     <div class="modal-overlay" id="modal-logros">
-        <div class="modal">
+        <div class="modal" style="max-width:860px;">
             <div class="modal-header">
-                <span class="modal-title">🏅 Logros</span>
+                <span class="modal-title">🏅 Logros de Habilidad</span>
                 <button class="modal-close" onclick="closeModal('modal-logros')">✕</button>
             </div>
             <div class="modal-body">
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'logros','jugadores')">🧑</button>
-                    <button class="tab-btn" onclick="switchTab(event,'logros','partidas')">⚽</button>
-                    <button class="tab-btn" onclick="switchTab(event,'logros','goles')">🥅</button>
-                    <button class="tab-btn" onclick="switchTab(event,'logros','racha')">📅</button>
+                <!-- Regla de recompensas -->
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.82em;color:#aaa;line-height:1.8">
+                    ⚽ <strong style="color:var(--cyan)">Regla de recompensas:</strong>
+                    Cada <strong style="color:var(--gold)">100 repeticiones</strong> de cada habilidad = <strong style="color:var(--green)">+1 💎</strong> (máximo <strong style="color:var(--gold)">5 💎 a partir de 500</strong>) · Cada logro reclamado = <strong style="color:var(--cyan)">+100 pts</strong>
                 </div>
-                <div id="logros-jugadores" class="tab-panel active"><div class="logros-list" id="logros-jugadores-list"></div></div>
-                <div id="logros-partidas" class="tab-panel"><div class="logros-list" id="logros-partidas-list"></div></div>
-                <div id="logros-goles" class="tab-panel"><div class="logros-list" id="logros-goles-list"></div></div>
-                <div id="logros-racha" class="tab-panel"><div class="logros-list" id="logros-racha-list"></div></div>
+                <!-- Totales globales -->
+                <div class="logro-skill-totals" id="logros-totales-bar">
+                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-acciones">0</div><div class="logro-total-label">Total acciones</div></div>
+                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-gems">0</div><div class="logro-total-label">💎 ganadas</div></div>
+                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-pts">0</div><div class="logro-total-label">Pts logros</div></div>
+                    <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');openModal('modal-duelo-callejero')" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
+                </div>
+                <!-- Grid de habilidades -->
+                <div class="logros-skill-grid" id="logros-skill-grid"></div>
             </div>
         </div>
     </div>
@@ -845,7 +877,6 @@
     const MAX_PER_PLAYER = 20;
 
     // ── CATÁLOGO DE JUGADORES ─────────────────────────────────────────────
-    // gemMin/gemMax = rango de gemas diarias generadas por este NFT
     const PLAYERS = [
         { nombre:"Neymar Jr.",       pais:"Brasil",     flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     color1:"#009c3b", color2:"#002776", img:"Neymar_320_gemass.png",          gemMin:8,     gemMax:15     },
         { nombre:"James Rodríguez",  pais:"Colombia",   flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", color1:"#fcd116", color2:"#003087", img:"james_rodriguez_1600_gemas.png",  gemMin:35,    gemMax:60     },
@@ -861,6 +892,45 @@
         { nombre:"Lamine Yamal",     pais:"España",     flag:"🇪🇸", precio:680000, hp:98, pos:"Extremo",       color1:"#c60b1e", color2:"#ffc400", img:"lamine_yamal_85000_gemas.png",    gemMin:13320, gemMax:34800  },
         { nombre:"Balón de Oro NFT", pais:"Mundo",      flag:"🌍",  precio:999999, hp:99, pos:"Leyenda",       color1:"#ffd700", color2:"#ff8c00", img:"bellingham_65000_gemass.png",     gemMin:24350, gemMax:53700  },
     ];
+
+    // ── CATÁLOGO DE HABILIDADES (LOGROS) ──────────────────────────────────
+    // Regla: 100 reps = 1💎, 200=2💎, 300=3💎, 400=4💎, 500+=5💎 (máx)
+    // Cada hito reclamado = +100 pts
+    const SKILLS = [
+        { id:'pase_largo',      nombre:'Pase Largo',        icon:'🦶', cat:'Pase',  desc:'Pases largos ejecutados' },
+        { id:'pase_corto',      nombre:'Pase Corto',        icon:'👟', cat:'Pase',  desc:'Pases cortos ejecutados' },
+        { id:'pase_medio',      nombre:'Pase Medio',        icon:'⚽', cat:'Pase',  desc:'Pases medios ejecutados' },
+        { id:'interior',        nombre:'Interior',          icon:'🎯', cat:'Golpeo',desc:'Golpes de interior' },
+        { id:'empeine',         nombre:'Empeine',           icon:'💥', cat:'Golpeo',desc:'Golpes de empeine' },
+        { id:'exterior',        nombre:'Exterior',          icon:'🔄', cat:'Golpeo',desc:'Golpes de exterior' },
+        { id:'tacon',           nombre:'Tacón',             icon:'👁️', cat:'Golpeo',desc:'Golpes de tacón' },
+        { id:'cabeza',          nombre:'Cabeza',            icon:'🏅', cat:'Golpeo',desc:'Remates de cabeza' },
+        { id:'pase_hueco',      nombre:'Pase Hueco',        icon:'🕳️', cat:'Técnica',desc:'Pases en profundidad' },
+        { id:'pase_pared',      nombre:'Pase de Pared',     icon:'🔁', cat:'Técnica',desc:'Combinaciones 1-2' },
+        { id:'centro',          nombre:'Centro',            icon:'📐', cat:'Técnica',desc:'Centros al área' },
+        { id:'pase_atras',      nombre:'Pase Atrás',        icon:'↩️', cat:'Pase',  desc:'Pases hacia atrás' },
+        { id:'pase_curvo',      nombre:'Pase Curvo',        icon:'🌀', cat:'Técnica',desc:'Pases con efecto' },
+        { id:'saque_meta',      nombre:'Saque de Meta',     icon:'🥅', cat:'Saque', desc:'Saques desde portería' },
+        { id:'saque_centro',    nombre:'Saque de Centro',   icon:'🏟️', cat:'Saque', desc:'Saques de centro' },
+        { id:'saque_banda',     nombre:'Saque de Banda',    icon:'🚩', cat:'Saque', desc:'Saques de banda' },
+        { id:'tiro_libre_dir',  nombre:'Tiro Libre Directo',icon:'⚡', cat:'Tiro',  desc:'Tiros libres directos' },
+        { id:'tiro_libre_ind',  nombre:'Tiro Libre Indirecto',icon:'🔃',cat:'Tiro', desc:'Tiros libres indirectos' },
+    ];
+
+    // Hitos por habilidad: 100,200,300,400,500,600,700,800,900,1000
+    const SKILL_MILESTONES = [100,200,300,400,500,600,700,800,900,1000];
+
+    function getSkillGems(reps) {
+        // 100=1, 200=2, 300=3, 400=4, 500+=5 (máximo 5)
+        const hito = Math.floor(reps / 100) * 100;
+        if(hito <= 0) return 0;
+        return Math.min(5, Math.floor(hito / 100));
+    }
+
+    function getSkillMilestoneGems(milestone) {
+        // Para el hito específico (100,200,...,1000)
+        return Math.min(5, milestone / 100);
+    }
 
     // ── SVG FALLBACK ──────────────────────────────────────────────────────
     function generatePlayerSVG(player) {
@@ -885,6 +955,8 @@
     let _selectedSquadSlot=null;
     let _equipamiento={};
     let _marketQty={};
+    // Estado de habilidades: { skill_id: count }
+    let skillCounts = {};
 
     // ── SISTEMA DE NIVEL ──────────────────────────────────────────────────
     const NIVEL_THRESHOLDS = [0,1,3,5,8,12,17,23,30,38,47];
@@ -899,7 +971,7 @@
     function gemasBonus() { return parseFloat(((nivel-1)*0.1).toFixed(1)); }
     function nivelWinBonus() { return Math.min(0.15, (nivel-1)*0.02); }
 
-    // ── SISTEMA DE GOLES Y RECOMPENSAS ───────────────────────────────────
+    // ── SISTEMA DE GOLES ──────────────────────────────────────────────────
     function getGoalCycleInfo() {
         const cycleSize = 1000;
         const cycle = Math.floor(totalGoals / cycleSize) + 1;
@@ -913,13 +985,7 @@
         for(let m=100; m<=1000; m+=100) {
             const gems = m/100;
             const key = `cycle${info.cycle}_${m}`;
-            milestones.push({
-                goalsNeeded: m,
-                gems,
-                achieved: info.goalsInCycle >= m,
-                claimed: !!claimedGoals[key],
-                key
-            });
+            milestones.push({ goalsNeeded: m, gems, achieved: info.goalsInCycle >= m, claimed: !!claimedGoals[key], key });
         }
         return milestones;
     }
@@ -965,6 +1031,7 @@
         localStorage.setItem('tg_durabilidades',JSON.stringify(durabilidades));
         localStorage.setItem('tg_ballones',JSON.stringify(ballonesPorJugador));
         localStorage.setItem('tg_equipamiento',JSON.stringify(_equipamiento));
+        localStorage.setItem('tg_skill_counts',JSON.stringify(skillCounts));
     }
     function loadState(){
         gemas=parseFloat(localStorage.getItem('tg_gemas')||'3900');
@@ -977,6 +1044,7 @@
         const d=localStorage.getItem('tg_durabilidades');if(d)durabilidades=JSON.parse(d);
         const b=localStorage.getItem('tg_ballones');if(b)ballonesPorJugador=JSON.parse(b);
         const eq=localStorage.getItem('tg_equipamiento');if(eq)_equipamiento=JSON.parse(eq);
+        const sc=localStorage.getItem('tg_skill_counts');if(sc)skillCounts=JSON.parse(sc);
         nivel=calcularNivel();
     }
 
@@ -999,34 +1067,26 @@
         const nftEl=$id('modal-nivel-nfts');if(nftEl)nftEl.textContent=`NFTs: ${totalNFTs}`;
         const md=$id('market-gemas-display');if(md)md.textContent=gemas.toFixed(1)+' 💎';
         const mr=$id('my-rank-score');if(mr)mr.textContent=puntaje+' pts';
-
         const totalBalls=totalBallonesDisponibles();
         const fuelEl=$id('fuel-count-display');if(fuelEl)fuelEl.textContent=totalBalls;
         const topForm=$id('gasolina');if(topForm)topForm.textContent=totalNFTs>0?`⚽${totalBalls}`:'—';
-
         const bonus=gemasBonus();
         const winB=Math.round(nivelWinBonus()*100);
         const nbGems=$id('nb-gems-bonus');if(nbGems)nbGems.textContent=`+${bonus.toFixed(1)} 💎`;
         const nbPts=$id('nb-pts-bonus');if(nbPts)nbPts.textContent=`+${nivel*2} pts`;
         const nbWin=$id('nb-win-bonus');if(nbWin)nbWin.textContent=`+${winB}%`;
-
         const currentThresh=NIVEL_THRESHOLDS[nivel-1]||0;
         const nextThresh=NIVEL_THRESHOLDS[nivel]||NIVEL_THRESHOLDS[NIVEL_THRESHOLDS.length-1];
         const xp=totalNFTs-currentThresh;const xpNeeded=nextThresh-currentThresh;
         const pct=Math.min(100,Math.round((xp/xpNeeded)*100));
         const xpLabel=$id('nivel-xp-label');if(xpLabel)xpLabel.innerHTML=`<span>NFTs: ${totalNFTs}</span><span>Sig. nivel: ${nextThresh} NFTs</span>`;
         const barFill=$id('nivel-bar-fill');if(barFill)barFill.style.width=pct+'%';
-
-        // FutCancha: show dynamic note
         const fnb=$id('futcancha-nivel-bonus');
         if(fnb)fnb.textContent=bonus>0?`(Niv.${nivel}: +${bonus.toFixed(1)}💎 bonus sobre rango NFT)`:'';
-
-        // Goals display
         const info=getGoalCycleInfo();
         const gd=$id('goals-display');if(gd)gd.textContent=totalGoals;
         const cd=$id('cycle-display');if(cd)cd.textContent=info.cycle;
         const gcd=$id('goals-in-cycle-display');if(gcd)gcd.textContent=`${info.goalsInCycle} / 1000`;
-
         saveState();
     }
 
@@ -1038,8 +1098,7 @@
         let nextFri=new Date(midnight.getTime()+daysUntilFri*86400000);
         if(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0)nextFri=new Date(nextFri.getTime()+7*86400000);
         const isActive=(day>=1&&day<=4)||(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0);
-        let msUntilEnd=nextFri-now;
-        if(msUntilEnd<0)msUntilEnd=0;
+        let msUntilEnd=nextFri-now;if(msUntilEnd<0)msUntilEnd=0;
         const totalSec=Math.floor(msUntilEnd/1000);
         const days=Math.floor(totalSec/86400);const hours=Math.floor((totalSec%86400)/3600);const mins=Math.floor((totalSec%3600)/60);const secs=totalSec%60;
         const pad=n=>String(n).padStart(2,'0');
@@ -1051,11 +1110,22 @@
     setInterval(updateTorneoCountdown,1000);
 
     // ── MODALES ───────────────────────────────────────────────────────────
-    function openModal(id){const el=$id(id);if(!el)return;el.classList.add('active');document.body.style.overflow='hidden';if(id==='modal-marketplace'){actualizarUI();buildMarket();}if(id==='modal-recompensa')checkRewardStatus();if(id==='modal-recompensa-pts'){actualizarUI();buildRewardPts();}if(id==='modal-garage')buildGarage();if(id==='modal-mantenimiento')buildMantenimiento();if(id==='modal-logros')buildLogros();if(id==='modal-duelo-callejero')buildFutsalaBody();if(id==='modal-nivel')actualizarUI();if(id==='modal-torneo')updateTorneoCountdown();}
+    function openModal(id){
+        const el=$id(id);if(!el)return;
+        el.classList.add('active');document.body.style.overflow='hidden';
+        if(id==='modal-marketplace'){actualizarUI();buildMarket();}
+        if(id==='modal-recompensa')checkRewardStatus();
+        if(id==='modal-recompensa-pts'){actualizarUI();buildRewardPts();}
+        if(id==='modal-garage')buildGarage();
+        if(id==='modal-mantenimiento')buildMantenimiento();
+        if(id==='modal-logros')buildSkillLogros();
+        if(id==='modal-duelo-callejero')buildFutsalaBody();
+        if(id==='modal-nivel')actualizarUI();
+        if(id==='modal-torneo')updateTorneoCountdown();
+    }
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
-
     function irADepositoTorneo(){closeModal('modal-torneo');openModal('modal-deposito');mostrarMensaje('💎 Deposita $10 USDT con memo "TORNEO" para inscribirte','#ffd700');}
 
     // ── MARKETPLACE ───────────────────────────────────────────────────────
@@ -1100,8 +1170,123 @@
         hp+=c.hp*qty;puntaje+=Math.round(c.precio/10)*qty;
         for(let copy=startCopy;copy<startCopy+qty;copy++){durabilidades[slotKey(idx,copy)]=100;ballonesPorJugador[slotKey(idx,copy)]=[true,true,true,true];}
         nivel=calcularNivel();
-        actualizarUI();buildMarket();buildLogros();
+        actualizarUI();buildMarket();
         mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`,'#00ff88');
+    }
+
+    // ── LOGROS DE HABILIDADES ─────────────────────────────────────────────
+    function getSkillClaimedKey(skillId, milestone) {
+        return `skill_${skillId}_m${milestone}`;
+    }
+    function getSkillClaimedData() {
+        return JSON.parse(localStorage.getItem('tg_skill_claimed')||'{}');
+    }
+    function saveSkillClaimedData(data) {
+        localStorage.setItem('tg_skill_claimed', JSON.stringify(data));
+    }
+
+    function addSkillCount(skillId, amount=1) {
+        if(!skillCounts[skillId]) skillCounts[skillId]=0;
+        skillCounts[skillId]+=amount;
+        saveState();
+        buildSkillLogros();
+        actualizarUI();
+    }
+
+    function claimSkillMilestone(skillId, milestone) {
+        const claimed = getSkillClaimedData();
+        const key = getSkillClaimedKey(skillId, milestone);
+        if(claimed[key]) return;
+        const count = skillCounts[skillId]||0;
+        if(count < milestone) { mostrarMensaje('⚠️ Aún no alcanzas este hito','#ffaa00'); return; }
+        const gems = getSkillMilestoneGems(milestone);
+        gemas += gems;
+        puntaje += 100;
+        claimed[key] = true;
+        saveSkillClaimedData(claimed);
+        actualizarUI();
+        buildSkillLogros();
+        mostrarMensaje(`🏅 +${gems} 💎 y +100 pts por ${milestone} acciones de habilidad!`, '#ffd700');
+    }
+
+    function buildSkillLogros() {
+        const grid = $id('logros-skill-grid');
+        if(!grid) return;
+        const claimed = getSkillClaimedData();
+
+        let totalAcciones = 0;
+        let totalGemsEarned = 0;
+        let totalPtsEarned = 0;
+
+        SKILLS.forEach(sk => {
+            totalAcciones += (skillCounts[sk.id]||0);
+            SKILL_MILESTONES.forEach(m => {
+                const key = getSkillClaimedKey(sk.id, m);
+                if(claimed[key]) {
+                    totalGemsEarned += getSkillMilestoneGems(m);
+                    totalPtsEarned += 100;
+                }
+            });
+        });
+
+        // Update totals
+        const ltA=$id('lt-total-acciones');if(ltA)ltA.textContent=totalAcciones.toLocaleString();
+        const ltG=$id('lt-total-gems');if(ltG)ltG.textContent=totalGemsEarned;
+        const ltP=$id('lt-total-pts');if(ltP)ltP.textContent=totalPtsEarned;
+
+        grid.innerHTML = SKILLS.map(sk => {
+            const count = skillCounts[sk.id]||0;
+            const maxMilestone = 1000;
+            const pct = Math.min(100, Math.round((count % 100) / 100 * 100));
+            const nextMilestone = Math.min(maxMilestone, Math.ceil((count+1)/100)*100);
+            const progressToNext = count >= maxMilestone ? 100 : Math.round(((count % 100)) / 100 * 100);
+
+            const milestonesHtml = SKILL_MILESTONES.map(m => {
+                const key = getSkillClaimedKey(sk.id, m);
+                const isClaimed = !!claimed[key];
+                const isAchieved = count >= m;
+                const isClaimable = isAchieved && !isClaimed;
+                const gems = getSkillMilestoneGems(m);
+
+                let cls = 'logro-skill-milestone locked';
+                let label = `${m}`;
+                let onclick = '';
+                if(isClaimed) { cls='logro-skill-milestone claimed'; label=`${m}✓`; }
+                else if(isClaimable) { cls='logro-skill-milestone claimable'; label=`${m} +${gems}💎`; onclick=`onclick="claimSkillMilestone('${sk.id}',${m})"` }
+                else if(isAchieved) { cls='logro-skill-milestone achieved'; label=`${m} +${gems}💎`; onclick=`onclick="claimSkillMilestone('${sk.id}',${m})"` }
+
+                return `<span class="${cls}" ${onclick} title="${m} acciones = +${gems}💎 +100pts">${label}</span>`;
+            }).join('');
+
+            const hasClaimable = SKILL_MILESTONES.some(m => {
+                const key = getSkillClaimedKey(sk.id, m);
+                return count >= m && !claimed[key];
+            });
+
+            return `<div class="logro-skill-card ${count>0?'desbloqueado':''}">
+<div class="logro-skill-header">
+    <span class="logro-skill-icon">${sk.icon}</span>
+    <div>
+        <div class="logro-skill-title">${sk.nombre}</div>
+        <div class="logro-skill-pos">${sk.cat} · ${sk.desc}</div>
+    </div>
+    <div class="logro-skill-count">${count.toLocaleString()}</div>
+</div>
+<div class="logro-skill-bar-wrap">
+    <div style="display:flex;justify-content:space-between;font-size:0.68em;color:#555;margin-bottom:4px">
+        <span style="color:${count>0?'var(--green)':'#444'}">${count} realizadas</span>
+        <span>próx. hito: ${count>=1000?'MAX':nextMilestone}</span>
+    </div>
+    <div class="logro-skill-bar-bg">
+        <div class="logro-skill-bar-fill" style="width:${count>=1000?100:Math.round((count%100)/100*100)}%"></div>
+    </div>
+</div>
+<div class="logro-skill-milestones">${milestonesHtml}</div>
+<button class="logro-skill-add-btn" onclick="addSkillCount('${sk.id}',1)">
+    ${hasClaimable ? '⚡ Hito listo — ¡Reclama arriba!' : `+ Registrar ${sk.nombre}`}
+</button>
+</div>`;
+        }).join('');
     }
 
     // ── GARAGE ────────────────────────────────────────────────────────────
@@ -1142,7 +1327,6 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         $id('car-detail-img').src=playerImgSrc(idx);$id('car-detail-name').textContent=c.nombre;$id('car-detail-country-flag').textContent=c.flag+' '+c.pais;$id('car-detail-player-id').textContent='ID: '+playerId;
         $id('car-detail-hp').textContent=c.hp+' OVR';$id('car-detail-dur').textContent=dur+'%';$id('car-detail-dur').style.color=dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)';
         $id('car-detail-fuel').textContent=fuelLlenos+' / 4';
-        // ── CORRECCIÓN CLAVE: mostrar rango de gemas del NFT ──
         $id('car-detail-earn').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
         const spd=Math.round(c.hp*0.9+3),def=Math.round(c.hp*0.6+5),phy=Math.round(c.hp*0.75+4);
         $id('car-detail-extra-stats').innerHTML=`
@@ -1247,22 +1431,22 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const{idx,copy,player,playerGoals,oppGoals,resultado}=_matchResultPending;
         statsPartidas+=2;
         totalGoals+=playerGoals;
-        puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
 
-        // ── CORRECCIÓN CLAVE: gemas según rango del jugador NFT ──
+        // Incrementar habilidades aleatoriamente por partido
+        const skillsToInc = SKILLS.filter(()=>Math.random()<0.5);
+        skillsToInc.forEach(sk => {
+            if(!skillCounts[sk.id]) skillCounts[sk.id]=0;
+            skillCounts[sk.id] += Math.floor(Math.random()*3)+1;
+        });
+
+        puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
         const gemMin=player.gemMin, gemMax=player.gemMax;
         const bonus=gemasBonus();
         let gemsGanadas=0;
-        if(resultado==='win'){
-            // Victoria: rango completo del NFT + bonus nivel
-            gemsGanadas=parseFloat((gemMin+Math.random()*(gemMax-gemMin)+bonus).toFixed(1));
-        } else if(resultado==='draw'){
-            // Empate: 40% del rango + bonus nivel
-            gemsGanadas=parseFloat((gemMin*0.4+Math.random()*(gemMax*0.4-gemMin*0.4)+bonus).toFixed(1));
-        }
-        // Derrota: 0 gemas
+        if(resultado==='win'){gemsGanadas=parseFloat((gemMin+Math.random()*(gemMax-gemMin)+bonus).toFixed(1));}
+        else if(resultado==='draw'){gemsGanadas=parseFloat((gemMin*0.4+Math.random()*(gemMax*0.4-gemMin*0.4)+bonus).toFixed(1));}
         if(gemsGanadas>0)gemas+=gemsGanadas;
-        actualizarUI();buildLogros();
+        actualizarUI();
 
         const resultColor=resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
         const resultText=resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
@@ -1280,6 +1464,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const rangeNote=`<div style="font-size:0.74em;color:#888;margin-top:2px">Rango NFT: ${gemMin.toLocaleString()}–${gemMax.toLocaleString()} 💎/día</div>`;
         const bonusNote=bonus>0?`<div style="font-size:0.74em;color:var(--cyan)">Bonus Nivel ${nivel}: +${bonus.toFixed(1)} 💎</div>`:'';
         const goalNote=`<div style="font-size:0.74em;color:var(--gold)">⚽ Goles acumulados: ${totalGoals} (ciclo ${getGoalCycleInfo().cycle})</div>`;
+        const skillNote=skillsToInc.length>0?`<div style="font-size:0.74em;color:var(--cyan);margin-top:2px">🏅 +Stats en: ${skillsToInc.slice(0,3).map(s=>s.nombre).join(', ')}${skillsToInc.length>3?'...':''}</div>`:'';
 
         const rb=$id('video-result-box');rb.style.display='block';
         rb.innerHTML=`<div style="background:linear-gradient(135deg,#0a1a0a,#060d06);border:2px solid ${resultColor};border-radius:16px;padding:18px;text-align:center">
@@ -1288,9 +1473,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 <div style="font-size:0.88em;color:#aaa;margin-bottom:6px">${player.flag} ${player.nombre} vs ${oppFlag} ${oppName}</div>
 <div style="font-size:0.78em;color:var(--cyan);font-family:'Orbitron',sans-serif;margin-bottom:8px">NFT ID: ${nftId}</div>
 <div style="font-size:1em;margin:8px 0">${gemsMsg}</div>
-${rangeNote}
-${bonusNote}
-${goalNote}
+${rangeNote}${bonusNote}${goalNote}${skillNote}
 <div style="font-size:0.8em;color:#888">+2 pts estadística · Forma física: ${dur}%</div>
 </div>`;
         $id('video-close-btn').style.display='inline-block';
@@ -1357,22 +1540,6 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active')){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),elapsed=Date.now()-lastClaim,cooldown=24*60*60*1000,canClaim=elapsed>=cooldown||lastClaim===0;updateDailyTimer(cooldown-elapsed,canClaim);const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve';}}},1000);
     function claimReward(){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),now=Date.now(),cooldown=24*60*60*1000;if(now-lastClaim<cooldown&&lastClaim!==0){mostrarMensaje('⚠️ Vuelve en 24h','#ffaa00');return;}const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1'),gemsGanadas=getDailyRewardGems(diaActual),isDay30=diaActual===30,isGold=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎`:isGold?'🪙 ¡Moneda de oro!':`💎 +${gemsGanadas} gema`;const sig=diaActual<30?diaActual+1:1;localStorage.setItem('tg_reward_day',String(sig));localStorage.setItem('tg_last_reward_ts',String(now));puntaje+=1;actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✅ Reclamada — vuelve en 24h';}mostrarMensaje(msg,isDay30?'#a855f7':isGold?'#ffd700':'#00ff88');}
 
-    // ── LOGROS ────────────────────────────────────────────────────────────
-    const LOGROS={
-        jugadores:[{meta:1,icon:'⚽',t:'Primera Ficha',d:'Ficha tu primer jugador NFT',reward:5},{meta:3,icon:'👕',t:'Pequeño Equipo',d:'Ficha 3 jugadores',reward:15},{meta:5,icon:'🏆',t:'Mi Plantilla',d:'Ficha 5 jugadores',reward:30},{meta:10,icon:'🌟',t:'Seleccionador',d:'Ficha 10 jugadores',reward:60},{meta:14,icon:'👑',t:'Plantilla Completa',d:'Ficha todos los jugadores',reward:200}],
-        partidas:[{meta:1,icon:'🏁',t:'Debut',d:'Juega tu primera partida',reward:2},{meta:5,icon:'⚽',t:'Veterano',d:'Juega 5 partidas',reward:10},{meta:10,icon:'🏃',t:'Habitual',d:'Juega 10 partidas',reward:25},{meta:25,icon:'🏟️',t:'Profesional',d:'Juega 25 partidas',reward:60},{meta:50,icon:'🏆',t:'Leyenda',d:'Juega 50 partidas',reward:150}],
-        goles:[{meta:100,icon:'🥅',t:'Primer Centenar',d:'Acumula 100 goles',reward:5},{meta:500,icon:'⚽',t:'Goleador',d:'Acumula 500 goles',reward:20},{meta:1000,icon:'🌟',t:'Pichichi',d:'1000 goles totales',reward:50},{meta:5000,icon:'🏆',t:'Rey del Gol',d:'5000 goles totales',reward:150},{meta:10000,icon:'👑',t:'Balón de Oro',d:'10000 goles totales',reward:500}],
-        racha:[{meta:3,icon:'📅',t:'Racha Inicial',d:'3 días seguidos',reward:5},{meta:7,icon:'🔥',t:'Semana Completa',d:'7 días seguidos',reward:15},{meta:14,icon:'⚡',t:'Quincenal',d:'14 días seguidos',reward:30},{meta:21,icon:'🌟',t:'Mes en Marcha',d:'21 días seguidos',reward:60},{meta:30,icon:'👑',t:'Mes Perfecto',d:'30 días seguidos',reward:100}],
-    };
-    function getProgresoLogro(tipo,meta){
-        const owned=carrosComprados.reduce((s,e)=>s+e.qty,0);
-        const map={jugadores:owned,partidas:Math.floor(statsPartidas/2),goles:totalGoals,racha:Math.max(0,parseInt(localStorage.getItem('tg_reward_day')||'1')-1)};
-        return{actual:map[tipo]||0,meta};
-    }
-    function buildLogrosList(tipo){const cL=JSON.parse(localStorage.getItem('tg_claimed_logros')||'{}');$id(`logros-${tipo}-list`).innerHTML=LOGROS[tipo].map((l,li)=>{const{actual,meta}=getProgresoLogro(tipo,l.meta),ok=actual>=meta,key=`${tipo}_${li}`,claimed=!!cL[key],canClaim=ok&&!claimed,pct=Math.min(100,Math.round(actual/meta*100));return`<div class="logro-item ${ok?'desbloqueado':''}"><span class="logro-icon">${l.icon}</span><div class="logro-info"><h4>${l.t}</h4><p>${l.d} — ${actual}/${meta}</p><div class="logro-progress"><div class="logro-progress-fill" style="width:${pct}%"></div></div></div><div class="logro-reward">${claimed?`<span style="color:var(--green)">✅</span><br><small style="color:#555">Cobrado</small>`:canClaim?`<button onclick="claimLogro('${tipo}',${li},${l.reward})" style="padding:5px 10px;background:rgba(0,255,136,0.12);border:1px solid var(--green);border-radius:6px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.78em;cursor:pointer">+${l.reward}💎</button>`:`<span style="color:#555">🔒</span><br><small style="color:var(--gold)">+${l.reward}💎</small>`}</div></div>`;}).join('');}
-    function claimLogro(tipo,idx,reward){const cL=JSON.parse(localStorage.getItem('tg_claimed_logros')||'{}');const key=`${tipo}_${idx}`;if(cL[key])return;gemas+=reward;cL[key]=true;localStorage.setItem('tg_claimed_logros',JSON.stringify(cL));actualizarUI();buildLogros();mostrarMensaje(`🏅 +${reward} 💎 por logro!`,'#ffd700');}
-    function buildLogros(){['jugadores','partidas','goles','racha'].forEach(buildLogrosList);}
-
     // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
     function buildMantenimiento(){
         const lista=$id('mant-list');
@@ -1435,7 +1602,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     checkDailyBallRecharge();
     actualizarUI();
     buildMarket();
-    buildLogros();
+    buildSkillLogros();
     buildFutsalaBody();
     updateTorneoCountdown();
 
