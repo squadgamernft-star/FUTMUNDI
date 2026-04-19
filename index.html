@@ -443,7 +443,7 @@
                 <button class="word-btn" onclick="openModal('modal-ranking')">📊 Ranking</button>
                 <button class="word-btn" onclick="openModal('modal-mantenimiento')">🏋️ Entrenamiento</button>
                 <button class="word-btn" onclick="openModal('modal-deposito')">💎 Depósito</button>
-                <button class="word-btn" onclick="openModal('modal-retiro')">💸 Retiro</button>
+                <button class="word-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();">💸 Retiro</button>
             </div>
         </div>
 
@@ -603,11 +603,33 @@
                 <button class="modal-close" onclick="closeModal('modal-retiro')">✕</button>
             </div>
             <div class="modal-body">
-                <label class="withdraw-label">Dirección TON Wallet</label>
-                <input class="withdraw-input" type="text" id="retiro-address" placeholder="UQ...">
-                <label class="withdraw-label">Cantidad de gemas 💎</label>
-                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 500 gemas">
-                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 500 💎 &nbsp;·&nbsp; 1000💎 = 0.1 TON &nbsp;·&nbsp; Proceso: 24h</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
+                    <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
+                    <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
+                </div>
+                <label class="withdraw-label">Dirección Wallet (USDT)</label>
+                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
+                <label class="withdraw-label">
+                    Cantidad de gemas 💎
+                    <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
+                </label>
+                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 500 gemas" oninput="actualizarConversionRetiro()">
+                <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
+                    💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
+                </div>
+                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 500 💎 &nbsp;·&nbsp; 1000 💎 = 1 USDT</div>
+
+                <!-- CAPTCHA -->
+                <label class="withdraw-label">🛡️ Verificación anti-bot</label>
+                <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+                    <span id="captcha-question" style="font-family:'Orbitron',sans-serif;font-size:1.05em;color:var(--gold);letter-spacing:1px;flex:1;">— + — = ?</span>
+                    <button type="button" onclick="generarCaptcha()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85em;">🔄</button>
+                </div>
+                <input class="withdraw-input" type="number" id="captcha-answer" placeholder="Tu respuesta">
+
+                <div style="background:rgba(255,140,0,0.1);border:1px solid var(--orange);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:0.88em;color:#ffd9a8;">
+                    ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
+                </div>
                 <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
             </div>
         </div>
@@ -1613,7 +1635,24 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');}
     }
 
-    function retirar(){if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-retiro');tonConnectUI.openModal();return;}const cant=parseFloat($id('retiro-cantidad').value)||0;if(cant<500){mostrarMensaje('❌ Mínimo 500 💎','#ff4444');return;}if(cant>gemas){mostrarMensaje('❌ Saldo insuficiente','#ff4444');return;}mostrarMensaje('🔜 Retiro solicitado — Se procesará en 24h','#ffaa00');closeModal('modal-retiro');}
+    let _captchaAnswer=0;
+    function generarCaptcha(){const a=Math.floor(Math.random()*9)+1,b=Math.floor(Math.random()*9)+1;_captchaAnswer=a+b;const q=$id('captcha-question');if(q)q.textContent=`${a} + ${b} = ?`;const ans=$id('captcha-answer');if(ans)ans.value='';}
+    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const usdt=(cant/1000).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${usdt} USDT`;}
+    function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);}
+
+    function retirar(){
+        const cant=parseFloat($id('retiro-cantidad').value)||0;
+        const addr=($id('retiro-address').value||'').trim();
+        if(!addr){mostrarMensaje('⚠️ Ingresa tu dirección USDT','#ffaa00');return;}
+        if(cant<500){mostrarMensaje('❌ Mínimo 500 💎','#ff4444');return;}
+        if(cant>gemas){mostrarMensaje('❌ Saldo insuficiente','#ff4444');return;}
+        const userAns=parseInt($id('captcha-answer').value);
+        if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje('🛡️ Captcha incorrecto, intenta de nuevo','#ff4444');generarCaptcha();return;}
+        const usdt=(cant/1000).toFixed(2);
+        mostrarMensaje(`✅ Retiro de ${usdt} USDT solicitado — se acreditará en 24h a 48h`,'#00ff88');
+        closeModal('modal-retiro');
+        generarCaptcha();
+    }
 
     async function comprarGemas(cantidad,usdtAmount){
         if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-deposito');tonConnectUI.openModal();return;}
