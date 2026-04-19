@@ -652,9 +652,9 @@
                 <button class="modal-close" onclick="closeModal('modal-mantenimiento')">✕</button>
             </div>
             <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:16px;">El entrenamiento recupera la estamina al 100%, mejora el rendimiento +10% y repara el estado físico del jugador.</p>
+                <p style="color:#888;font-size:0.86em;margin-bottom:16px;">El entrenamiento restaura la durabilidad al 100% y mejora progresivamente el rendimiento del NFT. La estamina (⚽ balones) NO se recarga aquí — se recarga automáticamente cada 24h a las 07:00 UTC.</p>
                 <div id="mant-list"></div>
-                <div class="info-box" style="margin-top:4px;">💡 Restaura todos los balones, mejora el Overall +10% y sana la forma física.</div>
+                <div class="info-box" style="margin-top:4px;">💡 Bonus por entrenamiento: 1ª vez +5% · 2ª +10% · 3ª +15% · 4ª +17% · 5ª +19% · luego +2% por sesión hasta 80% (se reinicia).</div>
             </div>
         </div>
     </div>
@@ -1541,17 +1541,50 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     function claimReward(){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),now=Date.now(),cooldown=24*60*60*1000;if(now-lastClaim<cooldown&&lastClaim!==0){mostrarMensaje('⚠️ Vuelve en 24h','#ffaa00');return;}const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1'),gemsGanadas=getDailyRewardGems(diaActual),isDay30=diaActual===30,isGold=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎`:isGold?'🪙 ¡Moneda de oro!':`💎 +${gemsGanadas} gema`;const sig=diaActual<30?diaActual+1:1;localStorage.setItem('tg_reward_day',String(sig));localStorage.setItem('tg_last_reward_ts',String(now));puntaje+=1;actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✅ Reclamada — vuelve en 24h';}mostrarMensaje(msg,isDay30?'#a855f7':isGold?'#ffd700':'#00ff88');}
 
     // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
+    // Bonus de rendimiento progresivo por sesión:
+    // Sesión 1=+5%, 2=+10%, 3=+15%, 4=+17%, 5=+19%, luego +2% por sesión hasta llegar a 80% → se reinicia a 0
+    let trainingData = JSON.parse(localStorage.getItem('tg_training_data')||'{}'); // { slotKey: { sesiones: n, bonus: % } }
+    function saveTraining(){ localStorage.setItem('tg_training_data', JSON.stringify(trainingData)); }
+    function getTrainingInfo(idx,copy=0){
+        const k=slotKey(idx,copy);
+        if(!trainingData[k]) trainingData[k]={sesiones:0,bonus:0};
+        return trainingData[k];
+    }
+    function nextTrainingBonus(currentSesiones,currentBonus){
+        const nextSesion = currentSesiones + 1;
+        if(nextSesion===1) return 5;
+        if(nextSesion===2) return 10;
+        if(nextSesion===3) return 15;
+        if(nextSesion===4) return 17;
+        if(nextSesion===5) return 19;
+        return 2;
+    }
+    function applyTrainingBonus(idx,copy=0){
+        const info = getTrainingInfo(idx,copy);
+        const incremento = nextTrainingBonus(info.sesiones, info.bonus);
+        let nuevoBonus = info.bonus + incremento;
+        let reinicio = false;
+        if(nuevoBonus >= 80){ nuevoBonus = 0; info.sesiones = 0; reinicio = true; }
+        else { info.sesiones += 1; }
+        info.bonus = nuevoBonus;
+        saveTraining();
+        return { incremento, nuevoBonus, reinicio };
+    }
     function buildMantenimiento(){
         const lista=$id('mant-list');
         if(!carrosComprados.length){lista.innerHTML=`<div class="coming-soon-box">No tienes futbolistas. ¡Ficha uno en el Marketplace!</div>`;return;}
         let html='';
         carrosComprados.forEach(entry=>{
             for(let copy=0;copy<entry.qty;copy++){
-                const c=PLAYERS[entry.idx];const dur=getDurabilidad(entry.idx,copy);const dc=colorDurabilidad(dur);const balls=getBallonesJugador(entry.idx,copy);const llenos=balls.filter(Boolean).length;
+                const c=PLAYERS[entry.idx];const dur=getDurabilidad(entry.idx,copy);const dc=colorDurabilidad(dur);
+                const t=getTrainingInfo(entry.idx,copy);
+                const proximoInc = nextTrainingBonus(t.sesiones, t.bonus);
+                const ovrBoosted = Math.round(c.hp * (1 + t.bonus/100));
                 html+=`<div class="mant-item">
 <img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" style="width:60px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(45,122,31,0.3)" onerror="this.style.display='none'">
-<div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} · ${c.pos} · ⚽ ${llenos}/4 · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</p>
-<div class="dur-bar-wrap" style="margin-top:6px"><div class="dur-bar-label"><span>💪 Forma</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div></div></div>
+<div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} ${t.bonus>0?`<span style="color:var(--green)">→ ${ovrBoosted} (+${t.bonus}%)</span>`:''} · ${c.pos} · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</p>
+<div class="dur-bar-wrap" style="margin-top:6px"><div class="dur-bar-label"><span>💪 Durabilidad</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div></div>
+<div style="margin-top:6px;font-size:0.74em;color:#888">🏋️ Sesiones: <strong style="color:var(--cyan)">${t.sesiones}</strong> · Próximo bonus: <strong style="color:var(--green)">+${proximoInc}%</strong></div></div>
 <div class="mant-price"><strong>$${Math.ceil(c.precio/320)} USDT</strong><small>Entrenamiento</small><button class="mant-btn" onclick="pagarMantenimiento(${entry.idx},${copy})">🏋️ Entrenar</button></div>
 </div>`;
             }
@@ -1564,7 +1597,19 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const costo=Math.ceil(c.precio/320);mostrarMensaje(`⏳ Procesando $${costo} USDT...`,'#00d4ff');
         const ton=(costo/5).toFixed(4);
         const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
-        try{await tonConnectUI.sendTransaction(tx);repararDurabilidad(idx,copy);ballonesPorJugador[slotKey(idx,copy)]=[true,true,true,true];actualizarUI();buildMantenimiento();mostrarMensaje(`✅ Entrenado 100% + balones recargados`,'#00ff88');closeModal('modal-mantenimiento');}
+        try{
+            await tonConnectUI.sendTransaction(tx);
+            // 1) Restaurar durabilidad al 100% (el NFT no se desgasta)
+            repararDurabilidad(idx,copy);
+            // 2) Aplicar bonus de rendimiento progresivo (NO se recargan los balones — solo a las 07:00 UTC)
+            const res = applyTrainingBonus(idx,copy);
+            actualizarUI();
+            buildMantenimiento();
+            const msg = res.reinicio
+                ? `✅ Durabilidad 100% · Bonus alcanzó 80% y se reinició a 0%`
+                : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
+            mostrarMensaje(msg,'#00ff88');
+        }
         catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');}
     }
 
@@ -1611,4 +1656,3 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 </div>
 </body>
 </html>
-
