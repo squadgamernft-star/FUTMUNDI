@@ -387,12 +387,13 @@
     <!-- TOP BAR -->
     <div class="top-bar">
         <div class="stats-container">
-            <span>Pts:&nbsp;<strong id="puntaje">0</strong></span>
-            <span>Niv:&nbsp;<strong id="nivel-stat">1</strong></span>
+            <span data-i18n-prefix="pts">Pts:&nbsp;<strong id="puntaje">0</strong></span>
+            <span data-i18n-prefix="niv">Niv:&nbsp;<strong id="nivel-stat">1</strong></span>
             <span>💎&nbsp;<strong id="gemas-stat">3900.0</strong></span>
             <span>🏆&nbsp;<strong id="gasolina">—</strong></span>
             <span>OVR&nbsp;<strong id="hp-stat">0</strong></span>
         </div>
+        <button class="lang-toggle-btn" style="background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border-color:rgba(168,85,247,0.5);color:#fff;" onclick="openModal('modal-referidos');buildReferidosUI();" data-i18n="referidos_btn">👥 Referidos</button>
         <div id="ton-connect-button"></div>
     </div>
 
@@ -404,17 +405,17 @@
                 FUTMUNDI
                 <span class="h1-ball" style="animation-delay:-2s">⚽</span>
             </h1>
-            <div class="title-sub">El juego de fútbol NFT más épico del mundo</div>
+            <div class="title-sub" data-i18n="tagline">El juego de fútbol NFT más épico del mundo</div>
         </div>
 
         <div class="layout-grid">
             <div class="menu-column">
-                <button class="word-btn" onclick="openModal('modal-garage')">👕 Futbolistas</button>
-                <button class="word-btn" onclick="openModal('modal-marketplace')">🏪 Marketplace</button>
-                <button class="word-btn" onclick="openModal('modal-recompensa-pts')">⚽ Recompensas</button>
-                <button class="word-btn" onclick="openModal('modal-recompensa')">🎁 Recompensa Diaria</button>
-                <button class="word-btn" onclick="openModal('modal-logros')">🏅 Logros</button>
-                <button class="word-btn" onclick="openModal('modal-nivel')">⬆️ Nivel</button>
+                <button class="word-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">👕 Futbolistas</button>
+                <button class="word-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">🏪 Marketplace</button>
+                <button class="word-btn" onclick="openModal('modal-recompensa-pts')" data-i18n="menu_recompensas">⚽ Recompensas</button>
+                <button class="word-btn" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria">🎁 Recompensa Diaria</button>
+                <button class="word-btn" onclick="openModal('modal-logros')" data-i18n="menu_logros">🏅 Logros</button>
+                <button class="word-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel">⬆️ Nivel</button>
             </div>
 
             <div class="car-container">
@@ -426,24 +427,24 @@
                 </div>
 
                 <div class="fuel-section">
-                    <div class="fuel-label">⚽ Balones de Estamina</div>
+                    <div class="fuel-label" data-i18n="balones_estamina">⚽ Balones de Estamina</div>
                     <div class="fuel-simple-display">
                         <span class="fuel-ball-icon">⚽</span>
                         <span class="fuel-count" id="fuel-count-display">0</span>
-                        <span class="fuel-count-label">balones</span>
+                        <span class="fuel-count-label" data-i18n="balones">balones</span>
                     </div>
                 </div>
 
-                <button class="primary-btn" onclick="openModal('modal-duelo-urbano')">🏟️ FutCancha</button>
+                <button class="primary-btn" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
             </div>
 
             <div class="menu-column">
-                <button class="word-btn" onclick="openModal('modal-duelo-callejero')">🏃 Futsala</button>
-                <button class="word-btn" onclick="openModal('modal-torneo')">🏆 Torneo</button>
-                <button class="word-btn" onclick="openModal('modal-ranking')">📊 Ranking</button>
-                <button class="word-btn" onclick="openModal('modal-mantenimiento')">🏋️ Entrenamiento</button>
-                <button class="word-btn" onclick="openModal('modal-deposito')">💎 Depósito</button>
-                <button class="word-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();">💸 Retiro</button>
+                <button class="word-btn" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
+                <button class="word-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo">🏆 Torneo</button>
+                <button class="word-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">📊 Ranking</button>
+                <button class="word-btn" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">🏋️ Entrenamiento</button>
+                <button class="word-btn" onclick="openModal('modal-deposito')" data-i18n="menu_deposito">💎 Depósito</button>
+                <button class="word-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro">💸 Retiro</button>
             </div>
         </div>
 
@@ -631,6 +632,42 @@
                     ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
                 </div>
                 <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REFERIDOS -->
+    <div class="modal-overlay" id="modal-referidos">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-header">
+                <span class="modal-title" data-i18n="ref_title">👥 Programa de Referidos</span>
+                <button class="modal-close" onclick="closeModal('modal-referidos')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(0,212,255,0.1));border:1px solid rgba(168,85,247,0.4);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--purple);letter-spacing:2px;margin-bottom:8px;" data-i18n="ref_commission">💰 GANA 5% DE COMISIÓN</div>
+                    <div style="color:#ddd;font-size:0.92em;line-height:1.4;" data-i18n="ref_explain">Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!</div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:12px;text-align:center;">
+                        <div style="font-size:0.72em;color:#888;letter-spacing:1px;" data-i18n="ref_total_label">REFERIDOS</div>
+                        <div style="color:var(--green);font-size:1.6em;font-weight:700;font-family:'Orbitron',sans-serif;" id="ref-total">0</div>
+                    </div>
+                    <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:12px;text-align:center;">
+                        <div style="font-size:0.72em;color:#888;letter-spacing:1px;" data-i18n="ref_earned_label">GANADO</div>
+                        <div style="color:var(--gold);font-size:1.6em;font-weight:700;font-family:'Orbitron',sans-serif;" id="ref-earned">0 💎</div>
+                    </div>
+                </div>
+
+                <label class="withdraw-label" data-i18n="ref_link_label">Tu enlace de invitación</label>
+                <div style="display:flex;gap:8px;margin-bottom:14px;">
+                    <input class="withdraw-input" type="text" id="ref-link" readonly style="flex:1;margin:0;font-size:0.82em;">
+                    <button onclick="copiarRefLink()" style="background:var(--cyan);color:#000;border:none;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer;" data-i18n="ref_copy">Copiar</button>
+                </div>
+
+                <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;" data-i18n="ref_list_title">📋 MIS REFERIDOS</div>
+                <div id="ref-list" style="max-height:280px;overflow-y:auto;"></div>
             </div>
         </div>
     </div>
@@ -1643,13 +1680,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     function retirar(){
         const cant=parseFloat($id('retiro-cantidad').value)||0;
         const addr=($id('retiro-address').value||'').trim();
-        if(!addr){mostrarMensaje('⚠️ Ingresa tu dirección USDT','#ffaa00');return;}
-        if(cant<500){mostrarMensaje('❌ Mínimo 500 💎','#ff4444');return;}
-        if(cant>gemas){mostrarMensaje('❌ Saldo insuficiente','#ff4444');return;}
+        if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
+        if(cant<500){mostrarMensaje(t('msg_min'),'#ff4444');return;}
+        if(cant>gemas){mostrarMensaje(t('msg_insuf'),'#ff4444');return;}
         const userAns=parseInt($id('captcha-answer').value);
-        if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje('🛡️ Captcha incorrecto, intenta de nuevo','#ff4444');generarCaptcha();return;}
+        if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
         const usdt=(cant/1000).toFixed(2);
-        mostrarMensaje(`✅ Retiro de ${usdt} USDT solicitado — se acreditará en 24h a 48h`,'#00ff88');
+        const refOwner=localStorage.getItem('tg_my_referrer');
+        if(refOwner){
+            const commission=parseFloat((cant*0.05).toFixed(2));
+            const owed=JSON.parse(localStorage.getItem('tg_ref_owed_'+refOwner)||'0');
+            localStorage.setItem('tg_ref_owed_'+refOwner,JSON.stringify(owed+commission));
+        }
+        gemas-=cant;
+        actualizarUI();
+        mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
         closeModal('modal-retiro');
         generarCaptcha();
     }
@@ -1663,10 +1708,57 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         catch(e){mostrarMensaje('❌ Cancelado','#ff4444');}
     }
 
+    // ── REFERIDOS ─────────────────────────────────────────────────────────
+    function getMyRefId(){let id=localStorage.getItem('tg_my_ref_id');if(!id){id='FM'+Math.random().toString(36).substring(2,8).toUpperCase();localStorage.setItem('tg_my_ref_id',id);}return id;}
+    function getMyRefLink(){return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`;}
+    function getMisReferidos(){return JSON.parse(localStorage.getItem('tg_mis_referidos')||'[]');}
+    function getMisGanancias(){return parseFloat(localStorage.getItem('tg_ref_owed_'+getMyRefId())||'0');}
+    function buildReferidosUI(){
+        $id('ref-link').value=getMyRefLink();
+        const refs=getMisReferidos();
+        $id('ref-total').textContent=refs.length;
+        $id('ref-earned').textContent=getMisGanancias().toFixed(2)+' 💎';
+        const list=$id('ref-list');
+        if(refs.length===0){list.innerHTML=`<div style="text-align:center;color:#666;padding:24px 12px;font-size:0.88em;">${t('ref_empty')}</div>`;return;}
+        list.innerHTML=refs.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(0,212,255,0.15);border-radius:10px;padding:10px 14px;margin-bottom:8px;"><div><div style="color:#fff;font-weight:600;">${r.name}</div><div style="color:#888;font-size:0.78em;">${t('ref_earned_from')}: <strong style="color:var(--gold)">${(r.earned||0).toFixed(2)} 💎</strong></div></div><div style="background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border-radius:20px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:0.78em;font-weight:700;">Niv ${r.nivel||1}</div></div>`).join('');
+    }
+    function copiarRefLink(){const i=$id('ref-link');i.select();try{document.execCommand('copy');mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff');}catch(e){navigator.clipboard?.writeText(i.value);}}
+
     // ── IDIOMAS ───────────────────────────────────────────────────────────
+    const TRANSLATIONS={
+        es:{tagline:'El juego de fútbol NFT más épico del mundo',menu_futbolistas:'👕 Futbolistas',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diaria',menu_logros:'🏅 Logros',menu_nivel:'⬆️ Nivel',menu_futcancha:'🏟️ FutCancha',menu_futsala:'🏃 Futsala',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Entrenamiento',menu_deposito:'💎 Depósito',menu_retiro:'💸 Retiro',balones_estamina:'⚽ Balones de Estamina',balones:'balones',referidos_btn:'👥 Referidos',ref_title:'👥 Programa de Referidos',ref_commission:'💰 GANA 5% DE COMISIÓN',ref_explain:'Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!',ref_total_label:'REFERIDOS',ref_earned_label:'GANADO',ref_link_label:'Tu enlace de invitación',ref_copy:'Copiar',ref_list_title:'📋 MIS REFERIDOS',ref_empty:'Aún no tienes referidos. ¡Comparte tu enlace!',ref_earned_from:'Generado',ref_copied:'Enlace copiado',msg_addr_req:'⚠️ Ingresa tu dirección USDT',msg_min:'❌ Mínimo 500 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
+        en:{tagline:"The world's most epic NFT football game",menu_futbolistas:'👕 Players',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Rewards',menu_recompensa_diaria:'🎁 Daily Reward',menu_logros:'🏅 Achievements',menu_nivel:'⬆️ Level',menu_futcancha:'🏟️ FutPitch',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournament',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Deposit',menu_retiro:'💸 Withdraw',balones_estamina:'⚽ Stamina Balls',balones:'balls',referidos_btn:'👥 Referrals',ref_title:'👥 Referral Program',ref_commission:'💰 EARN 5% COMMISSION',ref_explain:'Get <strong style="color:var(--gold)">5%</strong> in gems from every withdrawal your referral makes. Forever!',ref_total_label:'REFERRALS',ref_earned_label:'EARNED',ref_link_label:'Your invitation link',ref_copy:'Copy',ref_list_title:'📋 MY REFERRALS',ref_empty:'No referrals yet. Share your link!',ref_earned_from:'Generated',ref_copied:'Link copied',msg_addr_req:'⚠️ Enter your USDT address',msg_min:'❌ Minimum 500 💎',msg_insuf:'❌ Insufficient balance',msg_captcha:'🛡️ Wrong captcha, try again',msg_withdraw_ok:'Withdrawal of {usdt} USDT requested — credited within 24h to 48h'},
+        pt:{tagline:'O jogo de futebol NFT mais épico do mundo',menu_futbolistas:'👕 Jogadores',menu_marketplace:'🏪 Mercado',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diária',menu_logros:'🏅 Conquistas',menu_nivel:'⬆️ Nível',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneio',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Treino',menu_deposito:'💎 Depósito',menu_retiro:'💸 Saque',balones_estamina:'⚽ Bolas de Estamina',balones:'bolas',referidos_btn:'👥 Indicações',ref_title:'👥 Programa de Indicações',ref_commission:'💰 GANHE 5% DE COMISSÃO',ref_explain:'Receba <strong style="color:var(--gold)">5%</strong> em gemas de cada saque do seu indicado. Para sempre!',ref_total_label:'INDICAÇÕES',ref_earned_label:'GANHO',ref_link_label:'Seu link de convite',ref_copy:'Copiar',ref_list_title:'📋 MEUS INDICADOS',ref_empty:'Sem indicados ainda. Compartilhe seu link!',ref_earned_from:'Gerado',ref_copied:'Link copiado',msg_addr_req:'⚠️ Insira seu endereço USDT',msg_min:'❌ Mínimo 500 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha errado, tente novamente',msg_withdraw_ok:'Saque de {usdt} USDT solicitado — creditado em 24h a 48h'},
+        fr:{tagline:'Le jeu de football NFT le plus épique du monde',menu_futbolistas:'👕 Joueurs',menu_marketplace:'🏪 Marché',menu_recompensas:'⚽ Récompenses',menu_recompensa_diaria:'🎁 Récompense Quotidienne',menu_logros:'🏅 Succès',menu_nivel:'⬆️ Niveau',menu_futcancha:'🏟️ FutTerrain',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournoi',menu_ranking:'📊 Classement',menu_entrenamiento:'🏋️ Entraînement',menu_deposito:'💎 Dépôt',menu_retiro:'💸 Retrait',balones_estamina:'⚽ Balles d\u2019Endurance',balones:'balles',referidos_btn:'👥 Parrainage',ref_title:'👥 Programme de Parrainage',ref_commission:'💰 GAGNEZ 5% DE COMMISSION',ref_explain:'Recevez <strong style="color:var(--gold)">5%</strong> en gemmes de chaque retrait de votre filleul. Pour toujours!',ref_total_label:'FILLEULS',ref_earned_label:'GAGNÉ',ref_link_label:'Votre lien d\u2019invitation',ref_copy:'Copier',ref_list_title:'📋 MES FILLEULS',ref_empty:'Aucun filleul. Partagez votre lien!',ref_earned_from:'Généré',ref_copied:'Lien copié',msg_addr_req:'⚠️ Entrez votre adresse USDT',msg_min:'❌ Minimum 500 💎',msg_insuf:'❌ Solde insuffisant',msg_captcha:'🛡️ Captcha incorrect, réessayez',msg_withdraw_ok:'Retrait de {usdt} USDT demandé — crédité sous 24h à 48h'},
+        de:{tagline:'Das epischste NFT-Fußballspiel der Welt',menu_futbolistas:'👕 Spieler',menu_marketplace:'🏪 Marktplatz',menu_recompensas:'⚽ Belohnungen',menu_recompensa_diaria:'🎁 Tägliche Belohnung',menu_logros:'🏅 Erfolge',menu_nivel:'⬆️ Stufe',menu_futcancha:'🏟️ FutPlatz',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Turnier',menu_ranking:'📊 Rangliste',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Einzahlung',menu_retiro:'💸 Auszahlung',balones_estamina:'⚽ Ausdauerbälle',balones:'Bälle',referidos_btn:'👥 Empfehlungen',ref_title:'👥 Empfehlungsprogramm',ref_commission:'💰 5% PROVISION VERDIENEN',ref_explain:'Erhalte <strong style="color:var(--gold)">5%</strong> in Gems von jeder Auszahlung deines Empfohlenen. Für immer!',ref_total_label:'EMPFOHLENE',ref_earned_label:'VERDIENT',ref_link_label:'Dein Einladungslink',ref_copy:'Kopieren',ref_list_title:'📋 MEINE EMPFOHLENEN',ref_empty:'Noch keine Empfohlenen. Teile deinen Link!',ref_earned_from:'Generiert',ref_copied:'Link kopiert',msg_addr_req:'⚠️ Gib deine USDT-Adresse ein',msg_min:'❌ Minimum 500 💎',msg_insuf:'❌ Saldo unzureichend',msg_captcha:'🛡️ Captcha falsch, erneut versuchen',msg_withdraw_ok:'Auszahlung von {usdt} USDT angefordert — gutgeschrieben in 24h bis 48h'},
+        it:{tagline:'Il gioco di calcio NFT più epico del mondo',menu_futbolistas:'👕 Calciatori',menu_marketplace:'🏪 Mercato',menu_recompensas:'⚽ Ricompense',menu_recompensa_diaria:'🎁 Ricompensa Giornaliera',menu_logros:'🏅 Obiettivi',menu_nivel:'⬆️ Livello',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Classifica',menu_entrenamiento:'🏋️ Allenamento',menu_deposito:'💎 Deposito',menu_retiro:'💸 Prelievo',balones_estamina:'⚽ Palloni di Stamina',balones:'palloni',referidos_btn:'👥 Referral',ref_title:'👥 Programma Referral',ref_commission:'💰 GUADAGNA 5% DI COMMISSIONE',ref_explain:'Ricevi <strong style="color:var(--gold)">5%</strong> in gemme da ogni prelievo del tuo referral. Per sempre!',ref_total_label:'REFERRAL',ref_earned_label:'GUADAGNATO',ref_link_label:'Il tuo link di invito',ref_copy:'Copia',ref_list_title:'📋 I MIEI REFERRAL',ref_empty:'Nessun referral. Condividi il tuo link!',ref_earned_from:'Generato',ref_copied:'Link copiato',msg_addr_req:'⚠️ Inserisci il tuo indirizzo USDT',msg_min:'❌ Minimo 500 💎',msg_insuf:'❌ Saldo insufficiente',msg_captcha:'🛡️ Captcha errato, riprova',msg_withdraw_ok:'Prelievo di {usdt} USDT richiesto — accreditato in 24h-48h'},
+        ja:{tagline:'世界で最もエピックなNFTサッカーゲーム',menu_futbolistas:'👕 選手',menu_marketplace:'🏪 マーケット',menu_recompensas:'⚽ 報酬',menu_recompensa_diaria:'🎁 デイリー報酬',menu_logros:'🏅 実績',menu_nivel:'⬆️ レベル',menu_futcancha:'🏟️ フットピッチ',menu_futsala:'🏃 フットサル',menu_torneo:'🏆 トーナメント',menu_ranking:'📊 ランキング',menu_entrenamiento:'🏋️ トレーニング',menu_deposito:'💎 入金',menu_retiro:'💸 出金',balones_estamina:'⚽ スタミナボール',balones:'ボール',referidos_btn:'👥 紹介',ref_title:'👥 紹介プログラム',ref_commission:'💰 5%コミッション獲得',ref_explain:'紹介者の出金額の<strong style="color:var(--gold)">5%</strong>をジェムで永久に受け取れます！',ref_total_label:'紹介数',ref_earned_label:'獲得',ref_link_label:'あなたの招待リンク',ref_copy:'コピー',ref_list_title:'📋 私の紹介者',ref_empty:'まだ紹介者がいません。リンクを共有しましょう！',ref_earned_from:'生成',ref_copied:'リンクをコピーしました',msg_addr_req:'⚠️ USDTアドレスを入力',msg_min:'❌ 最小500 💎',msg_insuf:'❌ 残高不足',msg_captcha:'🛡️ キャプチャが違います',msg_withdraw_ok:'{usdt} USDTの出金リクエスト — 24〜48時間以内に入金'},
+        sv:{tagline:'Världens mest episka NFT-fotbollsspel',menu_futbolistas:'👕 Spelare',menu_marketplace:'🏪 Marknad',menu_recompensas:'⚽ Belöningar',menu_recompensa_diaria:'🎁 Daglig Belöning',menu_logros:'🏅 Prestationer',menu_nivel:'⬆️ Nivå',menu_futcancha:'🏟️ FutPlan',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Turnering',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Träning',menu_deposito:'💎 Insättning',menu_retiro:'💸 Uttag',balones_estamina:'⚽ Stamina-bollar',balones:'bollar',referidos_btn:'👥 Värvningar',ref_title:'👥 Värvningsprogram',ref_commission:'💰 TJÄNA 5% PROVISION',ref_explain:'Få <strong style="color:var(--gold)">5%</strong> i ädelstenar från varje uttag din värvning gör. För alltid!',ref_total_label:'VÄRVNINGAR',ref_earned_label:'INTJÄNAT',ref_link_label:'Din inbjudningslänk',ref_copy:'Kopiera',ref_list_title:'📋 MINA VÄRVNINGAR',ref_empty:'Inga värvningar än. Dela din länk!',ref_earned_from:'Genererat',ref_copied:'Länk kopierad',msg_addr_req:'⚠️ Ange din USDT-adress',msg_min:'❌ Minst 500 💎',msg_insuf:'❌ Otillräckligt saldo',msg_captcha:'🛡️ Fel captcha, försök igen',msg_withdraw_ok:'Uttag på {usdt} USDT begärt — krediteras inom 24-48 tim'}
+    };
+    let _currentLang=localStorage.getItem('tg_lang')||'es';
+    function t(key){return (TRANSLATIONS[_currentLang]&&TRANSLATIONS[_currentLang][key])||TRANSLATIONS.es[key]||key;}
+    function applyTranslations(){
+        document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');const v=t(k);if(v)el.innerHTML=v;});
+        const refModal=$id('modal-referidos');if(refModal&&refModal.classList.contains('active'))buildReferidosUI();
+    }
     function toggleLangDropdown(){const dd=$id('lang-dropdown');const btn=$id('lang-toggle-btn');dd.classList.toggle('open');btn.classList.toggle('open');}
-    function setLang(lang,flag,code){document.getElementById('current-lang-label').textContent=flag+' '+code;document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('lang-dropdown').classList.remove('open');document.getElementById('lang-toggle-btn').classList.remove('open');}
-    document.addEventListener('click',e=>{const wrap=$id('lang-dropdown-wrap');if(!wrap.contains(e.target)){$id('lang-dropdown').classList.remove('open');$id('lang-toggle-btn').classList.remove('open');}});
+    function setLang(lang,flag,code){
+        _currentLang=lang;
+        localStorage.setItem('tg_lang',lang);
+        document.getElementById('current-lang-label').textContent=flag+' '+code;
+        document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
+        if(typeof event!=='undefined'&&event&&event.currentTarget)event.currentTarget.classList.add('active');
+        document.getElementById('lang-dropdown').classList.remove('open');
+        document.getElementById('lang-toggle-btn').classList.remove('open');
+        document.documentElement.lang=lang;
+        applyTranslations();
+    }
+    document.addEventListener('click',e=>{const wrap=$id('lang-dropdown-wrap');if(wrap&&!wrap.contains(e.target)){$id('lang-dropdown')?.classList.remove('open');$id('lang-toggle-btn')?.classList.remove('open');}});
+    (function restoreLang(){
+        const langMap={es:['🇪🇸','ES'],en:['🇬🇧','EN'],pt:['🇵🇹','PT'],fr:['🇫🇷','FR'],de:['🇩🇪','DE'],it:['🇮🇹','IT'],ja:['🇯🇵','JA'],sv:['🇸🇪','SV']};
+        const m=langMap[_currentLang];if(m){const lbl=document.getElementById('current-lang-label');if(lbl)lbl.textContent=m[0]+' '+m[1];document.querySelectorAll('.lang-option').forEach(o=>{const oc=o.getAttribute('onclick')||'';o.classList.toggle('active',oc.includes(`'${_currentLang}'`));});document.documentElement.lang=_currentLang;}
+        applyTranslations();
+    })();
 
     // ── BACKGROUND ────────────────────────────────────────────────────────
     const FLAG_DATA=[{flag:'🇧🇷',lane:5},{flag:'🇦🇷',lane:18},{flag:'🇵🇹',lane:31},{flag:'🇬🇧',lane:44},{flag:'🇫🇷',lane:57},{flag:'🇩🇪',lane:70},{flag:'🇪🇸',lane:83},{flag:'🇺🇸',lane:10},{flag:'🇲🇽',lane:24},{flag:'🇯🇵',lane:37},{flag:'🇨🇴',lane:63},{flag:'🇦🇺',lane:90},{flag:'🇮🇹',lane:15},{flag:'🇳🇱',lane:50},{flag:'🇰🇷',lane:75},{flag:'🇨🇱',lane:30}];
