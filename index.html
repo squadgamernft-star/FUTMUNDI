@@ -469,14 +469,14 @@
                     <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
                     <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
                     <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🦵 Protectores</button>
+                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
                 </div>
                 <div id="marketplace-futbolistas" class="tab-panel active">
                     <div class="market-grid" id="car-market-grid"></div>
                 </div>
                 <div id="marketplace-uniformes" class="tab-panel"><div class="coming-soon-box">🔜 Uniformes — próximamente</div></div>
                 <div id="marketplace-tenis" class="tab-panel"><div class="coming-soon-box">👟 Tenis — próximamente</div></div>
-                <div id="marketplace-protectores" class="tab-panel"><div class="coming-soon-box">🦵 Protectores — próximamente</div></div>
+                <div id="marketplace-protectores" class="tab-panel"><div class="coming-soon-box">🏋️ Entrenadores — próximamente</div></div>
             </div>
         </div>
     </div>
@@ -614,11 +614,11 @@
                     Cantidad de gemas 💎
                     <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
                 </label>
-                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 500 gemas" oninput="actualizarConversionRetiro()">
+                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 500 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
                 <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
                     💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
                 </div>
-                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 500 💎 &nbsp;·&nbsp; 1000 💎 = 1 USDT</div>
+                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 500 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6%</div>
 
                 <!-- CAPTCHA -->
                 <label class="withdraw-label">🛡️ Verificación anti-bot</label>
@@ -730,8 +730,7 @@
                     <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 Futbolistas</button>
                     <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
                     <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🦵 Protectores</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','trajes')">🏅 Insignias</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🏋️ Entrenadores</button>
                 </div>
                 <div id="garage-vehiculos" class="tab-panel active">
                     <div class="squad-layout">
@@ -749,8 +748,7 @@
                             <div class="equipment-slots">
                                 <div class="equip-slot" id="equip-slot-uniforme" onclick="openEquipModal('uniforme')"><div class="equip-slot-icon">👕</div><div class="equip-slot-label">Uniforme</div><div class="equip-slot-name" id="equip-uniforme-name">— Vacío —</div></div>
                                 <div class="equip-slot" id="equip-slot-tenis" onclick="openEquipModal('tenis')"><div class="equip-slot-icon">👟</div><div class="equip-slot-label">Tenis</div><div class="equip-slot-name" id="equip-tenis-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🦵</div><div class="equip-slot-label">Protectores</div><div class="equip-slot-name" id="equip-protector-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-insignia" onclick="openEquipModal('insignia')"><div class="equip-slot-icon">🏅</div><div class="equip-slot-label">Insignia</div><div class="equip-slot-name" id="equip-insignia-name">— Vacío —</div></div>
+                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🏋️</div><div class="equip-slot-label">Entrenadores</div><div class="equip-slot-name" id="equip-protector-name">— Vacío —</div></div>
                             </div>
                             <div class="equip-bonus" id="equip-bonus-panel">
                                 <div class="equip-bonus-title">⚡ Bonificaciones Activas</div>
@@ -764,8 +762,7 @@
                 </div>
                 <div id="garage-cascos" class="tab-panel"><div class="coming-soon-box">⏳ Uniformes próximamente</div></div>
                 <div id="garage-guantes" class="tab-panel"><div class="coming-soon-box">⏳ Tenis próximamente</div></div>
-                <div id="garage-botas" class="tab-panel"><div class="coming-soon-box">⏳ Protectores próximamente</div></div>
-                <div id="garage-trajes" class="tab-panel"><div class="coming-soon-box">⏳ Insignias próximamente</div></div>
+                <div id="garage-botas" class="tab-panel"><div class="coming-soon-box">⏳ Entrenadores próximamente</div></div>
             </div>
         </div>
     </div>
@@ -1372,8 +1369,8 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const{idx,copy}=_selectedSquadSlot;const c=PLAYERS[idx];const key=slotKey(idx,copy);const eq=_equipamiento[key]||{};
         preview.innerHTML=`<img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">`
         nameEl.textContent=`${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''} · OVR ${c.hp}`;
-        ['uniforme','tenis','protector','insignia'].forEach(type=>{const slotEl=$id(`equip-slot-${type}`);const nameSlotEl=$id(`equip-${type}-name`);if(eq[type]){slotEl.classList.add('equipped');nameSlotEl.textContent=eq[type];nameSlotEl.style.color='var(--green)';}else{slotEl.classList.remove('equipped');nameSlotEl.textContent='— Vacío —';nameSlotEl.style.color='#555';}});
-        const bonuses={spd:0,def:0};if(eq.uniforme)bonuses.spd+=3;if(eq.tenis)bonuses.spd+=2;if(eq.protector)bonuses.def+=4;if(eq.insignia){bonuses.spd+=1;bonuses.def+=1;}
+        ['uniforme','tenis','protector'].forEach(type=>{const slotEl=$id(`equip-slot-${type}`);const nameSlotEl=$id(`equip-${type}-name`);if(eq[type]){slotEl.classList.add('equipped');nameSlotEl.textContent=eq[type];nameSlotEl.style.color='var(--green)';}else{slotEl.classList.remove('equipped');nameSlotEl.textContent='— Vacío —';nameSlotEl.style.color='#555';}});
+        const bonuses={spd:0,def:0};if(eq.uniforme)bonuses.spd+=3;if(eq.tenis)bonuses.spd+=2;if(eq.protector)bonuses.def+=4;
         $id('eb-ovr').textContent=c.hp+Object.values(bonuses).reduce((a,b)=>a+b,0);
         $id('eb-spd').textContent=`+${bonuses.spd}%`;$id('eb-def').textContent=`+${bonuses.def}%`;
         $id('eb-gems').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
@@ -1674,7 +1671,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     let _captchaAnswer=0;
     function generarCaptcha(){const a=Math.floor(Math.random()*9)+1,b=Math.floor(Math.random()*9)+1;_captchaAnswer=a+b;const q=$id('captcha-question');if(q)q.textContent=`${a} + ${b} = ?`;const ans=$id('captcha-answer');if(ans)ans.value='';}
-    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const usdt=(cant/1000).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${usdt} USDT`;}
+    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const neto=(bruto-descuento).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;}
     function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);}
 
     function retirar(){
@@ -1682,10 +1679,11 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const addr=($id('retiro-address').value||'').trim();
         if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
         if(cant<500){mostrarMensaje(t('msg_min'),'#ff4444');return;}
+        if(cant>3000){mostrarMensaje('❌ Máximo 3000 💎 por día','#ff4444');return;}
         if(cant>gemas){mostrarMensaje(t('msg_insuf'),'#ff4444');return;}
         const userAns=parseInt($id('captcha-answer').value);
         if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
-        const usdt=(cant/1000).toFixed(2);
+        const bruto=cant/32;const descuento=bruto*0.06;const usdt=(bruto-descuento).toFixed(2);
         const refOwner=localStorage.getItem('tg_my_referrer');
         if(refOwner){
             const commission=parseFloat((cant*0.05).toFixed(2));
