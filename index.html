@@ -6,6 +6,7 @@
     <title>FUTMUNDI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -820,6 +821,40 @@
         </div>
     </div>
 
+    <!-- PAGO QR — CONTRATO INTELIGENTE -->
+    <div class="modal-overlay" id="modal-pago-qr">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="pago-qr-title">💳 Pago al Contrato Inteligente</span>
+                <button class="modal-close" onclick="closeModal('modal-pago-qr')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="pago-qr-desc" style="color:#aaa;font-size:0.86em;margin-bottom:10px;"></p>
+                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
+                    <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
+                    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
+                    <div style="font-size:0.74em;color:#888;margin-top:2px;">≈ <span id="pago-qr-ton">0.0000</span> TON · Red TON (Jetton USDT)</div>
+                </div>
+                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
+                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
+                </div>
+                <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
+                <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                    <code id="pago-qr-address" style="flex:1;color:var(--cyan);font-size:0.78em;word-break:break-all;font-family:'Orbitron',monospace;"></code>
+                    <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
+                </div>
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
+                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
+                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
+                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FUTSALA PVE -->
     <div class="modal-overlay" id="modal-duelo-callejero">
         <div class="modal">
@@ -862,9 +897,9 @@
                     📊 Al finalizar el torneo los puntos son verificados automáticamente. Los premios se acreditan en 24h.
                 </div>
                 <div class="tournament-entry">
-                    <h4>💳 INSCRIPCIÓN — $10 USD</h4>
-                    <p>La inscripción se realiza a través del área de <strong style="color:var(--gold)">Depósito</strong>.<br>Deposita <strong style="color:var(--cyan)">$10 USDT</strong> y escribe <em>"TORNEO"</em> en el memo.</p>
-                    <button class="torneo-pay-btn" onclick="irADepositoTorneo()">💳 Ir a Depósito — Inscribirme</button>
+                    <h4>💳 INSCRIPCIÓN — $10.00 USDT</h4>
+                    <p>El pago se envía directamente al <strong style="color:var(--gold)">contrato inteligente</strong>.<br>Al pulsar Inscribirme se mostrará el <strong style="color:var(--cyan)">QR y la dirección del contrato</strong> para depositar.</p>
+                    <button class="torneo-pay-btn" onclick="irADepositoTorneo()">💳 Inscribirme — Pagar $10 USDT</button>
                 </div>
             </div>
         </div>
@@ -935,7 +970,34 @@
     <script>
     // ── CONFIG ─────────────────────────────────────────────────────────────
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
+    // ── WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) ─────
     const WALLET = "UQCObIMiCLIWIdT9FVPZWz5jAWocxqhu6bYzwtJzEkkHAsaY";
+
+    // ── TABLA OFICIAL DE COSTOS DE ENTRENAMIENTO (USDT) POR NFT ───────────
+    // Mapeo: precio del NFT en gemas → costo de mantenimiento/entrenamiento en USDT
+    const COSTO_ENTRENAMIENTO_USDT = {
+        320:    1.00,
+        1600:   5.00,
+        3300:   10.30,
+        6900:   21.50,
+        9900:   30.90,
+        12000:  37.50,
+        18000:  56.25,
+        75000:  234.30,
+        150000: 468.70,
+        255000: 796.80,
+        420000: 1312.50,
+        680000: 2125.00,
+        999999: 3125.00,
+    };
+    function getCostoMantenimiento(precio){
+        if(COSTO_ENTRENAMIENTO_USDT[precio]!=null) return COSTO_ENTRENAMIENTO_USDT[precio];
+        // Fallback proporcional si aparece un precio no listado
+        return Math.max(1, +(precio/320).toFixed(2));
+    }
+
+    // ── COSTO DE INSCRIPCIÓN AL TORNEO (USDT) ─────────────────────────────
+    const COSTO_TORNEO_USDT = 10.00;
     const MAX_PER_PLAYER = 20;
 
     // ── CATÁLOGO DE JUGADORES ─────────────────────────────────────────────
@@ -1188,7 +1250,26 @@
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
-    function irADepositoTorneo(){closeModal('modal-torneo');openModal('modal-deposito');mostrarMensaje('💎 Deposita $10 USDT con memo "TORNEO" para inscribirte','#ffd700');}
+    function irADepositoTorneo(){
+        closeModal('modal-torneo');
+        abrirPagoQR({
+            tipo:'torneo',
+            titulo:`🏆 Inscripción Torneo Semanal`,
+            descripcion:`Inscripción al torneo. El pago se envía directamente al contrato inteligente.`,
+            usdt:COSTO_TORNEO_USDT,
+            onConfirmar:async()=>{
+                if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');tonConnectUI.openModal();return false;}
+                mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
+                const ton=(COSTO_TORNEO_USDT/5).toFixed(4);
+                const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+                try{
+                    await tonConnectUI.sendTransaction(tx);
+                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
+                    return true;
+                }catch(e){mostrarMensaje('❌ Inscripción cancelada','#ff4444');return false;}
+            }
+        });
+    }
 
     // ── MARKETPLACE ───────────────────────────────────────────────────────
     function buildMarket(){
@@ -1666,7 +1747,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 <div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} ${t.bonus>0?`<span style="color:var(--green)">→ ${ovrBoosted} (+${t.bonus}%)</span>`:''} · ${c.pos} · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</p>
 <div class="dur-bar-wrap" style="margin-top:6px"><div class="dur-bar-label"><span>💪 Durabilidad</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div></div>
 <div style="margin-top:6px;font-size:0.74em;color:#888">🏋️ Sesiones: <strong style="color:var(--cyan)">${t.sesiones}</strong> · Próximo bonus: <strong style="color:var(--green)">+${proximoInc}%</strong></div></div>
-<div class="mant-price"><strong>$${Math.ceil(c.precio/320)} USDT</strong><small>Entrenamiento</small><button class="mant-btn" onclick="pagarMantenimiento(${entry.idx},${copy})">🏋️ Entrenar</button></div>
+<div class="mant-price"><strong>$${getCostoMantenimiento(c.precio).toFixed(2)} USDT</strong><small>Entrenamiento</small><button class="mant-btn" onclick="pagarMantenimiento(${entry.idx},${copy})">🏋️ Entrenar</button></div>
 </div>`;
             }
         });
@@ -1674,24 +1755,32 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
     async function pagarMantenimiento(idx,copy=0){
         const c=PLAYERS[idx];
-        if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');tonConnectUI.openModal();return;}
-        const costo=Math.ceil(c.precio/320);mostrarMensaje(`⏳ Procesando $${costo} USDT...`,'#00d4ff');
-        const ton=(costo/5).toFixed(4);
-        const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
-        try{
-            await tonConnectUI.sendTransaction(tx);
-            // 1) Restaurar durabilidad al 100% (el NFT no se desgasta)
-            repararDurabilidad(idx,copy);
-            // 2) Aplicar bonus de rendimiento progresivo (NO se recargan los balones — solo a las 07:00 UTC)
-            const res = applyTrainingBonus(idx,copy);
-            actualizarUI();
-            buildMantenimiento();
-            const msg = res.reinicio
-                ? `✅ Durabilidad 100% · Bonus alcanzó 80% y se reinició a 0%`
-                : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
-            mostrarMensaje(msg,'#00ff88');
-        }
-        catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');}
+        const costo=getCostoMantenimiento(c.precio);
+        // Abrir modal QR con la dirección del contrato inteligente
+        abrirPagoQR({
+            tipo:'entrenamiento',
+            titulo:`🏋️ Entrenamiento — ${c.nombre}`,
+            descripcion:`Restaura durabilidad al 100% y aplica bonus de rendimiento progresivo.`,
+            usdt:costo,
+            onConfirmar:async()=>{
+                if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');tonConnectUI.openModal();return false;}
+                mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
+                const ton=(costo/5).toFixed(4);
+                const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+                try{
+                    await tonConnectUI.sendTransaction(tx);
+                    repararDurabilidad(idx,copy);
+                    const res=applyTrainingBonus(idx,copy);
+                    actualizarUI();
+                    buildMantenimiento();
+                    const msg=res.reinicio
+                        ? `✅ Durabilidad 100% · Bonus alcanzó 80% y se reinició a 0%`
+                        : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
+                    mostrarMensaje(msg,'#00ff88');
+                    return true;
+                }catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');return false;}
+            }
+        });
     }
 
     let _captchaAnswer=0;
@@ -1827,6 +1916,54 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     const FLAG_DATA=[{flag:'🇧🇷',lane:5},{flag:'🇦🇷',lane:18},{flag:'🇵🇹',lane:31},{flag:'🇬🇧',lane:44},{flag:'🇫🇷',lane:57},{flag:'🇩🇪',lane:70},{flag:'🇪🇸',lane:83},{flag:'🇺🇸',lane:10},{flag:'🇲🇽',lane:24},{flag:'🇯🇵',lane:37},{flag:'🇨🇴',lane:63},{flag:'🇦🇺',lane:90},{flag:'🇮🇹',lane:15},{flag:'🇳🇱',lane:50},{flag:'🇰🇷',lane:75},{flag:'🇨🇱',lane:30}];
     function buildFlagsBg(){const bg=$id('flags-bg');FLAG_DATA.forEach((item,i)=>{const el=document.createElement('div');el.className='flag-float';el.textContent=item.flag;el.style.cssText=`left:${item.lane}%;animation-duration:${18+i*2.8}s;animation-delay:${-(i*3.1)}s;`;bg.appendChild(el);});[8,22,38,52,68,82,12,45,77].forEach((lane,i)=>{const el=document.createElement('div');el.className='ball-float';el.textContent='⚽';el.style.cssText=`left:${lane}%;top:${15+i*9}%;animation-duration:${6+i*1.5}s;animation-delay:${-(i*0.8)}s;font-size:${1.2+(i%3)*0.4}em;`;bg.appendChild(el);});}
     buildFlagsBg();
+
+    // ── PAGO QR (CONTRATO INTELIGENTE) ────────────────────────────────────
+    let _pagoQRPendiente = null;
+    function abrirPagoQR({tipo,titulo,descripcion,usdt,onConfirmar}){
+        _pagoQRPendiente = {tipo,usdt,onConfirmar};
+        const ton = (usdt/5).toFixed(4);
+        $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
+        $id('pago-qr-desc').textContent  = descripcion || '';
+        $id('pago-qr-amount').textContent = usdt.toFixed(2);
+        $id('pago-qr-ton').textContent    = ton;
+        $id('pago-qr-address').textContent = WALLET;
+        // QR payload: deep-link TON estándar (compatible con todas las wallets TON)
+        const nano = Math.round(parseFloat(ton)*1e9);
+        const memo = encodeURIComponent(`FUTMUNDI_${tipo.toUpperCase()}`);
+        const qrPayload = `ton://transfer/${WALLET}?amount=${nano}&text=${memo}`;
+        const canvas = $id('pago-qr-canvas');
+        if(window.QRCode && canvas){
+            QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
+                if(err) console.warn('QR error',err);
+            });
+        }
+        openModal('modal-pago-qr');
+    }
+    function copiarDireccionContrato(){
+        const addr = WALLET;
+        if(navigator.clipboard){
+            navigator.clipboard.writeText(addr).then(
+                ()=>mostrarMensaje('📋 Dirección copiada','#00ff88'),
+                ()=>mostrarMensaje('⚠️ No se pudo copiar','#ffaa00')
+            );
+        } else {
+            const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();
+            try{document.execCommand('copy');mostrarMensaje('📋 Dirección copiada','#00ff88');}catch(e){mostrarMensaje('⚠️ No se pudo copiar','#ffaa00');}
+            document.body.removeChild(ta);
+        }
+    }
+    async function confirmarPagoQR(){
+        if(!_pagoQRPendiente) return;
+        const btn = $id('pago-qr-confirm-btn');
+        const original = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '⏳ Procesando...';
+        try{
+            const ok = await _pagoQRPendiente.onConfirmar();
+            if(ok) closeModal('modal-pago-qr');
+        } finally {
+            btn.disabled = false; btn.innerHTML = original;
+        }
+    }
 
     // ── TONCONNECT ────────────────────────────────────────────────────────
     let tonConnectUI;
