@@ -649,7 +649,7 @@
                     <div style="color:#ddd;font-size:0.92em;line-height:1.4;" data-i18n="ref_explain">Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!</div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
                     <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:12px;text-align:center;">
                         <div style="font-size:0.72em;color:#888;letter-spacing:1px;" data-i18n="ref_total_label">REFERIDOS</div>
                         <div style="color:var(--green);font-size:1.6em;font-weight:700;font-family:'Orbitron',sans-serif;" id="ref-total">0</div>
@@ -658,6 +658,12 @@
                         <div style="font-size:0.72em;color:#888;letter-spacing:1px;" data-i18n="ref_earned_label">GANADO</div>
                         <div style="color:var(--gold);font-size:1.6em;font-weight:700;font-family:'Orbitron',sans-serif;" id="ref-earned">0 💎</div>
                     </div>
+                </div>
+
+                <div style="background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.25);border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;">
+                    <div style="font-size:0.72em;color:#888;letter-spacing:1px;margin-bottom:4px;">DISPONIBLE PARA RECLAMAR</div>
+                    <div style="color:var(--purple);font-size:1.5em;font-weight:700;font-family:'Orbitron',sans-serif;margin-bottom:10px;" id="ref-claimable">0.0 💎</div>
+                    <button id="btn-claim-ref" onclick="claimRefGems()" style="width:100%;padding:11px;background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.18));border:1px solid var(--purple);border-radius:9px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">💎 Reclamar Gemas</button>
                 </div>
 
                 <label class="withdraw-label" data-i18n="ref_link_label">Tu enlace de invitación</label>
@@ -1498,9 +1504,28 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
         const gemMin=player.gemMin, gemMax=player.gemMax;
         const bonus=gemasBonus();
+        // Porcentaje aleatorio 10%–45% según equipamiento del NFT
+        // Equipo: uniforme + zapatillas(tenis) + protector + 5% anexo entrenamiento
+        const eq=_equipamiento||{};
+        let pctMin=0.10, pctMax=0.20; // base sin nada
+        let equippedCount=0;
+        if(eq.uniforme)equippedCount++;
+        if(eq.tenis)equippedCount++;
+        if(eq.protector)equippedCount++;
+        // Cada pieza eleva el techo del rango
+        pctMax=Math.min(0.45, 0.20 + equippedCount*0.07); // 0 piezas:20%, 1:27%, 2:34%, 3:41%
+        pctMin=Math.min(pctMax-0.05, 0.10 + equippedCount*0.04);
+        // 5% anexo de entrenamiento
+        const trainBonus=equippedCount===3 ? 1.05 : 1.0;
+        const pct=pctMin+Math.random()*(pctMax-pctMin);
         let gemsGanadas=0;
-        if(resultado==='win'){gemsGanadas=parseFloat((gemMin+Math.random()*(gemMax-gemMin)+bonus).toFixed(1));}
-        else if(resultado==='draw'){gemsGanadas=parseFloat((gemMin*0.4+Math.random()*(gemMax*0.4-gemMin*0.4)+bonus).toFixed(1));}
+        if(resultado==='win'){
+            const baseW=gemMin+Math.random()*(gemMax-gemMin);
+            gemsGanadas=parseFloat((baseW*pct*trainBonus + bonus).toFixed(1));
+        }else if(resultado==='draw'){
+            const baseD=(gemMin+Math.random()*(gemMax-gemMin))*0.4;
+            gemsGanadas=parseFloat((baseD*pct*trainBonus + bonus).toFixed(1));
+        }
         if(gemsGanadas>0)gemas+=gemsGanadas;
         actualizarUI();
 
@@ -1711,11 +1736,51 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     function getMyRefLink(){return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`;}
     function getMisReferidos(){return JSON.parse(localStorage.getItem('tg_mis_referidos')||'[]');}
     function getMisGanancias(){return parseFloat(localStorage.getItem('tg_ref_owed_'+getMyRefId())||'0');}
+
+    // Acumulación diaria 5%: 0.1 gema/día por cada referido activo
+    // Se calcula de forma diferida en base al timestamp del último cómputo.
+    function _refClaimableKey(){return 'tg_ref_claimable_'+getMyRefId();}
+    function _refLastTickKey(){return 'tg_ref_last_tick_'+getMyRefId();}
+    function getRefClaimable(){
+        const refs=getMisReferidos();
+        let pool=parseFloat(localStorage.getItem(_refClaimableKey())||'0');
+        const now=Date.now();
+        const last=parseInt(localStorage.getItem(_refLastTickKey())||'0');
+        if(refs.length>0){
+            if(!last){
+                localStorage.setItem(_refLastTickKey(),now.toString());
+            }else{
+                const days=(now-last)/86400000;
+                if(days>0){
+                    // 0.1 gema/día por referido (representa el 5% de comisión)
+                    pool+=days*0.1*refs.length;
+                    localStorage.setItem(_refLastTickKey(),now.toString());
+                    localStorage.setItem(_refClaimableKey(),pool.toFixed(4));
+                }
+            }
+        }
+        return pool;
+    }
+    function claimRefGems(){
+        const pool=getRefClaimable();
+        const claimable=parseFloat(pool.toFixed(2));
+        if(claimable<=0){mostrarMensaje('⏳ Aún no hay gemas para reclamar','#ffaa00');return;}
+        gemas+=claimable;
+        localStorage.setItem(_refClaimableKey(),'0');
+        saveState();
+        actualizarUI();
+        mostrarMensaje(`✅ +${claimable.toFixed(2)} 💎 reclamadas`,'#00ff88');
+        buildReferidosUI();
+    }
+
     function buildReferidosUI(){
         $id('ref-link').value=getMyRefLink();
         const refs=getMisReferidos();
         $id('ref-total').textContent=refs.length;
         $id('ref-earned').textContent=getMisGanancias().toFixed(2)+' 💎';
+        const claimable=getRefClaimable();
+        const claimEl=$id('ref-claimable');if(claimEl)claimEl.textContent=claimable.toFixed(2)+' 💎';
+        const btn=$id('btn-claim-ref');if(btn){btn.disabled=claimable<0.01;btn.style.opacity=claimable<0.01?'0.45':'1';btn.style.cursor=claimable<0.01?'not-allowed':'pointer';}
         const list=$id('ref-list');
         if(refs.length===0){list.innerHTML=`<div style="text-align:center;color:#666;padding:24px 12px;font-size:0.88em;">${t('ref_empty')}</div>`;return;}
         list.innerHTML=refs.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(0,212,255,0.15);border-radius:10px;padding:10px 14px;margin-bottom:8px;"><div><div style="color:#fff;font-weight:600;">${r.name}</div><div style="color:#888;font-size:0.78em;">${t('ref_earned_from')}: <strong style="color:var(--gold)">${(r.earned||0).toFixed(2)} 💎</strong></div></div><div style="background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border-radius:20px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:0.78em;font-weight:700;">Niv ${r.nivel||1}</div></div>`).join('');
