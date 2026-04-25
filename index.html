@@ -908,6 +908,7 @@
                     <h4>💳 INSCRIPCIÓN — $10.00 USDT</h4>
                     <p>El pago se envía directamente al <strong style="color:var(--gold)">contrato inteligente</strong>.<br>Al pulsar Inscribirme se mostrará el <strong style="color:var(--cyan)">QR y la dirección del contrato</strong> para depositar.</p>
                     <button class="torneo-pay-btn" onclick="irADepositoTorneo()">💳 Inscribirme — Pagar $10 USDT</button>
+                    <button class="torneo-pay-btn" style="margin-top:8px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.15));border-color:var(--green);color:var(--green)" onclick="abrirSeleccionJugadorTorneo()">⚽ Jugar Torneo (5v5)</button>
                 </div>
             </div>
         </div>
@@ -1313,7 +1314,53 @@
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
-    function irADepositoTorneo(){
+    function abrirSeleccionJugadorTorneo(){
+        closeModal('modal-torneo');
+        _torneoState.active=false; // reset tournament
+        _pvpModeSelected='torneo';
+        _currentMatchMode='torneo';
+        if(carrosComprados.length===0){mostrarMensaje('⚠️ ¡Ficha un futbolista primero!','#ffaa00');return;}
+        $id('select-player-desc').textContent='Elige tu jugador estrella para el Torneo 5v5 — ¡acumula puntos y avanza rondas!';
+        $id('select-player-error').textContent='';
+        // Hide difficulty selector
+        const diff=$id('match-difficulty');if(diff)diff.style.display='none';
+        // Build grid using existing logic
+        const grid=$id('player-select-grid');let html='';
+        carrosComprados.forEach(entry=>{
+            for(let copy=0;copy<entry.qty;copy++){
+                const c=PLAYERS[entry.idx];const balls=getBallonesJugador(entry.idx,copy);const llenos=balls.filter(Boolean).length;const hasBall=llenos>0;
+                html+=`<div class="player-select-card${hasBall?' ':' disabled'}" onclick="${hasBall?`selectPlayerForMatch(${entry.idx},${copy})`:`mostrarMensaje('⚽ Sin balones','#ffaa00')`}" style="${hasBall?'':'opacity:0.45;cursor:not-allowed'}" data-idx="${entry.idx}" data-copy="${copy}">
+<img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'" style="width:100%;aspect-ratio:3/4;object-fit:cover">
+<div class="player-select-info"><h5>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h5><div class="ps-ovr">⚡ OVR ${c.hp}</div><div class="ps-balls">${llenos>0?`⚽ ${llenos}`:'💤 Sin balones'}</div></div></div>`;
+            }
+        });
+        grid.innerHTML=html;
+        openModal('modal-select-player');
+    }
+    function confirmarJugadorYJugar(){
+        if(_pvpModeSelected==='torneo'){
+            confirmarJugadorTorneo(); return;
+        }
+        // Use _currentMatchPlayer set by selectPlayerForMatch
+        if(!_currentMatchPlayer){$id('select-player-error').textContent='⚠️ Elige un jugador primero';return;}
+        const{idx,copy}=_currentMatchPlayer;const balls=getBallonesJugador(idx,copy);
+        if(!balls.some(Boolean)){$id('select-player-error').textContent='❌ Sin balones';return;}
+        if(_currentMatchMode==='pve'){const diffMap={barrial:'Cancha Barrial',municipal:'Estadio Municipal',copa:'Copa del Mundo',gala:'Noche de Gala'};_currentMatchCancha=diffMap[$id('match-difficulty').value]||'Cancha Barrial';}
+        closeModal('modal-select-player');
+        const diff2=$id('match-difficulty');if(diff2)diff2.style.display='';
+        consumirBalonJugador(idx,copy);reducirDurabilidad(idx,copy);actualizarUI();
+        iniciarVideoPartida();
+    }
+    function confirmarJugadorTorneo(){
+        if(!_currentMatchPlayer){$id('select-player-error').textContent='⚠️ Elige un jugador';return;}
+        const{idx,copy}=_currentMatchPlayer;
+        closeModal('modal-select-player');
+        const diff=$id('match-difficulty');if(diff)diff.style.display='';
+        _torneoState.playerNFTIdx=idx;_torneoState.playerNFTCopy=copy;
+        _currentMatchMode='torneo';_currentMatchCancha='';
+        _torneoMode=true;
+        iniciarVideoPartida();
+    }
         closeModal('modal-torneo');
         abrirPagoQR({
             tipo:'torneo',
@@ -1716,15 +1763,28 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         grid.innerHTML=html;
         openModal('modal-select-player');
     }
-    function selectPlayerForMatch(idx,copy=0){_currentMatchPlayer={idx,copy};abrirModalSeleccionJugador(_currentMatchMode);}
-    function confirmarJugadorYJugar(){
-        if(!_currentMatchPlayer){$id('select-player-error').textContent='⚠️ Elige un jugador primero';return;}
-        const{idx,copy}=_currentMatchPlayer;const balls=getBallonesJugador(idx,copy);
-        if(!balls.some(Boolean)){$id('select-player-error').textContent='❌ Sin balones';return;}
-        if(_currentMatchMode==='pve'){const diffMap={barrial:'Cancha Barrial',municipal:'Estadio Municipal',copa:'Copa del Mundo',gala:'Noche de Gala'};_currentMatchCancha=diffMap[$id('match-difficulty').value]||'Cancha Barrial';}
-        closeModal('modal-select-player');
-        consumirBalonJugador(idx,copy);reducirDurabilidad(idx,copy);actualizarUI();
-        iniciarVideoPartida();
+    function selectPlayerForMatch(idx,copy=0){
+        _currentMatchPlayer={idx,copy};
+        // Highlight selected card
+        document.querySelectorAll('.player-select-card').forEach(c=>c.classList.remove('selected'));
+        document.querySelectorAll(`[data-idx="${idx}"][data-copy="${copy}"]`).forEach(c=>c.classList.add('selected'));
+        if(_pvpModeSelected!=='torneo') abrirModalSeleccionJugador(_currentMatchMode);
+    }
+    function buildPlayerGrid(torneoMode){
+        if(torneoMode){
+            if(carrosComprados.length===0){mostrarMensaje('⚠️ ¡Ficha un futbolista primero!','#ffaa00');return;}
+            const grid=$id('player-select-grid');let html='';
+            carrosComprados.forEach(entry=>{
+                for(let copy=0;copy<entry.qty;copy++){
+                    const c=PLAYERS[entry.idx];const balls=getBallonesJugador(entry.idx,copy);const llenos=balls.filter(Boolean).length;const hasBall=llenos>0;
+                    html+=`<div class="player-select-card${!hasBall?' disabled':''}" onclick="${hasBall?`selectPlayerForMatch(${entry.idx},${copy})`:`mostrarMensaje('⚽ Sin balones','#ffaa00')`}" style="${hasBall?'':'opacity:0.45;cursor:not-allowed'}" data-idx="${entry.idx}" data-copy="${copy}">
+<img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" style="width:100%;aspect-ratio:3/4;object-fit:cover">
+<div class="player-select-info"><h5>${c.nombre}</h5><div class="ps-ovr">⚡ OVR ${c.hp}</div><div class="ps-balls">${llenos>0?`⚽ ${llenos}`:'💤'}</div></div></div>`;
+                }
+            });
+            grid.innerHTML=html;
+        }
+    }
     }
 
     // ── VIDEO PARTIDO — JUEGO INTERACTIVO ────────────────────────────────
@@ -1753,18 +1813,31 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         overlay.classList.add('active');
         document.body.style.overflow='hidden';
 
-        const{idx,copy}=_currentMatchPlayer;
+        const matchPlayer=_currentMatchPlayer||{idx:_torneoState.playerNFTIdx||0,copy:_torneoState.playerNFTCopy||0};
+        const{idx,copy}=matchPlayer;
+        if(!_currentMatchPlayer) _currentMatchPlayer={idx,copy};
         const player=PLAYERS[idx];
         const nftId=generatePlayerId(idx,copy);
-        const opp=randomOpp();
 
-        // Calcular resultado final (predeterminado, el juego lo ajusta)
+        // If torneo, use tournament opponent
+        let opp;
+        if(_currentMatchMode==='torneo'){
+            _torneoMode=true;
+            const tOpp=TORNEO_OPPONENTS[_torneoState.currentOppIdx||0];
+            opp={nombre:tOpp.nombre,flag:tOpp.flag,id:tOpp.id};
+        } else {
+            opp=randomOpp();
+        }
+
         let winChance=0.55+nivelWinBonus();
         if(_currentMatchMode==='pve'){
             const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36};
             winChance=Math.min(0.92,(dm[_currentMatchCancha]||0.55)+nivelWinBonus());
         }
-        // Goles base del partido, el jugador puede sumar con sus disparos
+        if(_currentMatchMode==='torneo'){
+            const tOpp=TORNEO_OPPONENTS[_torneoState.currentOppIdx||0];
+            winChance=Math.max(0.3,0.72-(tOpp.ovr/100)*0.5);
+        }
         const baseOppGoals=Math.floor(Math.random()*3);
         const basePlayerGoals=Math.random()<winChance?baseOppGoals+Math.floor(Math.random()*2):Math.max(0,baseOppGoals-1);
 
@@ -1801,21 +1874,27 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         // ── INTRO ────────────────────────────────────────────────────────
         showScreen('match-intro-screen');
 
-        // Rellenar datos de intro
         const isCancha=_currentMatchMode==='futcancha'||_currentMatchMode==='pvp';
-        $id('intro-mode-label').textContent = isCancha ? '🏟️ FUTCANCHA PVP' : `⚽ FUTSALA · ${_currentMatchCancha||'Cancha Barrial'}`;
+        const isTorneo=_currentMatchMode==='torneo';
+        if(isTorneo){
+            const tOpp=TORNEO_OPPONENTS[_torneoState.currentOppIdx||0];
+            $id('intro-mode-label').textContent=`🏆 TORNEO 5v5 · RONDA ${(_torneoState.currentOppIdx||0)+1}`;
+            $id('intro-cancha-label').textContent=`Pts torneo: ${_torneoState.playerPts||0} · Necesitas ${_torneoState.ptsToAdvance||3} para avanzar`;
+        } else {
+            $id('intro-mode-label').textContent = isCancha ? '🏟️ FUTCANCHA 5v5 PVP' : `⚽ FUTSALA 5v5 · ${_currentMatchCancha||'Cancha Barrial'}`;
+            $id('intro-cancha-label').textContent = isCancha ? '⚡ MODO PVP · 5 vs 5' : `🏟️ ${_currentMatchCancha||'Cancha Barrial'} · 5 vs 5`;
+        }
         $id('intro-a-name').textContent = player.nombre.split(' ')[0].toUpperCase();
-        $id('intro-a-id').textContent = 'ID: '+nftId;
+        $id('intro-a-id').textContent = 'ID: '+nftId+' · 5 JUGADORES';
         $id('intro-a-ovr').textContent = '⚡ OVR '+player.hp;
         $id('intro-a-badge').style.background = (player.color1||'#1a6a1a');
         $id('intro-a-badge').style.borderColor = (player.color1||'var(--green)');
         $id('intro-a-badge').textContent = player.flag||'⚽';
 
         $id('intro-b-name').textContent = opp.nombre.toUpperCase();
-        $id('intro-b-id').textContent = 'ID: '+opp.id;
+        $id('intro-b-id').textContent = 'ID: '+opp.id+' · 5 JUGADORES';
         $id('intro-b-ovr').textContent = opp.flag;
         $id('intro-b-badge').textContent = opp.flag;
-        $id('intro-cancha-label').textContent = isCancha ? '⚡ MODO PVP · TIEMPO REAL' : `🏟️ ${_currentMatchCancha||'Cancha Barrial'} · MODO LIBRE`;
 
         // Animación de entrada
         setTimeout(()=>{
@@ -1850,31 +1929,148 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         },1200);
     }
 
+    // ── NFT IMAGE CACHE ────────────────────────────────────────────────────
+    const _nftImgCache={};
+    function getNFTImage(src){
+        if(_nftImgCache[src])return _nftImgCache[src];
+        const img=new Image();img.crossOrigin='anonymous';img.src=src;
+        _nftImgCache[src]=img;return img;
+    }
+
+    // ── TORNEO POR PUNTOS ACUMULADOS ───────────────────────────────────────
+    let _torneoMode=false;
+    let _torneoState={
+        active:false, round:1, maxRounds:8,
+        playerPts:0, opponents:[],
+        currentOppIdx:0, ptsToAdvance:3,
+        playerNFTIdx:null, playerNFTCopy:0
+    };
+    const TORNEO_OPPONENTS=[
+        {nombre:'IA Bronce',   flag:'🥉', id:'TRN-001', ovr:65, color:'#cd7f32'},
+        {nombre:'IA Plata',    flag:'🥈', id:'TRN-002', ovr:70, color:'#c0c0c0'},
+        {nombre:'IA Oro',      flag:'🥇', id:'TRN-003', ovr:75, color:'#ffd700'},
+        {nombre:'IA Diamante', flag:'💎', id:'TRN-004', ovr:80, color:'#00d4ff'},
+        {nombre:'IA Élite',    flag:'⭐', id:'TRN-005', ovr:85, color:'#a855f7'},
+        {nombre:'IA Leyenda',  flag:'🏆', id:'TRN-006', ovr:90, color:'#ff8c00'},
+        {nombre:'IA Máster',   flag:'👑', id:'TRN-007', ovr:94, color:'#ef4444'},
+        {nombre:'IA Campeón',  flag:'🌍', id:'TRN-008', ovr:98, color:'#00ff88'},
+    ];
+    function iniciarTorneoPartida(nftIdx,nftCopy){
+        _torneoMode=true;
+        if(!_torneoState.active){
+            _torneoState={active:true,round:1,maxRounds:8,playerPts:0,currentOppIdx:0,ptsToAdvance:3,playerNFTIdx:nftIdx,playerNFTCopy:nftCopy};
+        }
+        const opp=TORNEO_OPPONENTS[_torneoState.currentOppIdx];
+        _currentMatchMode='torneo';
+        _currentMatchCancha='';
+        iniciarJuegoInteractivo5v5(nftIdx,nftCopy,opp,'torneo');
+    }
+    function procesarResultadoTorneo(resultado,playerGoals,oppGoals){
+        const pts=resultado==='win'?3:resultado==='draw'?1:0;
+        _torneoState.playerPts+=pts;
+        const opp=TORNEO_OPPONENTS[_torneoState.currentOppIdx];
+        const rb=$id('video-result-box');
+        const color=resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
+        const txt=resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
+        const canAdvance=_torneoState.playerPts>=_torneoState.ptsToAdvance;
+        const nextRound=_torneoState.currentOppIdx+1;
+        const isLastRound=nextRound>=_torneoState.maxRounds;
+
+        let advanceHTML='';
+        if(canAdvance && !isLastRound){
+            advanceHTML=`<button onclick="siguienteRondaTorneo()" style="margin-top:12px;width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,212,255,0.2));border:2px solid var(--green);border-radius:12px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9em;letter-spacing:2px;cursor:pointer;">⚡ SIGUIENTE RONDA →</button>`;
+        } else if(isLastRound && resultado==='win'){
+            advanceHTML=`<div style="margin-top:12px;padding:12px;background:rgba(255,215,0,0.15);border:2px solid var(--gold);border-radius:12px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.5em;color:var(--gold);letter-spacing:3px">🏆 ¡CAMPEÓN DEL TORNEO!</div>`;
+        } else if(!canAdvance){
+            advanceHTML=`<div style="margin-top:10px;font-size:0.82em;color:var(--orange);text-align:center">Necesitas ${_torneoState.ptsToAdvance - _torneoState.playerPts} pts más para avanzar. Sigue acumulando.</div>
+            <button onclick="siguienteRondaTorneo()" style="margin-top:8px;width:100%;padding:11px;background:rgba(255,140,0,0.12);border:1px solid var(--orange);border-radius:10px;color:var(--orange);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.8em;letter-spacing:2px;cursor:pointer;">🔄 REPETIR CONTRA ${opp.nombre}</button>`;
+        }
+        rb.innerHTML=`<div style="background:linear-gradient(135deg,#0a1a0a,#060d06);border:2px solid ${color};border-radius:16px;padding:18px;text-align:center">
+<div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:${color};letter-spacing:4px">${txt}</div>
+<div style="font-family:'Bebas Neue',sans-serif;font-size:3.5em;color:var(--gold);line-height:1.1;margin:8px 0">${playerGoals} — ${oppGoals}</div>
+<div style="font-size:0.88em;color:#aaa;margin-bottom:6px">Ronda ${_torneoState.currentOppIdx+1}: vs ${opp.flag} ${opp.nombre}</div>
+<div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:8px;margin:8px 0;font-family:'Orbitron',sans-serif;font-size:0.75em;color:var(--cyan)">
+  Pts torneo: <strong style="color:var(--gold)">${_torneoState.playerPts}</strong> / ${_torneoState.ptsToAdvance} para avanzar &nbsp;·&nbsp; Ronda ${_torneoState.currentOppIdx+1}/${_torneoState.maxRounds}
+</div>
+<div style="font-size:0.8em;color:var(--green)">+${pts} pts esta ronda</div>
+${advanceHTML}
+</div>`;
+        showScreen('match-result-screen');
+        $id('match-result-screen').style.display='flex';
+        if(_gameState)_gameState.phase='result';
+        saveState();
+    }
+    function siguienteRondaTorneo(){
+        if(_torneoState.playerPts>=_torneoState.ptsToAdvance){
+            _torneoState.currentOppIdx=Math.min(_torneoState.currentOppIdx+1,_torneoState.maxRounds-1);
+            _torneoState.playerPts=0;
+            _torneoState.ptsToAdvance=3+_torneoState.currentOppIdx;
+        }
+        cerrarVideoPartida();
+        iniciarTorneoPartida(_torneoState.playerNFTIdx,_torneoState.playerNFTCopy);
+    }
+
     function iniciarJuegoInteractivo(){
+        iniciarJuegoInteractivo5v5(
+            _gameState.idx,_gameState.copy,_gameState.opp,_currentMatchMode
+        );
+    }
+
+    function iniciarJuegoInteractivo5v5(nftIdx,nftCopy,opp,mode){
         const gs=_gameState;
         showScreen('match-game-screen');
 
         const canvas=$id('match-canvas');
-        // Ajustar resolución real al tamaño visual
-        const rect=canvas.getBoundingClientRect();
         const W=Math.min(640,window.innerWidth);
-        // Altura: el canvas ocupa el espacio disponible menos HUD y controles
         const hudH=36, ctrlH=128;
-        const H=Math.max(220,window.innerHeight-hudH-ctrlH);
+        const H=Math.max(280,window.innerHeight-hudH-ctrlH);
         canvas.width=W; canvas.height=H;
         const ctx=canvas.getContext('2d');
 
         gs.cw=W; gs.ch=H;
         gs.bx=W/2; gs.by=H/2; gs.bvx=0; gs.bvy=0;
+
+        // Player controlled — starts on left side
         gs.px=W*0.22; gs.py=H/2;
         gs.gkY=H/2; gs.gkTargetY=H/2;
-        gs.aiPlayers=[
-            {x:W*0.72,y:H*0.3,vx:0,vy:0,role:'mid'},
-            {x:W*0.72,y:H*0.7,vx:0,vy:0,role:'mid'},
-            {x:W*0.88,y:H*0.5,vx:0,vy:0,role:'fwd'},
-            {x:W*0.82,y:H*0.25,vx:0,vy:0,role:'def'},
-            {x:W*0.82,y:H*0.75,vx:0,vy:0,role:'def'},
+
+        // ─── TEAM A (user): 5 players ────────────────────────────────────
+        // Controlled player is index 0; others are AI teammates
+        const player=gs.player;
+        const nftSrc=player.img?(GITHUB_IMG+player.img):null;
+        const nftImage=nftSrc?getNFTImage(nftSrc):null;
+
+        // Teammate NFT images — use other owned NFTs or fallback
+        const ownedPlayers=carrosComprados.map(e=>PLAYERS[e.idx]);
+        const teamAImages=[nftImage]; // index 0 = controlled
+        for(let i=0;i<4;i++){
+            const tp=ownedPlayers[i%Math.max(1,ownedPlayers.length)];
+            const src=tp&&tp.img?GITHUB_IMG+tp.img:null;
+            teamAImages.push(src?getNFTImage(src):null);
+        }
+
+        gs.teamA=[
+            {x:W*0.22,y:H/2,   vx:0,vy:0,role:'ctrl', img:teamAImages[0], color:player.color1||'#00aa44', label:'★'},
+            {x:W*0.14,y:H*0.3, vx:0,vy:0,role:'fwd',  img:teamAImages[1], color:'#00bb55', label:'A2'},
+            {x:W*0.14,y:H*0.7, vx:0,vy:0,role:'fwd',  img:teamAImages[2], color:'#00bb55', label:'A3'},
+            {x:W*0.08,y:H*0.4, vx:0,vy:0,role:'def',  img:teamAImages[3], color:'#0088aa', label:'A4'},
+            {x:W*0.08,y:H*0.6, vx:0,vy:0,role:'def',  img:teamAImages[4], color:'#0088aa', label:'A5'},
         ];
+
+        // ─── TEAM B (rivals): 5 players ──────────────────────────────────
+        gs.aiPlayers=[
+            {x:W*0.72,y:H*0.3, vx:0,vy:0,role:'mid', color:'#cc2222', label:'R1'},
+            {x:W*0.72,y:H*0.7, vx:0,vy:0,role:'mid', color:'#cc2222', label:'R2'},
+            {x:W*0.86,y:H*0.5, vx:0,vy:0,role:'fwd', color:'#dd3333', label:'R3'},
+            {x:W*0.80,y:H*0.25,vx:0,vy:0,role:'def', color:'#aa1111', label:'R4'},
+            {x:W*0.80,y:H*0.75,vx:0,vy:0,role:'def', color:'#aa1111', label:'R5'},
+        ];
+
+        // Ball possession tracking for pass-to-pass animation
+        gs.ballHolder=-1; // index in teamA (-1 = loose)
+        gs.passCooldown=0;
+        gs.autoPassTimer=0;
+
         gs.phase='playing';
         gs.matchTime=0;
         gs.shotCooldown=0;
@@ -1935,16 +2131,19 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 
         function dispararBola(){
             if(gs.shotCooldown>0)return;
-            const nearBall=Math.hypot(gs.bx-gs.px,gs.by-gs.py)<W*0.18;
-            if(!nearBall)return;
-            // Disparar hacia el arco rival (derecha)
+            const ctrl=gs.teamA[0];
+            const nearBall=Math.hypot(gs.bx-ctrl.x,gs.by-ctrl.y)<W*0.20;
+            // Also allow shooting if ball is near controlled position
+            const nearBall2=Math.hypot(gs.bx-gs.px,gs.by-gs.py)<W*0.20;
+            if(!nearBall&&!nearBall2)return;
             const arcY=gs.ch/2;
-            const ang=Math.atan2(arcY-gs.py,gs.cw-gs.px)+(Math.random()-0.5)*0.4;
+            const ang=Math.atan2(arcY-ctrl.y,gs.cw-ctrl.x)+(Math.random()-0.5)*0.35;
             const spd=13+Math.random()*5;
             gs.bvx=Math.cos(ang)*spd;
             gs.bvy=Math.sin(ang)*spd;
             gs.shooting=true;
             gs.shotCooldown=45;
+            gs.ballHolder=-1;
             gs.playerShots++;
             gs.playerShotsOnTarget++;
             $id('game-hint').textContent='🎯 ¡Disparo!';
@@ -1952,40 +2151,112 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         }
 
         // ── LOOP ──────────────────────────────────────────────────────────
-        const GAME_FRAMES=Math.floor(60*90); // 90s a 60fps (acelerado: 1 frame = ~0.5s partido)
+        const GAME_FRAMES=Math.floor(60*90);
         let frame=0;
-        const SPEED=4.5; // pixels por frame, jugador controlado
+        const SPEED=4.5;
 
         function updateGame(){
             const{cw,ch}=gs;
+            const ctrl=gs.teamA[0];
 
-            // Mover jugador controlado
-            if(gs.keys.left) gs.px=Math.max(12,gs.px-SPEED);
-            if(gs.keys.right) gs.px=Math.min(cw*0.55,gs.px+SPEED);
-            if(gs.keys.up) gs.py=Math.max(12,gs.py-SPEED);
-            if(gs.keys.down) gs.py=Math.min(ch-12,gs.py+SPEED);
+            // ── Mover jugador controlado (espejo de ctrl) ─────────────────
+            if(gs.keys.left) {ctrl.x=Math.max(12,ctrl.x-SPEED);gs.px=ctrl.x;}
+            if(gs.keys.right){ctrl.x=Math.min(cw*0.52,ctrl.x+SPEED);gs.px=ctrl.x;}
+            if(gs.keys.up)   {ctrl.y=Math.max(12,ctrl.y-SPEED);gs.py=ctrl.y;}
+            if(gs.keys.down) {ctrl.y=Math.min(ch-12,ctrl.y+SPEED);gs.py=ctrl.y;}
 
-            // Movimiento de pelota
-            gs.bx+=gs.bvx; gs.by+=gs.bvy;
-            gs.bvx*=0.93; gs.bvy*=0.93;
-            if(Math.abs(gs.bvx)<0.1)gs.bvx=0;
-            if(Math.abs(gs.bvy)<0.1)gs.bvy=0;
+            // ── Auto-movimiento compañeros de equipo A ────────────────────
+            // Pase automático entre compañeros (ball holder pasa cada ~80 frames)
+            if(gs.passCooldown>0)gs.passCooldown--;
+            if(gs.autoPassTimer>0)gs.autoPassTimer--;
 
-            // Rebote laterales y arriba/abajo
+            // Compañeros se mueven con IA hacia posiciones tácticas
+            gs.teamA.forEach((p,i)=>{
+                if(i===0)return; // solo IA teammates
+                const roles={
+                    fwd:{targetX:cw*0.38, driftY:0.2},
+                    def:{targetX:cw*0.10, driftY:0.15},
+                };
+                const r=roles[p.role]||{targetX:cw*0.25,driftY:0.1};
+                // Si la pelota está en el campo rival, avanzan
+                const ballAdvanced=gs.bx>cw*0.5;
+                const txAdj=ballAdvanced?r.targetX+cw*0.15:r.targetX;
+                const noise=Math.sin(frame*0.02+i)*20;
+
+                // Si tienen la pelota, muévanse hacia adelante
+                const hasBall=(gs.ballHolder===i);
+                const spd=hasBall?2.2:1.1;
+                const tx=hasBall?cw*0.55:txAdj;
+                const ty=p.y+(noise*r.driftY);
+
+                const dx=tx-p.x, dy=ty-p.y;
+                const dist=Math.hypot(dx,dy);
+                if(dist>5){p.x+=dx/dist*spd;p.y+=dy/dist*spd;}
+                p.x=Math.max(8,Math.min(cw*0.58,p.x));
+                p.y=Math.max(12,Math.min(ch-12,p.y));
+
+                // Si tiene la pelota, la arrastra consigo
+                if(hasBall && gs.passCooldown<=0){
+                    gs.bx=p.x+10;gs.by=p.y;gs.bvx=0;gs.bvy=0;
+                    // Auto-pase cada 80-120 frames
+                    if(gs.autoPassTimer<=0){
+                        // Pasar al compañero más adelantado o al controlado
+                        const targets=gs.teamA.filter((_,j)=>j!==i);
+                        const target=targets[Math.floor(Math.random()*targets.length)];
+                        if(target){
+                            const ang=Math.atan2(target.y-p.y,target.x-p.x)+(Math.random()-0.5)*0.2;
+                            const spd=8+Math.random()*4;
+                            gs.bvx=Math.cos(ang)*spd;gs.bvy=Math.sin(ang)*spd;
+                            gs.ballHolder=-1;
+                            gs.passCooldown=30;
+                            gs.autoPassTimer=80+Math.floor(Math.random()*40);
+                            gs.goalEvents.push({text:'🟢 Pase',x:p.x,y:p.y-12,timer:20,color:'#00ff88',big:false});
+                        }
+                    }
+                }
+            });
+
+            // ── Ball pickup: si compañero toca la pelota suelta ──────────
+            if(gs.ballHolder===-1 && Math.abs(gs.bvx)<1 && Math.abs(gs.bvy)<1){
+                gs.teamA.forEach((p,i)=>{
+                    if(i===0)return; // controlled player uses shoot btn
+                    if(Math.hypot(gs.bx-p.x,gs.by-p.y)<16 && gs.passCooldown<=0){
+                        gs.ballHolder=i;
+                        gs.autoPassTimer=80+Math.floor(Math.random()*40);
+                    }
+                });
+            }
+            // Controlled player pushes ball (never holds)
+            const ctrlDist=Math.hypot(gs.bx-ctrl.x,gs.by-ctrl.y);
+            if(ctrlDist<16&&gs.ballHolder===-1){
+                const ang=Math.atan2(gs.by-ctrl.y,gs.bx-ctrl.x);
+                gs.bvx+=Math.cos(ang)*3;gs.bvy+=Math.sin(ang)*3;
+            }
+            // If ball moving fast, nobody holds it
+            if(Math.hypot(gs.bvx,gs.bvy)>2) gs.ballHolder=-1;
+
+            // ── Movimiento de pelota ──────────────────────────────────────
+            if(gs.ballHolder===-1){
+                gs.bx+=gs.bvx; gs.by+=gs.bvy;
+                gs.bvx*=0.93; gs.bvy*=0.93;
+                if(Math.abs(gs.bvx)<0.1)gs.bvx=0;
+                if(Math.abs(gs.bvy)<0.1)gs.bvy=0;
+            }
+
+            // Rebote paredes
             const topWall=30,botWall=ch-12;
             if(gs.by-8<topWall){gs.by=topWall+8;gs.bvy*=-0.7;}
             if(gs.by+8>botWall){gs.by=botWall-8;gs.bvy*=-0.7;}
 
-            // Portero rival (derecha) sigue pelota
+            // ── Portero rival ────────────────────────────────────────────
             const gkSpeed=2.5+Math.random()*1.5;
             if(gs.by<gs.gkY-5)gs.gkY-=gkSpeed;
             else if(gs.by>gs.gkY+5)gs.gkY+=gkSpeed;
             gs.gkY=Math.max(ch*0.25+10,Math.min(ch*0.75-10,gs.gkY));
 
-            // Gol del jugador (pelota pasa del límite derecho en zona de arco)
+            // ── Gol del jugador ──────────────────────────────────────────
             const arcTop=ch*0.3,arcBot=ch*0.7,arcLeft=cw-18;
             if(gs.bx+8>arcLeft && gs.by>arcTop && gs.by<arcBot){
-                // ¿El portero la para?
                 const gkRange=ch*0.09;
                 const saved=Math.abs(gs.by-gs.gkY)<gkRange && Math.random()<0.45;
                 if(!saved){
@@ -2001,7 +2272,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 }
             }
 
-            // Gol rival (pelota pasa por izquierda en zona de arco)
+            // ── Gol rival ────────────────────────────────────────────────
             const arcLTop=ch*0.28,arcLBot=ch*0.72,arcRight=18;
             if(gs.bx-8<arcRight && gs.by>arcLTop && gs.by<arcLBot && gs.bvx<-2){
                 if(Math.random()<0.4){
@@ -2014,45 +2285,35 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 }
             }
 
-            // Pelota fuera laterales → saque
+            // Fuera de banda
             if(gs.bx<-20){resetBall(gs,'player_kick');}
             if(gs.bx>cw+20){resetBall(gs,'opp_kick');}
 
-            // IA rival: persigue pelota y empuja al arco izquierdo
+            // ── IA rivals: 5 jugadores ────────────────────────────────────
             gs.aiPlayers.forEach((ai,i)=>{
                 const aiSpd=1.2+i*0.15;
                 const chaseX=gs.bx,chaseY=gs.by;
                 const dx=chaseX-ai.x,dy=chaseY-ai.y;
                 const dist=Math.hypot(dx,dy);
                 if(dist>8){ai.x+=dx/dist*aiSpd;ai.y+=dy/dist*aiSpd;}
-                ai.x=Math.max(cw*0.5,Math.min(cw-12,ai.x));
+                ai.x=Math.max(cw*0.48,Math.min(cw-12,ai.x));
                 ai.y=Math.max(12,Math.min(ch-12,ai.y));
-                // Si IA toca la pelota
-                if(Math.hypot(gs.bx-ai.x,gs.by-ai.y)<14){
+                if(Math.hypot(gs.bx-ai.x,gs.by-ai.y)<14&&gs.ballHolder===-1){
                     const ang=Math.atan2(ch/2-gs.by, 0-gs.bx)+(Math.random()-0.5)*0.5;
                     gs.bvx=Math.cos(ang)*(4+Math.random()*5);
                     gs.bvy=Math.sin(ang)*(4+Math.random()*5);
                 }
             });
 
-            // Empujón del jugador a la pelota
-            const playerDist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
-            if(playerDist<16){
-                const ang=Math.atan2(gs.by-gs.py,gs.bx-gs.px);
-                gs.bvx+=Math.cos(ang)*3;gs.bvy+=Math.sin(ang)*3;
-            }
-
-            // Cooldown de disparo
             if(gs.shotCooldown>0)gs.shotCooldown--;
 
-            // Goles predeterminados del oponente (asegura partido real)
+            // ── Goles programados ────────────────────────────────────────
             if(gs.oppScoreAt&&gs.oppScoreAt.includes(frame)){
                 gs.oppGoals++;
                 gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
                 resetBall(gs,'player_kick');
             }
             if(gs.playerBaseScoreAt&&gs.playerBaseScoreAt.includes(frame)){
-                // Solo si el jugador va perdiendo o empatando
                 if(gs.playerGoals<=gs.oppGoals){
                     gs.playerGoals++;
                     gs.goalEvents.push({text:'⚽ ¡GOL!',x:cw/2,y:ch/2,timer:55,color:'#00ff88',big:true});
@@ -2060,19 +2321,17 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 }
             }
 
-            // Actualizar timer visual
             const minutos=Math.floor((frame/GAME_FRAMES)*90);
             if($id('hud-time'))$id('hud-time').textContent=`${minutos}'`;
             if($id('hud-score'))$id('hud-score').textContent=`${gs.playerGoals} — ${gs.oppGoals}`;
             if($id('hud-shots'))$id('hud-shots').textContent=`🎯 ${gs.playerShots}`;
 
-            // Goal events fade
             gs.goalEvents=gs.goalEvents.filter(g=>(g.timer--)>0);
             gs.goalEvents.forEach(g=>{g.y-=0.7;});
         }
 
         function resetBall(gs,who){
-            gs.bx=gs.cw/2;gs.by=gs.ch/2;gs.bvx=0;gs.bvy=0;gs.shooting=false;
+            gs.bx=gs.cw/2;gs.by=gs.ch/2;gs.bvx=0;gs.bvy=0;gs.shooting=false;gs.ballHolder=-1;
             if(who==='player_kick'){gs.bvx=3+Math.random()*2;}
             else{gs.bvx=-(3+Math.random()*2);}
         }
@@ -2081,99 +2340,173 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             const{cw,ch}=gs;
             ctx.clearRect(0,0,cw,ch);
 
-            // Césped
+            // Césped con franjas
             const grad=ctx.createLinearGradient(0,0,cw,0);
             grad.addColorStop(0,'#1a4a1a');grad.addColorStop(0.5,'#1e5820');grad.addColorStop(1,'#1a4a1a');
             ctx.fillStyle=grad;ctx.fillRect(0,0,cw,ch);
+            // Franjas de césped
+            ctx.globalAlpha=0.08;
+            for(let s=0;s<cw;s+=Math.floor(cw/8)){
+                ctx.fillStyle='#ffffff';
+                ctx.fillRect(s,0,Math.floor(cw/16),ch);
+            }
+            ctx.globalAlpha=1;
 
             // Líneas del campo
-            ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=2;
-            ctx.strokeRect(10,25,cw-20,ch-35);
-            ctx.beginPath();ctx.moveTo(cw/2,25);ctx.lineTo(cw/2,ch-10);ctx.stroke();
-            ctx.beginPath();ctx.arc(cw/2,ch/2,Math.min(50,ch*0.15),0,Math.PI*2);ctx.stroke();
+            ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=2;
+            ctx.strokeRect(12,26,cw-24,ch-36);
+            ctx.beginPath();ctx.moveTo(cw/2,26);ctx.lineTo(cw/2,ch-10);ctx.stroke();
+            ctx.beginPath();ctx.arc(cw/2,ch/2,Math.min(48,ch*0.14),0,Math.PI*2);ctx.stroke();
+            // Punto central
+            ctx.fillStyle='rgba(255,255,255,0.5)';ctx.beginPath();ctx.arc(cw/2,ch/2,3,0,Math.PI*2);ctx.fill();
 
-            // Arco izquierdo (jugador defiende)
-            const arcH=ch*0.44;
-            ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=3;
+            // Áreas
+            const areaW=cw*0.13,arcH=ch*0.44;
+            ctx.strokeStyle='rgba(255,255,255,0.25)';ctx.lineWidth=1.5;
+            ctx.strokeRect(12,ch/2-arcH/2,areaW,arcH);
+            ctx.strokeRect(cw-12-areaW,ch/2-arcH/2,areaW,arcH);
+
+            // Arcos
+            ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=3;
             ctx.strokeRect(10,ch/2-arcH/2,22,arcH);
-            // Arco derecho (rival defiende)
             ctx.strokeRect(cw-32,ch/2-arcH/2,22,arcH);
-
-            // Red arcos
-            ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;
+            // Red
+            ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;
             for(let ry=ch/2-arcH/2;ry<ch/2+arcH/2;ry+=8){
                 ctx.beginPath();ctx.moveTo(10,ry);ctx.lineTo(32,ry);ctx.stroke();
                 ctx.beginPath();ctx.moveTo(cw-32,ry);ctx.lineTo(cw-10,ry);ctx.stroke();
             }
 
-            // Jugador controlado (azul/color del NFT)
-            const pc1=gs.player.color1||'#1a6aff';
-            const pc2=gs.player.color2||'#fff';
-            drawPlayerSprite(ctx,gs.px,gs.py,pc1,pc2,'★');
-
-            // Jugadores IA rival
-            gs.aiPlayers.forEach((ai,i)=>{
-                drawPlayerSprite(ctx,ai.x,ai.y,'#cc2222','#fff',String(i+1));
+            // ── Equipo A (user): 5 jugadores con NFT images ───────────────
+            gs.teamA.forEach((p,i)=>{
+                const isControlled=(i===0);
+                const hasBall=(gs.ballHolder===i);
+                drawNFTPlayer(ctx,p.x,p.y,p.img,p.color,p.label,isControlled,hasBall);
             });
 
-            // Portero rival
-            drawPlayerSprite(ctx,cw-22,gs.gkY,'#ff8800','#fff','P');
+            // ── Equipo B (rival): 5 jugadores ────────────────────────────
+            gs.aiPlayers.forEach((ai,i)=>{
+                drawNFTPlayer(ctx,ai.x,ai.y,null,ai.color,ai.label,false,false);
+            });
 
-            // Pelota
+            // ── Portero rival ─────────────────────────────────────────────
+            drawNFTPlayer(ctx,cw-22,gs.gkY,null,'#ff8800','P',false,false);
+
+            // ── Pelota ────────────────────────────────────────────────────
             ctx.save();
-            ctx.fillStyle='#fff';
-            ctx.shadowColor='rgba(255,255,255,0.5)';
-            ctx.shadowBlur=8;
+            // Sombra
+            ctx.fillStyle='rgba(0,0,0,0.25)';ctx.beginPath();ctx.ellipse(gs.bx,gs.by+10,7,3,0,0,Math.PI*2);ctx.fill();
+            // Bola
+            const ballGrad=ctx.createRadialGradient(gs.bx-2,gs.by-2,1,gs.bx,gs.by,8);
+            ballGrad.addColorStop(0,'#ffffff');ballGrad.addColorStop(1,'#cccccc');
+            ctx.fillStyle=ballGrad;
+            ctx.shadowColor='rgba(255,255,255,0.6)';ctx.shadowBlur=10;
             ctx.beginPath();ctx.arc(gs.bx,gs.by,8,0,Math.PI*2);ctx.fill();
-            ctx.strokeStyle='#333';ctx.lineWidth=1.5;ctx.stroke();
-            // Sombra pelota
-            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(gs.bx,gs.by+10,7,3,0,0,Math.PI*2);ctx.fill();
+            ctx.strokeStyle='#555';ctx.lineWidth=1.5;ctx.shadowBlur=0;ctx.stroke();
+            // Patrones del balón
+            ctx.strokeStyle='rgba(0,0,0,0.35)';ctx.lineWidth=1;
+            ctx.beginPath();ctx.arc(gs.bx,gs.by,5,0,Math.PI*2);ctx.stroke();
             ctx.restore();
 
-            // Indicador de rango de disparo
+            // ── Rango de disparo ──────────────────────────────────────────
+            const ctrl=gs.teamA[0];
             if(gs.shotCooldown<=0){
-                const dist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
-                if(dist<cw*0.18){
-                    ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
-                    ctx.beginPath();ctx.arc(gs.px,gs.py,cw*0.18,0,Math.PI*2);ctx.stroke();
+                const dist=Math.hypot(gs.bx-ctrl.x,gs.by-ctrl.y);
+                if(dist<cw*0.20){
+                    ctx.strokeStyle='rgba(0,255,136,0.35)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+                    ctx.beginPath();ctx.arc(ctrl.x,ctrl.y,cw*0.20,0,Math.PI*2);ctx.stroke();
                     ctx.setLineDash([]);
                 }
             }
 
-            // Goal events text
+            // ── Goal events ───────────────────────────────────────────────
             gs.goalEvents.forEach(g=>{
                 const alpha=Math.min(1,g.timer/20);
                 ctx.save();ctx.globalAlpha=alpha;
-                ctx.font=`bold ${g.big?28:18}px Orbitron,sans-serif`;
+                ctx.font=`bold ${g.big?26:15}px Orbitron,sans-serif`;
                 ctx.fillStyle=g.color;ctx.textAlign='center';
-                ctx.shadowColor=g.color;ctx.shadowBlur=15;
+                ctx.shadowColor=g.color;ctx.shadowBlur=14;
                 ctx.fillText(g.text,g.x,g.y);
                 ctx.restore();
             });
 
-            // Reloj esquina
+            // ── Reloj ────────────────────────────────────────────────────
             const prog=Math.min(1,frame/GAME_FRAMES);
             const minF=Math.floor(prog*90);
-            ctx.fillStyle='rgba(0,0,0,0.75)';
+            ctx.fillStyle='rgba(0,0,0,0.8)';
             roundRect2(ctx,4,4,52,24,7);ctx.fill();
             ctx.fillStyle='#00ff88';ctx.font='bold 12px Orbitron,monospace';ctx.textAlign='center';
             ctx.fillText(`${minF}'`,30,20);
 
             // Barra de tiempo
-            ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(10,ch-8,cw-20,4);
-            ctx.fillStyle='rgba(0,255,136,0.6)';ctx.fillRect(10,ch-8,Math.floor((cw-20)*prog),4);
+            ctx.fillStyle='rgba(255,255,255,0.07)';ctx.fillRect(10,ch-7,cw-20,4);
+            ctx.fillStyle='rgba(0,255,136,0.65)';ctx.fillRect(10,ch-7,Math.floor((cw-20)*prog),4);
+
+            // ── HUD equipos ──────────────────────────────────────────────
+            ctx.fillStyle='rgba(0,180,80,0.18)';roundRect2(ctx,56,4,60,20,6);ctx.fill();
+            ctx.fillStyle='#00ff88';ctx.font='bold 9px Rajdhani,sans-serif';ctx.textAlign='left';
+            ctx.fillText('5v5 FUTBOL',60,17);
         }
 
-        function drawPlayerSprite(ctx,x,y,c1,c2,label){
-            // Sombra
-            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(x,y+14,9,4,0,0,Math.PI*2);ctx.fill();
-            // Cuerpo
-            ctx.fillStyle=c1;ctx.beginPath();ctx.ellipse(x,y+5,9,13,0,0,Math.PI*2);ctx.fill();
-            // Cabeza
-            ctx.fillStyle='#FDBCB4';ctx.beginPath();ctx.arc(x,y-9,8,0,Math.PI*2);ctx.fill();
-            // Número/label
-            ctx.fillStyle=c2;ctx.font='bold 7px sans-serif';ctx.textAlign='center';
-            ctx.fillText(String(label),x,y+8);
+        // ── Draw NFT player sprite (circle with image or color) ────────────
+        function drawNFTPlayer(ctx,x,y,img,color,label,isControlled,hasBall){
+            const R=13;
+            // Shadow
+            ctx.fillStyle='rgba(0,0,0,0.25)';
+            ctx.beginPath();ctx.ellipse(x,y+R+2,R*0.8,R*0.3,0,0,Math.PI*2);ctx.fill();
+
+            // Glow if controlled or has ball
+            if(isControlled){
+                ctx.save();ctx.shadowColor='#00ff88';ctx.shadowBlur=16;
+                ctx.strokeStyle='#00ff88';ctx.lineWidth=2.5;
+                ctx.beginPath();ctx.arc(x,y,R+2,0,Math.PI*2);ctx.stroke();
+                ctx.restore();
+            } else if(hasBall){
+                ctx.save();ctx.shadowColor='#ffd700';ctx.shadowBlur=12;
+                ctx.strokeStyle='#ffd700';ctx.lineWidth=2;
+                ctx.beginPath();ctx.arc(x,y,R+2,0,Math.PI*2);ctx.stroke();
+                ctx.restore();
+            }
+
+            // Circle background
+            ctx.save();
+            ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.clip();
+            if(img && img.complete && img.naturalWidth>0){
+                // Draw NFT image clipped to circle
+                try{
+                    ctx.drawImage(img,x-R,y-R,R*2,R*2);
+                }catch(e){
+                    ctx.fillStyle=color||'#1a6a1a';ctx.fill();
+                }
+            } else {
+                // Fallback: colored circle with gradient
+                const g=ctx.createRadialGradient(x-4,y-4,1,x,y,R);
+                const c=color||'#1a6a1a';
+                g.addColorStop(0,lightenColor(c,40));g.addColorStop(1,c);
+                ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.fill();
+                // Mini face
+                ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font=`bold ${R}px sans-serif`;
+                ctx.textAlign='center';ctx.textBaseline='middle';
+                ctx.fillText(label&&label.length<=2?label:'?',x,y);
+            }
+            ctx.restore();
+
+            // Border
+            ctx.strokeStyle=isControlled?'#00ff88':hasBall?'#ffd700':'rgba(255,255,255,0.5)';
+            ctx.lineWidth=isControlled?2:1.2;
+            ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.stroke();
+
+            // Label below (only for non-NFT or small)
+            if(!(img && img.complete && img.naturalWidth>0)){
+                // already drawn inside circle
+            }
+        }
+        function lightenColor(hex,amt){
+            const n=parseInt(hex.replace('#',''),16);
+            const r=Math.min(255,((n>>16)&0xff)+amt);
+            const g=Math.min(255,((n>>8)&0xff)+amt);
+            const b=Math.min(255,(n&0xff)+amt);
+            return `rgb(${r},${g},${b})`;
         }
 
         function roundRect2(ctx,x,y,w,h,r){
@@ -2217,9 +2550,17 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 
     function mostrarResultadoVideo(){
         const{idx,copy,player,playerGoals,oppGoals,resultado}=_matchResultPending;
-        // oppName/oppFlag vienen del gameState o del pending
         const oppName=_matchResultPending.oppName||(_currentMatchMode==='pve'?`IA · ${_currentMatchCancha}`:'Rival');
         const oppFlag=_matchResultPending.oppFlag||'🤖';
+
+        // Si es modo torneo, delegar al sistema de torneo
+        if(_torneoMode){
+            statsPartidas+=2;totalGoals+=playerGoals;
+            puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
+            actualizarUI();
+            procesarResultadoTorneo(resultado,playerGoals,oppGoals);
+            return;
+        }
         statsPartidas+=2;
         totalGoals+=playerGoals;
 
@@ -2298,6 +2639,7 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
         _gameState=null;
         _currentMatchPlayer=null;
         _matchResultPending=null;
+        _torneoMode=false;
         // Reset screens
         ['match-intro-screen','match-game-screen','match-result-screen'].forEach(id=>{
             const el=$id(id);if(el)el.style.display='none';
