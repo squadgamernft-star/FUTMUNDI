@@ -280,9 +280,11 @@
         .nivel-bonus-row { display: flex; justify-content: space-between; font-size: 0.85em; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .nivel-bonus-val { color: var(--gold); font-weight: 700; }
 
-        .video-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.97); backdrop-filter: blur(12px); z-index: 1200; justify-content: center; align-items: center; padding: 16px; flex-direction: column; }
-        .video-overlay.active { display: flex; }
+        .video-overlay { display: none; position: fixed; inset: 0; background: #060f06; z-index: 1200; overflow: hidden; }
+        .video-overlay.active { display: block; }
         .video-canvas { width: 100%; max-width: 640px; height: 360px; border-radius: 16px; border: 2px solid rgba(0,255,136,0.3); box-shadow: 0 0 60px rgba(0,255,136,0.2); display: block; background: #000; }
+        .dpad-btn { position:absolute; width:34px; height:34px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:8px; color:#aaa; font-size:0.9em; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; user-select:none; transition:background 0.1s, transform 0.1s; touch-action:none; }
+        .dpad-btn:active, .dpad-btn.pressed { background:rgba(0,255,136,0.25); border-color:var(--green); color:var(--green); transform:scale(0.9); }
         .video-close-btn { margin-top: 14px; padding: 10px 30px; background: rgba(0,255,136,0.12); border: 1px solid var(--green); border-radius: 10px; color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; }
         .video-close-btn:hover { background: rgba(0,255,136,0.25); color: #fff; }
 
@@ -938,14 +940,69 @@
         </div>
     </div>
 
-    <!-- VIDEO MATCH OVERLAY -->
-    <div class="video-overlay" id="video-overlay">
-        <div style="width:100%;max-width:640px">
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4em;color:var(--green);letter-spacing:4px;text-align:center;margin-bottom:8px" id="video-match-title">PARTIDO EN CURSO</div>
-            <div style="font-size:0.72em;color:var(--cyan);text-align:center;margin-bottom:8px;font-family:'Orbitron',sans-serif;letter-spacing:2px" id="video-match-nft-id"></div>
-            <canvas class="video-canvas" id="match-canvas" width="640" height="360"></canvas>
-            <div class="video-result" id="video-result-box" style="display:none"></div>
-            <button class="video-close-btn" id="video-close-btn" style="display:none" onclick="cerrarVideoPartida()">✅ Ver Resultado</button>
+    <!-- VIDEO MATCH OVERLAY — JUEGO INTERACTIVO -->
+    <div class="video-overlay" id="video-overlay" style="padding:0;overflow:hidden">
+        <!-- INTRO SCREEN -->
+        <div id="match-intro-screen" style="position:absolute;inset:0;background:#060f06;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0">
+            <div id="intro-mode-label" style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--cyan);letter-spacing:3px;margin-bottom:8px;text-align:center"></div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:0;width:100%;max-width:500px;padding:0 12px">
+                <!-- TEAM A -->
+                <div id="intro-team-a" style="flex:1;text-align:center;opacity:0;transform:translateX(-60px);transition:all 0.6s cubic-bezier(.175,.885,.32,1.275)">
+                    <div id="intro-a-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--green);box-shadow:0 0 24px rgba(0,255,136,0.5)">⚽</div>
+                    <div id="intro-a-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
+                    <div id="intro-a-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--cyan);margin-top:2px"></div>
+                    <div id="intro-a-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
+                </div>
+                <!-- VS -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 14px;flex-shrink:0">
+                    <div id="intro-vs" style="font-family:'Bebas Neue',sans-serif;font-size:2.8em;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.6);opacity:0;transform:scale(0.4);transition:all 0.5s 0.4s cubic-bezier(.175,.885,.32,1.275)">VS</div>
+                    <div id="intro-countdown" style="font-family:'Orbitron',sans-serif;font-size:4em;font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,0.8);display:none"></div>
+                </div>
+                <!-- TEAM B -->
+                <div id="intro-team-b" style="flex:1;text-align:center;opacity:0;transform:translateX(60px);transition:all 0.6s 0.2s cubic-bezier(.175,.885,.32,1.275)">
+                    <div id="intro-b-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--red);box-shadow:0 0 24px rgba(255,68,68,0.5)">🤖</div>
+                    <div id="intro-b-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
+                    <div id="intro-b-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--red);margin-top:2px"></div>
+                    <div id="intro-b-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
+                </div>
+            </div>
+            <div id="intro-cancha-label" style="margin-top:16px;padding:5px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:0.76em;color:#888;letter-spacing:2px;text-align:center"></div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="match-game-screen" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:flex-start;background:#060f06">
+            <!-- HUD -->
+            <div id="game-hud" style="width:100%;padding:6px 10px;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:5;flex-shrink:0">
+                <div style="font-size:0.7em;color:#888;font-family:'Orbitron',sans-serif" id="hud-time">90'</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5em;color:#fff;letter-spacing:4px;text-shadow:0 0 10px rgba(0,255,136,0.4)" id="hud-score">0 — 0</div>
+                <div style="font-size:0.68em;color:var(--gold);font-family:'Orbitron',sans-serif" id="hud-shots">🎯 0</div>
+            </div>
+            <!-- CANVAS -->
+            <canvas id="match-canvas" style="width:100%;max-width:640px;flex:1;display:block;background:#1a4a1a;touch-action:none"></canvas>
+            <!-- CONTROLES MÓVILES -->
+            <div id="mobile-controls" style="width:100%;max-width:640px;padding:8px 12px;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0">
+                <!-- D-PAD IZQUIERDO -->
+                <div style="position:relative;width:108px;height:108px;flex-shrink:0">
+                    <button class="dpad-btn" id="dpad-up"    style="top:0;left:50%;transform:translateX(-50%)">▲</button>
+                    <button class="dpad-btn" id="dpad-left"  style="top:50%;left:0;transform:translateY(-50%)">◀</button>
+                    <button class="dpad-btn" id="dpad-right" style="top:50%;right:0;transform:translateY(-50%)">▶</button>
+                    <button class="dpad-btn" id="dpad-down"  style="bottom:0;left:50%;transform:translateX(-50%)">▼</button>
+                </div>
+                <!-- INFO CENTRAL -->
+                <div style="text-align:center;flex:1">
+                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">TECLAS</div>
+                    <div style="font-size:0.55em;color:#444;margin-top:2px">← → ↑ ↓ · SPACE=Tiro</div>
+                    <div id="game-hint" style="font-size:0.72em;color:var(--green);margin-top:4px;font-weight:700;min-height:16px"></div>
+                </div>
+                <!-- BOTÓN TIRO -->
+                <button id="shoot-btn" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,200,80,0.15));border:3px solid var(--green);color:var(--green);font-size:1.6em;cursor:pointer;font-weight:900;box-shadow:0 0 20px rgba(0,255,136,0.3);flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform 0.1s,box-shadow 0.1s" ontouchstart="this.style.transform='scale(0.9)';this.style.boxShadow='0 0 8px rgba(0,255,136,0.2)'" ontouchend="this.style.transform='';this.style.boxShadow='0 0 20px rgba(0,255,136,0.3)'">⚽</button>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="match-result-screen" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.97);z-index:20;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
+            <div id="video-result-box" style="width:100%;max-width:500px"></div>
+            <button class="video-close-btn" id="video-close-btn" style="margin-top:14px" onclick="cerrarVideoPartida()">✅ Ver Resultado</button>
         </div>
     </div>
 
@@ -1670,54 +1727,499 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         iniciarVideoPartida();
     }
 
-    // ── VIDEO PARTIDO ─────────────────────────────────────────────────────
+    // ── VIDEO PARTIDO — JUEGO INTERACTIVO ────────────────────────────────
     let _matchAnimFrame=null;
+    let _gameState=null;
+
+    // Nombres y países random de oponentes
+    const OPP_NAMES=['ProKick_99','FutMaster','GoalHunter','DribleKing','TigreVerde','ElCañonero','ReyDelGol','LoboCelebre','AstroFut','RapidoFC'];
+    const OPP_FLAGS=['🇧🇷','🇦🇷','🇫🇷','🇩🇪','🇵🇹','🇪🇸','🇮🇹','🇳🇱','🇨🇴','🇲🇽'];
+    function randomOpp(){
+        const n=OPP_NAMES[Math.floor(Math.random()*OPP_NAMES.length)];
+        const f=OPP_FLAGS[Math.floor(Math.random()*OPP_FLAGS.length)];
+        return{nombre:n,flag:f,id:'OPP-'+Math.floor(100000+Math.random()*899999)};
+    }
+
+    function showScreen(name){
+        const flexScreens={'match-intro-screen':true,'match-game-screen':true,'match-result-screen':true};
+        Object.keys(flexScreens).forEach(id=>{
+            const el=$id(id);if(!el)return;
+            el.style.display = el.id===name ? 'flex' : 'none';
+        });
+    }
+
     function iniciarVideoPartida(){
-        const overlay=$id('video-overlay');overlay.classList.add('active');
-        const{idx,copy}=_currentMatchPlayer;const player=PLAYERS[idx];const nftId=generatePlayerId(idx,copy);
-        $id('video-match-title').textContent=_currentMatchMode==='pve'?`⚽ FUTSALA · ${_currentMatchCancha}`:'🏟️ FUTCANCHA PVP';
-        $id('video-match-nft-id').textContent=`NFT ID: ${nftId}`;
-        $id('video-result-box').style.display='none';$id('video-close-btn').style.display='none';
+        const overlay=$id('video-overlay');
+        overlay.classList.add('active');
         document.body.style.overflow='hidden';
+
+        const{idx,copy}=_currentMatchPlayer;
+        const player=PLAYERS[idx];
+        const nftId=generatePlayerId(idx,copy);
+        const opp=randomOpp();
+
+        // Calcular resultado final (predeterminado, el juego lo ajusta)
         let winChance=0.55+nivelWinBonus();
-        if(_currentMatchMode==='pve'){const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36};winChance=Math.min(0.92,(dm[_currentMatchCancha]||0.55)+nivelWinBonus());}
-        const playerGoals=Math.floor(Math.random()*4);const oppGoals=Math.random()<winChance?Math.max(0,playerGoals-Math.floor(Math.random()*2)):playerGoals+1+Math.floor(Math.random()*2);
-        const resultado=playerGoals>oppGoals?'win':playerGoals===oppGoals?'draw':'loss';
-        _matchResultPending={idx,copy,player,playerGoals,oppGoals,resultado};
-        const canvas=$id('match-canvas');const ctx=canvas.getContext('2d');
-        const DURATION=90;let t=0;
-        const TEAM_A=[{x:80,y:180},{x:110,y:100},{x:110,y:260},{x:60,y:150},{x:60,y:210}];
-        const TEAM_B=[{x:560,y:180},{x:530,y:100},{x:530,y:260},{x:580,y:150},{x:580,y:210}];
-        let ballX=320,ballY=180;
-        const totalGoalsMatch=playerGoals+oppGoals;const scoreEvents=[];
-        for(let g=0;g<totalGoalsMatch;g++)scoreEvents.push({frame:Math.floor(10+g*(DURATION/(totalGoalsMatch+1))),isPlayer:g<playerGoals});
-        let activeScoreEvents=[];
-        function drawPitch(ctx,w,h){const grd=ctx.createLinearGradient(0,0,w,0);grd.addColorStop(0,'#1a4a1a');grd.addColorStop(0.5,'#1e5420');grd.addColorStop(1,'#1a4a1a');ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=2;ctx.strokeRect(30,25,w-60,h-50);ctx.beginPath();ctx.moveTo(w/2,25);ctx.lineTo(w/2,h-25);ctx.stroke();ctx.beginPath();ctx.arc(w/2,h/2,50,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.strokeRect(30,h/2-38,20,76);ctx.strokeRect(w-50,h/2-38,20,76);}
-        function drawPlayer5(ctx,x,y,c1,c2,num){ctx.fillStyle=c1;ctx.beginPath();ctx.ellipse(x,y+6,9,13,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#FDBCB4';ctx.beginPath();ctx.arc(x,y-10,9,0,Math.PI*2);ctx.fill();ctx.fillStyle=c2;ctx.font='bold 7px sans-serif';ctx.textAlign='center';ctx.fillText(String(num),x,y+10);}
-        function getPlayerPos(team,pIdx,t){const base=team[pIdx],isA=team===TEAM_A;const wave=Math.sin(t*0.15+pIdx*1.2),wave2=Math.cos(t*0.1+pIdx*0.8);const dx=isA?Math.min(wave*30,120):Math.max(wave*30,-120);return{x:base.x+dx*(1-t/DURATION*0.3),y:base.y+wave2*20};}
-        function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
-        function animate(){
-            ctx.clearRect(0,0,640,360);drawPitch(ctx,640,360);const prog=t/DURATION;
-            ballX=320+Math.sin(t*0.25)*140*Math.cos(t*0.08);ballY=180+Math.cos(t*0.2)*80;
-            scoreEvents.forEach(ev=>{if(t===ev.frame)activeScoreEvents.push({...ev,timer:28});});
-            activeScoreEvents=activeScoreEvents.filter(s=>(s.timer--)>0);
-            TEAM_A.forEach((base,pi)=>{const pos=getPlayerPos(TEAM_A,pi,t);drawPlayer5(ctx,pos.x,pos.y,player.color1,player.color2,pi+1);});
-            TEAM_B.forEach((base,pi)=>{const pos=getPlayerPos(TEAM_B,pi,t);drawPlayer5(ctx,pos.x,pos.y,'#e0e0e0','#555',pi+1);});
-            ctx.save();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ballX,ballY,9,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.stroke();ctx.restore();
-            ctx.fillStyle='rgba(0,0,0,0.82)';rr(ctx,200,6,240,40,12);ctx.fill();ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;rr(ctx,200,6,240,40,12);ctx.stroke();
-            const curPG=scoreEvents.filter(e=>e.isPlayer&&e.frame<=t).length;const curOG=scoreEvents.filter(e=>!e.isPlayer&&e.frame<=t).length;
-            ctx.fillStyle='#fff';ctx.font='bold 13px Orbitron,monospace';ctx.textAlign='center';ctx.fillText(`${player.nombre.split(' ')[0]}  ${curPG} — ${curOG}  OPO`,320,21);
-            ctx.fillStyle='rgba(0,255,136,0.6)';ctx.fillRect(204,36,Math.floor(232*prog),5);
-            ctx.fillStyle='rgba(0,0,0,0.75)';rr(ctx,4,4,52,22,7);ctx.fill();ctx.fillStyle='#00ff88';ctx.font='bold 11px monospace';ctx.textAlign='center';ctx.fillText(`${Math.floor(prog*90)}'`,30,19);
-            activeScoreEvents.forEach(s=>{const alpha=s.timer/28,rise=(28-s.timer)*3;ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=s.isPlayer?'#00ff88':'#ff4444';ctx.font=`bold ${22+Math.floor((28-s.timer)*0.3)}px Orbitron,sans-serif`;ctx.textAlign='center';ctx.shadowColor=s.isPlayer?'#00ff88':'#ff4444';ctx.shadowBlur=12;ctx.fillText(s.isPlayer?'⚽ GOL!':'⚽ GOL IA',320,210-rise);ctx.restore();});
-            t++;
-            if(t<DURATION){_matchAnimFrame=requestAnimationFrame(animate);}else{mostrarResultadoVideo();}
+        if(_currentMatchMode==='pve'){
+            const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36};
+            winChance=Math.min(0.92,(dm[_currentMatchCancha]||0.55)+nivelWinBonus());
         }
-        if(_matchAnimFrame)cancelAnimationFrame(_matchAnimFrame);animate();
+        // Goles base del partido, el jugador puede sumar con sus disparos
+        const baseOppGoals=Math.floor(Math.random()*3);
+        const basePlayerGoals=Math.random()<winChance?baseOppGoals+Math.floor(Math.random()*2):Math.max(0,baseOppGoals-1);
+
+        // Estado del juego
+        _gameState={
+            idx,copy,player,nftId,opp,
+            playerGoals:0, oppGoals:0,
+            basePlayerGoals, baseOppGoals,
+            winChance,
+            playerShots:0, playerShotsOnTarget:0,
+            matchTime:0, maxTime:90,
+            phase:'intro', // intro → playing → result
+            // Pelota
+            bx:0,by:0,bvx:0,bvy:0,
+            // Porteros (posición del arco que defiende el oponente)
+            gkY:0,gkTargetY:0,
+            // Input
+            keys:{},
+            // Tiro activo
+            shooting:false, shotCooldown:0,
+            // Jugador controlado
+            px:0,py:0,
+            // Jugadores IA equipo rival
+            aiPlayers:[],
+            // Eventos de gol (texto flotante)
+            goalEvents:[],
+            // Resolución del canvas
+            cw:0,ch:0,
+            // Oponentes marcadores programados (para no quedarse en 0-0)
+            oppScoreAt: baseOppGoals>0 ? Array.from({length:baseOppGoals},(_,i)=>Math.floor(20+i*25)) : [],
+            playerBaseScoreAt: basePlayerGoals>0 ? Array.from({length:basePlayerGoals},(_,i)=>Math.floor(15+i*22)) : [],
+        };
+
+        // ── INTRO ────────────────────────────────────────────────────────
+        showScreen('match-intro-screen');
+
+        // Rellenar datos de intro
+        const isCancha=_currentMatchMode==='futcancha'||_currentMatchMode==='pvp';
+        $id('intro-mode-label').textContent = isCancha ? '🏟️ FUTCANCHA PVP' : `⚽ FUTSALA · ${_currentMatchCancha||'Cancha Barrial'}`;
+        $id('intro-a-name').textContent = player.nombre.split(' ')[0].toUpperCase();
+        $id('intro-a-id').textContent = 'ID: '+nftId;
+        $id('intro-a-ovr').textContent = '⚡ OVR '+player.hp;
+        $id('intro-a-badge').style.background = (player.color1||'#1a6a1a');
+        $id('intro-a-badge').style.borderColor = (player.color1||'var(--green)');
+        $id('intro-a-badge').textContent = player.flag||'⚽';
+
+        $id('intro-b-name').textContent = opp.nombre.toUpperCase();
+        $id('intro-b-id').textContent = 'ID: '+opp.id;
+        $id('intro-b-ovr').textContent = opp.flag;
+        $id('intro-b-badge').textContent = opp.flag;
+        $id('intro-cancha-label').textContent = isCancha ? '⚡ MODO PVP · TIEMPO REAL' : `🏟️ ${_currentMatchCancha||'Cancha Barrial'} · MODO LIBRE`;
+
+        // Animación de entrada
+        setTimeout(()=>{
+            $id('intro-team-a').style.opacity='1';
+            $id('intro-team-a').style.transform='translateX(0)';
+        },80);
+        setTimeout(()=>{
+            $id('intro-team-b').style.opacity='1';
+            $id('intro-team-b').style.transform='translateX(0)';
+        },200);
+        setTimeout(()=>{
+            $id('intro-vs').style.opacity='1';
+            $id('intro-vs').style.transform='scale(1)';
+        },500);
+
+        // Countdown 3-2-1 luego arrancar
+        const cdEl=$id('intro-countdown');
+        let cd=3;
+        setTimeout(()=>{
+            $id('intro-vs').style.display='none';
+            cdEl.style.display='block';
+            const tick=()=>{
+                cdEl.textContent=cd;
+                cdEl.style.transform='scale(1.4)';
+                cdEl.style.opacity='1';
+                setTimeout(()=>{cdEl.style.transform='scale(0.8)';cdEl.style.opacity='0.3';},350);
+                cd--;
+                if(cd>=0)setTimeout(tick,700);
+                else setTimeout(()=>{ cdEl.style.display='none'; iniciarJuegoInteractivo(); },400);
+            };
+            tick();
+        },1200);
+    }
+
+    function iniciarJuegoInteractivo(){
+        const gs=_gameState;
+        showScreen('match-game-screen');
+
+        const canvas=$id('match-canvas');
+        // Ajustar resolución real al tamaño visual
+        const rect=canvas.getBoundingClientRect();
+        const W=Math.min(640,window.innerWidth);
+        // Altura: el canvas ocupa el espacio disponible menos HUD y controles
+        const hudH=36, ctrlH=128;
+        const H=Math.max(220,window.innerHeight-hudH-ctrlH);
+        canvas.width=W; canvas.height=H;
+        const ctx=canvas.getContext('2d');
+
+        gs.cw=W; gs.ch=H;
+        gs.bx=W/2; gs.by=H/2; gs.bvx=0; gs.bvy=0;
+        gs.px=W*0.22; gs.py=H/2;
+        gs.gkY=H/2; gs.gkTargetY=H/2;
+        gs.aiPlayers=[
+            {x:W*0.72,y:H*0.3,vx:0,vy:0,role:'mid'},
+            {x:W*0.72,y:H*0.7,vx:0,vy:0,role:'mid'},
+            {x:W*0.88,y:H*0.5,vx:0,vy:0,role:'fwd'},
+            {x:W*0.82,y:H*0.25,vx:0,vy:0,role:'def'},
+            {x:W*0.82,y:H*0.75,vx:0,vy:0,role:'def'},
+        ];
+        gs.phase='playing';
+        gs.matchTime=0;
+        gs.shotCooldown=0;
+        gs.goalEvents=[];
+        gs.keys={};
+
+        // ── INPUT: TECLADO ────────────────────────────────────────────────
+        function onKey(e,down){
+            const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
+                       KeyW:'up',KeyS:'down',KeyA:'left',KeyD:'right',
+                       Space:'shoot',KeyJ:'shoot',KeyK:'shoot'};
+            const k=map[e.code];if(k){gs.keys[k]=down;if(k==='shoot'&&down)dispararBola();}
+            if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();
+        }
+        document.addEventListener('keydown',e=>onKey(e,true));
+        document.addEventListener('keyup',e=>onKey(e,false));
+        gs._removeKeyListeners=()=>{
+            document.removeEventListener('keydown',e=>onKey(e,true));
+            document.removeEventListener('keyup',e=>onKey(e,false));
+        };
+
+        // ── INPUT: DPAD TÁCTIL ────────────────────────────────────────────
+        ['up','down','left','right'].forEach(dir=>{
+            const btn=$id('dpad-'+dir);
+            if(!btn)return;
+            const press=(e)=>{e.preventDefault();gs.keys[dir]=true;btn.classList.add('pressed');};
+            const release=(e)=>{e.preventDefault();gs.keys[dir]=false;btn.classList.remove('pressed');};
+            btn.addEventListener('touchstart',press,{passive:false});
+            btn.addEventListener('touchend',release,{passive:false});
+            btn.addEventListener('mousedown',press);
+            btn.addEventListener('mouseup',release);
+        });
+        const shootBtn=$id('shoot-btn');
+        if(shootBtn){
+            shootBtn.addEventListener('touchstart',(e)=>{e.preventDefault();dispararBola();},{passive:false});
+            shootBtn.addEventListener('mousedown',()=>dispararBola());
+        }
+
+        // ── TOUCH SWIPE en CANVAS ─────────────────────────────────────────
+        let touchStartX=0,touchStartY=0;
+        canvas.addEventListener('touchstart',(e)=>{
+            e.preventDefault();
+            touchStartX=e.touches[0].clientX;
+            touchStartY=e.touches[0].clientY;
+        },{passive:false});
+        canvas.addEventListener('touchend',(e)=>{
+            e.preventDefault();
+            const dx=e.changedTouches[0].clientX-touchStartX;
+            const dy=e.changedTouches[0].clientY-touchStartY;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<12){dispararBola();return;}
+            const angle=Math.atan2(dy,dx);
+            gs.bvx=Math.cos(angle)*14;
+            gs.bvy=Math.sin(angle)*14;
+            gs.shooting=true;
+            gs.playerShots++;
+        },{passive:false});
+
+        function dispararBola(){
+            if(gs.shotCooldown>0)return;
+            const nearBall=Math.hypot(gs.bx-gs.px,gs.by-gs.py)<W*0.18;
+            if(!nearBall)return;
+            // Disparar hacia el arco rival (derecha)
+            const arcY=gs.ch/2;
+            const ang=Math.atan2(arcY-gs.py,gs.cw-gs.px)+(Math.random()-0.5)*0.4;
+            const spd=13+Math.random()*5;
+            gs.bvx=Math.cos(ang)*spd;
+            gs.bvy=Math.sin(ang)*spd;
+            gs.shooting=true;
+            gs.shotCooldown=45;
+            gs.playerShots++;
+            gs.playerShotsOnTarget++;
+            $id('game-hint').textContent='🎯 ¡Disparo!';
+            setTimeout(()=>{if($id('game-hint'))$id('game-hint').textContent='';},700);
+        }
+
+        // ── LOOP ──────────────────────────────────────────────────────────
+        const GAME_FRAMES=Math.floor(60*90); // 90s a 60fps (acelerado: 1 frame = ~0.5s partido)
+        let frame=0;
+        const SPEED=4.5; // pixels por frame, jugador controlado
+
+        function updateGame(){
+            const{cw,ch}=gs;
+
+            // Mover jugador controlado
+            if(gs.keys.left) gs.px=Math.max(12,gs.px-SPEED);
+            if(gs.keys.right) gs.px=Math.min(cw*0.55,gs.px+SPEED);
+            if(gs.keys.up) gs.py=Math.max(12,gs.py-SPEED);
+            if(gs.keys.down) gs.py=Math.min(ch-12,gs.py+SPEED);
+
+            // Movimiento de pelota
+            gs.bx+=gs.bvx; gs.by+=gs.bvy;
+            gs.bvx*=0.93; gs.bvy*=0.93;
+            if(Math.abs(gs.bvx)<0.1)gs.bvx=0;
+            if(Math.abs(gs.bvy)<0.1)gs.bvy=0;
+
+            // Rebote laterales y arriba/abajo
+            const topWall=30,botWall=ch-12;
+            if(gs.by-8<topWall){gs.by=topWall+8;gs.bvy*=-0.7;}
+            if(gs.by+8>botWall){gs.by=botWall-8;gs.bvy*=-0.7;}
+
+            // Portero rival (derecha) sigue pelota
+            const gkSpeed=2.5+Math.random()*1.5;
+            if(gs.by<gs.gkY-5)gs.gkY-=gkSpeed;
+            else if(gs.by>gs.gkY+5)gs.gkY+=gkSpeed;
+            gs.gkY=Math.max(ch*0.25+10,Math.min(ch*0.75-10,gs.gkY));
+
+            // Gol del jugador (pelota pasa del límite derecho en zona de arco)
+            const arcTop=ch*0.3,arcBot=ch*0.7,arcLeft=cw-18;
+            if(gs.bx+8>arcLeft && gs.by>arcTop && gs.by<arcBot){
+                // ¿El portero la para?
+                const gkRange=ch*0.09;
+                const saved=Math.abs(gs.by-gs.gkY)<gkRange && Math.random()<0.45;
+                if(!saved){
+                    gs.playerGoals++;
+                    gs.goalEvents.push({text:'⚽ ¡GOL!',x:cw/2,y:ch/2,timer:55,color:'#00ff88',big:true});
+                    $id('game-hint').textContent='🟢 ¡GOLAZO!';
+                    setTimeout(()=>{if($id('game-hint'))$id('game-hint').textContent='';},1200);
+                    resetBall(gs,'opp_kick');
+                } else {
+                    gs.goalEvents.push({text:'🧤 ¡Parada!',x:cw/2,y:ch*0.35,timer:35,color:'#ffaa00',big:false});
+                    gs.bvx=-gs.bvx*0.9; gs.bvy=(Math.random()-0.5)*8;
+                    gs.bx=arcLeft-20;
+                }
+            }
+
+            // Gol rival (pelota pasa por izquierda en zona de arco)
+            const arcLTop=ch*0.28,arcLBot=ch*0.72,arcRight=18;
+            if(gs.bx-8<arcRight && gs.by>arcLTop && gs.by<arcLBot && gs.bvx<-2){
+                if(Math.random()<0.4){
+                    gs.oppGoals++;
+                    gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
+                    resetBall(gs,'player_kick');
+                } else {
+                    gs.bvx=Math.abs(gs.bvx)*0.8+3; gs.bvy=(Math.random()-0.5)*6;
+                    gs.bx=arcRight+16;
+                }
+            }
+
+            // Pelota fuera laterales → saque
+            if(gs.bx<-20){resetBall(gs,'player_kick');}
+            if(gs.bx>cw+20){resetBall(gs,'opp_kick');}
+
+            // IA rival: persigue pelota y empuja al arco izquierdo
+            gs.aiPlayers.forEach((ai,i)=>{
+                const aiSpd=1.2+i*0.15;
+                const chaseX=gs.bx,chaseY=gs.by;
+                const dx=chaseX-ai.x,dy=chaseY-ai.y;
+                const dist=Math.hypot(dx,dy);
+                if(dist>8){ai.x+=dx/dist*aiSpd;ai.y+=dy/dist*aiSpd;}
+                ai.x=Math.max(cw*0.5,Math.min(cw-12,ai.x));
+                ai.y=Math.max(12,Math.min(ch-12,ai.y));
+                // Si IA toca la pelota
+                if(Math.hypot(gs.bx-ai.x,gs.by-ai.y)<14){
+                    const ang=Math.atan2(ch/2-gs.by, 0-gs.bx)+(Math.random()-0.5)*0.5;
+                    gs.bvx=Math.cos(ang)*(4+Math.random()*5);
+                    gs.bvy=Math.sin(ang)*(4+Math.random()*5);
+                }
+            });
+
+            // Empujón del jugador a la pelota
+            const playerDist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
+            if(playerDist<16){
+                const ang=Math.atan2(gs.by-gs.py,gs.bx-gs.px);
+                gs.bvx+=Math.cos(ang)*3;gs.bvy+=Math.sin(ang)*3;
+            }
+
+            // Cooldown de disparo
+            if(gs.shotCooldown>0)gs.shotCooldown--;
+
+            // Goles predeterminados del oponente (asegura partido real)
+            if(gs.oppScoreAt&&gs.oppScoreAt.includes(frame)){
+                gs.oppGoals++;
+                gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
+                resetBall(gs,'player_kick');
+            }
+            if(gs.playerBaseScoreAt&&gs.playerBaseScoreAt.includes(frame)){
+                // Solo si el jugador va perdiendo o empatando
+                if(gs.playerGoals<=gs.oppGoals){
+                    gs.playerGoals++;
+                    gs.goalEvents.push({text:'⚽ ¡GOL!',x:cw/2,y:ch/2,timer:55,color:'#00ff88',big:true});
+                    resetBall(gs,'opp_kick');
+                }
+            }
+
+            // Actualizar timer visual
+            const minutos=Math.floor((frame/GAME_FRAMES)*90);
+            if($id('hud-time'))$id('hud-time').textContent=`${minutos}'`;
+            if($id('hud-score'))$id('hud-score').textContent=`${gs.playerGoals} — ${gs.oppGoals}`;
+            if($id('hud-shots'))$id('hud-shots').textContent=`🎯 ${gs.playerShots}`;
+
+            // Goal events fade
+            gs.goalEvents=gs.goalEvents.filter(g=>(g.timer--)>0);
+            gs.goalEvents.forEach(g=>{g.y-=0.7;});
+        }
+
+        function resetBall(gs,who){
+            gs.bx=gs.cw/2;gs.by=gs.ch/2;gs.bvx=0;gs.bvy=0;gs.shooting=false;
+            if(who==='player_kick'){gs.bvx=3+Math.random()*2;}
+            else{gs.bvx=-(3+Math.random()*2);}
+        }
+
+        function drawFrame(){
+            const{cw,ch}=gs;
+            ctx.clearRect(0,0,cw,ch);
+
+            // Césped
+            const grad=ctx.createLinearGradient(0,0,cw,0);
+            grad.addColorStop(0,'#1a4a1a');grad.addColorStop(0.5,'#1e5820');grad.addColorStop(1,'#1a4a1a');
+            ctx.fillStyle=grad;ctx.fillRect(0,0,cw,ch);
+
+            // Líneas del campo
+            ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=2;
+            ctx.strokeRect(10,25,cw-20,ch-35);
+            ctx.beginPath();ctx.moveTo(cw/2,25);ctx.lineTo(cw/2,ch-10);ctx.stroke();
+            ctx.beginPath();ctx.arc(cw/2,ch/2,Math.min(50,ch*0.15),0,Math.PI*2);ctx.stroke();
+
+            // Arco izquierdo (jugador defiende)
+            const arcH=ch*0.44;
+            ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=3;
+            ctx.strokeRect(10,ch/2-arcH/2,22,arcH);
+            // Arco derecho (rival defiende)
+            ctx.strokeRect(cw-32,ch/2-arcH/2,22,arcH);
+
+            // Red arcos
+            ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;
+            for(let ry=ch/2-arcH/2;ry<ch/2+arcH/2;ry+=8){
+                ctx.beginPath();ctx.moveTo(10,ry);ctx.lineTo(32,ry);ctx.stroke();
+                ctx.beginPath();ctx.moveTo(cw-32,ry);ctx.lineTo(cw-10,ry);ctx.stroke();
+            }
+
+            // Jugador controlado (azul/color del NFT)
+            const pc1=gs.player.color1||'#1a6aff';
+            const pc2=gs.player.color2||'#fff';
+            drawPlayerSprite(ctx,gs.px,gs.py,pc1,pc2,'★');
+
+            // Jugadores IA rival
+            gs.aiPlayers.forEach((ai,i)=>{
+                drawPlayerSprite(ctx,ai.x,ai.y,'#cc2222','#fff',String(i+1));
+            });
+
+            // Portero rival
+            drawPlayerSprite(ctx,cw-22,gs.gkY,'#ff8800','#fff','P');
+
+            // Pelota
+            ctx.save();
+            ctx.fillStyle='#fff';
+            ctx.shadowColor='rgba(255,255,255,0.5)';
+            ctx.shadowBlur=8;
+            ctx.beginPath();ctx.arc(gs.bx,gs.by,8,0,Math.PI*2);ctx.fill();
+            ctx.strokeStyle='#333';ctx.lineWidth=1.5;ctx.stroke();
+            // Sombra pelota
+            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(gs.bx,gs.by+10,7,3,0,0,Math.PI*2);ctx.fill();
+            ctx.restore();
+
+            // Indicador de rango de disparo
+            if(gs.shotCooldown<=0){
+                const dist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
+                if(dist<cw*0.18){
+                    ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+                    ctx.beginPath();ctx.arc(gs.px,gs.py,cw*0.18,0,Math.PI*2);ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            }
+
+            // Goal events text
+            gs.goalEvents.forEach(g=>{
+                const alpha=Math.min(1,g.timer/20);
+                ctx.save();ctx.globalAlpha=alpha;
+                ctx.font=`bold ${g.big?28:18}px Orbitron,sans-serif`;
+                ctx.fillStyle=g.color;ctx.textAlign='center';
+                ctx.shadowColor=g.color;ctx.shadowBlur=15;
+                ctx.fillText(g.text,g.x,g.y);
+                ctx.restore();
+            });
+
+            // Reloj esquina
+            const prog=Math.min(1,frame/GAME_FRAMES);
+            const minF=Math.floor(prog*90);
+            ctx.fillStyle='rgba(0,0,0,0.75)';
+            roundRect2(ctx,4,4,52,24,7);ctx.fill();
+            ctx.fillStyle='#00ff88';ctx.font='bold 12px Orbitron,monospace';ctx.textAlign='center';
+            ctx.fillText(`${minF}'`,30,20);
+
+            // Barra de tiempo
+            ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(10,ch-8,cw-20,4);
+            ctx.fillStyle='rgba(0,255,136,0.6)';ctx.fillRect(10,ch-8,Math.floor((cw-20)*prog),4);
+        }
+
+        function drawPlayerSprite(ctx,x,y,c1,c2,label){
+            // Sombra
+            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(x,y+14,9,4,0,0,Math.PI*2);ctx.fill();
+            // Cuerpo
+            ctx.fillStyle=c1;ctx.beginPath();ctx.ellipse(x,y+5,9,13,0,0,Math.PI*2);ctx.fill();
+            // Cabeza
+            ctx.fillStyle='#FDBCB4';ctx.beginPath();ctx.arc(x,y-9,8,0,Math.PI*2);ctx.fill();
+            // Número/label
+            ctx.fillStyle=c2;ctx.font='bold 7px sans-serif';ctx.textAlign='center';
+            ctx.fillText(String(label),x,y+8);
+        }
+
+        function roundRect2(ctx,x,y,w,h,r){
+            ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+            ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+            ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+            ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+            ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+        }
+
+        // ── GAME LOOP ─────────────────────────────────────────────────────
+        const FPS_TARGET=1000/60;
+        let lastTs=0;
+        function loop(ts){
+            if(gs.phase!=='playing'){return;}
+            if(ts-lastTs>=FPS_TARGET-2){
+                updateGame();
+                drawFrame();
+                lastTs=ts;
+                frame++;
+                if(frame>=GAME_FRAMES){
+                    gs.phase='result';
+                    // Resolver resultado con los goles REALES del juego interactivo
+                    const pgFinal=gs.playerGoals;
+                    const ogFinal=gs.oppGoals;
+                    const res=pgFinal>ogFinal?'win':pgFinal===ogFinal?'draw':'loss';
+                    _matchResultPending={
+                        idx:gs.idx,copy:gs.copy,player:gs.player,
+                        playerGoals:pgFinal,oppGoals:ogFinal,resultado:res,
+                        oppName:gs.opp.nombre,oppFlag:gs.opp.flag
+                    };
+                    setTimeout(()=>mostrarResultadoVideo(),400);
+                    return;
+                }
+            }
+            _matchAnimFrame=requestAnimationFrame(loop);
+        }
+        if(_matchAnimFrame)cancelAnimationFrame(_matchAnimFrame);
+        _matchAnimFrame=requestAnimationFrame(loop);
     }
 
     function mostrarResultadoVideo(){
         const{idx,copy,player,playerGoals,oppGoals,resultado}=_matchResultPending;
+        // oppName/oppFlag vienen del gameState o del pending
+        const oppName=_matchResultPending.oppName||(_currentMatchMode==='pve'?`IA · ${_currentMatchCancha}`:'Rival');
+        const oppFlag=_matchResultPending.oppFlag||'🤖';
         statsPartidas+=2;
         totalGoals+=playerGoals;
 
@@ -1731,18 +2233,14 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
         const gemMin=player.gemMin, gemMax=player.gemMax;
         const bonus=gemasBonus();
-        // Porcentaje aleatorio 10%–45% según equipamiento del NFT
-        // Equipo: uniforme + zapatillas(tenis) + protector + 5% anexo entrenamiento
         const eq=_equipamiento||{};
-        let pctMin=0.10, pctMax=0.20; // base sin nada
+        let pctMin=0.10, pctMax=0.20;
         let equippedCount=0;
         if(eq.uniforme)equippedCount++;
         if(eq.tenis)equippedCount++;
         if(eq.protector)equippedCount++;
-        // Cada pieza eleva el techo del rango
-        pctMax=Math.min(0.45, 0.20 + equippedCount*0.07); // 0 piezas:20%, 1:27%, 2:34%, 3:41%
+        pctMax=Math.min(0.45, 0.20 + equippedCount*0.07);
         pctMin=Math.min(pctMax-0.05, 0.10 + equippedCount*0.04);
-        // 5% anexo de entrenamiento
         const trainBonus=equippedCount===3 ? 1.05 : 1.0;
         const pct=pctMin+Math.random()*(pctMax-pctMin);
         let gemsGanadas=0;
@@ -1759,9 +2257,8 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const resultColor=resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
         const resultText=resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
         const dur=getDurabilidad(idx,copy);const nftId=generatePlayerId(idx,copy);
-        let oppName,oppFlag;
-        if(_currentMatchMode==='pve'){oppName=`IA · ${_currentMatchCancha}`;oppFlag='🤖';}
-        else{const names=['ProKick_99','FutMaster','GoalHunter','DribleKing'];oppName=names[Math.floor(Math.random()*names.length)];oppFlag=['🇧🇷','🇦🇷','🇫🇷','🇩🇪'][Math.floor(Math.random()*4)];}
+
+        const shotsInfo=_gameState?`<div style="font-size:0.74em;color:var(--cyan);margin-top:2px">🎯 Disparos: ${_gameState.playerShots} · Al arco: ${_gameState.playerShotsOnTarget}</div>`:'';
 
         const gemsMsg=resultado==='win'
             ?`<span style="color:var(--green);font-weight:700">+${gemsGanadas} 💎 ganadas</span>`
@@ -1774,19 +2271,38 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const goalNote=`<div style="font-size:0.74em;color:var(--gold)">⚽ Goles acumulados: ${totalGoals} (ciclo ${getGoalCycleInfo().cycle})</div>`;
         const skillNote=skillsToInc.length>0?`<div style="font-size:0.74em;color:var(--cyan);margin-top:2px">🏅 +Stats en: ${skillsToInc.slice(0,3).map(s=>s.nombre).join(', ')}${skillsToInc.length>3?'...':''}</div>`:'';
 
-        const rb=$id('video-result-box');rb.style.display='block';
+        const rb=$id('video-result-box');
         rb.innerHTML=`<div style="background:linear-gradient(135deg,#0a1a0a,#060d06);border:2px solid ${resultColor};border-radius:16px;padding:18px;text-align:center">
 <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:${resultColor};letter-spacing:4px">${resultText}</div>
 <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5em;color:var(--gold);line-height:1.1;margin:8px 0">${playerGoals} — ${oppGoals}</div>
 <div style="font-size:0.88em;color:#aaa;margin-bottom:6px">${player.flag} ${player.nombre} vs ${oppFlag} ${oppName}</div>
 <div style="font-size:0.78em;color:var(--cyan);font-family:'Orbitron',sans-serif;margin-bottom:8px">NFT ID: ${nftId}</div>
 <div style="font-size:1em;margin:8px 0">${gemsMsg}</div>
-${rangeNote}${bonusNote}${goalNote}${skillNote}
+${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
 <div style="font-size:0.8em;color:#888">+2 pts estadística · Forma física: ${dur}%</div>
 </div>`;
-        $id('video-close-btn').style.display='inline-block';
+        // Mostrar pantalla de resultado
+        if(_matchAnimFrame)cancelAnimationFrame(_matchAnimFrame);
+        showScreen('match-result-screen');
+        $id('match-result-screen').style.display='flex';
+        if(_gameState)_gameState.phase='result';
+        saveState();
     }
-    function cerrarVideoPartida(){$id('video-overlay').classList.remove('active');document.body.style.overflow='';if(_matchAnimFrame)cancelAnimationFrame(_matchAnimFrame);_currentMatchPlayer=null;_matchResultPending=null;}
+    function cerrarVideoPartida(){
+        $id('video-overlay').classList.remove('active');
+        document.body.style.overflow='';
+        if(_matchAnimFrame)cancelAnimationFrame(_matchAnimFrame);
+        _matchAnimFrame=null;
+        if(_gameState&&_gameState._removeKeyListeners)_gameState._removeKeyListeners();
+        if(_gameState)_gameState.phase='done';
+        _gameState=null;
+        _currentMatchPlayer=null;
+        _matchResultPending=null;
+        // Reset screens
+        ['match-intro-screen','match-game-screen','match-result-screen'].forEach(id=>{
+            const el=$id(id);if(el)el.style.display='none';
+        });
+    }
 
     // ── FUTSALA ───────────────────────────────────────────────────────────
     function buildFutsalaBody(){
