@@ -476,8 +476,12 @@
                     <div class="market-grid" id="car-market-grid"></div>
                 </div>
                 <div id="marketplace-uniformes" class="tab-panel"><div class="coming-soon-box">🔜 Uniformes — próximamente</div></div>
-                <div id="marketplace-tenis" class="tab-panel"><div class="coming-soon-box">👟 Tenis — próximamente</div></div>
-                <div id="marketplace-protectores" class="tab-panel"><div class="coming-soon-box">🏋️ Entrenadores — próximamente</div></div>
+                <div id="marketplace-tenis" class="tab-panel">
+                    <div class="market-grid" id="tenis-market-grid"></div>
+                </div>
+                <div id="marketplace-protectores" class="tab-panel">
+                    <div class="market-grid" id="entrenador-market-grid"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1237,7 +1241,7 @@
     function openModal(id){
         const el=$id(id);if(!el)return;
         el.classList.add('active');document.body.style.overflow='hidden';
-        if(id==='modal-marketplace'){actualizarUI();buildMarket();}
+        if(id==='modal-marketplace'){actualizarUI();buildMarket();buildItemsMarket();}
         if(id==='modal-recompensa')checkRewardStatus();
         if(id==='modal-recompensa-pts'){actualizarUI();buildRewardPts();}
         if(id==='modal-garage')buildGarage();
@@ -1269,6 +1273,59 @@
                 }catch(e){mostrarMensaje('❌ Inscripción cancelada','#ff4444');return false;}
             }
         });
+    }
+
+    // ── MARKETPLACE: ZAPATILLAS Y ENTRENADORES ────────────────────────────
+    const ITEMS_BASE_URL = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
+    const ZAPATILLAS = [
+        { nombre:'Zapatillas 1980', anio:1980, bonus:15, precio:300,  img:'zapatillas_1980_15%_300_gemas.png',  flag:'🥾' },
+        { nombre:'Zapatillas 2000', anio:2000, bonus:35, precio:2500, img:'zapatillas_2000_35%2500_gemas.png',  flag:'⚡' },
+        { nombre:'Zapatillas 2010', anio:2010, bonus:45, precio:1000, img:'zapatillas_2010_45%_1000_gemas.png', flag:'🔥' },
+        { nombre:'Zapatillas 2020', anio:2020, bonus:65, precio:5000, img:'zapatillas_2020_65%_5000_gemas.png', flag:'💎' }
+    ];
+    const ENTRENADORES = [
+        { nombre:'Entrenador Brasil',    pais:'Brasil',    flag:'🇧🇷', bonus:15, precio:300,  img:'entrenador_brasil_15%_300_gemas.png' },
+        { nombre:'Entrenador Portugal',  pais:'Portugal',  flag:'🇵🇹', bonus:15, precio:300,  img:'entrenador_portugal_15%_300_gemas.png' },
+        { nombre:'Entrenador Chile',     pais:'Chile',     flag:'🇨🇱', bonus:25, precio:600,  img:'entrenador_chile_25%_600_gemas.png' },
+        { nombre:'Entrenador España',    pais:'España',    flag:'🇪🇸', bonus:35, precio:1000, img:'entrenador_españa_35%_1000_gemas.png' },
+        { nombre:'Entrenador Francia',   pais:'Francia',   flag:'🇫🇷', bonus:25, precio:1200, img:'entrenador_francia_25%_1200_gemas.png' },
+        { nombre:'Entrenador Alemania',  pais:'Alemania',  flag:'🇩🇪', bonus:35, precio:1250, img:'entrenador_alemania_35%_1250_gemas.png' },
+        { nombre:'Entrenador Argentina', pais:'Argentina', flag:'🇦🇷', bonus:65, precio:3000, img:'entrenador_argentina_65%_3000_gemas.png' }
+    ];
+    function itemImgUrl(name){ return ITEMS_BASE_URL + encodeURI(name); }
+    function itemFallback(item){
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%2300ff88'/><stop offset='1' stop-color='%230a1a0a'/></linearGradient></defs><rect width='200' height='200' fill='url(%23g)'/><text x='100' y='120' font-size='90' text-anchor='middle' font-family='sans-serif'>${item.flag||'🎁'}</text></svg>`;
+        return 'data:image/svg+xml;utf8,' + svg;
+    }
+    function renderItemGrid(gridId, list, kind){
+        const el = document.getElementById(gridId); if(!el) return;
+        el.innerHTML = list.map((it,i)=>`
+            <div class="car-card">
+                <div class="car-card-img-wrap">
+                    <img class="car-card-img" src="${itemImgUrl(it.img)}" alt="${it.nombre}" onerror="this.onerror=null;this.src=&quot;${itemFallback(it)}&quot;" style="object-fit:cover">
+                    <div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">+${it.bonus}%</div>
+                </div>
+                <div class="car-card-info">
+                    <div class="car-card-name">${it.nombre}</div>
+                    <div class="car-card-country">${it.flag||''} ${it.pais||(it.anio?('Año '+it.anio):'')}</div>
+                    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">⚡ Bonus +${it.bonus}% rendimiento</div>
+                    <div class="car-card-price">💎 ${it.precio.toLocaleString()}</div>
+                    <button class="buy-car-btn" onclick="comprarItem('${kind}',${i})">⚽ Comprar</button>
+                </div>
+            </div>`).join('');
+    }
+    function buildItemsMarket(){
+        renderItemGrid('tenis-market-grid', ZAPATILLAS, 'tenis');
+        renderItemGrid('entrenador-market-grid', ENTRENADORES, 'entrenador');
+    }
+    function comprarItem(kind, idx){
+        const list = kind==='tenis'?ZAPATILLAS:ENTRENADORES;
+        const it = list[idx]; if(!it) return;
+        if(gemas < it.precio){ mostrarMensaje(`❌ Faltan ${(it.precio-gemas).toFixed(1)} 💎`,'#ff4444'); return; }
+        gemas -= it.precio;
+        actualizarUI();
+        const md=document.getElementById('market-gemas-display'); if(md) md.textContent=gemas.toFixed(1)+' 💎';
+        mostrarMensaje(`✅ ${it.nombre} adquirido! Bonus +${it.bonus}% activo`,'#00ff88');
     }
 
     // ── MARKETPLACE ───────────────────────────────────────────────────────
