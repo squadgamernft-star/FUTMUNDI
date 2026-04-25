@@ -475,7 +475,9 @@
                 <div id="marketplace-futbolistas" class="tab-panel active">
                     <div class="market-grid" id="car-market-grid"></div>
                 </div>
-                <div id="marketplace-uniformes" class="tab-panel"><div class="coming-soon-box">🔜 Uniformes — próximamente</div></div>
+                <div id="marketplace-uniformes" class="tab-panel">
+                    <div class="market-grid" id="uniformes-market-grid"></div>
+                </div>
                 <div id="marketplace-tenis" class="tab-panel">
                     <div class="market-grid" id="tenis-market-grid"></div>
                 </div>
@@ -1241,7 +1243,7 @@
     function openModal(id){
         const el=$id(id);if(!el)return;
         el.classList.add('active');document.body.style.overflow='hidden';
-        if(id==='modal-marketplace'){actualizarUI();buildMarket();buildItemsMarket();}
+        if(id==='modal-marketplace'){actualizarUI();buildMarket();buildUniforms();buildItemsMarket();}
         if(id==='modal-recompensa')checkRewardStatus();
         if(id==='modal-recompensa-pts'){actualizarUI();buildRewardPts();}
         if(id==='modal-garage')buildGarage();
@@ -1372,6 +1374,93 @@
         nivel=calcularNivel();
         actualizarUI();buildMarket();
         mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`,'#00ff88');
+    }
+
+    // ── UNIFORMES MARKETPLACE ─────────────────────────────────────────────
+    const UNIFORMES = [
+        {
+            id: 'bronce',
+            nombre: 'Uniforme Bronce',
+            tier: 'BRONCE',
+            tierColor: '#cd7f32',
+            tierBg: 'rgba(205,127,50,0.15)',
+            tierBorder: 'rgba(205,127,50,0.5)',
+            precio: 500,
+            fisico: 1000,
+            img: 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/uniforme_bronce_1000_fisico_500_gemas.png',
+            emoji: '🥉',
+            bonus: '+1000 pts físico',
+        },
+        {
+            id: 'platinium',
+            nombre: 'Uniforme Platinium',
+            tier: 'PLATINIUM',
+            tierColor: '#e5e4e2',
+            tierBg: 'rgba(229,228,226,0.1)',
+            tierBorder: 'rgba(229,228,226,0.45)',
+            precio: 1200,
+            fisico: 2000,
+            img: 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/uniforme_platinium_2000_fisico_1200_gemas.png',
+            emoji: '🥈',
+            bonus: '+2000 pts físico',
+        },
+        {
+            id: 'diamante',
+            nombre: 'Uniforme Diamante',
+            tier: 'DIAMANTE',
+            tierColor: '#00d4ff',
+            tierBg: 'rgba(0,212,255,0.12)',
+            tierBorder: 'rgba(0,212,255,0.55)',
+            precio: 7500,
+            fisico: null,
+            img: 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/uniforme_diamante_7500_gemas.png',
+            emoji: '💎',
+            bonus: 'Tier máximo exclusivo',
+        },
+    ];
+
+    let _uniformesQty = {};
+    let _uniformesComprados = {};
+
+    function buildUniforms() {
+        const grid = $id('uniformes-market-grid');
+        if (!grid) return;
+        grid.innerHTML = UNIFORMES.map(u => {
+            const owned = _uniformesComprados[u.id] || 0;
+            if (!_uniformesQty[u.id]) _uniformesQty[u.id] = 1;
+            return `<div class="car-card" style="border-color:${u.tierBorder};background:${u.tierBg};">
+<div class="car-card-img-wrap">
+    <img class="car-card-img" src="${u.img}" alt="${u.nombre}"
+         onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';"
+         style="object-fit:cover;aspect-ratio:3/4;">
+    <div style="display:none;width:100%;aspect-ratio:3/4;align-items:center;justify-content:center;font-size:3.5em;background:#0a130a;">${u.emoji}</div>
+    <div style="position:absolute;top:6px;left:6px;background:${u.tierBg};border:1px solid ${u.tierBorder};border-radius:4px;padding:2px 8px;font-size:0.55em;color:${u.tierColor};font-weight:800;letter-spacing:1.5px;font-family:'Orbitron',sans-serif">${u.tier}</div>
+    ${owned > 0 ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:4px;padding:2px 6px;font-size:0.55em;color:var(--gold);font-weight:800;font-family:'Orbitron',sans-serif">✅ ×${owned}</div>` : ''}
+</div>
+<div class="car-card-info">
+    <div class="car-card-name" style="color:${u.tierColor}">${u.nombre}</div>
+    ${u.fisico ? `<div style="font-size:0.74em;color:var(--green);margin:3px 0;font-weight:700">💪 ${u.fisico.toLocaleString()} pts físico</div>` : `<div style="font-size:0.74em;color:var(--cyan);margin:3px 0;font-weight:700">⭐ ${u.bonus}</div>`}
+    <div class="car-card-price" style="color:${u.tierColor}">💎 ${u.precio.toLocaleString()}</div>
+    <button class="buy-car-btn" onclick="comprarUniforme('${u.id}')"
+        style="border-color:${u.tierBorder};color:${u.tierColor};"
+        ${gemas < u.precio ? 'disabled' : ''}>
+        👕 Comprar
+    </button>
+</div>
+</div>`;
+        }).join('');
+    }
+
+    function comprarUniforme(id) {
+        const u = UNIFORMES.find(x => x.id === id);
+        if (!u) return;
+        if (gemas < u.precio) { mostrarMensaje(`❌ Faltan ${(u.precio - gemas).toFixed(1)} 💎`, '#ff4444'); return; }
+        gemas -= u.precio;
+        _uniformesComprados[id] = (_uniformesComprados[id] || 0) + 1;
+        if (u.fisico) { hp += u.fisico; puntaje += Math.round(u.fisico / 10); }
+        actualizarUI();
+        buildUniforms();
+        mostrarMensaje(`✅ ${u.nombre} comprado! ${u.fisico ? `+${u.fisico.toLocaleString()} pts físico` : u.bonus}`, '#00ff88');
     }
 
     // ── LOGROS DE HABILIDADES ─────────────────────────────────────────────
@@ -2035,6 +2124,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     checkDailyBallRecharge();
     actualizarUI();
     buildMarket();
+    buildUniforms();
     buildSkillLogros();
     buildFutsalaBody();
     updateTorneoCountdown();
