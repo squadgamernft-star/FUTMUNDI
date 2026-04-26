@@ -3108,6 +3108,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     // ── TELEGRAM ──────────────────────────────────────────────────────────
     if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#060f06');Telegram.WebApp.setBackgroundColor('#060f06');}
 
+    // ── RESET DE ESTADO INICIAL (limpia datos viejos del localStorage) ────
+    (function resetIfLegacy(){
+        const VERSION_KEY='tg_state_version';
+        const CURRENT_VERSION='2';
+        if(localStorage.getItem(VERSION_KEY)!==CURRENT_VERSION){
+            ['tg_gemas','tg_hp','tg_puntaje','tg_nivel','tg_stats_partidas',
+             'tg_total_goals','tg_carros','tg_durabilidades','tg_ballones',
+             'tg_equipamiento','tg_skill_counts','tg_inv_items','tg_inv_uniformes',
+             'tg_skill_claimed','tg_claimed_goal_milestones','tg_ball_recharge_day',
+             'tg_daily_claimed','tg_training'
+            ].forEach(k=>localStorage.removeItem(k));
+            localStorage.setItem(VERSION_KEY,CURRENT_VERSION);
+        }
+    })();
+
     // ── INIT ──────────────────────────────────────────────────────────────
     loadState();
     checkDailyBallRecharge();
