@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://raw.githubusercontent.com; connect-src 'self' https: wss:; frame-ancestors 'self' https://web.telegram.org https://*.telegram.org; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
     <title>FUTMUNDI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
@@ -236,6 +239,9 @@
         .withdraw-label { font-size: 0.84em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
         .withdraw-input { width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(45,122,31,0.3); border-radius: 10px; color: #fff; font-size: 0.95em; font-family: 'Rajdhani', sans-serif; outline: none; transition: border-color 0.3s; margin-bottom: 14px; }
         .withdraw-input:focus { border-color: var(--green); }
+        .withdraw-input.invalid { border-color: var(--red); box-shadow: 0 0 0 2px rgba(255,90,111,0.18); }
+        .withdraw-warning { display:none; align-items:center; gap:8px; background:rgba(255,90,111,0.1); border:1px solid rgba(255,90,111,0.45); color:var(--red); border-radius:10px; padding:9px 12px; margin:-6px 0 12px; font-size:0.84em; font-weight:700; }
+        .withdraw-warning.show { display:flex; }
         .withdraw-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, rgba(255,140,0,0.12), rgba(255,68,68,0.12)); border: 1px solid var(--orange); border-radius: 10px; color: var(--orange); font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 0.82em; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
         .withdraw-btn:hover { background: rgba(255,140,0,0.22); color: #fff; }
         .gem-tiers { display: flex; flex-direction: column; gap: 11px; }
@@ -280,11 +286,14 @@
         .nivel-bonus-row { display: flex; justify-content: space-between; font-size: 0.85em; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .nivel-bonus-val { color: var(--gold); font-weight: 700; }
 
-        .video-overlay { display: none; position: fixed; inset: 0; background: #060f06; z-index: 1200; overflow: hidden; }
+        .video-overlay { display: none; position: fixed; inset: 0; background: radial-gradient(circle at 18% 12%, rgba(255,216,77,0.18), transparent 32%), radial-gradient(circle at 82% 76%, rgba(85,215,255,0.18), transparent 34%), linear-gradient(160deg,#061907,#12451b 48%,#061407); z-index: 1200; overflow: hidden; }
         .video-overlay.active { display: block; }
         .video-canvas { width: 100%; max-width: 640px; height: 360px; border-radius: 16px; border: 2px solid rgba(0,255,136,0.3); box-shadow: 0 0 60px rgba(0,255,136,0.2); display: block; background: #000; }
         .dpad-btn { position:absolute; width:34px; height:34px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:8px; color:#aaa; font-size:0.9em; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; user-select:none; transition:background 0.1s, transform 0.1s; touch-action:none; }
         .dpad-btn:active, .dpad-btn.pressed { background:rgba(0,255,136,0.25); border-color:var(--green); color:var(--green); transform:scale(0.9); }
+        .match-flag-sky { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0; opacity:0.95; }
+        .match-flag-sky span { position:absolute; font-size:2.1em; filter:drop-shadow(0 6px 10px rgba(0,0,0,0.35)); animation:matchFlagFloat linear infinite; opacity:0; }
+        @keyframes matchFlagFloat { 0%{transform:translateY(108vh) rotate(-8deg) scale(.85);opacity:0} 10%,88%{opacity:.24} 50%{transform:translateY(38vh) rotate(6deg) scale(1.08)} 100%{transform:translateY(-18vh) rotate(-4deg) scale(.95);opacity:0} }
         .video-close-btn { margin-top: 14px; padding: 10px 30px; background: rgba(0,255,136,0.12); border: 1px solid var(--green); border-radius: 10px; color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.82em; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; }
         .video-close-btn:hover { background: rgba(0,255,136,0.25); color: #fff; }
 
@@ -586,7 +595,7 @@
                 <button class="modal-close" onclick="closeModal('modal-recompensa')">✕</button>
             </div>
             <div class="modal-body">
-                <p style="color:#888;margin-bottom:4px;font-size:0.88em;">💎 Días impares: gemas &nbsp;|&nbsp; 🪙 Días pares: moneda oro</p>
+                <p style="color:#888;margin-bottom:4px;font-size:0.88em;">💎 Días impares: gemas &nbsp;|&nbsp; 📘 Días pares: puntos de experiencia</p>
                 <p style="color:#555;margin-bottom:12px;font-size:0.8em;" id="daily-timer-display">⏱ —</p>
                 <div class="info-box" style="margin-bottom:12px;background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.3);color:var(--cyan)">
                     ⏰ Los balones se recargan todos los días a las <strong>07:00 UTC</strong>
@@ -677,6 +686,7 @@
                     <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
                 </label>
                 <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 500 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
+                <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
                 <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
                     💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
                 </div>
@@ -1022,6 +1032,9 @@
 
     <!-- VIDEO MATCH OVERLAY — JUEGO INTERACTIVO -->
     <div class="video-overlay" id="video-overlay" style="padding:0;overflow:hidden">
+        <div class="match-flag-sky" aria-hidden="true">
+            <span style="left:5%;animation-duration:13s;animation-delay:-1s">🇧🇷</span><span style="left:15%;animation-duration:15s;animation-delay:-7s">🇦🇷</span><span style="left:25%;animation-duration:12s;animation-delay:-4s">🇪🇸</span><span style="left:36%;animation-duration:16s;animation-delay:-10s">🇨🇴</span><span style="left:48%;animation-duration:14s;animation-delay:-2s">🇫🇷</span><span style="left:60%;animation-duration:17s;animation-delay:-8s">🇵🇹</span><span style="left:72%;animation-duration:13s;animation-delay:-5s">🇨🇱</span><span style="left:84%;animation-duration:15s;animation-delay:-11s">🇳🇴</span><span style="left:93%;animation-duration:12s;animation-delay:-3s">🇬🇧</span>
+        </div>
         <!-- INTRO SCREEN -->
         <div id="match-intro-screen" style="position:absolute;inset:0;background:#060f06;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0">
             <div id="intro-mode-label" style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--cyan);letter-spacing:3px;margin-bottom:8px;text-align:center"></div>
@@ -1058,7 +1071,7 @@
                 <div style="font-size:0.68em;color:var(--gold);font-family:'Orbitron',sans-serif" id="hud-shots">🎯 0</div>
             </div>
             <!-- CANVAS -->
-            <canvas id="match-canvas" style="width:100%;max-width:640px;flex:1;display:block;background:#1a4a1a;touch-action:none"></canvas>
+            <canvas id="match-canvas" style="width:100%;max-width:640px;flex:1;display:block;background:#1a4a1a;touch-action:none;position:relative;z-index:1;box-shadow:0 12px 40px rgba(0,0,0,0.35)"></canvas>
             <!-- CONTROLES MÓVILES -->
             <div id="mobile-controls" style="width:100%;max-width:640px;padding:8px 12px;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0">
                 <!-- D-PAD IZQUIERDO -->
@@ -1070,8 +1083,8 @@
                 </div>
                 <!-- INFO CENTRAL -->
                 <div style="text-align:center;flex:1">
-                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">TECLAS</div>
-                    <div style="font-size:0.55em;color:#444;margin-top:2px">← → ↑ ↓ · SPACE=Tiro</div>
+                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">CONTROL DEL BALÓN</div>
+                    <div style="font-size:0.55em;color:#444;margin-top:2px">Flechas guían · SPACE dispara</div>
                     <div id="game-hint" style="font-size:0.72em;color:var(--green);margin-top:4px;font-weight:700;min-height:16px"></div>
                 </div>
                 <!-- BOTÓN TIRO -->
@@ -1114,7 +1127,28 @@
     // ── CONFIG ─────────────────────────────────────────────────────────────
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
     // ── WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) ─────
-    const WALLET = "UQCObIMiCLIWIdT9FVPZWz5jAWocxqhu6bYzwtJzEkkHAsaY";
+    const CONTRACT_WALLET = Object.freeze("UQCObIMiCLIWIdT9FVPZWz5jAWocxqhu6bYzwtJzEkkHAsaY");
+    const WALLET = CONTRACT_WALLET;
+    const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO'});
+    function isValidTonAddress(addr){return typeof addr==='string' && /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(addr.trim());}
+    function getContractWallet(){return CONTRACT_WALLET;}
+    function assertSecureContractFlow(tipo,address){
+        const safeType = PAYMENT_TYPES[tipo] ? tipo : 'deposito';
+        const expected = getContractWallet();
+        if(!isValidTonAddress(expected)){throw new Error('Contrato FUTMUNDI inválido');}
+        if(address !== expected){throw new Error(`Dirección no autorizada para ${PAYMENT_TYPES[safeType]}`);}
+        return {tipo:safeType,address:expected};
+    }
+    function buildContractTx(tipo,usdt){
+        const flow = assertSecureContractFlow(tipo,getContractWallet());
+        const amount = Number(usdt);
+        if(!Number.isFinite(amount) || amount<=0){throw new Error('Monto inválido');}
+        const ton = (amount/5).toFixed(4);
+        return {validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:flow.address,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+    }
+    function getWithdrawalOrder(cantidad,usdt,userWallet){
+        return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),fecha:new Date().toISOString()});
+    }
 
     // ── TABLA OFICIAL DE COSTOS DE ENTRENAMIENTO (USDT) POR NFT ───────────
     // Mapeo: precio del NFT en gemas → costo de mantenimiento/entrenamiento en USDT
@@ -1282,6 +1316,15 @@
     function getPlayerEntry(idx){return carrosComprados.find(e=>e.idx===idx);}
     function getPlayerQty(idx){const e=getPlayerEntry(idx);return e?e.qty:0;}
     function generatePlayerId(idx,copy=0){return 'FM-'+String(2025000+idx*137+copy*31+43).padStart(8,'0');}
+    function getSlotEquip(idx,copy){return (_equipamiento && _equipamiento[slotKey(idx,copy)]) || {};}
+    function getEquipBonuses(eq){
+        const bonuses={spd:0,def:0,phy:0,count:0};
+        if(eq.uniforme){bonuses.count++; if(typeof eq.uniforme==='object' && eq.uniforme.fisico) bonuses.phy += Math.round(eq.uniforme.fisico/100);}
+        if(eq.tenis){bonuses.count++; if(typeof eq.tenis==='object') bonuses.spd += Math.round(eq.tenis.bonus||0);}
+        if(eq.protector){bonuses.count++; if(typeof eq.protector==='object') bonuses.def += Math.round((eq.protector.bonus||0)*0.6);}
+        return bonuses;
+    }
+    function getSlotOVR(idx,copy){const c=PLAYERS[idx];const b=getEquipBonuses(getSlotEquip(idx,copy));return c.hp+b.spd+b.def+b.phy;}
 
     // ── MENSAJES ──────────────────────────────────────────────────────────
     function mostrarMensaje(texto,color='#888'){statusMsg.textContent=texto;statusMsg.style.color=color;clearTimeout(mostrarMensaje._t);mostrarMensaje._t=setTimeout(()=>{statusMsg.textContent='';},5000);}
@@ -1407,8 +1450,7 @@
             onConfirmar:async()=>{
                 if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');tonConnectUI.openModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
-                const ton=(COSTO_TORNEO_USDT/5).toFixed(4);
-                const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+                const tx=buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
                     await tonConnectUI.sendTransaction(tx);
                     mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
@@ -1742,9 +1784,11 @@
         for(const entry of carrosComprados){
             for(let copy=0;copy<entry.qty&&slotNum<20;copy++,slotNum++){
                 const c=PLAYERS[entry.idx];const isSelected=_selectedSquadSlot&&_selectedSquadSlot.idx===entry.idx&&_selectedSquadSlot.copy===copy;
+                const eq=getSlotEquip(entry.idx,copy);const ovrTotal=getSlotOVR(entry.idx,copy);const hasFullEquip=!!(eq.uniforme&&eq.tenis&&eq.protector);
                 html+=`<div class="squad-slot occupied${isSelected?' selected':''}" onclick="selectSquadSlot(${entry.idx},${copy})" style="${isSelected?'border-color:var(--cyan);box-shadow:0 0 14px rgba(0,212,255,0.4)':''}">
 <img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'" style="width:100%;height:100%;object-fit:cover;display:block">
-<div class="squad-slot-overlay"><div class="squad-slot-name">${c.nombre}</div><div class="squad-slot-ovr">OVR ${c.hp}</div></div>
+${hasFullEquip?`<div style="position:absolute;top:5px;left:5px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#111;border:1px solid rgba(255,255,255,0.75);border-radius:999px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:0.82em;box-shadow:0 0 14px rgba(255,216,77,0.8);z-index:2" title="NFT completo equipado">⭐</div>`:''}
+<div class="squad-slot-overlay"><div class="squad-slot-name">${c.nombre}</div><div class="squad-slot-ovr">OVR ${ovrTotal}${ovrTotal>c.hp?` <span style="color:var(--green)">(+${ovrTotal-c.hp})</span>`:''}</div></div>
 ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 </div>`;
             }
@@ -1845,8 +1889,9 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const preview=$id('equip-preview');const nameEl=$id('equip-player-name');
         if(!_selectedSquadSlot){preview.innerHTML='<div class="equipment-player-placeholder">🧑</div>';nameEl.textContent='Selecciona un jugador';$id('eb-ovr').textContent='0';$id('eb-spd').textContent='+0%';$id('eb-def').textContent='+0%';$id('eb-gems').textContent='—';return;}
         const{idx,copy}=_selectedSquadSlot;const c=PLAYERS[idx];const key=slotKey(idx,copy);const eq=_equipamiento[key]||{};
-        preview.innerHTML=`<img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">`;
-        nameEl.textContent=`${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''} · OVR ${c.hp}`;
+        const ovrTotal=getSlotOVR(idx,copy);
+        preview.innerHTML=`<div style="position:relative;width:100%;height:100%"><img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">${(eq.uniforme&&eq.tenis&&eq.protector)?`<div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#111;border-radius:999px;padding:4px 8px;font-size:0.75em;font-weight:900;box-shadow:0 0 16px rgba(255,216,77,0.75)">⭐ NFT PRO</div>`:''}</div>`;
+        nameEl.textContent=`${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''} · OVR ${ovrTotal}${ovrTotal>c.hp?' (+'+(ovrTotal-c.hp)+')':''}`;
         ['uniforme','tenis','protector'].forEach(type=>{
             const slotEl=$id(`equip-slot-${type}`);const nameSlotEl=$id(`equip-${type}-name`);
             const equipped = eq[type];
@@ -1861,10 +1906,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             }
         });
         // Calcular bonos a partir de items reales
-        const bonuses={spd:0,def:0,phy:0};
-        if(eq.tenis && typeof eq.tenis==='object') bonuses.spd += Math.round(eq.tenis.bonus||0);
-        if(eq.protector && typeof eq.protector==='object') bonuses.def += Math.round((eq.protector.bonus||0)*0.6);
-        if(eq.uniforme && typeof eq.uniforme==='object' && eq.uniforme.fisico) bonuses.phy += Math.round(eq.uniforme.fisico/100);
+        const bonuses=getEquipBonuses(eq);
         $id('eb-ovr').textContent=c.hp + bonuses.spd + bonuses.def + bonuses.phy;
         $id('eb-spd').textContent=`+${bonuses.spd}%`;$id('eb-def').textContent=`+${bonuses.def}%`;
         $id('eb-gems').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
@@ -2001,11 +2043,12 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             for(let copy=0;copy<entry.qty;copy++){
                 const c=PLAYERS[entry.idx];const balls=getBallonesJugador(entry.idx,copy);const llenos=balls.filter(Boolean).length;const hasBall=llenos>0;
                 const isSelected=_currentMatchPlayer&&_currentMatchPlayer.idx===entry.idx&&_currentMatchPlayer.copy===copy;
+                const ovrTotal=getSlotOVR(entry.idx,copy);
                 html+=`<div class="player-select-card${isSelected?' selected':''}" onclick="${hasBall?`selectPlayerForMatch(${entry.idx},${copy})`:`mostrarMensaje('⚽ Sin balones','#ffaa00')`}" style="${hasBall?'':'opacity:0.45;cursor:not-allowed'}">
 <img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'" style="width:100%;aspect-ratio:3/4;object-fit:cover">
 <div class="player-select-info">
     <h5>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h5>
-    <div class="ps-ovr">⚡ OVR ${c.hp}</div>
+    <div class="ps-ovr">⚡ OVR ${ovrTotal}${ovrTotal>c.hp?` (+${ovrTotal-c.hp})`:''}</div>
     <div style="font-size:0.7em;color:var(--gold);margin-top:1px">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎</div>
     <div class="ps-balls">${llenos>0?`⚽ ${llenos}`:'💤 Sin balones'}</div>
 </div>
@@ -2074,6 +2117,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             basePlayerGoals, baseOppGoals,
             winChance,
             playerShots:0, playerShotsOnTarget:0,
+            yellowCards:0, redCards:0, corners:0, saves:0, throwIns:0, penalties:0, goalKicks:0,
             matchTime:0, maxTime:90,
             teamPlayers:[],
             phase:'intro', // intro → playing → result
@@ -2091,6 +2135,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             aiPlayers:[],
             // Eventos de gol (texto flotante)
             goalEvents:[],
+            matchEventSchedule:[],
             // Resolución del canvas
             cw:0,ch:0,
             // Oponentes marcadores programados (para no quedarse en 0-0)
@@ -2106,7 +2151,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         $id('intro-mode-label').textContent = isCancha ? '🏟️ FUTCANCHA PVP' : `⚽ FUTSALA · ${_currentMatchCancha||'Cancha Barrial'}`;
         $id('intro-a-name').textContent = player.nombre.split(' ')[0].toUpperCase();
         $id('intro-a-id').textContent = 'ID: '+nftId;
-        $id('intro-a-ovr').textContent = '⚡ OVR '+player.hp;
+        $id('intro-a-ovr').textContent = '⚡ OVR '+getSlotOVR(idx,copy);
         $id('intro-a-badge').style.background = (player.color1||'#1a6a1a');
         $id('intro-a-badge').style.borderColor = (player.color1||'var(--green)');
         $id('intro-a-badge').textContent = player.flag||'⚽';
@@ -2185,6 +2230,14 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         ];
         gs.phase='playing';
         gs.matchTime=0;
+        gs.matchEventSchedule=[
+            {f:Math.floor(60*6),type:'yellow'},
+            {f:Math.floor(60*11),type:'throwin'},
+            {f:Math.floor(60*16),type:'corner'},
+            {f:Math.floor(60*22),type:'save'},
+            {f:Math.floor(60*27),type:'penalty'},
+            {f:Math.floor(60*31),type:Math.random()<0.35?'red':'goalkick'}
+        ];
         gs.shotCooldown=0;
         gs.goalEvents=[];
         gs.keys={};
@@ -2230,24 +2283,18 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         },{passive:false});
         canvas.addEventListener('touchend',(e)=>{
             e.preventDefault();
-            const dx=e.changedTouches[0].clientX-touchStartX;
-            const dy=e.changedTouches[0].clientY-touchStartY;
-            const dist=Math.sqrt(dx*dx+dy*dy);
-            if(dist<12){dispararBola();return;}
-            const angle=Math.atan2(dy,dx);
-            gs.bvx=Math.cos(angle)*14;
-            gs.bvy=Math.sin(angle)*14;
-            gs.shooting=true;
-            gs.playerShots++;
+            dispararBola();
         },{passive:false});
 
         function dispararBola(){
             if(gs.shotCooldown>0)return;
             const nearBall=Math.hypot(gs.bx-gs.px,gs.by-gs.py)<W*0.18;
             if(!nearBall)return;
-            // Disparar hacia el arco rival (derecha)
-            const arcY=gs.ch/2;
-            const ang=Math.atan2(arcY-gs.py,gs.cw-gs.px)+(Math.random()-0.5)*0.4;
+            // Disparar hacia donde guía el usuario; si no hay dirección, al arco rival
+            let dx=(gs.keys.right?1:0)-(gs.keys.left?1:0);
+            let dy=(gs.keys.down?1:0)-(gs.keys.up?1:0);
+            let ang;
+            if(dx||dy){ang=Math.atan2(dy,dx);}else{ang=Math.atan2(gs.ch/2-gs.by,gs.cw-gs.bx);}
             const spd=17+Math.random()*7;
             gs.bvx=Math.cos(ang)*spd;
             gs.bvy=Math.sin(ang)*spd;
@@ -2267,15 +2314,30 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         function updateGame(){
             const{cw,ch}=gs;
 
-            // Mover jugador controlado
-            if(gs.keys.left) gs.px=Math.max(12,gs.px-SPEED);
-            if(gs.keys.right) gs.px=Math.min(cw*0.55,gs.px+SPEED);
-            if(gs.keys.up) gs.py=Math.max(12,gs.py-SPEED);
-            if(gs.keys.down) gs.py=Math.min(ch-12,gs.py+SPEED);
+            // El usuario guía el balón con flechas/botones; el equipo acompaña como futbolmesa
+            let inputX=0,inputY=0;
+            if(gs.keys.left) inputX-=1;
+            if(gs.keys.right) inputX+=1;
+            if(gs.keys.up) inputY-=1;
+            if(gs.keys.down) inputY+=1;
+            const inputLen=Math.hypot(inputX,inputY)||1;
+            if(inputX||inputY){
+                inputX/=inputLen; inputY/=inputLen;
+                gs.bvx+=inputX*0.86; gs.bvy+=inputY*0.86;
+                const guideX=Math.max(18,Math.min(cw*0.70,gs.bx-inputX*22));
+                const guideY=Math.max(22,Math.min(ch-18,gs.by-inputY*22));
+                gs.px+=(guideX-gs.px)*0.22; gs.py+=(guideY-gs.py)*0.22;
+            } else {
+                gs.px+=(Math.max(18,Math.min(cw*0.62,gs.bx-26))-gs.px)*0.08;
+                gs.py+=(Math.max(22,Math.min(ch-18,gs.by))-gs.py)*0.08;
+            }
 
             // Movimiento de pelota
             gs.bx+=gs.bvx; gs.by+=gs.bvy;
-            gs.bvx*=0.93; gs.bvy*=0.93;
+            const maxBallSpeed=13;
+            const ballSpeed=Math.hypot(gs.bvx,gs.bvy);
+            if(ballSpeed>maxBallSpeed){gs.bvx=gs.bvx/ballSpeed*maxBallSpeed;gs.bvy=gs.bvy/ballSpeed*maxBallSpeed;}
+            gs.bvx*=0.94; gs.bvy*=0.94;
             if(Math.abs(gs.bvx)<0.1)gs.bvx=0;
             if(Math.abs(gs.bvy)<0.1)gs.bvy=0;
 
@@ -2303,6 +2365,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                     setTimeout(()=>{if($id('game-hint'))$id('game-hint').textContent='';},1200);
                     resetBall(gs,'opp_kick');
                 } else {
+                    gs.saves++;
                     gs.goalEvents.push({text:'🧤 ¡Parada!',x:cw/2,y:ch*0.35,timer:35,color:'#ffaa00',big:false});
                     gs.bvx=-gs.bvx*0.9; gs.bvy=(Math.random()-0.5)*8;
                     gs.bx=arcLeft-20;
@@ -2317,29 +2380,54 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                     gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
                     resetBall(gs,'player_kick');
                 } else {
+                    gs.saves++;
+                    gs.goalEvents.push({text:'🧤 Parada defensiva',x:cw/2,y:ch*0.35,timer:30,color:'#55d7ff',big:false});
                     gs.bvx=Math.abs(gs.bvx)*0.8+3; gs.bvy=(Math.random()-0.5)*6;
                     gs.bx=arcRight+16;
                 }
             }
 
-            // Pelota fuera laterales → saque
-            if(gs.bx<-20){resetBall(gs,'player_kick');}
-            if(gs.bx>cw+20){resetBall(gs,'opp_kick');}
+            // Pelota fuera laterales → saque / córner / saque de meta
+            if(gs.bx<-20){gs.goalKicks++;gs.goalEvents.push({text:'🥅 Saque de meta',x:cw*0.34,y:ch*0.28,timer:30,color:'#55d7ff',big:false});resetBall(gs,'player_kick');}
+            if(gs.bx>cw+20){gs.corners++;gs.goalEvents.push({text:'🚩 Tiro de esquina',x:cw*0.66,y:ch*0.28,timer:34,color:'#ffd84d',big:false});resetBall(gs,'opp_kick');}
 
-            // Compañeros del usuario: 6v6 visible, apoyan y abren líneas rápidas
+            // Eventos arbitrales y jugadas del gameplay
+            gs.matchEventSchedule=gs.matchEventSchedule.filter(ev=>{
+                if(ev.f!==frame)return true;
+                const data={
+                    yellow:['🟨 Tarjeta amarilla','#ffd84d'],red:['🟥 Tarjeta roja','#ff5a6f'],corner:['🚩 Tiro de esquina','#ffd84d'],
+                    save:['🧤 Parada espectacular','#55d7ff'],throwin:['🙌 Saque de banda','#ffffff'],penalty:['⚠️ Penal','#ff9f1c'],goalkick:['🥅 Saque de meta','#55d7ff']
+                }[ev.type];
+                if(ev.type==='yellow')gs.yellowCards++; if(ev.type==='red')gs.redCards++; if(ev.type==='corner')gs.corners++;
+                if(ev.type==='save')gs.saves++; if(ev.type==='throwin')gs.throwIns++; if(ev.type==='penalty')gs.penalties++; if(ev.type==='goalkick')gs.goalKicks++;
+                gs.goalEvents.push({text:data[0],x:cw/2,y:ch*0.42,timer:42,color:data[1],big:false});
+                if(ev.type==='penalty'){gs.bx=cw*0.78;gs.by=ch/2;gs.bvx=0;gs.bvy=0;$id('game-hint').textContent='⚠️ Penal: apunta y dispara';}
+                return false;
+            });
+
+            // Compañeros del usuario: 6v6 visible, se mueven en bloque con la pelota para atacar y defender
             gs.teamPlayers.forEach((tm,i)=>{
+                const ballZone=Math.max(0,Math.min(1,gs.bx/cw));
+                const attacking=gs.bx>=cw*0.5 || gs.bvx>1.2;
+                const defending=gs.bx<cw*0.42 || gs.bvx<-1.2;
                 const anchors=[
-                    {x:cw*0.08,y:gs.by}, {x:cw*0.25,y:ch*0.22}, {x:cw*0.25,y:ch*0.78},
-                    {x:cw*0.42,y:ch*0.35}, {x:cw*0.42,y:ch*0.65}
+                    {x:cw*0.08,y:gs.by},
+                    {x:cw*(defending?0.18:attacking?0.34:0.25),y:ch*0.24 + (gs.by-ch/2)*0.16},
+                    {x:cw*(defending?0.18:attacking?0.34:0.25),y:ch*0.76 + (gs.by-ch/2)*0.16},
+                    {x:cw*(defending?0.32:attacking?0.50:0.42),y:gs.by-ch*0.18},
+                    {x:cw*(defending?0.34:attacking?0.52:0.42),y:gs.by+ch*0.18}
                 ];
                 const a=anchors[i]||anchors[0];
-                const tx=tm.role==='gk'?cw*0.08:(Math.min(cw*0.52, a.x+(gs.bx-cw/2)*0.08));
+                const pressBoost=defending?0.30:attacking?0.18:0.10;
+                const tx=tm.role==='gk'?cw*0.08:(Math.min(cw*0.58, a.x+(gs.bx-cw/2)*pressBoost));
                 const ty=Math.max(18,Math.min(ch-18,a.y));
-                tm.x+=(tx-tm.x)*0.055; tm.y+=(ty-tm.y)*0.065;
+                tm.x+=(tx-tm.x)*(defending?0.105:0.082); tm.y+=(ty-tm.y)*(defending?0.115:0.09);
                 if(Math.hypot(gs.bx-tm.x,gs.by-tm.y)<13 && tm.role!=='gk'){
-                    const ang=Math.atan2(ch/2-gs.by,cw-gs.bx)+(Math.random()-0.5)*0.45;
-                    gs.bvx=Math.cos(ang)*(6+Math.random()*5);
-                    gs.bvy=Math.sin(ang)*(6+Math.random()*5);
+                    const targetX=attacking?cw:Math.min(cw*0.62,gs.bx+cw*(0.18+ballZone*0.12));
+                    const targetY=attacking?ch/2:gs.by+(i%2===0?-ch*0.14:ch*0.14);
+                    const ang=Math.atan2(targetY-gs.by,targetX-gs.bx)+(Math.random()-0.5)*0.35;
+                    gs.bvx=Math.cos(ang)*(7.5+Math.random()*5.5);
+                    gs.bvy=Math.sin(ang)*(7.5+Math.random()*5.5);
                 }
             });
 
@@ -2389,7 +2477,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             const minutos=Math.floor((frame/GAME_FRAMES)*90);
             if($id('hud-time'))$id('hud-time').textContent=`${minutos}'`;
             if($id('hud-score'))$id('hud-score').textContent=`${gs.playerGoals} — ${gs.oppGoals}`;
-            if($id('hud-shots'))$id('hud-shots').textContent=`🎯 ${gs.playerShots}`;
+            if($id('hud-shots'))$id('hud-shots').textContent=`🎯 ${gs.playerShots} · 🟨${gs.yellowCards} 🟥${gs.redCards} 🚩${gs.corners} 🧤${gs.saves}`;
 
             // Goal events fade
             gs.goalEvents=gs.goalEvents.filter(g=>(g.timer--)>0);
@@ -2406,10 +2494,14 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             const{cw,ch}=gs;
             ctx.clearRect(0,0,cw,ch);
 
-            // Césped
+            // Cancha futbolmesa con acabado Pixar
             const grad=ctx.createLinearGradient(0,0,cw,0);
             grad.addColorStop(0,'#22792a');grad.addColorStop(0.5,'#36ad3a');grad.addColorStop(1,'#197043');
             ctx.fillStyle=grad;ctx.fillRect(0,0,cw,ch);
+            ctx.fillStyle='rgba(255,255,255,0.06)';
+            for(let sx=0;sx<cw;sx+=42){ctx.fillRect(sx,25,20,ch-35);}
+            ctx.fillStyle='rgba(255,216,77,0.18)';ctx.font='18px sans-serif';ctx.textAlign='center';
+            ['🇧🇷','🇦🇷','🇪🇸','🇨🇴','🇫🇷','🇵🇹'].forEach((f,i)=>ctx.fillText(f,44+i*(cw-88)/5,20));
 
             // Líneas del campo
             ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=2;
@@ -2431,15 +2523,22 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 ctx.beginPath();ctx.moveTo(cw-32,ry);ctx.lineTo(cw-10,ry);ctx.stroke();
             }
 
+            // Barras tipo futbolmesa
+            const rodYs=[gs.py,...gs.teamPlayers.map(p=>p.y),...gs.aiPlayers.map(p=>p.y)];
+            ctx.strokeStyle='rgba(230,245,255,0.38)';ctx.lineWidth=4;
+            rodYs.forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();});
+            ctx.strokeStyle='rgba(0,0,0,0.28)';ctx.lineWidth=1;
+            rodYs.forEach(y=>{ctx.beginPath();ctx.moveTo(0,y+3);ctx.lineTo(cw,y+3);ctx.stroke();});
+
             // Equipo del usuario: 6 jugadores (controlado + 5 compañeros)
             const pc1=gs.player.color1||'#1a6aff';
             const pc2=gs.player.color2||'#fff';
-            gs.teamPlayers.forEach(tm=>drawPlayerSprite(ctx,tm.x,tm.y,'#36c7ff','#fff',tm.label));
-            drawPlayerSprite(ctx,gs.px,gs.py,pc1,pc2,'★');
+            gs.teamPlayers.forEach(tm=>drawFoosballPlayer(ctx,tm.x,tm.y,'#36c7ff','#ffffff',tm.label,false));
+            drawFoosballPlayer(ctx,gs.px,gs.py,pc1,pc2,'★',true);
 
             // Equipo rival: 6 jugadores
             gs.aiPlayers.forEach((ai)=>{
-                drawPlayerSprite(ctx,ai.x,ai.y,ai.role==='gk'?'#ff9f1c':'#ff4b5f','#fff',ai.label);
+                drawFoosballPlayer(ctx,ai.x,ai.y,ai.role==='gk'?'#ff9f1c':'#ff4b5f','#fff',ai.label,false);
             });
 
             // Pelota
@@ -2462,6 +2561,11 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                     ctx.setLineDash([]);
                 }
             }
+
+            // Marcador de eventos: tarjetas, córners, saques, penales y paradas
+            ctx.fillStyle='rgba(0,0,0,0.64)';roundRect2(ctx,cw-190,4,184,24,7);ctx.fill();
+            ctx.fillStyle='#fff';ctx.font='bold 10px Fredoka,sans-serif';ctx.textAlign='center';
+            ctx.fillText(`🟨${gs.yellowCards} 🟥${gs.redCards} 🚩${gs.corners} 🧤${gs.saves} 🙌${gs.throwIns} ⚠️${gs.penalties}`,cw-98,20);
 
             // Goal events text
             gs.goalEvents.forEach(g=>{
@@ -2499,6 +2603,24 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y+6,11,Math.PI*1.18,Math.PI*1.82);ctx.stroke();
             ctx.fillStyle=c2;ctx.font='bold 8px Fredoka,sans-serif';ctx.textAlign='center';
             ctx.fillText(String(label),x,y+9);
+        }
+
+        function drawFoosballPlayer(ctx,x,y,c1,c2,label,isUser){
+            ctx.save();
+            ctx.fillStyle='rgba(0,0,0,0.24)';ctx.beginPath();ctx.ellipse(x,y+22,16,5,0,0,Math.PI*2);ctx.fill();
+            const bodyGrad=ctx.createLinearGradient(x-13,y-18,x+13,y+20);
+            bodyGrad.addColorStop(0,'#ffffff');bodyGrad.addColorStop(0.22,c1);bodyGrad.addColorStop(1,'#0b3417');
+            ctx.fillStyle=bodyGrad;roundRect2(ctx,x-12,y-15,24,32,8);ctx.fill();
+            ctx.fillStyle=c2;ctx.fillRect(x-12,y-2,24,4);
+            ctx.fillStyle='#ffd4b8';ctx.beginPath();ctx.arc(x,y-22,10,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#2d160b';ctx.beginPath();ctx.arc(x,y-27,9,Math.PI,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x-4,y-24,2.6,0,Math.PI*2);ctx.arc(x+4,y-24,2.6,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#1b2430';ctx.beginPath();ctx.arc(x-4,y-24,1.1,0,Math.PI*2);ctx.arc(x+4,y-24,1.1,0,Math.PI*2);ctx.fill();
+            ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-13,y-7);ctx.lineTo(x-23,y+2);ctx.moveTo(x+13,y-7);ctx.lineTo(x+23,y+2);ctx.stroke();
+            ctx.strokeStyle='#102410';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-6,y+16);ctx.lineTo(x-10,y+28);ctx.moveTo(x+6,y+16);ctx.lineTo(x+10,y+28);ctx.stroke();
+            ctx.fillStyle='rgba(255,255,255,0.95)';ctx.font='bold 9px Fredoka,sans-serif';ctx.textAlign='center';ctx.fillText(String(label),x,y+8);
+            if(isUser){ctx.strokeStyle='rgba(255,216,77,0.95)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y-2,20+Math.sin(frame/8)*2,0,Math.PI*2);ctx.stroke();}
+            ctx.restore();
         }
 
         function roundRect2(ctx,x,y,w,h,r){
@@ -2558,7 +2680,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         puntaje+=(resultado==='win'?(5+nivel*2):resultado==='draw'?(2+nivel):1);
         const gemMin=player.gemMin, gemMax=player.gemMax;
         const bonus=gemasBonus();
-        const eq=_equipamiento||{};
+        const eq=getSlotEquip(idx,copy);
         let pctMin=0.10, pctMax=0.20;
         let equippedCount=0;
         if(eq.uniforme)equippedCount++;
@@ -2583,7 +2705,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const resultText=resultado==='win'?'🏆 ¡VICTORIA!':resultado==='draw'?'🤝 EMPATE':'❌ DERROTA';
         const dur=getDurabilidad(idx,copy);const nftId=generatePlayerId(idx,copy);
 
-        const shotsInfo=_gameState?`<div style="font-size:0.74em;color:var(--cyan);margin-top:2px">🎯 Disparos: ${_gameState.playerShots} · Al arco: ${_gameState.playerShotsOnTarget}</div>`:'';
+        const shotsInfo=_gameState?`<div style="font-size:0.74em;color:var(--cyan);margin-top:2px">🎯 Disparos: ${_gameState.playerShots} · Al arco: ${_gameState.playerShotsOnTarget}</div><div style="font-size:0.74em;color:var(--gold);margin-top:2px">🟨 Amarillas: ${_gameState.yellowCards} · 🟥 Rojas: ${_gameState.redCards} · 🚩 Córners: ${_gameState.corners} · 🧤 Paradas: ${_gameState.saves} · 🙌 Saques: ${_gameState.throwIns} · ⚠️ Penales: ${_gameState.penalties}</div>`:'';
 
         const gemsMsg=resultado==='win'
             ?`<span style="color:var(--green);font-weight:700">+${gemsGanadas} 💎 ganadas</span>`
@@ -2683,11 +2805,14 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     // ── RECOMPENSA DIARIA ─────────────────────────────────────────────────
     function getDailyRewardGems(dia){if(dia===30)return 25;if(dia%2===1)return 1;return 0;}
-    function buildRewardDays(){const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1');let html='';for(let d=1;d<=30;d++){const claimed=d<diaActual,isToday=d===diaActual,isGold=d%2===0&&d!==30,isDay30=d===30;let cls='reward-day';if(isDay30)cls+=' special';else if(isGold)cls+=' gold-day';if(claimed)cls+=' claimed';if(isToday)cls+=' today';const icon=isDay30?'👑':isGold?'🪙':'💎';const label=isDay30?'25💎':isGold?'🪙':`${getDailyRewardGems(d)}💎`;html+=`<div class="${cls}"><span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${label}</small></div>`;}$id('reward-days-grid').innerHTML=html;}
-    function checkRewardStatus(){buildRewardDays();const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),now=Date.now(),cooldown=24*60*60*1000,canClaim=now-lastClaim>=cooldown||lastClaim===0;const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve';}updateDailyTimer(cooldown-(now-lastClaim),canClaim);}
-    function updateDailyTimer(msR,canClaim){const el=$id('daily-timer-display');if(!el)return;if(canClaim){el.textContent='✅ ¡Recompensa disponible ahora!';el.style.color='var(--green)';return;}const h=Math.floor(msR/3600000),m=Math.floor((msR%3600000)/60000),s=Math.floor((msR%60000)/1000);el.textContent=`⏱ ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;el.style.color='#666';}
-    setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active')){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),elapsed=Date.now()-lastClaim,cooldown=24*60*60*1000,canClaim=elapsed>=cooldown||lastClaim===0;updateDailyTimer(cooldown-elapsed,canClaim);const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar Recompensa':'⏳ Disponible en breve';}}},1000);
-    function claimReward(){const lastClaim=parseInt(localStorage.getItem('tg_last_reward_ts')||'0'),now=Date.now(),cooldown=24*60*60*1000;if(now-lastClaim<cooldown&&lastClaim!==0){mostrarMensaje('⚠️ Vuelve en 24h','#ffaa00');return;}const diaActual=parseInt(localStorage.getItem('tg_reward_day')||'1'),gemsGanadas=getDailyRewardGems(diaActual),isDay30=diaActual===30,isGold=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎`:isGold?'🪙 ¡Moneda de oro!':`💎 +${gemsGanadas} gema`;const sig=diaActual<30?diaActual+1:1;localStorage.setItem('tg_reward_day',String(sig));localStorage.setItem('tg_last_reward_ts',String(now));puntaje+=1;actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✅ Reclamada — vuelve en 24h';}mostrarMensaje(msg,isDay30?'#a855f7':isGold?'#ffd700':'#00ff88');}
+    function getDailyRewardXP(dia){return (dia%2===0&&dia!==30)?25:1;}
+    function getUtcDayKey(){const n=new Date();return `${n.getUTCFullYear()}-${String(n.getUTCMonth()+1).padStart(2,'0')}-${String(n.getUTCDate()).padStart(2,'0')}`;}
+    function getDailyCycleDay(){const start=Date.UTC(2025,0,1),now=new Date();const today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());return (Math.floor((today-start)/86400000)%30)+1;}
+    function buildRewardDays(){const diaActual=getDailyCycleDay();const claimedToday=localStorage.getItem('tg_last_reward_day_key')===getUtcDayKey();let html='';for(let d=1;d<=30;d++){const isToday=d===diaActual,isXP=d%2===0&&d!==30,isDay30=d===30;let cls='reward-day';if(isDay30)cls+=' special';else if(isXP)cls+=' gold-day';if(isToday&&claimedToday)cls+=' claimed';if(isToday)cls+=' today';const icon=isDay30?'👑':isXP?'📘':'💎';const label=isDay30?'25💎':isXP?`+${getDailyRewardXP(d)} XP`:`${getDailyRewardGems(d)}💎`;html+=`<div class="${cls}"><span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${label}</small></div>`;}$id('reward-days-grid').innerHTML=html;}
+    function checkRewardStatus(){buildRewardDays();const canClaim=localStorage.getItem('tg_last_reward_day_key')!==getUtcDayKey();const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar recompensa de hoy':'⏳ Recompensa de hoy reclamada';}updateDailyTimer(0,canClaim);}
+    function updateDailyTimer(msR,canClaim){const el=$id('daily-timer-display');if(!el)return;if(canClaim){el.textContent='✅ Reclama solo la recompensa del día actual; si no la reclamas, se pierde.';el.style.color='var(--green)';return;}const n=new Date();const next=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1);const left=Math.max(0,next-n.getTime());const h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);el.textContent=`⏱ Próxima recompensa en ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;el.style.color='#666';}
+    setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active'))checkRewardStatus();},1000);
+    function claimReward(){const dayKey=getUtcDayKey();if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;puntaje+=xpGanado;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:`💎 +${gemsGanadas} gema +${xpGanado} XP`;localStorage.setItem('tg_last_reward_day_key',dayKey);localStorage.setItem('tg_last_reward_ts',String(Date.now()));localStorage.setItem('tg_reward_day',String(diaActual));actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✅ Recompensa de hoy reclamada';}mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');}
 
     // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
     // Bonus de rendimiento progresivo por sesión:
@@ -2752,8 +2877,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar:async()=>{
                 if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');tonConnectUI.openModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
-                const ton=(costo/5).toFixed(4);
-                const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+                const tx=buildContractTx('entrenamiento',costo);
                 try{
                     await tonConnectUI.sendTransaction(tx);
                     repararDurabilidad(idx,copy);
@@ -2772,8 +2896,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     let _captchaAnswer=0;
     function generarCaptcha(){const a=Math.floor(Math.random()*9)+1,b=Math.floor(Math.random()*9)+1;_captchaAnswer=a+b;const q=$id('captcha-question');if(q)q.textContent=`${a} + ${b} = ?`;const ans=$id('captcha-answer');if(ans)ans.value='';}
-    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const neto=(bruto-descuento).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;}
-    function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);}
+    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const neto=(bruto-descuento).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;const input=$id('retiro-cantidad'),warn=$id('retiro-warning');const invalid=cant>gemas;if(input)input.classList.toggle('invalid',invalid);if(warn)warn.classList.toggle('show',invalid);}
+    function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);actualizarConversionRetiro();}
 
     function retirar(){
         const cant=parseFloat($id('retiro-cantidad').value)||0;
@@ -2781,16 +2905,19 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
         if(cant<500){mostrarMensaje(t('msg_min'),'#ff4444');return;}
         if(cant>3000){mostrarMensaje('❌ Máximo 3000 💎 por día','#ff4444');return;}
-        if(cant>gemas){mostrarMensaje(t('msg_insuf'),'#ff4444');return;}
+        if(cant>gemas){actualizarConversionRetiro();mostrarMensaje('🚫 No puedes hacer ese retiro: monto mayor a tu saldo disponible','#ff4444');return;}
         const userAns=parseInt($id('captcha-answer').value);
         if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
         const bruto=cant/32;const descuento=bruto*0.06;const usdt=(bruto-descuento).toFixed(2);
+        const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr);
+        if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
         const refOwner=localStorage.getItem('tg_my_referrer');
         if(refOwner){
             const commission=parseFloat((cant*0.05).toFixed(2));
             const owed=JSON.parse(localStorage.getItem('tg_ref_owed_'+refOwner)||'0');
             localStorage.setItem('tg_ref_owed_'+refOwner,JSON.stringify(owed+commission));
         }
+        localStorage.setItem('tg_last_withdrawal_order',JSON.stringify(withdrawalOrder));
         gemas-=cant;
         actualizarUI();
         mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
@@ -2801,8 +2928,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function comprarGemas(cantidad,usdtAmount){
         if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-deposito');tonConnectUI.openModal();return;}
         mostrarMensaje(`⏳ Procesando $${usdtAmount} USDT...`,'#00d4ff');
-        const tonAmount=(usdtAmount/5).toFixed(4);
-        const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(tonAmount)*1e9))}]};
+        const tx=buildContractTx('deposito',usdtAmount);
         try{await tonConnectUI.sendTransaction(tx);gemas+=cantidad;actualizarUI();mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');closeModal('modal-deposito');}
         catch(e){mostrarMensaje('❌ Cancelado','#ff4444');}
     }
@@ -2907,17 +3033,20 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     // ── PAGO QR (CONTRATO INTELIGENTE) ────────────────────────────────────
     let _pagoQRPendiente = null;
     function abrirPagoQR({tipo,titulo,descripcion,usdt,onConfirmar}){
-        _pagoQRPendiente = {tipo,usdt,onConfirmar};
+        const flow = assertSecureContractFlow(tipo,getContractWallet());
+        const amount = Number(usdt);
+        if(!Number.isFinite(amount) || amount<=0){mostrarMensaje('❌ Monto de pago inválido','#ff4444');return;}
+        _pagoQRPendiente = {tipo:flow.tipo,usdt:amount,address:flow.address,onConfirmar};
         const ton = (usdt/5).toFixed(4);
         $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
         $id('pago-qr-desc').textContent  = descripcion || '';
-        $id('pago-qr-amount').textContent = usdt.toFixed(2);
+        $id('pago-qr-amount').textContent = amount.toFixed(2);
         $id('pago-qr-ton').textContent    = ton;
-        $id('pago-qr-address').textContent = WALLET;
+        $id('pago-qr-address').textContent = flow.address;
         // QR payload: deep-link TON estándar (compatible con todas las wallets TON)
         const nano = Math.round(parseFloat(ton)*1e9);
-        const memo = encodeURIComponent(`FUTMUNDI_${tipo.toUpperCase()}`);
-        const qrPayload = `ton://transfer/${WALLET}?amount=${nano}&text=${memo}`;
+        const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
+        const qrPayload = `ton://transfer/${flow.address}?amount=${nano}&text=${memo}`;
         const canvas = $id('pago-qr-canvas');
         if(window.QRCode && canvas){
             QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
@@ -2927,7 +3056,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         openModal('modal-pago-qr');
     }
     function copiarDireccionContrato(){
-        const addr = WALLET;
+        const addr = getContractWallet();
+        if(!isValidTonAddress(addr)){mostrarMensaje('❌ Contrato inválido','#ff4444');return;}
         if(navigator.clipboard){
             navigator.clipboard.writeText(addr).then(
                 ()=>mostrarMensaje('📋 Dirección copiada','#00ff88'),
@@ -2941,6 +3071,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
     async function confirmarPagoQR(){
         if(!_pagoQRPendiente) return;
+        try{assertSecureContractFlow(_pagoQRPendiente.tipo,_pagoQRPendiente.address);}catch(e){mostrarMensaje('❌ Pago bloqueado: contrato no coincide','#ff4444');return;}
         const btn = $id('pago-qr-confirm-btn');
         const original = btn.innerHTML;
         btn.disabled = true; btn.innerHTML = '⏳ Procesando...';
