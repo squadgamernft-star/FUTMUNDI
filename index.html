@@ -459,6 +459,10 @@
             <span>OVR&nbsp;<strong id="hp-stat">0</strong></span>
         </div>
         <button class="lang-toggle-btn" style="background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border-color:rgba(168,85,247,0.5);color:#fff;" onclick="openModal('modal-referidos');buildReferidosUI();" data-i18n="referidos_btn">👥 Referidos</button>
+        <div id="wallet-addr-badge" style="display:none;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:4px 12px;font-size:0.72em;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;box-shadow:0 0 6px var(--green)"></span>
+            <span id="wallet-addr-text">—</span>
+        </div>
         <div id="ton-connect-button"></div>
     </div>
 
@@ -1281,7 +1285,7 @@
     }
     function getGoalMilestones() {
         const info = getGoalCycleInfo();
-        const claimedGoals = JSON.parse(localStorage.getItem('tg_claimed_goal_milestones')||'{}');
+        const claimedGoals = JSON.parse(localStorage.getItem(_pfx()+'_claimed_goal_milestones')||'{}');
         const milestones = [];
         for(let m=100; m<=1000; m+=100) {
             const gems = m/100;
@@ -1291,11 +1295,11 @@
         return milestones;
     }
     function claimGoalMilestone(key, gems) {
-        const claimedGoals = JSON.parse(localStorage.getItem('tg_claimed_goal_milestones')||'{}');
+        const claimedGoals = JSON.parse(localStorage.getItem(_pfx()+'_claimed_goal_milestones')||'{}');
         if(claimedGoals[key]) return;
         gemas += gems;
         claimedGoals[key] = true;
-        localStorage.setItem('tg_claimed_goal_milestones', JSON.stringify(claimedGoals));
+        localStorage.setItem(_pfx()+'_claimed_goal_milestones', JSON.stringify(claimedGoals));
         actualizarUI();
         buildRewardPts();
         mostrarMensaje(`✅ +${gems} 💎 por hito de goles!`, '#00ff88');
@@ -1329,44 +1333,102 @@
     // ── MENSAJES ──────────────────────────────────────────────────────────
     function mostrarMensaje(texto,color='#888'){statusMsg.textContent=texto;statusMsg.style.color=color;clearTimeout(mostrarMensaje._t);mostrarMensaje._t=setTimeout(()=>{statusMsg.textContent='';},5000);}
 
-    // ── PERSISTENCIA ──────────────────────────────────────────────────────
-    function saveState(){
-        localStorage.setItem('tg_gemas',gemas.toString());
-        localStorage.setItem('tg_hp',hp.toString());
-        localStorage.setItem('tg_puntaje',puntaje.toString());
-        localStorage.setItem('tg_nivel',nivel.toString());
-        localStorage.setItem('tg_stats_partidas',statsPartidas.toString());
-        localStorage.setItem('tg_total_goals',totalGoals.toString());
-        localStorage.setItem('tg_carros',JSON.stringify(carrosComprados));
-        localStorage.setItem('tg_durabilidades',JSON.stringify(durabilidades));
-        localStorage.setItem('tg_ballones',JSON.stringify(ballonesPorJugador));
-        localStorage.setItem('tg_equipamiento',JSON.stringify(_equipamiento));
-        localStorage.setItem('tg_skill_counts',JSON.stringify(skillCounts));
-        localStorage.setItem('tg_inv_items',JSON.stringify(_itemsComprados));
-        localStorage.setItem('tg_inv_uniformes',JSON.stringify(_uniformesComprados));
+    // ── PERSISTENCIA POR WALLET ───────────────────────────────────────────
+    // Cada wallet tiene su propio espacio de datos en localStorage.
+    // Las claves se prefizan con la dirección de la wallet conectada.
+    let _activeWalletAddr = null; // dirección activa (se setea al conectar)
+
+    function _walletAddr(){
+        // Intenta obtener la dirección real de TonConnect
+        try{
+            const w = tonConnectUI?.wallet || tonConnectUI?.account;
+            const addr = w?.account?.address || w?.address || null;
+            if(addr && typeof addr==='string' && addr.length>10) return addr;
+        }catch(e){}
+        return _activeWalletAddr;
     }
+
+    function _pfx(){
+        // Prefijo de clave = dirección de wallet, o 'guest' si no hay wallet
+        const addr = _walletAddr();
+        return addr ? 'fm_'+addr : 'fm_guest';
+    }
+
+    function _k(key){ return _pfx()+'_'+key; }
+
+    function resetStateVars(){
+        // Reinicia todas las variables de estado en memoria a 0
+        gemas=0; hp=0; puntaje=0; nivel=1; statsPartidas=0; totalGoals=0;
+        carrosComprados=[]; durabilidades={}; ballonesPorJugador={};
+        _equipamiento={}; skillCounts={}; _itemsComprados={tenis:{},entrenador:{}}; _uniformesComprados={};
+    }
+
+    function saveState(){
+        const p=_pfx();
+        localStorage.setItem(p+'_gemas',gemas.toString());
+        localStorage.setItem(p+'_hp',hp.toString());
+        localStorage.setItem(p+'_puntaje',puntaje.toString());
+        localStorage.setItem(p+'_stats_partidas',statsPartidas.toString());
+        localStorage.setItem(p+'_total_goals',totalGoals.toString());
+        localStorage.setItem(p+'_carros',JSON.stringify(carrosComprados));
+        localStorage.setItem(p+'_durabilidades',JSON.stringify(durabilidades));
+        localStorage.setItem(p+'_ballones',JSON.stringify(ballonesPorJugador));
+        localStorage.setItem(p+'_equipamiento',JSON.stringify(_equipamiento));
+        localStorage.setItem(p+'_skill_counts',JSON.stringify(skillCounts));
+        localStorage.setItem(p+'_inv_items',JSON.stringify(_itemsComprados));
+        localStorage.setItem(p+'_inv_uniformes',JSON.stringify(_uniformesComprados));
+    }
+
     function loadState(){
-        gemas=parseFloat(localStorage.getItem('tg_gemas')||'0');
-        hp=parseInt(localStorage.getItem('tg_hp')||'0');
-        puntaje=parseInt(localStorage.getItem('tg_puntaje')||'0');
-        statsPartidas=parseInt(localStorage.getItem('tg_stats_partidas')||'0');
-        totalGoals=parseInt(localStorage.getItem('tg_total_goals')||'0');
-        const c=localStorage.getItem('tg_carros');
-        if(c){const parsed=JSON.parse(c);if(parsed.length&&typeof parsed[0]==='number'){carrosComprados=parsed.map(idx=>({idx,qty:1}));}else{carrosComprados=parsed;}}
-        const d=localStorage.getItem('tg_durabilidades');if(d)durabilidades=JSON.parse(d);
-        const b=localStorage.getItem('tg_ballones');if(b)ballonesPorJugador=JSON.parse(b);
-        const eq=localStorage.getItem('tg_equipamiento');if(eq)_equipamiento=JSON.parse(eq);
-        const sc=localStorage.getItem('tg_skill_counts');if(sc)skillCounts=JSON.parse(sc);
-        const inv=localStorage.getItem('tg_inv_items');if(inv){try{_itemsComprados=JSON.parse(inv);}catch(e){}}
-        const invu=localStorage.getItem('tg_inv_uniformes');if(invu){try{_uniformesComprados=JSON.parse(invu);}catch(e){}}
+        const p=_pfx();
+        gemas=parseFloat(localStorage.getItem(p+'_gemas')||'0');
+        hp=parseInt(localStorage.getItem(p+'_hp')||'0');
+        puntaje=parseInt(localStorage.getItem(p+'_puntaje')||'0');
+        statsPartidas=parseInt(localStorage.getItem(p+'_stats_partidas')||'0');
+        totalGoals=parseInt(localStorage.getItem(p+'_total_goals')||'0');
+        const c=localStorage.getItem(p+'_carros');
+        if(c){try{const parsed=JSON.parse(c);if(parsed.length&&typeof parsed[0]==='number'){carrosComprados=parsed.map(idx=>({idx,qty:1}));}else{carrosComprados=parsed;}}catch(e){carrosComprados=[];}}
+        else{carrosComprados=[];}
+        const d=localStorage.getItem(p+'_durabilidades');durabilidades=d?JSON.parse(d):{};
+        const b=localStorage.getItem(p+'_ballones');ballonesPorJugador=b?JSON.parse(b):{};
+        const eq=localStorage.getItem(p+'_equipamiento');_equipamiento=eq?JSON.parse(eq):{};
+        const sc=localStorage.getItem(p+'_skill_counts');skillCounts=sc?JSON.parse(sc):{};
+        const inv=localStorage.getItem(p+'_inv_items');if(inv){try{_itemsComprados=JSON.parse(inv);}catch(e){_itemsComprados={tenis:{},entrenador:{}};}}else{_itemsComprados={tenis:{},entrenador:{}};}
+        const invu=localStorage.getItem(p+'_inv_uniformes');if(invu){try{_uniformesComprados=JSON.parse(invu);}catch(e){_uniformesComprados={};}}else{_uniformesComprados={};}
         nivel=calcularNivel();
+    }
+
+    // Llamado al cambiar de wallet: carga la sesión de la wallet conectada
+    function onWalletChange(newAddr){
+        if(newAddr===_activeWalletAddr) return; // misma wallet, nada que hacer
+        _activeWalletAddr = newAddr;
+        resetStateVars();
+        loadState();
+        checkDailyBallRecharge();
+        actualizarUI();
+        buildMarket();
+        buildUniforms();
+        buildSkillLogros();
+        buildFutsalaBody();
+        // Mostrar badge con dirección abreviada en top bar
+        const badge=$id('wallet-addr-badge');
+        const addrText=$id('wallet-addr-text');
+        if(newAddr){
+            const short=newAddr.slice(0,4)+'...'+newAddr.slice(-4);
+            if(addrText)addrText.textContent=short;
+            if(badge)badge.style.display='flex';
+            mostrarMensaje('✅ Sesión iniciada: '+short,'#00ff88');
+        } else {
+            if(badge)badge.style.display='none';
+            mostrarMensaje('🔌 Wallet desconectada','#888');
+        }
     }
 
     function checkDailyBallRecharge(){
         const now=new Date();const todayKey=`${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
-        const lastRecharge=localStorage.getItem('tg_ball_recharge_day');
+        const lastRecharge=localStorage.getItem(_pfx()+'_ball_recharge_day');
         if(lastRecharge===todayKey)return;
-        if(now.getUTCHours()>=7){carrosComprados.forEach(e=>{for(let c=0;c<e.qty;c++)ballonesPorJugador[slotKey(e.idx,c)]=[true,true,true,true];});localStorage.setItem('tg_ball_recharge_day',todayKey);saveState();}
+        if(now.getUTCHours()>=7){carrosComprados.forEach(e=>{for(let c=0;c<e.qty;c++)ballonesPorJugador[slotKey(e.idx,c)]=[true,true,true,true];});localStorage.setItem(_pfx()+'_ball_recharge_day',todayKey);saveState();}
     }
 
     // ── UI ────────────────────────────────────────────────────────────────
@@ -1668,10 +1730,10 @@
         return `skill_${skillId}_m${milestone}`;
     }
     function getSkillClaimedData() {
-        return JSON.parse(localStorage.getItem('tg_skill_claimed')||'{}');
+        return JSON.parse(localStorage.getItem(_pfx()+'_skill_claimed')||'{}');
     }
     function saveSkillClaimedData(data) {
-        localStorage.setItem('tg_skill_claimed', JSON.stringify(data));
+        localStorage.setItem(_pfx()+'_skill_claimed', JSON.stringify(data));
     }
 
     function addSkillCount(skillId, amount=1) {
@@ -2911,13 +2973,13 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const bruto=cant/32;const descuento=bruto*0.06;const usdt=(bruto-descuento).toFixed(2);
         const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr);
         if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
-        const refOwner=localStorage.getItem('tg_my_referrer');
+        const refOwner=localStorage.getItem(_pfx()+'_my_referrer');
         if(refOwner){
             const commission=parseFloat((cant*0.05).toFixed(2));
-            const owed=JSON.parse(localStorage.getItem('tg_ref_owed_'+refOwner)||'0');
-            localStorage.setItem('tg_ref_owed_'+refOwner,JSON.stringify(owed+commission));
+            const owed=JSON.parse(localStorage.getItem('fm_ref_owed_'+refOwner)||'0');
+            localStorage.setItem('fm_ref_owed_'+refOwner,JSON.stringify(owed+commission));
         }
-        localStorage.setItem('tg_last_withdrawal_order',JSON.stringify(withdrawalOrder));
+        localStorage.setItem(_pfx()+'_last_withdrawal_order',JSON.stringify(withdrawalOrder));
         gemas-=cant;
         actualizarUI();
         mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
@@ -2948,15 +3010,15 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     // ── REFERIDOS ─────────────────────────────────────────────────────────
-    function getMyRefId(){let id=localStorage.getItem('tg_my_ref_id');if(!id){id='FM'+Math.random().toString(36).substring(2,8).toUpperCase();localStorage.setItem('tg_my_ref_id',id);}return id;}
+    function getMyRefId(){let id=localStorage.getItem(_pfx()+'_my_ref_id');if(!id){id='FM'+Math.random().toString(36).substring(2,8).toUpperCase();localStorage.setItem(_pfx()+'_my_ref_id',id);}return id;}
     function getMyRefLink(){return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`;}
-    function getMisReferidos(){return JSON.parse(localStorage.getItem('tg_mis_referidos')||'[]');}
-    function getMisGanancias(){return parseFloat(localStorage.getItem('tg_ref_owed_'+getMyRefId())||'0');}
+    function getMisReferidos(){return JSON.parse(localStorage.getItem(_pfx()+'_mis_referidos')||'[]');}
+    function getMisGanancias(){return parseFloat(localStorage.getItem('fm_ref_owed_'+getMyRefId())||'0');}
 
     // Acumulación diaria 5%: 0.1 gema/día por cada referido activo
     // Se calcula de forma diferida en base al timestamp del último cómputo.
-    function _refClaimableKey(){return 'tg_ref_claimable_'+getMyRefId();}
-    function _refLastTickKey(){return 'tg_ref_last_tick_'+getMyRefId();}
+    function _refClaimableKey(){return _pfx()+'_ref_claimable_'+getMyRefId();}
+    function _refLastTickKey(){return _pfx()+'_ref_last_tick_'+getMyRefId();}
     function getRefClaimable(){
         const refs=getMisReferidos();
         let pool=parseFloat(localStorage.getItem(_refClaimableKey())||'0');
@@ -3102,30 +3164,23 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     function getConnectedWallet(){return tonConnectUI?.wallet||tonConnectUI?.account||tonConnectUI?.walletInfo||null;}
     function isWalletConnected(){return Boolean(window.tonConnectUI&&(tonConnectUI.connected||getConnectedWallet()?.account?.address||getConnectedWallet()?.address));}
     function openWalletModal(){if(window.tonConnectUI&&typeof tonConnectUI.openModal==='function')tonConnectUI.openModal();}
-    try{tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});window.tonConnectUI=tonConnectUI;tonConnectUI.onStatusChange(w=>mostrarMensaje(w?'✅ Wallet conectada':'Wallet desconectada',w?'#00ff88':'#888'));}
+    try{
+        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
+        window.tonConnectUI=tonConnectUI;
+        tonConnectUI.onStatusChange(w=>{
+            const addr=w?.account?.address||w?.address||null;
+            onWalletChange(addr);
+        });
+    }
     catch(e){console.warn('TonConnect no disponible:',e);}
 
     // ── TELEGRAM ──────────────────────────────────────────────────────────
     if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#060f06');Telegram.WebApp.setBackgroundColor('#060f06');}
 
-    // ── RESET DE ESTADO INICIAL (limpia datos viejos del localStorage) ────
-    (function resetIfLegacy(){
-        const VERSION_KEY='tg_state_version';
-        const CURRENT_VERSION='2';
-        if(localStorage.getItem(VERSION_KEY)!==CURRENT_VERSION){
-            ['tg_gemas','tg_hp','tg_puntaje','tg_nivel','tg_stats_partidas',
-             'tg_total_goals','tg_carros','tg_durabilidades','tg_ballones',
-             'tg_equipamiento','tg_skill_counts','tg_inv_items','tg_inv_uniformes',
-             'tg_skill_claimed','tg_claimed_goal_milestones','tg_ball_recharge_day',
-             'tg_daily_claimed','tg_training'
-            ].forEach(k=>localStorage.removeItem(k));
-            localStorage.setItem(VERSION_KEY,CURRENT_VERSION);
-        }
-    })();
-
     // ── INIT ──────────────────────────────────────────────────────────────
-    loadState();
-    checkDailyBallRecharge();
+    // Estado inicial: arranca en 0 hasta que el usuario conecte su wallet.
+    // Al conectar, onWalletChange() carga los datos de esa wallet específica.
+    resetStateVars();
     actualizarUI();
     buildMarket();
     buildUniforms();
