@@ -906,10 +906,22 @@
                 </div>
                 <div class="tournament-entry">
                     <h4>💳 INSCRIPCIÓN — $10.00 USDT</h4>
-                    <p>El pago se envía directamente al <strong style="color:var(--gold)">contrato inteligente</strong>.<br>Al pulsar Inscribirme se mostrará el <strong style="color:var(--cyan)">QR y la dirección del contrato</strong> para depositar.</p>
+                    <p>El pago se envía directamente al <strong style="color:var(--gold)">contrato inteligente</strong>.<br>Tras pagar, se abre el <strong style="color:var(--cyan)">bracket del torneo</strong> y juegas Octavos → Cuartos → Semifinal → Final.<br>🏅 <strong style="color:var(--gold)">Cada NFT que tengas suma +20% de puntos por victoria.</strong></p>
                     <button class="torneo-pay-btn" onclick="irADepositoTorneo()">💳 Inscribirme — Pagar $10 USDT</button>
+                    <button class="torneo-pay-btn" style="margin-top:8px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,150,200,0.1));border-color:var(--cyan);color:var(--cyan)" onclick="closeModal('modal-torneo');iniciarTorneoBracket()">🎮 Modo Entrenamiento (gratis)</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- TORNEO BRACKET — avance por rondas -->
+    <div class="modal-overlay" id="modal-torneo-bracket">
+        <div class="modal" style="max-width:560px">
+            <div class="modal-header">
+                <span class="modal-title">🏆 Bracket del Torneo</span>
+                <button class="modal-close" onclick="cerrarBracket()">✕</button>
+            </div>
+            <div class="modal-body" id="bracket-body"></div>
         </div>
     </div>
 
@@ -990,13 +1002,16 @@
                 </div>
                 <!-- INFO CENTRAL -->
                 <div style="text-align:center;flex:1">
-                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">TECLAS</div>
-                    <div style="font-size:0.55em;color:#444;margin-top:2px">← → ↑ ↓ · SPACE=Tiro</div>
+                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">CONTROLES</div>
+                    <div style="font-size:0.55em;color:#444;margin-top:2px">← ↑ ↓ → · SPACE=Tiro · K=Pase</div>
+                    <div style="font-size:0.55em;color:#888;margin-top:1px">📱 Toca compañero = pase</div>
                     <div id="game-hint" style="font-size:0.72em;color:var(--green);margin-top:4px;font-weight:700;min-height:16px"></div>
                 </div>
-                <!-- BOTÓN TIRO -->
-                <button id="shoot-btn" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,200,80,0.15));border:3px solid var(--green);color:var(--green);font-size:1.6em;cursor:pointer;font-weight:900;box-shadow:0 0 20px rgba(0,255,136,0.3);flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform 0.1s,box-shadow 0.1s" ontouchstart="this.style.transform='scale(0.9)';this.style.boxShadow='0 0 8px rgba(0,255,136,0.2)'" ontouchend="this.style.transform='';this.style.boxShadow='0 0 20px rgba(0,255,136,0.3)'">⚽</button>
-            </div>
+                <!-- BOTONES PASE + TIRO -->
+                <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+                    <button id="pass-btn" style="width:60px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(0,212,255,0.25),rgba(0,150,200,0.15));border:2px solid var(--cyan);color:var(--cyan);font-size:0.78em;cursor:pointer;font-weight:900;font-family:'Orbitron',sans-serif;letter-spacing:1px;-webkit-tap-highlight-color:transparent">PASE</button>
+                    <button id="shoot-btn" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,200,80,0.15));border:3px solid var(--green);color:var(--green);font-size:1.4em;cursor:pointer;font-weight:900;box-shadow:0 0 20px rgba(0,255,136,0.3);-webkit-tap-highlight-color:transparent">⚽</button>
+                </div>
         </div>
 
         <!-- RESULT SCREEN -->
@@ -1327,11 +1342,100 @@
                 const tx={validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:WALLET,amount:String(Math.round(parseFloat(ton)*1e9))}]};
                 try{
                     await tonConnectUI.sendTransaction(tx);
-                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
+                    mostrarMensaje('✅ ¡Inscripción confirmada! Empieza el torneo','#00ff88');
+                    setTimeout(()=>iniciarTorneoBracket(),700);
                     return true;
                 }catch(e){mostrarMensaje('❌ Inscripción cancelada','#ff4444');return false;}
             }
         });
+    }
+
+    // ── TORNEO BRACKET ────────────────────────────────────────────────────
+    // 4 rondas: Octavos → Cuartos → Semifinal → Final
+    // Mientras más NFTs tenga el usuario, más puntos por victoria
+    let _torneoState=null;
+    const TORNEO_RONDAS=[
+        {key:'octavos', nombre:'Octavos de Final', diff:0.30},
+        {key:'cuartos', nombre:'Cuartos de Final', diff:0.42},
+        {key:'semis',   nombre:'Semifinal',        diff:0.54},
+        {key:'final',   nombre:'GRAN FINAL',       diff:0.65},
+    ];
+    function iniciarTorneoBracket(){
+        if(carrosComprados.length===0){mostrarMensaje('⚠️ ¡Ficha un futbolista primero!','#ffaa00');return;}
+        const totalNFTs=carrosComprados.reduce((s,e)=>s+e.qty,0);
+        // Generar 4 oponentes aleatorios
+        const opps=TORNEO_RONDAS.map(r=>({
+            ...r,
+            opp:randomOpp(),
+            resultado:null,    // 'win' | 'loss' | 'draw' | null
+            playerGoals:0, oppGoals:0,
+            puntos:0,
+        }));
+        _torneoState={
+            currentRound:0,
+            opps,
+            totalNFTs,
+            puntosAcum:0,
+            eliminado:false,
+            campeon:false,
+        };
+        abrirModalBracket();
+    }
+    function abrirModalBracket(){
+        const ts=_torneoState;if(!ts)return;
+        // Construir contenido visual
+        let html=`<div style="text-align:center;margin-bottom:14px">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6em;color:var(--gold);letter-spacing:3px">🏆 BRACKET DEL TORNEO</div>
+            <div style="font-size:0.84em;color:#aaa;margin-top:4px">Tu equipo: <strong style="color:var(--green)">${ts.totalNFTs} NFT${ts.totalNFTs>1?'s':''}</strong> · Bonus puntos: <strong style="color:var(--gold)">+${Math.round(ts.totalNFTs*20)}%</strong></div>
+            <div style="font-size:0.84em;color:#aaa">Puntos acumulados: <strong style="color:var(--green);font-family:'Orbitron',sans-serif">${ts.puntosAcum}</strong></div>
+        </div>`;
+        ts.opps.forEach((r,i)=>{
+            const isCurrent=(i===ts.currentRound && !ts.eliminado && !ts.campeon);
+            const done=r.resultado!=null;
+            let status='⏳ Pendiente', color='#555', bg='rgba(255,255,255,0.03)';
+            if(done){
+                if(r.resultado==='win'){status=`🏆 GANADO ${r.playerGoals}-${r.oppGoals} · +${r.puntos} pts`;color='var(--green)';bg='rgba(0,255,136,0.06)';}
+                else if(r.resultado==='draw'){status=`🤝 EMPATE ${r.playerGoals}-${r.oppGoals} · ELIMINADO`;color='var(--gold)';bg='rgba(255,215,0,0.06)';}
+                else{status=`❌ DERROTA ${r.playerGoals}-${r.oppGoals} · ELIMINADO`;color='var(--red)';bg='rgba(255,68,68,0.06)';}
+            } else if(isCurrent){
+                status='▶ JUEGA AHORA';color='var(--cyan)';bg='rgba(0,212,255,0.08)';
+            }
+            html+=`<div style="background:${bg};border:1px solid ${isCurrent?'var(--cyan)':'rgba(255,255,255,0.08)'};border-radius:12px;padding:12px;margin-bottom:8px;${isCurrent?'box-shadow:0 0 18px rgba(0,212,255,0.25)':''}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:${color};letter-spacing:1.5px">${r.nombre}</div>
+                    <div style="font-size:0.74em;color:#888">Rival: <strong style="color:#ccc">${r.opp.flag} ${r.opp.nombre}</strong></div>
+                </div>
+                <div style="font-size:0.86em;color:${color};font-weight:700">${status}</div>
+            </div>`;
+        });
+        if(ts.campeon){
+            const total=ts.puntosAcum;
+            html+=`<div style="background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(255,140,0,0.1));border:2px solid var(--gold);border-radius:14px;padding:18px;text-align:center;margin-top:8px">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--gold);letter-spacing:4px">🏆 ¡CAMPEÓN!</div>
+                <div style="color:#fff;margin-top:6px;font-size:0.92em">Has ganado el torneo · Total: <strong style="color:var(--green)">${total} pts</strong></div>
+            </div>
+            <button class="primary-btn" style="margin-top:10px" onclick="cerrarBracket()">✅ Reclamar resultado</button>`;
+        } else if(ts.eliminado){
+            html+=`<div style="background:rgba(255,68,68,0.1);border:1px solid var(--red);border-radius:14px;padding:14px;text-align:center;margin-top:8px;color:var(--red)">
+                ❌ Has sido eliminado en ${ts.opps[ts.currentRound].nombre}.<br>
+                <span style="color:#aaa;font-size:0.86em">Total acumulado: ${ts.puntosAcum} pts</span>
+            </div>
+            <button class="primary-btn" style="margin-top:10px" onclick="cerrarBracket()">Cerrar</button>`;
+        } else {
+            html+=`<button class="primary-btn" style="margin-top:8px" onclick="jugarRondaTorneo()">▶ JUGAR ${ts.opps[ts.currentRound].nombre.toUpperCase()}</button>`;
+        }
+        $id('bracket-body').innerHTML=html;
+        openModal('modal-torneo-bracket');
+    }
+    function cerrarBracket(){closeModal('modal-torneo-bracket');_torneoState=null;}
+
+    function jugarRondaTorneo(){
+        const ts=_torneoState;if(!ts||ts.eliminado||ts.campeon)return;
+        // Reusar el selector de jugador en modo torneo
+        _currentMatchMode='torneo';
+        _currentMatchCancha=ts.opps[ts.currentRound].nombre;
+        closeModal('modal-torneo-bracket');
+        abrirModalSeleccionJugador('torneo');
     }
 
     // ── MARKETPLACE: ZAPATILLAS Y ENTRENADORES ────────────────────────────
@@ -1693,7 +1797,8 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     function abrirSeleccionJugadorFutsala(cancha){_currentMatchCancha=cancha;_currentMatchMode='pve';abrirModalSeleccionJugador('pve');}
     function abrirModalSeleccionJugador(mode){
         if(carrosComprados.length===0){mostrarMensaje('⚠️ ¡Ficha un futbolista primero!','#ffaa00');return;}
-        $id('select-player-desc').textContent=mode==='pve'?'Selecciona el jugador para Futsala.':'Selecciona el jugador para FutCancha PVP.';
+        const descMap={pve:'Selecciona el jugador para Futsala.',pvp:'Selecciona el jugador para FutCancha PVP.',torneo:`🏆 Torneo · ${_currentMatchCancha||''} — elige tu mejor NFT`};
+        $id('select-player-desc').textContent=descMap[mode]||descMap.pvp;
         $id('select-player-error').textContent='';
         const diffSelect=$id('match-difficulty');
         diffSelect.style.display=mode==='pve'?'block':'none';
@@ -1756,47 +1861,80 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         const{idx,copy}=_currentMatchPlayer;
         const player=PLAYERS[idx];
         const nftId=generatePlayerId(idx,copy);
-        const opp=randomOpp();
 
-        // Calcular resultado final (predeterminado, el juego lo ajusta)
+        // Si estamos en modo torneo, usar el oponente predefinido del bracket
+        let opp;
+        if(_currentMatchMode==='torneo' && _torneoState){
+            opp=_torneoState.opps[_torneoState.currentRound].opp;
+        } else {
+            opp=randomOpp();
+        }
+
+        // Probabilidad de victoria
         let winChance=0.55+nivelWinBonus();
         if(_currentMatchMode==='pve'){
             const dm={'Cancha Barrial':0.72,'Estadio Municipal':0.58,'Copa del Mundo':0.44,'Noche de Gala':0.36};
             winChance=Math.min(0.92,(dm[_currentMatchCancha]||0.55)+nivelWinBonus());
+        } else if(_currentMatchMode==='torneo' && _torneoState){
+            // Torneo: dificultad sube por ronda, mejora con NFTs (más NFTs = +winChance)
+            const r=_torneoState.opps[_torneoState.currentRound];
+            const nftBonus=Math.min(0.18, _torneoState.totalNFTs*0.025);
+            winChance=Math.max(0.30, Math.min(0.85, (1-r.diff) + nivelWinBonus() + nftBonus));
         }
-        // Goles base del partido, el jugador puede sumar con sus disparos
+        // Goles base (referencial — el motor ahora resuelve goles reales)
         const baseOppGoals=Math.floor(Math.random()*3);
         const basePlayerGoals=Math.random()<winChance?baseOppGoals+Math.floor(Math.random()*2):Math.max(0,baseOppGoals-1);
 
-        // Estado del juego
+        // Estado del juego — NUEVO MOTOR: equipo de 5 NFTs vs 5 rivales, ataque hacia ARRIBA
         _gameState={
             idx,copy,player,nftId,opp,
             playerGoals:0, oppGoals:0,
-            basePlayerGoals, baseOppGoals,
             winChance,
             playerShots:0, playerShotsOnTarget:0,
-            matchTime:0, maxTime:90,
-            phase:'intro', // intro → playing → result
+            matchTime:0, maxTime:60,           // partido más corto = más dinámico
+            phase:'intro',
             // Pelota
             bx:0,by:0,bvx:0,bvy:0,
-            // Porteros (posición del arco que defiende el oponente)
-            gkY:0,gkTargetY:0,
+            // Pase / posesión
+            possession:'player',                // 'player' | 'opp'
+            ballOwner:null,                     // índice del jugador que tiene el balón (en su equipo)
+            // Porteros
+            gkPlayerX:0, gkOppX:0,              // X del portero (juega vertical)
             // Input
             keys:{},
-            // Tiro activo
-            shooting:false, shotCooldown:0,
-            // Jugador controlado
-            px:0,py:0,
-            // Jugadores IA equipo rival
-            aiPlayers:[],
-            // Eventos de gol (texto flotante)
+            shotCooldown:0, passCooldown:0,
+            // Equipos: 5 jugadores cada uno (índice 0 = portero)
+            myTeam:[],   // {x,y,vx,vy,role,baseY,img}
+            oppTeam:[],  // {x,y,vx,vy,role,baseY}
+            controlIdx:1,                       // jugador controlado por usuario (1-4 son de campo)
+            // Imagen NFT del jugador (HTMLImageElement)
+            nftImg:null, nftImgLoaded:false,
+            // Eventos visuales
             goalEvents:[],
-            // Resolución del canvas
+            // Resolución
             cw:0,ch:0,
-            // Oponentes marcadores programados (para no quedarse en 0-0)
-            oppScoreAt: baseOppGoals>0 ? Array.from({length:baseOppGoals},(_,i)=>Math.floor(20+i*25)) : [],
-            playerBaseScoreAt: basePlayerGoals>0 ? Array.from({length:basePlayerGoals},(_,i)=>Math.floor(15+i*22)) : [],
         };
+
+        // Pre-cargar imagen del NFT — SIN crossOrigin para evitar bloqueo CORS de GitHub
+        try{
+            const img=new Image();
+            // NO usar crossOrigin para imágenes de GitHub (bloquea CORS)
+            img.onload=()=>{ if(_gameState){ _gameState.nftImg=img; _gameState.nftImgLoaded=true; } };
+            img.onerror=()=>{
+                // Fallback: generar SVG del jugador y usarlo como imagen
+                if(_gameState){
+                    const svgSrc='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(player));
+                    const img2=new Image();
+                    img2.onload=()=>{ if(_gameState){ _gameState.nftImg=img2; _gameState.nftImgLoaded=true; } };
+                    img2.src=svgSrc;
+                    _gameState.nftImg=img2;
+                }
+            };
+            img.src=playerImgSrc(idx);
+            _gameState.nftImg=img;
+            // Si ya tiene src data:// (SVG fallback), carga inmediato
+            if(img.complete && img.naturalWidth>0){ _gameState.nftImgLoaded=true; }
+        }catch(e){}
 
         // ── INTRO ────────────────────────────────────────────────────────
         showScreen('match-intro-screen');
@@ -1855,292 +1993,495 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         showScreen('match-game-screen');
 
         const canvas=$id('match-canvas');
-        // Ajustar resolución real al tamaño visual
-        const rect=canvas.getBoundingClientRect();
         const W=Math.min(640,window.innerWidth);
-        // Altura: el canvas ocupa el espacio disponible menos HUD y controles
         const hudH=36, ctrlH=128;
-        const H=Math.max(220,window.innerHeight-hudH-ctrlH);
+        // Cancha VERTICAL: ancho menor, alto mayor (ataque hacia ARRIBA)
+        const H=Math.max(420,window.innerHeight-hudH-ctrlH);
         canvas.width=W; canvas.height=H;
         const ctx=canvas.getContext('2d');
 
         gs.cw=W; gs.ch=H;
+        // Pelota arranca en el centro
         gs.bx=W/2; gs.by=H/2; gs.bvx=0; gs.bvy=0;
-        gs.px=W*0.22; gs.py=H/2;
-        gs.gkY=H/2; gs.gkTargetY=H/2;
-        gs.aiPlayers=[
-            {x:W*0.72,y:H*0.3,vx:0,vy:0,role:'mid'},
-            {x:W*0.72,y:H*0.7,vx:0,vy:0,role:'mid'},
-            {x:W*0.88,y:H*0.5,vx:0,vy:0,role:'fwd'},
-            {x:W*0.82,y:H*0.25,vx:0,vy:0,role:'def'},
-            {x:W*0.82,y:H*0.75,vx:0,vy:0,role:'def'},
+
+        // Posiciones base del equipo del USUARIO — 6 jugadores (1 GK + 5 de campo)
+        // Formación 2-2-1: GK — 2 DEF — 2 MID — 1 FWD  → ATACA HACIA ARRIBA
+        gs.myTeam=[
+            {x:W*0.50, y:H*0.93, vx:0,vy:0, role:'gk',  baseY:H*0.93, baseX:W*0.50, num:'GK'},
+            {x:W*0.22, y:H*0.75, vx:0,vy:0, role:'def', baseY:H*0.75, baseX:W*0.22, num:'2'},
+            {x:W*0.78, y:H*0.75, vx:0,vy:0, role:'def', baseY:H*0.75, baseX:W*0.78, num:'3'},
+            {x:W*0.30, y:H*0.56, vx:0,vy:0, role:'mid', baseY:H*0.56, baseX:W*0.30, num:'4'},
+            {x:W*0.70, y:H*0.56, vx:0,vy:0, role:'mid', baseY:H*0.56, baseX:W*0.70, num:'5'},
+            {x:W*0.50, y:H*0.38, vx:0,vy:0, role:'fwd', baseY:H*0.38, baseX:W*0.50, num:'9'},
         ];
+        // Equipo RIVAL — 6 jugadores (ataca HACIA ABAJO)
+        gs.oppTeam=[
+            {x:W*0.50, y:H*0.07, vx:0,vy:0, role:'gk',  baseY:H*0.07, baseX:W*0.50, num:'GK'},
+            {x:W*0.22, y:H*0.25, vx:0,vy:0, role:'def', baseY:H*0.25, baseX:W*0.22, num:'2'},
+            {x:W*0.78, y:H*0.25, vx:0,vy:0, role:'def', baseY:H*0.25, baseX:W*0.78, num:'3'},
+            {x:W*0.30, y:H*0.44, vx:0,vy:0, role:'mid', baseY:H*0.44, baseX:W*0.30, num:'4'},
+            {x:W*0.70, y:H*0.44, vx:0,vy:0, role:'mid', baseY:H*0.44, baseX:W*0.70, num:'5'},
+            {x:W*0.50, y:H*0.62, vx:0,vy:0, role:'fwd', baseY:H*0.62, baseX:W*0.50, num:'9'},
+        ];
+
+        gs.controlIdx=5;        // empieza controlando al delantero (índice 5)
+        gs.ballOwner=5;         // delantero arranca con balón
+        gs.possession='player';
+        gs.gkPlayerX=W/2; gs.gkOppX=W/2;
         gs.phase='playing';
-        gs.matchTime=0;
-        gs.shotCooldown=0;
+        gs.shotCooldown=0; gs.passCooldown=0;
         gs.goalEvents=[];
         gs.keys={};
+        gs.isCancha=(_currentMatchMode==='futcancha'||_currentMatchMode==='pvp');
 
-        // ── INPUT: TECLADO ────────────────────────────────────────────────
+        // ── INPUT TECLADO ─────────────────────────────────────────────────
         function onKey(e,down){
             const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
                        KeyW:'up',KeyS:'down',KeyA:'left',KeyD:'right',
-                       Space:'shoot',KeyJ:'shoot',KeyK:'shoot'};
-            const k=map[e.code];if(k){gs.keys[k]=down;if(k==='shoot'&&down)dispararBola();}
+                       Space:'shoot',KeyJ:'shoot',KeyK:'pass',KeyP:'pass'};
+            const k=map[e.code];
+            if(k){
+                gs.keys[k]=down;
+                if(down && k==='shoot') dispararBola();
+                if(down && k==='pass')  pasarBola();
+            }
             if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();
         }
-        document.addEventListener('keydown',e=>onKey(e,true));
-        document.addEventListener('keyup',e=>onKey(e,false));
+        const kdown=e=>onKey(e,true);
+        const kup=e=>onKey(e,false);
+        document.addEventListener('keydown',kdown);
+        document.addEventListener('keyup',kup);
         gs._removeKeyListeners=()=>{
-            document.removeEventListener('keydown',e=>onKey(e,true));
-            document.removeEventListener('keyup',e=>onKey(e,false));
+            document.removeEventListener('keydown',kdown);
+            document.removeEventListener('keyup',kup);
         };
 
-        // ── INPUT: DPAD TÁCTIL ────────────────────────────────────────────
+        // ── INPUT DPAD ────────────────────────────────────────────────────
         ['up','down','left','right'].forEach(dir=>{
-            const btn=$id('dpad-'+dir);
-            if(!btn)return;
+            const btn=$id('dpad-'+dir);if(!btn)return;
             const press=(e)=>{e.preventDefault();gs.keys[dir]=true;btn.classList.add('pressed');};
             const release=(e)=>{e.preventDefault();gs.keys[dir]=false;btn.classList.remove('pressed');};
             btn.addEventListener('touchstart',press,{passive:false});
             btn.addEventListener('touchend',release,{passive:false});
             btn.addEventListener('mousedown',press);
             btn.addEventListener('mouseup',release);
+            btn.addEventListener('mouseleave',release);
         });
         const shootBtn=$id('shoot-btn');
         if(shootBtn){
-            shootBtn.addEventListener('touchstart',(e)=>{e.preventDefault();dispararBola();},{passive:false});
-            shootBtn.addEventListener('mousedown',()=>dispararBola());
+            const sp=(e)=>{e.preventDefault();dispararBola();};
+            shootBtn.addEventListener('touchstart',sp,{passive:false});
+            shootBtn.addEventListener('mousedown',sp);
+        }
+        const passBtn=$id('pass-btn');
+        if(passBtn){
+            const pp=(e)=>{e.preventDefault();pasarBola();};
+            passBtn.addEventListener('touchstart',pp,{passive:false});
+            passBtn.addEventListener('mousedown',pp);
         }
 
-        // ── TOUCH SWIPE en CANVAS ─────────────────────────────────────────
-        let touchStartX=0,touchStartY=0;
+        // ── TOQUE EN CANVAS: dirige el pase hacia el compañero más cercano al toque ─
         canvas.addEventListener('touchstart',(e)=>{
             e.preventDefault();
-            touchStartX=e.touches[0].clientX;
-            touchStartY=e.touches[0].clientY;
+            const r=canvas.getBoundingClientRect();
+            const tx=(e.touches[0].clientX-r.left)*(canvas.width/r.width);
+            const ty=(e.touches[0].clientY-r.top)*(canvas.height/r.height);
+            handleTapOrClick(tx,ty);
         },{passive:false});
-        canvas.addEventListener('touchend',(e)=>{
-            e.preventDefault();
-            const dx=e.changedTouches[0].clientX-touchStartX;
-            const dy=e.changedTouches[0].clientY-touchStartY;
-            const dist=Math.sqrt(dx*dx+dy*dy);
-            if(dist<12){dispararBola();return;}
-            const angle=Math.atan2(dy,dx);
-            gs.bvx=Math.cos(angle)*14;
-            gs.bvy=Math.sin(angle)*14;
-            gs.shooting=true;
-            gs.playerShots++;
-        },{passive:false});
+        canvas.addEventListener('mousedown',(e)=>{
+            const r=canvas.getBoundingClientRect();
+            const tx=(e.clientX-r.left)*(canvas.width/r.width);
+            const ty=(e.clientY-r.top)*(canvas.height/r.height);
+            handleTapOrClick(tx,ty);
+        });
 
+        function handleTapOrClick(tx,ty){
+            // Si el toque cae cerca del arco rival → tiro al arco
+            if(ty<gs.ch*0.18){ dispararBola(); return; }
+            // Si cae cerca de un compañero → pase a ese compañero
+            let bestI=-1, bestD=1e9;
+            gs.myTeam.forEach((p,i)=>{
+                if(i===gs.ballOwner||i===0)return; // no al portero, no a sí mismo
+                const d=Math.hypot(p.x-tx,p.y-ty);
+                if(d<bestD){bestD=d;bestI=i;}
+            });
+            if(bestI>=0 && bestD<gs.cw*0.35){
+                pasarBolaA(bestI);
+            } else {
+                pasarBola(); // pase automático si no hay objetivo claro
+            }
+        }
+
+        // ── ACCIONES ──────────────────────────────────────────────────────
         function dispararBola(){
             if(gs.shotCooldown>0)return;
-            const nearBall=Math.hypot(gs.bx-gs.px,gs.by-gs.py)<W*0.18;
-            if(!nearBall)return;
-            // Disparar hacia el arco rival (derecha)
-            const arcY=gs.ch/2;
-            const ang=Math.atan2(arcY-gs.py,gs.cw-gs.px)+(Math.random()-0.5)*0.4;
-            const spd=13+Math.random()*5;
-            gs.bvx=Math.cos(ang)*spd;
-            gs.bvy=Math.sin(ang)*spd;
-            gs.shooting=true;
-            gs.shotCooldown=45;
+            if(gs.possession!=='player')return;
+            if(gs.ballOwner==null)return;
+            const p=gs.myTeam[gs.ballOwner];
+            // disparo hacia el ARCO RIVAL (arriba, y≈0)
+            const targetX=gs.cw/2 + (Math.random()-0.5)*gs.cw*0.25;
+            const targetY=8;
+            const dx=targetX-p.x, dy=targetY-p.y;
+            const d=Math.hypot(dx,dy)||1;
+            const spd=18+Math.random()*6;
+            gs.bvx=dx/d*spd;
+            gs.bvy=dy/d*spd;
+            gs.bx=p.x; gs.by=p.y - 18;
+            gs.ballOwner=null;
+            gs.shotCooldown=22;
             gs.playerShots++;
             gs.playerShotsOnTarget++;
             $id('game-hint').textContent='🎯 ¡Disparo!';
-            setTimeout(()=>{if($id('game-hint'))$id('game-hint').textContent='';},700);
+            setTimeout(()=>{const g=$id('game-hint');if(g&&g.textContent==='🎯 ¡Disparo!')g.textContent='';},600);
         }
 
-        // ── LOOP ──────────────────────────────────────────────────────────
-        const GAME_FRAMES=Math.floor(60*90); // 90s a 60fps (acelerado: 1 frame = ~0.5s partido)
+        function pasarBola(){
+            if(gs.passCooldown>0||gs.ballOwner==null)return;
+            // pase al compañero más adelantado (menor Y) que no sea portero
+            let best=-1, bestY=1e9;
+            gs.myTeam.forEach((p,i)=>{
+                if(i===gs.ballOwner||i===0)return;
+                if(p.y<bestY){bestY=p.y;best=i;}
+            });
+            if(best>=0)pasarBolaA(best);
+        }
+        function pasarBolaA(targetIdx){
+            if(gs.ballOwner==null)return;
+            const from=gs.myTeam[gs.ballOwner];
+            const to=gs.myTeam[targetIdx];
+            const dx=to.x-from.x, dy=to.y-from.y;
+            const d=Math.hypot(dx,dy)||1;
+            const spd=14+Math.random()*4;
+            gs.bvx=dx/d*spd;
+            gs.bvy=dy/d*spd;
+            gs.bx=from.x; gs.by=from.y;
+            gs.ballOwner=null;          // se libera, hasta que llegue al destino
+            gs.controlIdx=targetIdx;    // el usuario ahora controla al receptor
+            gs.passCooldown=12;
+            $id('game-hint').textContent='⚡ Pase';
+            setTimeout(()=>{const g=$id('game-hint');if(g&&g.textContent==='⚡ Pase')g.textContent='';},500);
+        }
+
+        // ── LOOP / FRAMES ─────────────────────────────────────────────────
+        // 60s de partido, ~60fps → 3600 frames; aceleramos a ~80fps efectivo
+        const GAME_FRAMES=Math.floor(60*60);  // 60s
         let frame=0;
-        const SPEED=4.5; // pixels por frame, jugador controlado
+        const PLAYER_SPEED=6.5;     // jugador controlado — más rápido y ágil
+        const TEAM_SPEED=3.2;       // compañeros IA
+        const OPP_SPEED=3.5;        // rivales IA
 
         function updateGame(){
             const{cw,ch}=gs;
 
-            // Mover jugador controlado
-            if(gs.keys.left) gs.px=Math.max(12,gs.px-SPEED);
-            if(gs.keys.right) gs.px=Math.min(cw*0.55,gs.px+SPEED);
-            if(gs.keys.up) gs.py=Math.max(12,gs.py-SPEED);
-            if(gs.keys.down) gs.py=Math.min(ch-12,gs.py+SPEED);
-
-            // Movimiento de pelota
-            gs.bx+=gs.bvx; gs.by+=gs.bvy;
-            gs.bvx*=0.93; gs.bvy*=0.93;
-            if(Math.abs(gs.bvx)<0.1)gs.bvx=0;
-            if(Math.abs(gs.bvy)<0.1)gs.bvy=0;
-
-            // Rebote laterales y arriba/abajo
-            const topWall=30,botWall=ch-12;
-            if(gs.by-8<topWall){gs.by=topWall+8;gs.bvy*=-0.7;}
-            if(gs.by+8>botWall){gs.by=botWall-8;gs.bvy*=-0.7;}
-
-            // Portero rival (derecha) sigue pelota
-            const gkSpeed=2.5+Math.random()*1.5;
-            if(gs.by<gs.gkY-5)gs.gkY-=gkSpeed;
-            else if(gs.by>gs.gkY+5)gs.gkY+=gkSpeed;
-            gs.gkY=Math.max(ch*0.25+10,Math.min(ch*0.75-10,gs.gkY));
-
-            // Gol del jugador (pelota pasa del límite derecho en zona de arco)
-            const arcTop=ch*0.3,arcBot=ch*0.7,arcLeft=cw-18;
-            if(gs.bx+8>arcLeft && gs.by>arcTop && gs.by<arcBot){
-                // ¿El portero la para?
-                const gkRange=ch*0.09;
-                const saved=Math.abs(gs.by-gs.gkY)<gkRange && Math.random()<0.45;
-                if(!saved){
-                    gs.playerGoals++;
-                    gs.goalEvents.push({text:'⚽ ¡GOL!',x:cw/2,y:ch/2,timer:55,color:'#00ff88',big:true});
-                    $id('game-hint').textContent='🟢 ¡GOLAZO!';
-                    setTimeout(()=>{if($id('game-hint'))$id('game-hint').textContent='';},1200);
-                    resetBall(gs,'opp_kick');
-                } else {
-                    gs.goalEvents.push({text:'🧤 ¡Parada!',x:cw/2,y:ch*0.35,timer:35,color:'#ffaa00',big:false});
-                    gs.bvx=-gs.bvx*0.9; gs.bvy=(Math.random()-0.5)*8;
-                    gs.bx=arcLeft-20;
-                }
+            // ── 1. Mover jugador controlado ────────────────────────────────
+            const me=gs.myTeam[gs.controlIdx];
+            if(me){
+                if(gs.keys.left)  me.x=Math.max(12,me.x-PLAYER_SPEED);
+                if(gs.keys.right) me.x=Math.min(cw-12,me.x+PLAYER_SPEED);
+                if(gs.keys.up)    me.y=Math.max(20,me.y-PLAYER_SPEED);
+                if(gs.keys.down)  me.y=Math.min(ch-12,me.y+PLAYER_SPEED);
             }
 
-            // Gol rival (pelota pasa por izquierda en zona de arco)
-            const arcLTop=ch*0.28,arcLBot=ch*0.72,arcRight=18;
-            if(gs.bx-8<arcRight && gs.by>arcLTop && gs.by<arcLBot && gs.bvx<-2){
-                if(Math.random()<0.4){
-                    gs.oppGoals++;
-                    gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
-                    resetBall(gs,'player_kick');
-                } else {
-                    gs.bvx=Math.abs(gs.bvx)*0.8+3; gs.bvy=(Math.random()-0.5)*6;
-                    gs.bx=arcRight+16;
-                }
-            }
+            // ── 2. Movimiento del equipo: SUBE al atacar, BAJA al defender ─
+            // Offset vertical según posesión: -100 (avanza) si atacamos, +60 (retrocede) si defendemos
+            const myOffsetY = gs.possession==='player' ? -ch*0.18 : ch*0.10;
+            const oppOffsetY= gs.possession==='opp'    ?  ch*0.18 : -ch*0.10;
 
-            // Pelota fuera laterales → saque
-            if(gs.bx<-20){resetBall(gs,'player_kick');}
-            if(gs.bx>cw+20){resetBall(gs,'opp_kick');}
-
-            // IA rival: persigue pelota y empuja al arco izquierdo
-            gs.aiPlayers.forEach((ai,i)=>{
-                const aiSpd=1.2+i*0.15;
-                const chaseX=gs.bx,chaseY=gs.by;
-                const dx=chaseX-ai.x,dy=chaseY-ai.y;
-                const dist=Math.hypot(dx,dy);
-                if(dist>8){ai.x+=dx/dist*aiSpd;ai.y+=dy/dist*aiSpd;}
-                ai.x=Math.max(cw*0.5,Math.min(cw-12,ai.x));
-                ai.y=Math.max(12,Math.min(ch-12,ai.y));
-                // Si IA toca la pelota
-                if(Math.hypot(gs.bx-ai.x,gs.by-ai.y)<14){
-                    const ang=Math.atan2(ch/2-gs.by, 0-gs.bx)+(Math.random()-0.5)*0.5;
-                    gs.bvx=Math.cos(ang)*(4+Math.random()*5);
-                    gs.bvy=Math.sin(ang)*(4+Math.random()*5);
+            gs.myTeam.forEach((p,i)=>{
+                if(i===0){ // portero sigue X de la pelota suavemente
+                    const tgX=Math.max(cw*0.35,Math.min(cw*0.65,gs.bx));
+                    p.x+=(tgX-p.x)*0.12;
+                    return;
                 }
+                if(i===gs.controlIdx)return; // el controlado lo mueve el usuario
+                let tgX=p.baseX, tgY=p.baseY+myOffsetY;
+                // Si tiene la pelota: avanza al arco rival
+                if(gs.ballOwner===i){
+                    tgY=Math.max(ch*0.12, p.y-2.5);
+                    tgX=p.baseX + Math.sin(frame*0.05+i)*20;
+                }
+                // Si nadie tiene la pelota y está cerca: la persigue
+                else if(gs.ballOwner==null){
+                    const dB=Math.hypot(gs.bx-p.x,gs.by-p.y);
+                    if(dB<cw*0.5){tgX=gs.bx;tgY=gs.by;}
+                }
+                const dx=tgX-p.x, dy=tgY-p.y;
+                const d=Math.hypot(dx,dy);
+                if(d>2){
+                    p.x+=dx/d*TEAM_SPEED;
+                    p.y+=dy/d*TEAM_SPEED;
+                }
+                p.x=Math.max(10,Math.min(cw-10,p.x));
+                p.y=Math.max(20,Math.min(ch-12,p.y));
             });
 
-            // Empujón del jugador a la pelota
-            const playerDist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
-            if(playerDist<16){
-                const ang=Math.atan2(gs.by-gs.py,gs.bx-gs.px);
-                gs.bvx+=Math.cos(ang)*3;gs.bvy+=Math.sin(ang)*3;
+            // ── 3. Equipo rival ────────────────────────────────────────────
+            gs.oppTeam.forEach((p,i)=>{
+                if(i===0){
+                    const tgX=Math.max(cw*0.35,Math.min(cw*0.65,gs.bx));
+                    p.x+=(tgX-p.x)*0.12;
+                    return;
+                }
+                let tgX=p.baseX, tgY=p.baseY+oppOffsetY;
+                // si su equipo posee, avanzan hacia abajo (arco del jugador)
+                if(gs.possession==='opp'){
+                    // si tiene la pelota: empuja hacia abajo
+                    const oppOwner=gs._oppOwner;
+                    if(oppOwner===i){
+                        tgY=Math.min(ch*0.88, p.y+2.5);
+                        tgX=p.baseX + Math.sin(frame*0.05+i)*20;
+                    } else {
+                        tgY=p.baseY+ch*0.18;
+                    }
+                } else {
+                    // si nadie posee, persigue pelota
+                    if(gs._oppOwner==null){
+                        const dB=Math.hypot(gs.bx-p.x,gs.by-p.y);
+                        if(dB<cw*0.55){tgX=gs.bx;tgY=gs.by;}
+                    }
+                }
+                const dx=tgX-p.x, dy=tgY-p.y;
+                const d=Math.hypot(dx,dy);
+                if(d>2){
+                    p.x+=dx/d*OPP_SPEED;
+                    p.y+=dy/d*OPP_SPEED;
+                }
+                p.x=Math.max(10,Math.min(cw-10,p.x));
+                p.y=Math.max(20,Math.min(ch-12,p.y));
+            });
+
+            // ── 4. Movimiento de la pelota ────────────────────────────────
+            if(gs.ballOwner!=null){
+                // Pelota pegada al jugador del usuario
+                const owner=gs.myTeam[gs.ballOwner];
+                gs.bx=owner.x; gs.by=owner.y-12;
+                gs.bvx=0; gs.bvy=0;
+            } else if(gs._oppOwner!=null){
+                const owner=gs.oppTeam[gs._oppOwner];
+                gs.bx=owner.x; gs.by=owner.y+12;
+                gs.bvx=0; gs.bvy=0;
+            } else {
+                gs.bx+=gs.bvx; gs.by+=gs.bvy;
+                gs.bvx*=0.96; gs.bvy*=0.96;
+                if(Math.abs(gs.bvx)<0.1)gs.bvx=0;
+                if(Math.abs(gs.bvy)<0.1)gs.bvy=0;
+                // Rebote laterales
+                if(gs.bx<10){gs.bx=10;gs.bvx=Math.abs(gs.bvx)*0.6;}
+                if(gs.bx>cw-10){gs.bx=cw-10;gs.bvx=-Math.abs(gs.bvx)*0.6;}
             }
 
-            // Cooldown de disparo
-            if(gs.shotCooldown>0)gs.shotCooldown--;
-
-            // Goles predeterminados del oponente (asegura partido real)
-            if(gs.oppScoreAt&&gs.oppScoreAt.includes(frame)){
-                gs.oppGoals++;
-                gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
-                resetBall(gs,'player_kick');
-            }
-            if(gs.playerBaseScoreAt&&gs.playerBaseScoreAt.includes(frame)){
-                // Solo si el jugador va perdiendo o empatando
-                if(gs.playerGoals<=gs.oppGoals){
-                    gs.playerGoals++;
-                    gs.goalEvents.push({text:'⚽ ¡GOL!',x:cw/2,y:ch/2,timer:55,color:'#00ff88',big:true});
-                    resetBall(gs,'opp_kick');
+            // ── 5. Capturar la pelota: cualquier jugador cercano la roba ──
+            if(gs.ballOwner==null && gs._oppOwner==null){
+                let claimed=false;
+                gs.myTeam.forEach((p,i)=>{
+                    if(claimed)return;
+                    if(Math.hypot(gs.bx-p.x,gs.by-p.y)<16){
+                        gs.ballOwner=i; gs.possession='player';
+                        gs.controlIdx=i;
+                        claimed=true;
+                    }
+                });
+                if(!claimed){
+                    gs.oppTeam.forEach((p,i)=>{
+                        if(claimed||i===0)return;
+                        if(Math.hypot(gs.bx-p.x,gs.by-p.y)<16){
+                            gs._oppOwner=i; gs.possession='opp';
+                            claimed=true;
+                        }
+                    });
                 }
             }
 
-            // Actualizar timer visual
+            // ── 6. IA del rival con la pelota: avanza, pasa o tira ────────
+            if(gs._oppOwner!=null){
+                const o=gs.oppTeam[gs._oppOwner];
+                // empuja hacia abajo (arco del jugador) — más rápido
+                o.y=Math.min(ch-30,o.y+2.8);
+                // si llegó a zona de tiro → tira (más frecuente: 5%)
+                if(o.y>ch*0.68 && Math.random()<0.05){
+                    const tx=cw/2+(Math.random()-0.5)*cw*0.3;
+                    const ty=ch-8;
+                    const dx=tx-o.x, dy=ty-o.y;
+                    const d=Math.hypot(dx,dy)||1;
+                    const spd=13+Math.random()*4;
+                    gs.bvx=dx/d*spd; gs.bvy=dy/d*spd;
+                    gs.bx=o.x; gs.by=o.y+12;
+                    gs._oppOwner=null;
+                }
+                // si un nuestro jugador lo presiona, puede perder la pelota
+                gs.myTeam.forEach((p,i)=>{
+                    if(i===0)return;
+                    if(Math.hypot(o.x-p.x,o.y-p.y)<14 && Math.random()<0.08){
+                        gs._oppOwner=null; gs.ballOwner=i; gs.possession='player'; gs.controlIdx=i;
+                    }
+                });
+                // pase ocasional entre rivales
+                if(Math.random()<0.012){
+                    let best=-1,bestY=-1;
+                    gs.oppTeam.forEach((p,i)=>{if(i!==gs._oppOwner&&i!==0&&p.y>bestY){bestY=p.y;best=i;}});
+                    if(best>=0){
+                        const t=gs.oppTeam[best];
+                        const dx=t.x-o.x,dy=t.y-o.y;const d=Math.hypot(dx,dy)||1;
+                        gs.bvx=dx/d*10; gs.bvy=dy/d*10;
+                        gs.bx=o.x; gs.by=o.y;
+                        gs._oppOwner=best;
+                    }
+                }
+            }
+
+            // ── 7. Detección de GOL ────────────────────────────────────────
+            const arcW=cw*0.34;
+            const arcLeft=cw/2-arcW/2, arcRight=cw/2+arcW/2;
+            // Gol del USUARIO (arco arriba) — umbral y=28 por arco más alto
+            if(gs.by<28 && gs.bx>arcLeft && gs.bx<arcRight){
+                // ¿portero rival la para?
+                const gk=gs.oppTeam[0];
+                const saved=Math.abs(gs.bx-gk.x)<arcW*0.20 && Math.random()<0.32;
+                if(!saved){
+                    gs.playerGoals++;
+                    gs.goalEvents.push({text:'⚽ ¡GOL!',x:cw/2,y:ch/2,timer:60,color:'#00ff88',big:true});
+                    $id('game-hint').textContent='🟢 ¡GOLAZO!';
+                    setTimeout(()=>{const g=$id('game-hint');if(g)g.textContent='';},1100);
+                    resetAfterGoal('opp');
+                } else {
+                    gs.goalEvents.push({text:'🧤 ¡Parada!',x:cw/2,y:ch*0.25,timer:30,color:'#ffaa00',big:false});
+                    gs.bvy=Math.abs(gs.bvy)*0.7+4;
+                    gs.by=34;
+                }
+            }
+            // Gol del RIVAL (arco abajo) — umbral ch-28
+            if(gs.by>ch-28 && gs.bx>arcLeft && gs.bx<arcRight){
+                const gk=gs.myTeam[0];
+                const saved=Math.abs(gs.bx-gk.x)<arcW*0.20 && Math.random()<0.38;
+                if(!saved){
+                    gs.oppGoals++;
+                    gs.goalEvents.push({text:'❌ Gol rival',x:cw/2,y:ch/2,timer:50,color:'#ff4444',big:true});
+                    resetAfterGoal('player');
+                } else {
+                    gs.goalEvents.push({text:'🧤 ¡Atajada!',x:cw/2,y:ch*0.75,timer:30,color:'#00d4ff',big:false});
+                    gs.bvy=-Math.abs(gs.bvy)*0.7-4;
+                    gs.by=ch-34;
+                }
+            }
+            // Pelota fuera por arriba/abajo sin gol → saque
+            if(gs.by<-20)resetAfterGoal('opp');
+            if(gs.by>ch+20)resetAfterGoal('player');
+
+            // ── 8. Cooldowns / HUD ─────────────────────────────────────────
+            if(gs.shotCooldown>0)gs.shotCooldown--;
+            if(gs.passCooldown>0)gs.passCooldown--;
+
             const minutos=Math.floor((frame/GAME_FRAMES)*90);
             if($id('hud-time'))$id('hud-time').textContent=`${minutos}'`;
             if($id('hud-score'))$id('hud-score').textContent=`${gs.playerGoals} — ${gs.oppGoals}`;
             if($id('hud-shots'))$id('hud-shots').textContent=`🎯 ${gs.playerShots}`;
 
-            // Goal events fade
             gs.goalEvents=gs.goalEvents.filter(g=>(g.timer--)>0);
             gs.goalEvents.forEach(g=>{g.y-=0.7;});
         }
 
-        function resetBall(gs,who){
-            gs.bx=gs.cw/2;gs.by=gs.ch/2;gs.bvx=0;gs.bvy=0;gs.shooting=false;
-            if(who==='player_kick'){gs.bvx=3+Math.random()*2;}
-            else{gs.bvx=-(3+Math.random()*2);}
+        function resetAfterGoal(whoStarts){
+            gs.bx=gs.cw/2; gs.by=gs.ch/2; gs.bvx=0; gs.bvy=0;
+            // reposicionar equipos a su base
+            gs.myTeam.forEach(p=>{p.x=p.baseX;p.y=p.baseY;});
+            gs.oppTeam.forEach(p=>{p.x=p.baseX;p.y=p.baseY;});
+            if(whoStarts==='player'){
+                gs.ballOwner=5; gs._oppOwner=null;
+                gs.possession='player'; gs.controlIdx=5;
+            } else {
+                gs._oppOwner=5; gs.ballOwner=null;
+                gs.possession='opp';
+            }
         }
 
         function drawFrame(){
             const{cw,ch}=gs;
             ctx.clearRect(0,0,cw,ch);
 
-            // Césped
-            const grad=ctx.createLinearGradient(0,0,cw,0);
-            grad.addColorStop(0,'#1a4a1a');grad.addColorStop(0.5,'#1e5820');grad.addColorStop(1,'#1a4a1a');
+            // Césped con efecto de rayas mejorado
+            const grad=ctx.createLinearGradient(0,0,0,ch);
+            if(gs.isCancha){
+                // FutCancha: verde más oscuro y profesional
+                grad.addColorStop(0,'#163c16');grad.addColorStop(0.5,'#1a4a1a');grad.addColorStop(1,'#163c16');
+            } else {
+                // Futsala: verde algo más claro
+                grad.addColorStop(0,'#1a4a1a');grad.addColorStop(0.5,'#1e5820');grad.addColorStop(1,'#1a4a1a');
+            }
             ctx.fillStyle=grad;ctx.fillRect(0,0,cw,ch);
+            // Rayas horizontales alternas
+            ctx.fillStyle='rgba(0,0,0,0.07)';
+            for(let y=0;y<ch;y+=36){ctx.fillRect(0,y,cw,18);}
 
             // Líneas del campo
-            ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=2;
-            ctx.strokeRect(10,25,cw-20,ch-35);
-            ctx.beginPath();ctx.moveTo(cw/2,25);ctx.lineTo(cw/2,ch-10);ctx.stroke();
-            ctx.beginPath();ctx.arc(cw/2,ch/2,Math.min(50,ch*0.15),0,Math.PI*2);ctx.stroke();
+            ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=2;
+            ctx.strokeRect(8,16,cw-16,ch-32);
+            ctx.beginPath();ctx.moveTo(8,ch/2);ctx.lineTo(cw-8,ch/2);ctx.stroke();
+            // Círculo central
+            ctx.beginPath();ctx.arc(cw/2,ch/2,Math.min(48,cw*0.17),0,Math.PI*2);ctx.stroke();
+            // Punto central
+            ctx.fillStyle='rgba(255,255,255,0.5)';
+            ctx.beginPath();ctx.arc(cw/2,ch/2,3,0,Math.PI*2);ctx.fill();
 
-            // Arco izquierdo (jugador defiende)
-            const arcH=ch*0.44;
-            ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=3;
-            ctx.strokeRect(10,ch/2-arcH/2,22,arcH);
-            // Arco derecho (rival defiende)
-            ctx.strokeRect(cw-32,ch/2-arcH/2,22,arcH);
+            // Arcos
+            const arcW=cw*0.34;
+            const arcLeft=cw/2-arcW/2;
+            ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=3;
+            ctx.strokeRect(arcLeft,8,arcW,20);                 // arriba (rival)
+            ctx.strokeRect(arcLeft,ch-28,arcW,20);             // abajo (jugador)
+            // Áreas grandes
+            ctx.strokeStyle='rgba(255,255,255,0.28)';ctx.lineWidth=1.5;
+            const areaW=cw*0.62, areaH=ch*0.20;
+            ctx.strokeRect(cw/2-areaW/2,16,areaW,areaH);
+            ctx.strokeRect(cw/2-areaW/2,ch-16-areaH,areaW,areaH);
+            // Puntos de penalti
+            ctx.fillStyle='rgba(255,255,255,0.4)';
+            ctx.beginPath();ctx.arc(cw/2,ch*0.18,3,0,Math.PI*2);ctx.fill();
+            ctx.beginPath();ctx.arc(cw/2,ch*0.82,3,0,Math.PI*2);ctx.fill();
 
-            // Red arcos
-            ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;
-            for(let ry=ch/2-arcH/2;ry<ch/2+arcH/2;ry+=8){
-                ctx.beginPath();ctx.moveTo(10,ry);ctx.lineTo(32,ry);ctx.stroke();
-                ctx.beginPath();ctx.moveTo(cw-32,ry);ctx.lineTo(cw-10,ry);ctx.stroke();
-            }
-
-            // Jugador controlado (azul/color del NFT)
-            const pc1=gs.player.color1||'#1a6aff';
-            const pc2=gs.player.color2||'#fff';
-            drawPlayerSprite(ctx,gs.px,gs.py,pc1,pc2,'★');
-
-            // Jugadores IA rival
-            gs.aiPlayers.forEach((ai,i)=>{
-                drawPlayerSprite(ctx,ai.x,ai.y,'#cc2222','#fff',String(i+1));
+            // Equipo USUARIO con imagen del NFT
+            gs.myTeam.forEach((p,i)=>{
+                const isControl=(i===gs.controlIdx);
+                drawNftPlayer(ctx,p.x,p.y,gs.nftImg,gs.nftImgLoaded,
+                    gs.player.color1||'#1a6aff', gs.player.color2||'#fff',
+                    p.num||(i===0?'GK':String(i)), isControl, gs.ballOwner===i);
+            });
+            // Equipo RIVAL
+            gs.oppTeam.forEach((p,i)=>{
+                drawOppPlayer(ctx,p.x,p.y,'#cc1111','#fff', p.num||(i===0?'GK':String(i)), gs._oppOwner===i);
             });
 
-            // Portero rival
-            drawPlayerSprite(ctx,cw-22,gs.gkY,'#ff8800','#fff','P');
-
-            // Pelota
+            // Pelota (solo se dibuja "suelta" si no la lleva nadie; si la lleva, se dibuja sobre el jugador)
             ctx.save();
-            ctx.fillStyle='#fff';
-            ctx.shadowColor='rgba(255,255,255,0.5)';
-            ctx.shadowBlur=8;
-            ctx.beginPath();ctx.arc(gs.bx,gs.by,8,0,Math.PI*2);ctx.fill();
-            ctx.strokeStyle='#333';ctx.lineWidth=1.5;ctx.stroke();
-            // Sombra pelota
-            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(gs.bx,gs.by+10,7,3,0,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='rgba(0,0,0,0.25)';
+            ctx.beginPath();ctx.ellipse(gs.bx,gs.by+8,7,3,0,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#fff';ctx.shadowColor='rgba(255,255,255,0.6)';ctx.shadowBlur=8;
+            ctx.beginPath();ctx.arc(gs.bx,gs.by,7,0,Math.PI*2);ctx.fill();
+            ctx.strokeStyle='#222';ctx.lineWidth=1.4;ctx.stroke();
             ctx.restore();
 
-            // Indicador de rango de disparo
-            if(gs.shotCooldown<=0){
-                const dist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
-                if(dist<cw*0.18){
-                    ctx.strokeStyle='rgba(0,255,136,0.4)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
-                    ctx.beginPath();ctx.arc(gs.px,gs.py,cw*0.18,0,Math.PI*2);ctx.stroke();
-                    ctx.setLineDash([]);
+            // Indicador de jugador activo — más visible
+            if(gs.controlIdx!=null && gs.myTeam[gs.controlIdx]){
+                const me=gs.myTeam[gs.controlIdx];
+                ctx.strokeStyle='rgba(0,255,136,0.9)';ctx.lineWidth=2.5;ctx.setLineDash([5,4]);
+                ctx.beginPath();ctx.arc(me.x,me.y,26,0,Math.PI*2);ctx.stroke();
+                ctx.setLineDash([]);
+                // flecha de "yo" más visible
+                ctx.fillStyle='#00ff88';ctx.shadowColor='#00ff88';ctx.shadowBlur=10;
+                ctx.beginPath();ctx.moveTo(me.x,me.y-34);ctx.lineTo(me.x-7,me.y-24);ctx.lineTo(me.x+7,me.y-24);ctx.closePath();ctx.fill();
+                ctx.shadowBlur=0;
+                // Nombre del modo sobre el campo (centro)
+                if(frame<120){
+                    ctx.globalAlpha=Math.max(0,1-frame/90);
+                    const modeLabel=gs.isCancha?'⚡ FUTCANCHA PVP':'⚽ FUTSALA';
+                    ctx.fillStyle='rgba(0,0,0,0.5)';
+                    roundRect2(ctx,cw/2-65,ch/2-16,130,22,8);ctx.fill();
+                    ctx.fillStyle='#00ff88';ctx.font='bold 12px Orbitron,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+                    ctx.fillText(modeLabel,cw/2,ch/2-5);
+                    ctx.globalAlpha=1;
                 }
             }
 
-            // Goal events text
+            // Texto de eventos
             gs.goalEvents.forEach(g=>{
                 const alpha=Math.min(1,g.timer/20);
                 ctx.save();ctx.globalAlpha=alpha;
@@ -2151,29 +2492,161 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 ctx.restore();
             });
 
-            // Reloj esquina
+            // Marcador esquina + barra de tiempo
             const prog=Math.min(1,frame/GAME_FRAMES);
             const minF=Math.floor(prog*90);
             ctx.fillStyle='rgba(0,0,0,0.75)';
-            roundRect2(ctx,4,4,52,24,7);ctx.fill();
+            roundRect2(ctx,4,4,52,22,7);ctx.fill();
             ctx.fillStyle='#00ff88';ctx.font='bold 12px Orbitron,monospace';ctx.textAlign='center';
-            ctx.fillText(`${minF}'`,30,20);
+            ctx.fillText(`${minF}'`,30,19);
+            // Indicador de posesión
+            ctx.fillStyle=gs.possession==='player'?'#00ff88':'#ff4444';
+            ctx.beginPath();ctx.arc(cw-14,14,6,0,Math.PI*2);ctx.fill();
 
-            // Barra de tiempo
-            ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(10,ch-8,cw-20,4);
-            ctx.fillStyle='rgba(0,255,136,0.6)';ctx.fillRect(10,ch-8,Math.floor((cw-20)*prog),4);
+            ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(8,ch-6,cw-16,3);
+            ctx.fillStyle='rgba(0,255,136,0.7)';ctx.fillRect(8,ch-6,Math.floor((cw-16)*prog),3);
         }
 
-        function drawPlayerSprite(ctx,x,y,c1,c2,label){
-            // Sombra
-            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(x,y+14,9,4,0,0,Math.PI*2);ctx.fill();
-            // Cuerpo
-            ctx.fillStyle=c1;ctx.beginPath();ctx.ellipse(x,y+5,9,13,0,0,Math.PI*2);ctx.fill();
-            // Cabeza
-            ctx.fillStyle='#FDBCB4';ctx.beginPath();ctx.arc(x,y-9,8,0,Math.PI*2);ctx.fill();
-            // Número/label
-            ctx.fillStyle=c2;ctx.font='bold 7px sans-serif';ctx.textAlign='center';
-            ctx.fillText(String(label),x,y+8);
+        function drawNftPlayer(ctx,x,y,img,loaded,c1,c2,label,isControl,hasBall){
+            const R = isControl ? 22 : 17;   // radio — controlado más grande
+            // ── Sombra suelo ────────────────────────────────────────────────
+            ctx.fillStyle='rgba(0,0,0,0.4)';
+            ctx.beginPath();ctx.ellipse(x,y+R+5,R*0.9,R*0.3,0,0,Math.PI*2);ctx.fill();
+
+            // ── Aura del jugador controlado ─────────────────────────────────
+            if(isControl){
+                // Pulso verde animado
+                const pulse=0.6+0.4*Math.sin(Date.now()/200);
+                ctx.save();
+                ctx.globalAlpha=0.5*pulse;
+                ctx.fillStyle='#00ff88';
+                ctx.beginPath();ctx.arc(x,y,R+8,0,Math.PI*2);ctx.fill();
+                ctx.globalAlpha=1;
+                ctx.restore();
+                ctx.strokeStyle='#00ff88';ctx.lineWidth=3;
+                ctx.shadowColor='#00ff88';ctx.shadowBlur=14;
+                ctx.beginPath();ctx.arc(x,y,R+4,0,Math.PI*2);ctx.stroke();
+                ctx.shadowBlur=0;
+            }
+
+            // ── Círculo base (color del equipo) ─────────────────────────────
+            ctx.fillStyle=c1;
+            ctx.beginPath();ctx.arc(x,y,R+2,0,Math.PI*2);ctx.fill();
+
+            // ── Intentar dibujar imagen NFT ─────────────────────────────────
+            let drewImage=false;
+            if(loaded && img && img.naturalWidth>0){
+                ctx.save();
+                ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.clip();
+                try{
+                    ctx.drawImage(img, x-R, y-R, R*2, R*2);
+                    drewImage=true;
+                }catch(e){ drewImage=false; }
+                ctx.restore();
+            }
+
+            // ── Fallback visual: silueta de jugador con colores NFT ─────────
+            if(!drewImage){
+                // Fondo degradado
+                const grd=ctx.createRadialGradient(x,y-R*0.2,R*0.1, x,y,R);
+                grd.addColorStop(0,c2||'#ffffff');
+                grd.addColorStop(1,c1);
+                ctx.save();
+                ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.clip();
+                ctx.fillStyle=grd;ctx.fillRect(x-R,y-R,R*2,R*2);
+                // Silueta jugador: cabeza
+                ctx.fillStyle='rgba(255,220,180,0.9)';
+                ctx.beginPath();ctx.arc(x,y-R*0.3,R*0.38,0,Math.PI*2);ctx.fill();
+                // Cuerpo / camiseta
+                ctx.fillStyle=c1;
+                ctx.beginPath();
+                ctx.moveTo(x-R*0.55,y+R*0.1);
+                ctx.quadraticCurveTo(x,y-R*0.05,x+R*0.55,y+R*0.1);
+                ctx.quadraticCurveTo(x+R*0.6,y+R*0.7,x,y+R*0.8);
+                ctx.quadraticCurveTo(x-R*0.6,y+R*0.7,x-R*0.55,y+R*0.1);
+                ctx.fill();
+                // Número de camiseta
+                ctx.fillStyle=c2||'#fff';
+                ctx.font=`bold ${R*0.55}px Orbitron,sans-serif`;
+                ctx.textAlign='center';ctx.textBaseline='middle';
+                ctx.fillText(label,x,y+R*0.35);
+                ctx.restore();
+            }
+
+            // ── Borde brillante ─────────────────────────────────────────────
+            ctx.strokeStyle=isControl?'#00ff88':c2||'#ffffff';
+            ctx.lineWidth=isControl?3.5:2;
+            ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.stroke();
+
+            // ── Etiqueta nombre/rol debajo ───────────────────────────────────
+            ctx.fillStyle='rgba(0,0,0,0.85)';
+            roundRect2(ctx,x-13,y+R+3,26,13,4);ctx.fill();
+            ctx.fillStyle=isControl?'#00ff88':'#ffffff';
+            ctx.font='bold 8px Orbitron,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+            ctx.fillText(label,x,y+R+9.5);
+
+            // ── Indicador de pelota ─────────────────────────────────────────
+            if(hasBall){
+                ctx.save();
+                ctx.fillStyle='#ffffff';ctx.strokeStyle='#222';ctx.lineWidth=1.5;
+                ctx.shadowColor='rgba(255,255,255,0.8)';ctx.shadowBlur=6;
+                ctx.beginPath();ctx.arc(x+R-1,y-R+1,6,0,Math.PI*2);ctx.fill();ctx.stroke();
+                ctx.shadowBlur=0;
+                // Hexágono del balón
+                ctx.fillStyle='#333';
+                ctx.font='8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+                ctx.fillText('⚽',x+R-1,y-R+1);
+                ctx.restore();
+            }
+        }
+
+        function drawOppPlayer(ctx,x,y,c1,c2,label,hasBall){
+            const R=16;
+            // Sombra suelo
+            ctx.fillStyle='rgba(0,0,0,0.35)';
+            ctx.beginPath();ctx.ellipse(x,y+R+5,R*0.9,R*0.3,0,0,Math.PI*2);ctx.fill();
+            // Círculo exterior (borde)
+            ctx.fillStyle=c1;
+            ctx.beginPath();ctx.arc(x,y,R+2,0,Math.PI*2);ctx.fill();
+            // Interior con silueta
+            ctx.save();
+            ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.clip();
+            // Fondo degradado rival
+            const grd=ctx.createRadialGradient(x,y-R*0.2,R*0.1, x,y,R);
+            grd.addColorStop(0,'#ff6666');grd.addColorStop(1,'#880000');
+            ctx.fillStyle=grd;ctx.fillRect(x-R,y-R,R*2,R*2);
+            // Silueta cabeza
+            ctx.fillStyle='rgba(255,220,180,0.85)';
+            ctx.beginPath();ctx.arc(x,y-R*0.3,R*0.36,0,Math.PI*2);ctx.fill();
+            // Camiseta roja rival
+            ctx.fillStyle='#cc1111';
+            ctx.beginPath();
+            ctx.moveTo(x-R*0.55,y+R*0.1);
+            ctx.quadraticCurveTo(x,y-R*0.05,x+R*0.55,y+R*0.1);
+            ctx.quadraticCurveTo(x+R*0.6,y+R*0.7,x,y+R*0.8);
+            ctx.quadraticCurveTo(x-R*0.6,y+R*0.7,x-R*0.55,y+R*0.1);
+            ctx.fill();
+            // Número
+            ctx.fillStyle='#ffffff';
+            ctx.font=`bold ${R*0.52}px Orbitron,sans-serif`;
+            ctx.textAlign='center';ctx.textBaseline='middle';
+            ctx.fillText(label,x,y+R*0.35);
+            ctx.restore();
+            // Borde
+            ctx.strokeStyle='#ff4444';ctx.lineWidth=2;
+            ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.stroke();
+            // Etiqueta
+            ctx.fillStyle='rgba(0,0,0,0.85)';
+            roundRect2(ctx,x-13,y+R+3,26,13,4);ctx.fill();
+            ctx.fillStyle='#ffaaaa';ctx.font='bold 8px Orbitron,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+            ctx.fillText(label,x,y+R+9.5);
+            // Pelota
+            if(hasBall){
+                ctx.fillStyle='#fff';ctx.strokeStyle='#222';ctx.lineWidth=1.5;
+                ctx.beginPath();ctx.arc(x+R-1,y-R+1,6,0,Math.PI*2);ctx.fill();ctx.stroke();
+                ctx.fillStyle='#333';ctx.font='8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+                ctx.fillText('⚽',x+R-1,y-R+1);
+            }
         }
 
         function roundRect2(ctx,x,y,w,h,r){
@@ -2184,11 +2657,11 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
         }
 
-        // ── GAME LOOP ─────────────────────────────────────────────────────
-        const FPS_TARGET=1000/60;
+        // ── GAME LOOP — más rápido y dinámico ────────────────────────────
+        const FPS_TARGET=1000/80;   // 80 fps objetivo → ultra fluido y veloz
         let lastTs=0;
         function loop(ts){
-            if(gs.phase!=='playing'){return;}
+            if(!_gameState||gs.phase!=='playing'){return;}
             if(ts-lastTs>=FPS_TARGET-2){
                 updateGame();
                 drawFrame();
@@ -2196,7 +2669,6 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 frame++;
                 if(frame>=GAME_FRAMES){
                     gs.phase='result';
-                    // Resolver resultado con los goles REALES del juego interactivo
                     const pgFinal=gs.playerGoals;
                     const ogFinal=gs.oppGoals;
                     const res=pgFinal>ogFinal?'win':pgFinal===ogFinal?'draw':'loss';
@@ -2252,6 +2724,43 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             gemsGanadas=parseFloat((baseD*pct*trainBonus + bonus).toFixed(1));
         }
         if(gemsGanadas>0)gemas+=gemsGanadas;
+
+        // ── BONUS DE PUNTOS DEL TORNEO (escala con NFTs poseídos) ───────
+        let torneoNote='';
+        if(_currentMatchMode==='torneo' && _torneoState){
+            const ts=_torneoState;
+            const ronda=ts.opps[ts.currentRound];
+            // Registrar el resultado en el bracket
+            ronda.resultado=resultado;
+            ronda.playerGoals=playerGoals;
+            ronda.oppGoals=oppGoals;
+            // Puntos: base por ronda, bonus por NFTs (cada NFT = +20% adicional)
+            const ptsBase=[40,80,140,250]; // octavos, cuartos, semis, final
+            const baseR=ptsBase[ts.currentRound]||40;
+            const nftMult=1 + (ts.totalNFTs*0.20);
+            let ptsRonda=0;
+            if(resultado==='win'){
+                ptsRonda=Math.round(baseR*nftMult);
+                ts.puntosAcum+=ptsRonda;
+                puntaje+=ptsRonda; // se suman al puntaje global del usuario
+                ronda.puntos=ptsRonda;
+                if(ts.currentRound>=TORNEO_RONDAS.length-1){
+                    ts.campeon=true;
+                    // bonus campeón
+                    const bonusCampeon=Math.round(500*nftMult);
+                    ts.puntosAcum+=bonusCampeon;
+                    puntaje+=bonusCampeon;
+                    torneoNote=`<div style="margin-top:8px;padding:10px;background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-size:0.86em">🏆 ¡CAMPEÓN DEL TORNEO! +${ptsRonda} pts ronda · +${bonusCampeon} pts bonus campeón</div>`;
+                } else {
+                    torneoNote=`<div style="margin-top:8px;padding:10px;background:rgba(0,212,255,0.08);border:1px solid var(--cyan);border-radius:10px;color:var(--cyan);font-size:0.86em">🎯 +${ptsRonda} pts (×${nftMult.toFixed(2)} por ${ts.totalNFTs} NFT${ts.totalNFTs>1?'s':''}) · Avanzas a ${TORNEO_RONDAS[ts.currentRound+1].nombre}</div>`;
+                    ts.currentRound++;
+                }
+            } else {
+                ts.eliminado=true;
+                torneoNote=`<div style="margin-top:8px;padding:10px;background:rgba(255,68,68,0.08);border:1px solid var(--red);border-radius:10px;color:var(--red);font-size:0.86em">❌ Eliminado en ${ronda.nombre}. Puntos acumulados: ${ts.puntosAcum}</div>`;
+            }
+        }
+
         actualizarUI();
 
         const resultColor=resultado==='win'?'#00ff88':resultado==='draw'?'#ffd700':'#ff4444';
@@ -2278,7 +2787,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 <div style="font-size:0.88em;color:#aaa;margin-bottom:6px">${player.flag} ${player.nombre} vs ${oppFlag} ${oppName}</div>
 <div style="font-size:0.78em;color:var(--cyan);font-family:'Orbitron',sans-serif;margin-bottom:8px">NFT ID: ${nftId}</div>
 <div style="font-size:1em;margin:8px 0">${gemsMsg}</div>
-${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
+${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}${torneoNote}
 <div style="font-size:0.8em;color:#888">+2 pts estadística · Forma física: ${dur}%</div>
 </div>`;
         // Mostrar pantalla de resultado
@@ -2296,12 +2805,17 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
         if(_gameState&&_gameState._removeKeyListeners)_gameState._removeKeyListeners();
         if(_gameState)_gameState.phase='done';
         _gameState=null;
+        const wasTorneo=(_currentMatchMode==='torneo');
         _currentMatchPlayer=null;
         _matchResultPending=null;
         // Reset screens
         ['match-intro-screen','match-game-screen','match-result-screen'].forEach(id=>{
             const el=$id(id);if(el)el.style.display='none';
         });
+        // Si era torneo y queda activo, volver al bracket para continuar
+        if(wasTorneo && _torneoState){
+            setTimeout(()=>abrirModalBracket(),250);
+        }
     }
 
     // ── FUTSALA ───────────────────────────────────────────────────────────
