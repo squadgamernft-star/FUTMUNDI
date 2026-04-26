@@ -11,14 +11,14 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --cyan: #00d4ff; --green: #00ff88; --orange: #ff8c00;
-            --red: #ff4444; --gold: #ffd700; --purple: #a855f7;
-            --grass: #2d7a1f; --grass2: #3aaa28;
+            --cyan: #55d7ff; --green: #42f58d; --orange: #ff9f1c;
+            --red: #ff5a6f; --gold: #ffd84d; --purple: #b56cff;
+            --grass: #39a935; --grass2: #6bd83f;
             --surface: rgba(255,255,255,0.04);
             --border: rgba(0,212,255,0.2);
         }
-        body { font-family: 'Rajdhani', sans-serif; background: #060f06; color: white; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
-        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 20% 20%, rgba(0,200,80,0.18) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(0,100,255,0.14) 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, rgba(0,150,50,0.10) 0%, transparent 70%), linear-gradient(160deg, #061206 0%, #0a1a0a 40%, #060f06 100%); }
+        body { font-family: 'Fredoka', 'Rajdhani', sans-serif; background: #061907; color: white; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 20% 15%, rgba(255,216,77,0.18) 0%, transparent 42%), radial-gradient(ellipse at 82% 78%, rgba(85,215,255,0.18) 0%, transparent 48%), radial-gradient(ellipse at 50% 50%, rgba(66,245,141,0.18) 0%, transparent 68%), linear-gradient(160deg, #071907 0%, #123f18 48%, #061407 100%); }
         .flags-bg::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px), repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(0,180,60,0.04) 120px, rgba(0,180,60,0.04) 122px); }
         .flag-float { position: absolute; font-size: 2.2em; opacity: 0; animation: floatFlag linear infinite; will-change: transform, opacity; filter: drop-shadow(0 0 8px rgba(0,255,136,0.3)); }
         @keyframes floatFlag { 0% { transform: translateY(105vh) rotate(-5deg) scale(0.85); opacity: 0; } 8% { opacity: 0.22; } 50% { transform: translateY(0vh) rotate(5deg) scale(1.0); opacity: 0.22; } 92% { opacity: 0.22; } 100% { transform: translateY(-105vh) rotate(-5deg) scale(1.1); opacity: 0; } }
@@ -445,7 +445,7 @@
         <div class="stats-container">
             <span data-i18n-prefix="pts">Pts:&nbsp;<strong id="puntaje">0</strong></span>
             <span data-i18n-prefix="niv">Niv:&nbsp;<strong id="nivel-stat">1</strong></span>
-            <span>💎&nbsp;<strong id="gemas-stat">3900.0</strong></span>
+            <span>💎&nbsp;<strong id="gemas-stat">25000.0</strong></span>
             <span>🏆&nbsp;<strong id="gasolina">—</strong></span>
             <span>OVR&nbsp;<strong id="hp-stat">0</strong></span>
         </div>
@@ -1213,7 +1213,7 @@
     // ── ESTADO ────────────────────────────────────────────────────────────
     const $id = id => document.getElementById(id);
     const statusMsg = $id('status-msg');
-    let gemas=3900, hp=0, puntaje=0, nivel=1, statsPartidas=0;
+    let gemas=25000, hp=0, puntaje=0, nivel=1, statsPartidas=0;
     let totalGoals = 0;
     let carrosComprados=[];
     let durabilidades={}, ballonesPorJugador={};
@@ -1303,7 +1303,7 @@
         localStorage.setItem('tg_inv_uniformes',JSON.stringify(_uniformesComprados));
     }
     function loadState(){
-        gemas=parseFloat(localStorage.getItem('tg_gemas')||'3900');
+        gemas=Math.max(25000, parseFloat(localStorage.getItem('tg_gemas')||'25000'));
         hp=parseInt(localStorage.getItem('tg_hp')||'0');
         puntaje=parseInt(localStorage.getItem('tg_puntaje')||'0');
         statsPartidas=parseInt(localStorage.getItem('tg_stats_partidas')||'0');
@@ -2075,6 +2075,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             winChance,
             playerShots:0, playerShotsOnTarget:0,
             matchTime:0, maxTime:90,
+            teamPlayers:[],
             phase:'intro', // intro → playing → result
             // Pelota
             bx:0,by:0,bvx:0,bvy:0,
@@ -2167,12 +2168,20 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         gs.bx=W/2; gs.by=H/2; gs.bvx=0; gs.bvy=0;
         gs.px=W*0.22; gs.py=H/2;
         gs.gkY=H/2; gs.gkTargetY=H/2;
+        gs.teamPlayers=[
+            {x:W*0.08,y:H*0.50,vx:0,vy:0,role:'gk',label:'P'},
+            {x:W*0.24,y:H*0.24,vx:0,vy:0,role:'def',label:'2'},
+            {x:W*0.24,y:H*0.76,vx:0,vy:0,role:'def',label:'3'},
+            {x:W*0.38,y:H*0.34,vx:0,vy:0,role:'mid',label:'4'},
+            {x:W*0.40,y:H*0.66,vx:0,vy:0,role:'mid',label:'5'},
+        ];
         gs.aiPlayers=[
-            {x:W*0.72,y:H*0.3,vx:0,vy:0,role:'mid'},
-            {x:W*0.72,y:H*0.7,vx:0,vy:0,role:'mid'},
-            {x:W*0.88,y:H*0.5,vx:0,vy:0,role:'fwd'},
-            {x:W*0.82,y:H*0.25,vx:0,vy:0,role:'def'},
-            {x:W*0.82,y:H*0.75,vx:0,vy:0,role:'def'},
+            {x:W*0.92,y:H*0.50,vx:0,vy:0,role:'gk',label:'P'},
+            {x:W*0.76,y:H*0.24,vx:0,vy:0,role:'def',label:'2'},
+            {x:W*0.76,y:H*0.76,vx:0,vy:0,role:'def',label:'3'},
+            {x:W*0.62,y:H*0.34,vx:0,vy:0,role:'mid',label:'4'},
+            {x:W*0.62,y:H*0.66,vx:0,vy:0,role:'mid',label:'5'},
+            {x:W*0.86,y:H*0.50,vx:0,vy:0,role:'fwd',label:'6'},
         ];
         gs.phase='playing';
         gs.matchTime=0;
@@ -2239,11 +2248,11 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             // Disparar hacia el arco rival (derecha)
             const arcY=gs.ch/2;
             const ang=Math.atan2(arcY-gs.py,gs.cw-gs.px)+(Math.random()-0.5)*0.4;
-            const spd=13+Math.random()*5;
+            const spd=17+Math.random()*7;
             gs.bvx=Math.cos(ang)*spd;
             gs.bvy=Math.sin(ang)*spd;
             gs.shooting=true;
-            gs.shotCooldown=45;
+            gs.shotCooldown=26;
             gs.playerShots++;
             gs.playerShotsOnTarget++;
             $id('game-hint').textContent='🎯 ¡Disparo!';
@@ -2251,9 +2260,9 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         }
 
         // ── LOOP ──────────────────────────────────────────────────────────
-        const GAME_FRAMES=Math.floor(60*90); // 90s a 60fps (acelerado: 1 frame = ~0.5s partido)
+        const GAME_FRAMES=Math.floor(60*35); // partido más rápido y dinámico
         let frame=0;
-        const SPEED=4.5; // pixels por frame, jugador controlado
+        const SPEED=6.2; // jugador controlado más veloz
 
         function updateGame(){
             const{cw,ch}=gs;
@@ -2276,7 +2285,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             if(gs.by+8>botWall){gs.by=botWall-8;gs.bvy*=-0.7;}
 
             // Portero rival (derecha) sigue pelota
-            const gkSpeed=2.5+Math.random()*1.5;
+            const gkSpeed=4.1+Math.random()*2.2;
             if(gs.by<gs.gkY-5)gs.gkY-=gkSpeed;
             else if(gs.by>gs.gkY+5)gs.gkY+=gkSpeed;
             gs.gkY=Math.max(ch*0.25+10,Math.min(ch*0.75-10,gs.gkY));
@@ -2317,20 +2326,37 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             if(gs.bx<-20){resetBall(gs,'player_kick');}
             if(gs.bx>cw+20){resetBall(gs,'opp_kick');}
 
-            // IA rival: persigue pelota y empuja al arco izquierdo
+            // Compañeros del usuario: 6v6 visible, apoyan y abren líneas rápidas
+            gs.teamPlayers.forEach((tm,i)=>{
+                const anchors=[
+                    {x:cw*0.08,y:gs.by}, {x:cw*0.25,y:ch*0.22}, {x:cw*0.25,y:ch*0.78},
+                    {x:cw*0.42,y:ch*0.35}, {x:cw*0.42,y:ch*0.65}
+                ];
+                const a=anchors[i]||anchors[0];
+                const tx=tm.role==='gk'?cw*0.08:(Math.min(cw*0.52, a.x+(gs.bx-cw/2)*0.08));
+                const ty=Math.max(18,Math.min(ch-18,a.y));
+                tm.x+=(tx-tm.x)*0.055; tm.y+=(ty-tm.y)*0.065;
+                if(Math.hypot(gs.bx-tm.x,gs.by-tm.y)<13 && tm.role!=='gk'){
+                    const ang=Math.atan2(ch/2-gs.by,cw-gs.bx)+(Math.random()-0.5)*0.45;
+                    gs.bvx=Math.cos(ang)*(6+Math.random()*5);
+                    gs.bvy=Math.sin(ang)*(6+Math.random()*5);
+                }
+            });
+
+            // IA rival: 6 jugadores presionan y empujan al arco izquierdo
             gs.aiPlayers.forEach((ai,i)=>{
-                const aiSpd=1.2+i*0.15;
-                const chaseX=gs.bx,chaseY=gs.by;
+                const aiSpd=(ai.role==='gk'?1.8:2.0)+i*0.22;
+                const chaseX=ai.role==='gk'?cw*0.92:gs.bx,chaseY=ai.role==='gk'?gs.gkY:gs.by;
                 const dx=chaseX-ai.x,dy=chaseY-ai.y;
                 const dist=Math.hypot(dx,dy);
                 if(dist>8){ai.x+=dx/dist*aiSpd;ai.y+=dy/dist*aiSpd;}
                 ai.x=Math.max(cw*0.5,Math.min(cw-12,ai.x));
                 ai.y=Math.max(12,Math.min(ch-12,ai.y));
                 // Si IA toca la pelota
-                if(Math.hypot(gs.bx-ai.x,gs.by-ai.y)<14){
+                if(Math.hypot(gs.bx-ai.x,gs.by-ai.y)<14 && ai.role!=='gk'){
                     const ang=Math.atan2(ch/2-gs.by, 0-gs.bx)+(Math.random()-0.5)*0.5;
-                    gs.bvx=Math.cos(ang)*(4+Math.random()*5);
-                    gs.bvy=Math.sin(ang)*(4+Math.random()*5);
+                    gs.bvx=Math.cos(ang)*(7+Math.random()*7);
+                    gs.bvy=Math.sin(ang)*(7+Math.random()*7);
                 }
             });
 
@@ -2338,7 +2364,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             const playerDist=Math.hypot(gs.bx-gs.px,gs.by-gs.py);
             if(playerDist<16){
                 const ang=Math.atan2(gs.by-gs.py,gs.bx-gs.px);
-                gs.bvx+=Math.cos(ang)*3;gs.bvy+=Math.sin(ang)*3;
+                gs.bvx+=Math.cos(ang)*4.6;gs.bvy+=Math.sin(ang)*4.6;
             }
 
             // Cooldown de disparo
@@ -2372,8 +2398,8 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 
         function resetBall(gs,who){
             gs.bx=gs.cw/2;gs.by=gs.ch/2;gs.bvx=0;gs.bvy=0;gs.shooting=false;
-            if(who==='player_kick'){gs.bvx=3+Math.random()*2;}
-            else{gs.bvx=-(3+Math.random()*2);}
+            if(who==='player_kick'){gs.bvx=5+Math.random()*3;}
+            else{gs.bvx=-(5+Math.random()*3);}
         }
 
         function drawFrame(){
@@ -2382,7 +2408,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 
             // Césped
             const grad=ctx.createLinearGradient(0,0,cw,0);
-            grad.addColorStop(0,'#1a4a1a');grad.addColorStop(0.5,'#1e5820');grad.addColorStop(1,'#1a4a1a');
+            grad.addColorStop(0,'#22792a');grad.addColorStop(0.5,'#36ad3a');grad.addColorStop(1,'#197043');
             ctx.fillStyle=grad;ctx.fillRect(0,0,cw,ch);
 
             // Líneas del campo
@@ -2405,18 +2431,16 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 ctx.beginPath();ctx.moveTo(cw-32,ry);ctx.lineTo(cw-10,ry);ctx.stroke();
             }
 
-            // Jugador controlado (azul/color del NFT)
+            // Equipo del usuario: 6 jugadores (controlado + 5 compañeros)
             const pc1=gs.player.color1||'#1a6aff';
             const pc2=gs.player.color2||'#fff';
+            gs.teamPlayers.forEach(tm=>drawPlayerSprite(ctx,tm.x,tm.y,'#36c7ff','#fff',tm.label));
             drawPlayerSprite(ctx,gs.px,gs.py,pc1,pc2,'★');
 
-            // Jugadores IA rival
-            gs.aiPlayers.forEach((ai,i)=>{
-                drawPlayerSprite(ctx,ai.x,ai.y,'#cc2222','#fff',String(i+1));
+            // Equipo rival: 6 jugadores
+            gs.aiPlayers.forEach((ai)=>{
+                drawPlayerSprite(ctx,ai.x,ai.y,ai.role==='gk'?'#ff9f1c':'#ff4b5f','#fff',ai.label);
             });
-
-            // Portero rival
-            drawPlayerSprite(ctx,cw-22,gs.gkY,'#ff8800','#fff','P');
 
             // Pelota
             ctx.save();
@@ -2464,15 +2488,17 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         }
 
         function drawPlayerSprite(ctx,x,y,c1,c2,label){
-            // Sombra
-            ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(x,y+14,9,4,0,0,Math.PI*2);ctx.fill();
-            // Cuerpo
-            ctx.fillStyle=c1;ctx.beginPath();ctx.ellipse(x,y+5,9,13,0,0,Math.PI*2);ctx.fill();
-            // Cabeza
-            ctx.fillStyle='#FDBCB4';ctx.beginPath();ctx.arc(x,y-9,8,0,Math.PI*2);ctx.fill();
-            // Número/label
-            ctx.fillStyle=c2;ctx.font='bold 7px sans-serif';ctx.textAlign='center';
-            ctx.fillText(String(label),x,y+8);
+            // Estilo Pixar: silueta redondeada, ojos grandes y volumen suave
+            ctx.fillStyle='rgba(0,0,0,0.24)';ctx.beginPath();ctx.ellipse(x,y+16,13,5,0,0,Math.PI*2);ctx.fill();
+            const bodyGrad=ctx.createLinearGradient(x-10,y-8,x+10,y+20);
+            bodyGrad.addColorStop(0,'#ffffff');bodyGrad.addColorStop(0.18,c1);bodyGrad.addColorStop(1,'#123');
+            ctx.fillStyle=bodyGrad;ctx.beginPath();ctx.ellipse(x,y+6,11,15,0,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#ffd1b6';ctx.beginPath();ctx.arc(x,y-10,9,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='rgba(255,255,255,0.9)';ctx.beginPath();ctx.arc(x-3,y-12,2.3,0,Math.PI*2);ctx.arc(x+3,y-12,2.3,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#1b2430';ctx.beginPath();ctx.arc(x-3,y-12,1,0,Math.PI*2);ctx.arc(x+3,y-12,1,0,Math.PI*2);ctx.fill();
+            ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y+6,11,Math.PI*1.18,Math.PI*1.82);ctx.stroke();
+            ctx.fillStyle=c2;ctx.font='bold 8px Fredoka,sans-serif';ctx.textAlign='center';
+            ctx.fillText(String(label),x,y+9);
         }
 
         function roundRect2(ctx,x,y,w,h,r){
