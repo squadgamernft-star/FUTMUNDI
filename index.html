@@ -2926,11 +2926,25 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     async function comprarGemas(cantidad,usdtAmount){
-        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-deposito');openWalletModal();return;}
-        mostrarMensaje(`⏳ Procesando $${usdtAmount} USDT...`,'#00d4ff');
-        const tx=buildContractTx('deposito',usdtAmount);
-        try{await tonConnectUI.sendTransaction(tx);gemas+=cantidad;actualizarUI();mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');closeModal('modal-deposito');}
-        catch(e){mostrarMensaje('❌ Cancelado','#ff4444');}
+        closeModal('modal-deposito');
+        abrirPagoQR({
+            tipo:'deposito',
+            titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
+            descripcion:`Depósito de gemas. El pago se envía directamente al mismo contrato inteligente usado en torneo y entrenamiento.`,
+            usdt:usdtAmount,
+            onConfirmar:async()=>{
+                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
+                mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
+                const tx=buildContractTx('deposito',usdtAmount);
+                try{
+                    await tonConnectUI.sendTransaction(tx);
+                    gemas+=cantidad;
+                    actualizarUI();
+                    mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');
+                    return true;
+                }catch(e){mostrarMensaje('❌ Depósito cancelado','#ff4444');return false;}
+            }
+        });
     }
 
     // ── REFERIDOS ─────────────────────────────────────────────────────────
