@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -359,6 +359,59 @@
             h1 { font-size: 2.2em; }
             .video-canvas { height: 220px; }
         }
+
+        /* ════════ ESTÉTICA PIXAR (sutil) ════════ */
+        :root {
+            --pixar-cream: #fff7e6;
+            --pixar-soft: #ffd98a;
+            --pixar-sky: #6ad6ff;
+            --pixar-leaf: #66e07a;
+            --pixar-coral: #ff8c8c;
+        }
+        body { font-family: 'Fredoka', 'Rajdhani', sans-serif; letter-spacing: 0.2px; }
+        .word-btn, .tab-btn, .car-card-country, .equip-slot-label, .equip-bonus-row,
+        .stats-container, .title-sub, #status-msg, .modal-body p, .lang-option, .lang-toggle-btn {
+            font-family: 'Fredoka', 'Rajdhani', sans-serif !important;
+            letter-spacing: 0.3px;
+        }
+        .modal-title, .car-card-name, .fuel-count, .equip-bonus-val, .squad-slot-name {
+            font-family: 'Baloo 2', 'Orbitron', sans-serif !important;
+            letter-spacing: 1px !important;
+        }
+        h1 { font-family: 'Baloo 2', 'Bebas Neue', sans-serif !important; letter-spacing: 4px !important; font-weight: 800 !important; }
+        .primary-btn, .buy-car-btn { font-family: 'Baloo 2', 'Orbitron', sans-serif !important; letter-spacing: 1.5px !important; font-weight: 700 !important; }
+        .car-card { border-radius: 18px !important; box-shadow: 0 6px 18px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06); }
+        .car-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 28px rgba(0,255,136,0.18), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .car-card-img-wrap { border-radius: 14px 14px 4px 4px; }
+        .modal { border-radius: 26px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 80px rgba(106,214,255,0.1); }
+        .modal-header { border-radius: 26px 26px 0 0 !important; }
+        .primary-btn, .buy-car-btn, .word-btn { border-radius: 14px !important; }
+        .squad-slot { border-radius: 14px !important; }
+        .equip-slot { border-radius: 14px !important; transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease; }
+        .equip-slot:hover { transform: translateY(-3px) scale(1.03); }
+        .equip-slot.equipped { box-shadow: 0 6px 16px rgba(0,255,136,0.18); }
+        .tab-bar { border-radius: 14px !important; }
+        .tab-btn { border-radius: 11px !important; }
+        .equip-slot-icon { font-size: 1.9em !important; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4)); }
+        .squad-slot-empty-icon { transition: transform 0.2s; }
+        .squad-slot:hover .squad-slot-empty-icon { transform: scale(1.2) rotate(90deg); color: var(--pixar-sky); }
+        /* Modal selector de equipamiento */
+        .equip-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 10px; }
+        .equip-picker-card { background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 10px; cursor: pointer; transition: all 0.25s; text-align: center; position: relative; }
+        .equip-picker-card:hover { border-color: var(--green); transform: translateY(-4px); box-shadow: 0 10px 22px rgba(0,255,136,0.18); }
+        .equip-picker-card.is-equipped { border-color: var(--gold); background: rgba(255,215,0,0.08); }
+        .equip-picker-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; background: #0a130a; }
+        .equip-picker-card .epc-name { font-family: 'Baloo 2', sans-serif; font-size: 0.78em; font-weight: 700; color: #fff; margin-top: 6px; line-height: 1.1; }
+        .equip-picker-card .epc-bonus { font-size: 0.7em; color: var(--green); margin-top: 2px; font-weight: 600; }
+        .equip-picker-card .epc-badge { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); border-radius: 8px; padding: 2px 6px; font-size: 0.6em; color: var(--gold); font-weight: 800; }
+        .equip-picker-empty { padding: 30px 20px; text-align: center; color: #777; font-size: 0.9em; line-height: 1.5; }
+        .equip-picker-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .equip-picker-actions button { flex: 1; padding: 12px; border-radius: 12px; font-family: 'Baloo 2', sans-serif; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; border: 1px solid; font-size: 0.85em; }
+        .epa-clear { background: rgba(255,68,68,0.1); border-color: rgba(255,68,68,0.4); color: var(--red); }
+        .epa-clear:hover { background: rgba(255,68,68,0.25); }
+        .epa-close { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: #ccc; }
+        .epa-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .inv-empty-hint { padding: 24px; text-align: center; color: #666; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 14px; font-size: 0.9em; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -775,9 +828,36 @@
                         </div>
                     </div>
                 </div>
-                <div id="garage-cascos" class="tab-panel"><div class="coming-soon-box">⏳ Uniformes próximamente</div></div>
-                <div id="garage-guantes" class="tab-panel"><div class="coming-soon-box">⏳ Tenis próximamente</div></div>
-                <div id="garage-botas" class="tab-panel"><div class="coming-soon-box">⏳ Entrenadores próximamente</div></div>
+                <div id="garage-cascos" class="tab-panel">
+                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👕 Tus Uniformes NFT comprados. Selecciona un futbolista en la pestaña <strong style="color:var(--green)">Futbolistas</strong> y luego asígnale uno desde su panel de Equipamiento.</p>
+                    <div class="market-grid" id="garage-grid-uniformes"></div>
+                </div>
+                <div id="garage-guantes" class="tab-panel">
+                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👟 Tus Zapatillas NFT compradas. Asígnalas a tu futbolista para subir velocidad.</p>
+                    <div class="market-grid" id="garage-grid-tenis"></div>
+                </div>
+                <div id="garage-botas" class="tab-panel">
+                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">🏋️ Tus Entrenadores NFT comprados. Asigna uno a tu futbolista para activar su bonus.</p>
+                    <div class="market-grid" id="garage-grid-entrenadores"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Selector de equipamiento para asignar a NFT -->
+    <div class="modal-overlay" id="modal-equip-picker">
+        <div class="modal" style="max-width:600px">
+            <div class="modal-header">
+                <span class="modal-title" id="equip-picker-title">⚙️ Asignar Equipamiento</span>
+                <button class="modal-close" onclick="closeEquipPicker()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#888;font-size:0.86em;margin-bottom:6px;" id="equip-picker-subtitle">Elige uno de tu inventario</p>
+                <div id="equip-picker-content"></div>
+                <div class="equip-picker-actions">
+                    <button class="epa-clear" onclick="clearEquipSlot()">🗑️ Quitar</button>
+                    <button class="epa-close" onclick="closeEquipPicker()">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1219,6 +1299,8 @@
         localStorage.setItem('tg_ballones',JSON.stringify(ballonesPorJugador));
         localStorage.setItem('tg_equipamiento',JSON.stringify(_equipamiento));
         localStorage.setItem('tg_skill_counts',JSON.stringify(skillCounts));
+        localStorage.setItem('tg_inv_items',JSON.stringify(_itemsComprados));
+        localStorage.setItem('tg_inv_uniformes',JSON.stringify(_uniformesComprados));
     }
     function loadState(){
         gemas=parseFloat(localStorage.getItem('tg_gemas')||'3900');
@@ -1232,6 +1314,8 @@
         const b=localStorage.getItem('tg_ballones');if(b)ballonesPorJugador=JSON.parse(b);
         const eq=localStorage.getItem('tg_equipamiento');if(eq)_equipamiento=JSON.parse(eq);
         const sc=localStorage.getItem('tg_skill_counts');if(sc)skillCounts=JSON.parse(sc);
+        const inv=localStorage.getItem('tg_inv_items');if(inv){try{_itemsComprados=JSON.parse(inv);}catch(e){}}
+        const invu=localStorage.getItem('tg_inv_uniformes');if(invu){try{_uniformesComprados=JSON.parse(invu);}catch(e){}}
         nivel=calcularNivel();
     }
 
@@ -1351,6 +1435,11 @@
         { nombre:'Entrenador Alemania',  pais:'Alemania',  flag:'🇩🇪', bonus:35, precio:1250, img:'entrenador_alemania_35%_1250_gemas.png' },
         { nombre:'Entrenador Argentina', pais:'Argentina', flag:'🇦🇷', bonus:65, precio:3000, img:'entrenador_argentina_65%_3000_gemas.png' }
     ];
+    // Inventario de items comprados (zapatillas y entrenadores)
+    let _itemsComprados = { tenis:{}, entrenador:{} };
+    function getItemList(kind){ return kind==='tenis'?ZAPATILLAS:ENTRENADORES; }
+    function getItemKey(kind, idx){ return `${kind}_${idx}`; }
+    function getItemQty(kind, idx){ return (_itemsComprados[kind] && _itemsComprados[kind][idx]) || 0; }
     function itemImgUrl(name){ return ITEMS_BASE_URL + encodeURI(name); }
     function itemFallback(item){
         const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%2300ff88'/><stop offset='1' stop-color='%230a1a0a'/></linearGradient></defs><rect width='200' height='200' fill='url(%23g)'/><text x='100' y='120' font-size='90' text-anchor='middle' font-family='sans-serif'>${item.flag||'🎁'}</text></svg>`;
@@ -1358,11 +1447,14 @@
     }
     function renderItemGrid(gridId, list, kind){
         const el = document.getElementById(gridId); if(!el) return;
-        el.innerHTML = list.map((it,i)=>`
+        el.innerHTML = list.map((it,i)=>{
+            const owned = getItemQty(kind, i);
+            return `
             <div class="car-card">
                 <div class="car-card-img-wrap">
                     <img class="car-card-img" src="${itemImgUrl(it.img)}" alt="${it.nombre}" onerror="this.onerror=null;this.src=&quot;${itemFallback(it)}&quot;" style="object-fit:cover">
                     <div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">+${it.bonus}%</div>
+                    ${owned>0?`<div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:6px;padding:2px 7px;font-size:0.6em;color:var(--gold);font-weight:800">✅ ×${owned}</div>`:''}
                 </div>
                 <div class="car-card-info">
                     <div class="car-card-name">${it.nombre}</div>
@@ -1371,20 +1463,27 @@
                     <div class="car-card-price">💎 ${it.precio.toLocaleString()}</div>
                     <button class="buy-car-btn" onclick="comprarItem('${kind}',${i})">⚽ Comprar</button>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
     }
     function buildItemsMarket(){
         renderItemGrid('tenis-market-grid', ZAPATILLAS, 'tenis');
         renderItemGrid('entrenador-market-grid', ENTRENADORES, 'entrenador');
     }
     function comprarItem(kind, idx){
-        const list = kind==='tenis'?ZAPATILLAS:ENTRENADORES;
+        const list = getItemList(kind);
         const it = list[idx]; if(!it) return;
         if(gemas < it.precio){ mostrarMensaje(`❌ Faltan ${(it.precio-gemas).toFixed(1)} 💎`,'#ff4444'); return; }
         gemas -= it.precio;
+        if(!_itemsComprados[kind]) _itemsComprados[kind] = {};
+        _itemsComprados[kind][idx] = (_itemsComprados[kind][idx] || 0) + 1;
+        if(typeof saveState==='function') saveState();
         actualizarUI();
+        buildItemsMarket();
+        if(typeof buildGarageInventory==='function') buildGarageInventory();
         const md=document.getElementById('market-gemas-display'); if(md) md.textContent=gemas.toFixed(1)+' 💎';
-        mostrarMensaje(`✅ ${it.nombre} adquirido! Bonus +${it.bonus}% activo`,'#00ff88');
+        const tipo = kind==='tenis'?'👟 Zapatillas':'🏋️ Entrenador';
+        mostrarMensaje(`✅ ${tipo} "${it.nombre}" añadido a tu inventario! Asígnalo desde Mi Plantilla`,'#00ff88');
     }
 
     // ── MARKETPLACE ───────────────────────────────────────────────────────
@@ -1515,9 +1614,11 @@
         gemas -= u.precio;
         _uniformesComprados[id] = (_uniformesComprados[id] || 0) + 1;
         if (u.fisico) { hp += u.fisico; puntaje += Math.round(u.fisico / 10); }
+        if(typeof saveState==='function') saveState();
         actualizarUI();
         buildUniforms();
-        mostrarMensaje(`✅ ${u.nombre} comprado! ${u.fisico ? `+${u.fisico.toLocaleString()} pts físico` : u.bonus}`, '#00ff88');
+        if(typeof buildGarageInventory==='function') buildGarageInventory();
+        mostrarMensaje(`✅ ${u.nombre} añadido a tu inventario! ${u.fisico ? `+${u.fisico.toLocaleString()} pts físico` : u.bonus} · Asígnalo desde Mi Plantilla`, '#00ff88');
     }
 
     // ── LOGROS DE HABILIDADES ─────────────────────────────────────────────
@@ -1651,21 +1752,219 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         while(slotNum<20){html+=`<div class="squad-slot" onclick="closeModal('modal-garage');openModal('modal-marketplace')"><div class="squad-slot-empty-icon">➕</div><div style="font-size:0.55em;color:#333">Slot ${slotNum+1}</div></div>`;slotNum++;}
         $id('garage-grid-vehicles').innerHTML=html;
         updateEquipPanel();
+        buildGarageInventory();
     }
     function selectSquadSlot(idx,copy){_selectedSquadSlot={idx,copy};buildGarage();}
+
+    // ── INVENTARIO EN GARAGE (Uniformes / Tenis / Entrenadores) ──────────
+    function buildGarageInventory(){
+        // UNIFORMES
+        const gu = $id('garage-grid-uniformes');
+        if(gu){
+            const owned = UNIFORMES.filter(u => (_uniformesComprados[u.id]||0) > 0);
+            if(owned.length===0){
+                gu.innerHTML = `<div class="inv-empty-hint" style="grid-column:1/-1">👕 Aún no tienes uniformes.<br>Cómpralos en el <strong style="color:var(--green)">Marketplace → Uniformes</strong>.</div>`;
+            } else {
+                gu.innerHTML = owned.map(u => `
+                    <div class="car-card" style="border-color:${u.tierBorder};background:${u.tierBg};">
+                        <div class="car-card-img-wrap">
+                            <img class="car-card-img" src="${u.img}" alt="${u.nombre}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';" style="object-fit:cover;aspect-ratio:3/4;">
+                            <div style="display:none;width:100%;aspect-ratio:3/4;align-items:center;justify-content:center;font-size:3.5em;background:#0a130a;">${u.emoji}</div>
+                            <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:6px;padding:2px 7px;font-size:0.6em;color:var(--gold);font-weight:800">×${_uniformesComprados[u.id]}</div>
+                        </div>
+                        <div class="car-card-info">
+                            <div class="car-card-name" style="color:${u.tierColor}">${u.nombre}</div>
+                            <div style="font-size:0.7em;color:var(--green);margin:3px 0;font-weight:700">${u.fisico?`💪 +${u.fisico} físico`:`⭐ ${u.bonus}`}</div>
+                            <button class="buy-car-btn" onclick="quickAssignFromInventory('uniforme','${u.id}')" style="border-color:${u.tierBorder};color:${u.tierColor}">⚙️ Asignar</button>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+        // ZAPATILLAS
+        const gt = $id('garage-grid-tenis');
+        if(gt){
+            const owned = ZAPATILLAS.map((it,i)=>({it,i,qty:getItemQty('tenis',i)})).filter(x=>x.qty>0);
+            if(owned.length===0){
+                gt.innerHTML = `<div class="inv-empty-hint" style="grid-column:1/-1">👟 Aún no tienes zapatillas.<br>Cómpralas en el <strong style="color:var(--green)">Marketplace → Tenis</strong>.</div>`;
+            } else {
+                gt.innerHTML = owned.map(({it,i,qty})=>`
+                    <div class="car-card">
+                        <div class="car-card-img-wrap">
+                            <img class="car-card-img" src="${itemImgUrl(it.img)}" alt="${it.nombre}" onerror="this.onerror=null;this.src=&quot;${itemFallback(it)}&quot;" style="object-fit:cover">
+                            <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:6px;padding:2px 7px;font-size:0.6em;color:var(--gold);font-weight:800">×${qty}</div>
+                        </div>
+                        <div class="car-card-info">
+                            <div class="car-card-name">${it.nombre}</div>
+                            <div style="font-size:0.7em;color:var(--green);margin:3px 0;font-weight:700">⚡ +${it.bonus}% rendimiento</div>
+                            <button class="buy-car-btn" onclick="quickAssignFromInventory('tenis','${i}')">⚙️ Asignar</button>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+        // ENTRENADORES
+        const ge = $id('garage-grid-entrenadores');
+        if(ge){
+            const owned = ENTRENADORES.map((it,i)=>({it,i,qty:getItemQty('entrenador',i)})).filter(x=>x.qty>0);
+            if(owned.length===0){
+                ge.innerHTML = `<div class="inv-empty-hint" style="grid-column:1/-1">🏋️ Aún no tienes entrenadores.<br>Cómpralos en el <strong style="color:var(--green)">Marketplace → Entrenadores</strong>.</div>`;
+            } else {
+                ge.innerHTML = owned.map(({it,i,qty})=>`
+                    <div class="car-card">
+                        <div class="car-card-img-wrap">
+                            <img class="car-card-img" src="${itemImgUrl(it.img)}" alt="${it.nombre}" onerror="this.onerror=null;this.src=&quot;${itemFallback(it)}&quot;" style="object-fit:cover">
+                            <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:6px;padding:2px 7px;font-size:0.6em;color:var(--gold);font-weight:800">×${qty}</div>
+                        </div>
+                        <div class="car-card-info">
+                            <div class="car-card-name">${it.nombre}</div>
+                            <div style="font-size:0.7em;color:var(--green);margin:3px 0;font-weight:700">${it.flag} +${it.bonus}% bonus</div>
+                            <button class="buy-car-btn" onclick="quickAssignFromInventory('protector','${i}')">⚙️ Asignar</button>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+    }
+    function quickAssignFromInventory(type, id){
+        // Cambia a tab Futbolistas y abre el picker enfocado
+        if(!_selectedSquadSlot){
+            switchTabById('garage','vehiculos');
+            mostrarMensaje('⚠️ Primero selecciona un futbolista en la pestaña Futbolistas','#ffaa00');
+            return;
+        }
+        switchTabById('garage','vehiculos');
+        openEquipModal(type);
+    }
+    function switchTabById(group, name){
+        document.querySelectorAll(`#modal-${group} .tab-btn`).forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll(`#modal-${group} .tab-panel`).forEach(p=>p.classList.remove('active'));
+        const panel = document.getElementById(`${group}-${name}`); if(panel) panel.classList.add('active');
+        // Active button
+        const btns = document.querySelectorAll(`#modal-${group} .tab-btn`);
+        btns.forEach(b=>{ if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active'); });
+    }
     function updateEquipPanel(){
         const preview=$id('equip-preview');const nameEl=$id('equip-player-name');
         if(!_selectedSquadSlot){preview.innerHTML='<div class="equipment-player-placeholder">🧑</div>';nameEl.textContent='Selecciona un jugador';$id('eb-ovr').textContent='0';$id('eb-spd').textContent='+0%';$id('eb-def').textContent='+0%';$id('eb-gems').textContent='—';return;}
         const{idx,copy}=_selectedSquadSlot;const c=PLAYERS[idx];const key=slotKey(idx,copy);const eq=_equipamiento[key]||{};
-        preview.innerHTML=`<img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">`
+        preview.innerHTML=`<img class="equipment-player-img" src="${playerImgSrc(idx)}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'">`;
         nameEl.textContent=`${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''} · OVR ${c.hp}`;
-        ['uniforme','tenis','protector'].forEach(type=>{const slotEl=$id(`equip-slot-${type}`);const nameSlotEl=$id(`equip-${type}-name`);if(eq[type]){slotEl.classList.add('equipped');nameSlotEl.textContent=eq[type];nameSlotEl.style.color='var(--green)';}else{slotEl.classList.remove('equipped');nameSlotEl.textContent='— Vacío —';nameSlotEl.style.color='#555';}});
-        const bonuses={spd:0,def:0};if(eq.uniforme)bonuses.spd+=3;if(eq.tenis)bonuses.spd+=2;if(eq.protector)bonuses.def+=4;
-        $id('eb-ovr').textContent=c.hp+Object.values(bonuses).reduce((a,b)=>a+b,0);
+        ['uniforme','tenis','protector'].forEach(type=>{
+            const slotEl=$id(`equip-slot-${type}`);const nameSlotEl=$id(`equip-${type}-name`);
+            const equipped = eq[type];
+            if(equipped){
+                slotEl.classList.add('equipped');
+                nameSlotEl.textContent = equipped.nombre || equipped;
+                nameSlotEl.style.color='var(--green)';
+            } else {
+                slotEl.classList.remove('equipped');
+                nameSlotEl.textContent='— Vacío —';
+                nameSlotEl.style.color='#555';
+            }
+        });
+        // Calcular bonos a partir de items reales
+        const bonuses={spd:0,def:0,phy:0};
+        if(eq.tenis && typeof eq.tenis==='object') bonuses.spd += Math.round(eq.tenis.bonus||0);
+        if(eq.protector && typeof eq.protector==='object') bonuses.def += Math.round((eq.protector.bonus||0)*0.6);
+        if(eq.uniforme && typeof eq.uniforme==='object' && eq.uniforme.fisico) bonuses.phy += Math.round(eq.uniforme.fisico/100);
+        $id('eb-ovr').textContent=c.hp + bonuses.spd + bonuses.def + bonuses.phy;
         $id('eb-spd').textContent=`+${bonuses.spd}%`;$id('eb-def').textContent=`+${bonuses.def}%`;
         $id('eb-gems').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
     }
-    function openEquipModal(type){if(!_selectedSquadSlot){mostrarMensaje('⚠️ Selecciona un jugador primero','#ffaa00');return;}mostrarMensaje(`🔜 Equipamiento "${type}" — próximamente`,'#00d4ff');}
+
+    // ── PICKER DE EQUIPAMIENTO ────────────────────────────────────────────
+    let _equipPickerType = null;
+    function openEquipModal(type){
+        if(!_selectedSquadSlot){ mostrarMensaje('⚠️ Selecciona un jugador primero','#ffaa00'); return; }
+        _equipPickerType = type;
+        const titleMap = { uniforme:'👕 Asignar Uniforme', tenis:'👟 Asignar Zapatillas', protector:'🏋️ Asignar Entrenador' };
+        $id('equip-picker-title').textContent = titleMap[type] || '⚙️ Equipamiento';
+        const {idx, copy} = _selectedSquadSlot;
+        const c = PLAYERS[idx];
+        $id('equip-picker-subtitle').textContent = `Para: ${c.flag} ${c.nombre}${copy>0?' #'+(copy+1):''}`;
+        renderEquipPicker(type);
+        $id('modal-equip-picker').classList.add('active');
+    }
+    function renderEquipPicker(type){
+        const key = slotKey(_selectedSquadSlot.idx, _selectedSquadSlot.copy);
+        const eq = _equipamiento[key] || {};
+        const currentId = eq[type] && (eq[type].id != null ? String(eq[type].id) : null);
+        let cards = [];
+        if(type === 'uniforme'){
+            UNIFORMES.forEach(u => {
+                const qty = _uniformesComprados[u.id] || 0;
+                if(qty > 0) cards.push({
+                    id: u.id, name: u.nombre, bonusText: u.fisico?`💪 +${u.fisico} físico`:`⭐ ${u.bonus}`,
+                    img: u.img, qty, fallbackEmoji: u.emoji
+                });
+            });
+        } else if(type === 'tenis'){
+            ZAPATILLAS.forEach((it, i) => {
+                const qty = getItemQty('tenis', i);
+                if(qty > 0) cards.push({ id: String(i), name: it.nombre, bonusText: `⚡ +${it.bonus}% velocidad`, img: itemImgUrl(it.img), qty, fallbackImg: itemFallback(it) });
+            });
+        } else if(type === 'protector'){
+            ENTRENADORES.forEach((it, i) => {
+                const qty = getItemQty('entrenador', i);
+                if(qty > 0) cards.push({ id: String(i), name: it.nombre, bonusText: `${it.flag} +${it.bonus}% bonus`, img: itemImgUrl(it.img), qty, fallbackImg: itemFallback(it) });
+            });
+        }
+        const wrap = $id('equip-picker-content');
+        if(cards.length === 0){
+            const linkTxt = type==='uniforme'?'Uniformes':type==='tenis'?'Tenis':'Entrenadores';
+            wrap.innerHTML = `<div class="equip-picker-empty">📦 No tienes ${linkTxt} en tu inventario.<br><br>Ve al <strong style="color:var(--green)">Marketplace → ${linkTxt}</strong> para comprarlos.</div>`;
+            return;
+        }
+        wrap.innerHTML = `<div class="equip-picker-grid">${cards.map(c => {
+            const isEq = currentId === c.id;
+            const fallback = c.fallbackImg ? `onerror="this.onerror=null;this.src='${c.fallbackImg.replace(/'/g,"\\'")}'"` : `onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML+='<div style=&quot;font-size:3em;padding:20px&quot;>${c.fallbackEmoji||'🎁'}</div>'"`;
+            return `<div class="equip-picker-card ${isEq?'is-equipped':''}" onclick="assignEquip('${c.id}')">
+                <div style="position:relative">
+                    <img src="${c.img}" alt="${c.name}" ${fallback}>
+                    <div class="epc-badge">×${c.qty}</div>
+                    ${isEq?`<div style="position:absolute;bottom:6px;left:6px;background:var(--gold);color:#000;border-radius:6px;padding:2px 6px;font-size:0.6em;font-weight:800">EQUIPADO</div>`:''}
+                </div>
+                <div class="epc-name">${c.name}</div>
+                <div class="epc-bonus">${c.bonusText}</div>
+            </div>`;
+        }).join('')}</div>`;
+    }
+    function assignEquip(id){
+        if(!_selectedSquadSlot || !_equipPickerType) return;
+        const key = slotKey(_selectedSquadSlot.idx, _selectedSquadSlot.copy);
+        if(!_equipamiento[key]) _equipamiento[key] = {};
+        let item = null;
+        if(_equipPickerType === 'uniforme'){
+            const u = UNIFORMES.find(x => x.id === id);
+            if(u) item = { id: u.id, nombre: u.nombre, fisico: u.fisico, bonus: 0 };
+        } else if(_equipPickerType === 'tenis'){
+            const it = ZAPATILLAS[parseInt(id,10)];
+            if(it) item = { id: id, nombre: it.nombre, bonus: it.bonus };
+        } else if(_equipPickerType === 'protector'){
+            const it = ENTRENADORES[parseInt(id,10)];
+            if(it) item = { id: id, nombre: it.nombre, bonus: it.bonus };
+        }
+        if(!item) return;
+        _equipamiento[key][_equipPickerType] = item;
+        if(typeof saveState==='function') saveState();
+        updateEquipPanel();
+        renderEquipPicker(_equipPickerType);
+        mostrarMensaje(`✅ ${item.nombre} equipado`,'#00ff88');
+        setTimeout(()=>closeEquipPicker(), 600);
+    }
+    function clearEquipSlot(){
+        if(!_selectedSquadSlot || !_equipPickerType) return;
+        const key = slotKey(_selectedSquadSlot.idx, _selectedSquadSlot.copy);
+        if(_equipamiento[key] && _equipamiento[key][_equipPickerType]){
+            delete _equipamiento[key][_equipPickerType];
+            if(typeof saveState==='function') saveState();
+            updateEquipPanel();
+            renderEquipPicker(_equipPickerType);
+            mostrarMensaje(`🗑️ Equipamiento removido`,'#ffaa00');
+        }
+    }
+    function closeEquipPicker(){
+        const m = $id('modal-equip-picker'); if(m) m.classList.remove('active');
+        _equipPickerType = null;
+    }
 
     // ── PLAYER DETAIL ─────────────────────────────────────────────────────
     function openCarDetail(idx,fromGarage,copy=0){
