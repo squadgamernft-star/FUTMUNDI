@@ -1448,7 +1448,7 @@
             descripcion:`Inscripción al torneo. El pago se envía directamente al contrato inteligente.`,
             usdt:COSTO_TORNEO_USDT,
             onConfirmar:async()=>{
-                if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');tonConnectUI.openModal();return false;}
+                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
                 const tx=buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
@@ -2875,7 +2875,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             descripcion:`Restaura durabilidad al 100% y aplica bonus de rendimiento progresivo.`,
             usdt:costo,
             onConfirmar:async()=>{
-                if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');tonConnectUI.openModal();return false;}
+                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
                 const tx=buildContractTx('entrenamiento',costo);
                 try{
@@ -2926,7 +2926,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     async function comprarGemas(cantidad,usdtAmount){
-        if(!window.tonConnectUI||!tonConnectUI.connected){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-deposito');tonConnectUI.openModal();return;}
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');closeModal('modal-deposito');openWalletModal();return;}
         mostrarMensaje(`⏳ Procesando $${usdtAmount} USDT...`,'#00d4ff');
         const tx=buildContractTx('deposito',usdtAmount);
         try{await tonConnectUI.sendTransaction(tx);gemas+=cantidad;actualizarUI();mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');closeModal('modal-deposito');}
@@ -3085,7 +3085,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     // ── TONCONNECT ────────────────────────────────────────────────────────
     let tonConnectUI;
-    try{tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});tonConnectUI.onStatusChange(w=>mostrarMensaje(w?'✅ Wallet conectada':'Wallet desconectada',w?'#00ff88':'#888'));}
+    function getConnectedWallet(){return tonConnectUI?.wallet||tonConnectUI?.account||tonConnectUI?.walletInfo||null;}
+    function isWalletConnected(){return Boolean(window.tonConnectUI&&(tonConnectUI.connected||getConnectedWallet()?.account?.address||getConnectedWallet()?.address));}
+    function openWalletModal(){if(window.tonConnectUI&&typeof tonConnectUI.openModal==='function')tonConnectUI.openModal();}
+    try{tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});window.tonConnectUI=tonConnectUI;tonConnectUI.onStatusChange(w=>mostrarMensaje(w?'✅ Wallet conectada':'Wallet desconectada',w?'#00ff88':'#888'));}
     catch(e){console.warn('TonConnect no disponible:',e);}
 
     // ── TELEGRAM ──────────────────────────────────────────────────────────
