@@ -1315,7 +1315,7 @@
 
     function getPlayerEntry(idx){return carrosComprados.find(e=>e.idx===idx);}
     function getPlayerQty(idx){const e=getPlayerEntry(idx);return e?e.qty:0;}
-    function generatePlayerId(idx,copy=0){return 'FM-'+String(2025000+idx*137+copy*31+43).padStart(8,'0');}
+    function generatePlayerId(idx,copy=0){return 'FM-'+String(200+idx*137+copy*31+43).padStart(8,'0');}
     function getSlotEquip(idx,copy){return (_equipamiento && _equipamiento[slotKey(idx,copy)]) || {};}
     function getEquipBonuses(eq){
         const bonuses={spd:0,def:0,phy:0,count:0};
@@ -1346,7 +1346,7 @@
         localStorage.setItem('tg_inv_uniformes',JSON.stringify(_uniformesComprados));
     }
     function loadState(){
-        gemas=Math.max(25000, parseFloat(localStorage.getItem('tg_gemas')||'25000'));
+        gemas=Math.max(0, parseFloat(localStorage.getItem('tg_gemas')||'0'));
         hp=parseInt(localStorage.getItem('tg_hp')||'0');
         puntaje=parseInt(localStorage.getItem('tg_puntaje')||'0');
         statsPartidas=parseInt(localStorage.getItem('tg_stats_partidas')||'0');
