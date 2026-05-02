@@ -42,6 +42,7 @@
         .lang-option:hover { background: rgba(0,212,255,0.08); color: #fff; }
         .lang-option.active { color: var(--cyan); background: rgba(0,212,255,0.05); }
         .top-bar { padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.75); border-bottom: 1px solid rgba(45,122,31,0.4); backdrop-filter: blur(14px); flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 100; }
+        .top-bar-row2 { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
         .stats-container { display: flex; gap: 18px; flex-wrap: wrap; color: #888; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.8px; }
         .stats-container span { display: flex; align-items: center; gap: 5px; }
         .stats-container strong { color: var(--green); font-weight: 700; font-size: 1.1em; text-shadow: 0 0 8px rgba(0,255,136,0.4); }
@@ -76,26 +77,27 @@
         #status-msg { margin-top: 10px; font-size: 0.95em; color: #888; min-height: 20px; text-align: center; padding: 6px; font-weight: 600; }
 
         /* ── MOBILE LAYOUT: hero compacto + grid de botones ── */
-        .mobile-layout { display: none; width: 100%; flex-direction: column; align-items: center; gap: 14px; }
-        .mobile-hero-row { display: flex; align-items: flex-start; gap: 14px; width: 100%; }
-        .mobile-hero-img-wrap { position: relative; flex-shrink: 0; width: 110px; border-radius: 14px; border: 2px solid rgba(45,122,31,0.7); box-shadow: 0 0 24px rgba(45,122,31,0.5); overflow: hidden; background: #000; }
-        .mobile-hero-img-wrap::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 16px; background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green)); z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.6; }
-        .mobile-hero-img-wrap img { width: 100%; display: block; object-fit: cover; border-radius: 12px; }
-        .mobile-stats-panel { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .mobile-fuel-display { display: flex; align-items: center; gap: 8px; background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.25); border-radius: 12px; padding: 10px 14px; }
-        .mobile-fuel-num { font-family: 'Orbitron', sans-serif; font-size: 1.6em; font-weight: 900; color: var(--green); text-shadow: 0 0 12px rgba(0,255,136,0.6); }
-        .mobile-fuel-label { font-size: 0.7em; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-        .mobile-action-btn { padding: 10px 14px; background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12)); border: 1px solid rgba(45,122,31,0.7); color: var(--green); border-radius: 10px; font-weight: 700; font-size: 0.82em; font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; width: 100%; text-align: center; transition: all 0.25s; }
-        .mobile-action-btn:hover { background: rgba(45,122,31,0.3); color: #fff; }
-        .mobile-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; width: 100%; }
-        .mobile-menu-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(45,122,31,0.25); border-radius: 12px; padding: 12px 8px; color: #ccc; font-size: 0.88em; font-weight: 600; font-family: 'Fredoka', 'Rajdhani', sans-serif; cursor: pointer; text-align: center; transition: all 0.25s; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 5px; min-height: 52px; }
-        .mobile-menu-btn:active { transform: scale(0.97); background: rgba(45,122,31,0.2); border-color: rgba(45,122,31,0.6); color: #fff; }
-        .mobile-menu-btn .btn-emoji { font-size: 1.15em; }
-        .mobile-menu-btn.btn-accent-cyan { border-color: rgba(0,212,255,0.3); color: var(--cyan); }
-        .mobile-menu-btn.btn-accent-gold { border-color: rgba(255,215,0,0.3); color: var(--gold); }
-        .mobile-menu-btn.btn-accent-orange { border-color: rgba(255,159,28,0.3); color: var(--orange); }
-        .mobile-menu-btn.btn-accent-purple { border-color: rgba(181,108,255,0.3); color: var(--purple); }
-        .mobile-menu-btn.btn-futcancha { background: linear-gradient(135deg, rgba(45,122,31,0.2), rgba(0,200,80,0.1)); border-color: rgba(45,122,31,0.7); color: var(--green); font-family: 'Orbitron', sans-serif; font-size: 0.78em; letter-spacing: 1px; grid-column: span 2; min-height: 48px; }
+        .mobile-layout { display: none; width: 100%; flex-direction: column; align-items: center; gap: 10px; }
+        .mobile-hero-row { display: flex; align-items: flex-start; gap: 11px; width: 100%; }
+        .mobile-hero-img-wrap { position: relative; flex-shrink: 0; width: 100px; border-radius: 12px; border: 2px solid rgba(45,122,31,0.7); box-shadow: 0 0 20px rgba(45,122,31,0.5); overflow: hidden; background: #000; }
+        .mobile-hero-img-wrap::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 14px; background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green)); z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.6; }
+        .mobile-hero-img-wrap img { width: 100%; display: block; object-fit: cover; border-radius: 10px; }
+        .mobile-stats-panel { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+        .mobile-fuel-display { display: flex; align-items: center; gap: 7px; background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.25); border-radius: 10px; padding: 8px 12px; }
+        .mobile-fuel-num { font-family: 'Orbitron', sans-serif; font-size: 1.4em; font-weight: 900; color: var(--green); text-shadow: 0 0 10px rgba(0,255,136,0.6); }
+        .mobile-fuel-label { font-size: 0.65em; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+        .mobile-action-btn { padding: 8px 12px; background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12)); border: 1px solid rgba(45,122,31,0.7); color: var(--green); border-radius: 9px; font-weight: 700; font-size: 0.78em; font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase; letter-spacing: 1.2px; width: 100%; text-align: center; transition: all 0.25s; }
+        .mobile-action-btn:active { background: rgba(45,122,31,0.35); color: #fff; }
+        /* Grid 3 columnas para botones más compactos */
+        .mobile-menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; width: 100%; }
+        .mobile-menu-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(45,122,31,0.22); border-radius: 10px; padding: 9px 4px 8px; color: #ccc; font-size: 0.72em; font-weight: 600; font-family: 'Fredoka', 'Rajdhani', sans-serif; cursor: pointer; text-align: center; transition: all 0.2s; letter-spacing: 0.2px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 54px; }
+        .mobile-menu-btn:active { transform: scale(0.95); background: rgba(45,122,31,0.18); border-color: rgba(45,122,31,0.55); color: #fff; }
+        .mobile-menu-btn .btn-emoji { font-size: 1.35em; line-height: 1; }
+        .mobile-menu-btn .btn-label { line-height: 1.1; }
+        .mobile-menu-btn.btn-accent-cyan { border-color: rgba(0,212,255,0.25); color: var(--cyan); }
+        .mobile-menu-btn.btn-accent-gold { border-color: rgba(255,215,0,0.25); color: var(--gold); }
+        .mobile-menu-btn.btn-accent-orange { border-color: rgba(255,159,28,0.25); color: var(--orange); }
+        .mobile-menu-btn.btn-accent-purple { border-color: rgba(181,108,255,0.25); color: var(--purple); }
 
         .fuel-section { width: 100%; }
         .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
@@ -389,27 +391,67 @@
         /* ── MOBILE: activar layout compacto para mini app Telegram ── */
         @media (max-width: 640px) {
             body { min-height: 100dvh; }
-            .main-content { padding: 12px 12px 20px; }
+            .main-content { padding: 10px 11px 18px; }
             /* Ocultar layout desktop, mostrar mobile */
             .layout-grid { display: none !important; }
             .mobile-layout { display: flex !important; }
             /* Header compacto */
-            .title-container { margin-bottom: 10px; }
-            h1 { font-size: 2em; letter-spacing: 4px; }
-            .title-sub { font-size: 0.72em; letter-spacing: 1.5px; }
-            /* Top bar compacto */
-            .top-bar { padding: 8px 14px; gap: 8px; flex-wrap: nowrap; justify-content: space-between; }
-            .stats-container { gap: 8px; font-size: 0.74em; flex-wrap: nowrap; overflow-x: auto; }
-            .stats-container span { white-space: nowrap; }
+            .title-container { margin-bottom: 8px; }
+            h1 { font-size: 1.85em; letter-spacing: 3px; }
+            .title-sub { font-size: 0.68em; letter-spacing: 1.5px; margin-top: 2px; }
+            /* Top bar: dos filas en móvil */
+            .top-bar {
+                padding: 6px 12px;
+                gap: 0;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            /* Fila 1: stats en píldoras */
+            .stats-container {
+                display: flex;
+                flex-wrap: nowrap;
+                gap: 5px;
+                font-size: 0.7em;
+                justify-content: flex-start;
+                padding-bottom: 6px;
+                border-bottom: 1px solid rgba(45,122,31,0.2);
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .stats-container::-webkit-scrollbar { display: none; }
+            .stats-container span {
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(45,122,31,0.2);
+                border-radius: 20px;
+                padding: 3px 9px;
+                white-space: nowrap;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                gap: 3px;
+            }
+            /* Fila 2: wallet + referidos + ton-connect */
+            .top-bar-row2 {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                padding-top: 6px;
+                justify-content: flex-end;
+            }
+            /* Ocultar el botón Referidos del top-bar en móvil (está en el grid) */
+            .top-bar > button.lang-toggle-btn { display: none; }
+            /* Wallet badge más compacto */
+            #wallet-addr-badge { font-size: 0.65em !important; padding: 3px 9px !important; max-width: 110px !important; }
             .lang-bar { padding: 4px 12px; }
-            #status-msg { margin-top: 6px; font-size: 0.85em; min-height: 16px; }
+            #status-msg { margin-top: 4px; font-size: 0.82em; min-height: 14px; }
         }
         @media (max-width: 400px) {
-            h1 { font-size: 1.7em; }
-            .mobile-hero-img-wrap { width: 95px; }
-            .mobile-menu-btn { font-size: 0.82em; padding: 10px 6px; min-height: 48px; }
-            .top-bar { padding: 6px 10px; }
-            .stats-container { font-size: 0.68em; gap: 6px; }
+            h1 { font-size: 1.6em; }
+            .mobile-hero-img-wrap { width: 88px; }
+            .mobile-menu-btn { font-size: 0.68em; padding: 8px 3px 7px; min-height: 50px; }
+            .mobile-menu-btn .btn-emoji { font-size: 1.25em; }
+            .top-bar { padding: 5px 10px; }
+            .stats-container { font-size: 0.65em; gap: 4px; }
         }
 
         /* ════════ ESTÉTICA PIXAR (sutil) ════════ */
@@ -501,12 +543,14 @@
             <span>🏆&nbsp;<strong id="gasolina">—</strong></span>
             <span>OVR&nbsp;<strong id="hp-stat">0</strong></span>
         </div>
-        <button class="lang-toggle-btn" style="background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border-color:rgba(168,85,247,0.5);color:#fff;" onclick="openModal('modal-referidos');buildReferidosUI();" data-i18n="referidos_btn">👥 Referidos</button>
-        <div id="wallet-addr-badge" style="display:none;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:4px 12px;font-size:0.72em;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;box-shadow:0 0 6px var(--green)"></span>
-            <span id="wallet-addr-text">—</span>
+        <div class="top-bar-row2">
+            <button class="lang-toggle-btn" style="background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border-color:rgba(168,85,247,0.5);color:#fff;" onclick="openModal('modal-referidos');buildReferidosUI();" data-i18n="referidos_btn">👥 Referidos</button>
+            <div id="wallet-addr-badge" style="display:none;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:4px 12px;font-size:0.72em;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;box-shadow:0 0 6px var(--green)"></span>
+                <span id="wallet-addr-text">—</span>
+            </div>
+            <div id="ton-connect-button"></div>
         </div>
-        <div id="ton-connect-button"></div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -579,20 +623,20 @@
                 </div>
             </div>
 
-            <!-- Grid 2×6 de todas las acciones -->
+            <!-- Grid 3×4 de todas las acciones — más compacto -->
             <div class="mobile-menu-grid">
-                <button class="mobile-menu-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas"><span class="btn-emoji">👕</span> Futbolistas</button>
-                <button class="mobile-menu-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace"><span class="btn-emoji">🏪</span> Marketplace</button>
-                <button class="mobile-menu-btn btn-accent-gold" onclick="openModal('modal-recompensa-pts')" data-i18n="menu_recompensas"><span class="btn-emoji">⚽</span> Recompensas</button>
-                <button class="mobile-menu-btn btn-accent-cyan" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria"><span class="btn-emoji">🎁</span> Recompensa Diaria</button>
-                <button class="mobile-menu-btn btn-accent-purple" onclick="openModal('modal-logros')" data-i18n="menu_logros"><span class="btn-emoji">🏅</span> Logros</button>
-                <button class="mobile-menu-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel"><span class="btn-emoji">⬆️</span> Nivel</button>
-                <button class="mobile-menu-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo"><span class="btn-emoji">🏆</span> Torneo</button>
-                <button class="mobile-menu-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking"><span class="btn-emoji">📊</span> Ranking</button>
-                <button class="mobile-menu-btn btn-accent-orange" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento"><span class="btn-emoji">🏋️</span> Entrenamiento</button>
-                <button class="mobile-menu-btn btn-accent-gold" onclick="openModal('modal-deposito')" data-i18n="menu_deposito"><span class="btn-emoji">💎</span> Depósito</button>
-                <button class="mobile-menu-btn btn-accent-cyan" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro"><span class="btn-emoji">💸</span> Retiro</button>
-                <button class="mobile-menu-btn btn-accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();"><span class="btn-emoji">👥</span> Referidos</button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas"><span class="btn-emoji">👕</span><span class="btn-label">Futbolistas</span></button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace"><span class="btn-emoji">🏪</span><span class="btn-label">Marketplace</span></button>
+                <button class="mobile-menu-btn btn-accent-gold" onclick="openModal('modal-recompensa-pts')" data-i18n="menu_recompensas"><span class="btn-emoji">⚽</span><span class="btn-label">Recompensas</span></button>
+                <button class="mobile-menu-btn btn-accent-cyan" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria"><span class="btn-emoji">🎁</span><span class="btn-label">Rec. Diaria</span></button>
+                <button class="mobile-menu-btn btn-accent-purple" onclick="openModal('modal-logros')" data-i18n="menu_logros"><span class="btn-emoji">🏅</span><span class="btn-label">Logros</span></button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel"><span class="btn-emoji">⬆️</span><span class="btn-label">Nivel</span></button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo"><span class="btn-emoji">🏆</span><span class="btn-label">Torneo</span></button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking"><span class="btn-emoji">📊</span><span class="btn-label">Ranking</span></button>
+                <button class="mobile-menu-btn btn-accent-orange" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento"><span class="btn-emoji">🏋️</span><span class="btn-label">Entrena.</span></button>
+                <button class="mobile-menu-btn btn-accent-gold" onclick="openModal('modal-deposito')" data-i18n="menu_deposito"><span class="btn-emoji">💎</span><span class="btn-label">Depósito</span></button>
+                <button class="mobile-menu-btn btn-accent-cyan" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro"><span class="btn-emoji">💸</span><span class="btn-label">Retiro</span></button>
+                <button class="mobile-menu-btn btn-accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();"><span class="btn-emoji">👥</span><span class="btn-label">Referidos</span></button>
             </div>
         </div>
 
