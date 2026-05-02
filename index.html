@@ -46,12 +46,14 @@
         .stats-container span { display: flex; align-items: center; gap: 5px; }
         .stats-container strong { color: var(--green); font-weight: 700; font-size: 1.1em; text-shadow: 0 0 8px rgba(0,255,136,0.4); }
         #ton-connect-button { z-index: 1000; }
-        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 25px 20px 40px; width: 100%; max-width: 1100px; margin: 0 auto; }
-        .title-container { text-align: center; margin-bottom: 35px; }
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 16px 14px 30px; width: 100%; max-width: 1100px; margin: 0 auto; }
+        .title-container { text-align: center; margin-bottom: 16px; }
         h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3.2em; font-weight: 400; background: linear-gradient(90deg, var(--green), #7fff00, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 8px; line-height: 1; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .h1-ball { display: inline-block; -webkit-text-fill-color: initial; background: none; font-size: 0.85em; animation: spinBall 4s linear infinite; filter: drop-shadow(0 0 10px rgba(0,255,136,0.6)); }
         @keyframes spinBall { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
         .title-sub { font-size: 0.82em; color: #888; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+
+        /* ── DESKTOP layout: imagen central flanqueada por menús ── */
         .layout-grid { display: flex; width: 100%; justify-content: center; align-items: center; gap: 50px; margin-bottom: 35px; }
         .car-container { position: relative; width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
         .car-base-glow { position: absolute; bottom: 65px; width: 75%; height: 18px; background: var(--green); filter: blur(35px); opacity: 0.35; z-index: 1; }
@@ -71,7 +73,29 @@
         .primary-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transform: skewX(-20deg); transition: 0.5s; }
         .primary-btn:hover::before { left: 150%; }
         .primary-btn:hover { background: linear-gradient(135deg, rgba(45,122,31,0.35), rgba(0,200,80,0.25)); box-shadow: 0 0 25px rgba(0,255,136,0.4); color: #fff; }
-        #status-msg { margin-top: 18px; font-size: 1em; color: #888; min-height: 24px; text-align: center; padding: 8px; font-weight: 600; }
+        #status-msg { margin-top: 10px; font-size: 0.95em; color: #888; min-height: 20px; text-align: center; padding: 6px; font-weight: 600; }
+
+        /* ── MOBILE LAYOUT: hero compacto + grid de botones ── */
+        .mobile-layout { display: none; width: 100%; flex-direction: column; align-items: center; gap: 14px; }
+        .mobile-hero-row { display: flex; align-items: flex-start; gap: 14px; width: 100%; }
+        .mobile-hero-img-wrap { position: relative; flex-shrink: 0; width: 110px; border-radius: 14px; border: 2px solid rgba(45,122,31,0.7); box-shadow: 0 0 24px rgba(45,122,31,0.5); overflow: hidden; background: #000; }
+        .mobile-hero-img-wrap::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 16px; background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green)); z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.6; }
+        .mobile-hero-img-wrap img { width: 100%; display: block; object-fit: cover; border-radius: 12px; }
+        .mobile-stats-panel { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .mobile-fuel-display { display: flex; align-items: center; gap: 8px; background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.25); border-radius: 12px; padding: 10px 14px; }
+        .mobile-fuel-num { font-family: 'Orbitron', sans-serif; font-size: 1.6em; font-weight: 900; color: var(--green); text-shadow: 0 0 12px rgba(0,255,136,0.6); }
+        .mobile-fuel-label { font-size: 0.7em; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+        .mobile-action-btn { padding: 10px 14px; background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12)); border: 1px solid rgba(45,122,31,0.7); color: var(--green); border-radius: 10px; font-weight: 700; font-size: 0.82em; font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; width: 100%; text-align: center; transition: all 0.25s; }
+        .mobile-action-btn:hover { background: rgba(45,122,31,0.3); color: #fff; }
+        .mobile-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; width: 100%; }
+        .mobile-menu-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(45,122,31,0.25); border-radius: 12px; padding: 12px 8px; color: #ccc; font-size: 0.88em; font-weight: 600; font-family: 'Fredoka', 'Rajdhani', sans-serif; cursor: pointer; text-align: center; transition: all 0.25s; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 5px; min-height: 52px; }
+        .mobile-menu-btn:active { transform: scale(0.97); background: rgba(45,122,31,0.2); border-color: rgba(45,122,31,0.6); color: #fff; }
+        .mobile-menu-btn .btn-emoji { font-size: 1.15em; }
+        .mobile-menu-btn.btn-accent-cyan { border-color: rgba(0,212,255,0.3); color: var(--cyan); }
+        .mobile-menu-btn.btn-accent-gold { border-color: rgba(255,215,0,0.3); color: var(--gold); }
+        .mobile-menu-btn.btn-accent-orange { border-color: rgba(255,159,28,0.3); color: var(--orange); }
+        .mobile-menu-btn.btn-accent-purple { border-color: rgba(181,108,255,0.3); color: var(--purple); }
+        .mobile-menu-btn.btn-futcancha { background: linear-gradient(135deg, rgba(45,122,31,0.2), rgba(0,200,80,0.1)); border-color: rgba(45,122,31,0.7); color: var(--green); font-family: 'Orbitron', sans-serif; font-size: 0.78em; letter-spacing: 1px; grid-column: span 2; min-height: 48px; }
 
         .fuel-section { width: 100%; }
         .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
@@ -361,12 +385,31 @@
             .prizes-row { flex-direction: column; }
             .torneo-prizes-grid { grid-template-columns: 1fr 1fr; }
         }
-        @media (max-width: 500px) {
-            .menu-column { grid-template-columns: 1fr; text-align: center; }
-            .top-bar { justify-content: center; flex-direction: column; text-align: center; gap: 14px; }
-            .stats-container { justify-content: center; gap: 10px; }
-            h1 { font-size: 2.2em; }
-            .video-canvas { height: 220px; }
+
+        /* ── MOBILE: activar layout compacto para mini app Telegram ── */
+        @media (max-width: 640px) {
+            body { min-height: 100dvh; }
+            .main-content { padding: 12px 12px 20px; }
+            /* Ocultar layout desktop, mostrar mobile */
+            .layout-grid { display: none !important; }
+            .mobile-layout { display: flex !important; }
+            /* Header compacto */
+            .title-container { margin-bottom: 10px; }
+            h1 { font-size: 2em; letter-spacing: 4px; }
+            .title-sub { font-size: 0.72em; letter-spacing: 1.5px; }
+            /* Top bar compacto */
+            .top-bar { padding: 8px 14px; gap: 8px; flex-wrap: nowrap; justify-content: space-between; }
+            .stats-container { gap: 8px; font-size: 0.74em; flex-wrap: nowrap; overflow-x: auto; }
+            .stats-container span { white-space: nowrap; }
+            .lang-bar { padding: 4px 12px; }
+            #status-msg { margin-top: 6px; font-size: 0.85em; min-height: 16px; }
+        }
+        @media (max-width: 400px) {
+            h1 { font-size: 1.7em; }
+            .mobile-hero-img-wrap { width: 95px; }
+            .mobile-menu-btn { font-size: 0.82em; padding: 10px 6px; min-height: 48px; }
+            .top-bar { padding: 6px 10px; }
+            .stats-container { font-size: 0.68em; gap: 6px; }
         }
 
         /* ════════ ESTÉTICA PIXAR (sutil) ════════ */
@@ -477,6 +520,7 @@
             <div class="title-sub" data-i18n="tagline">El juego de fútbol NFT más épico del mundo</div>
         </div>
 
+        <!-- ── DESKTOP layout (>640px): imagen central flanqueada por menús ── -->
         <div class="layout-grid">
             <div class="menu-column">
                 <button class="word-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">👕 Futbolistas</button>
@@ -494,7 +538,6 @@
                     <div class="central-hero-overlay"></div>
                     <div class="central-hero-badge">⚽ FUTMUNDI NFT ⚽</div>
                 </div>
-
                 <div class="fuel-section">
                     <div class="fuel-label" data-i18n="balones_estamina">⚽ Balones de Estamina</div>
                     <div class="fuel-simple-display">
@@ -503,7 +546,6 @@
                         <span class="fuel-count-label" data-i18n="balones">balones</span>
                     </div>
                 </div>
-
                 <button class="primary-btn" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
             </div>
 
@@ -514,6 +556,43 @@
                 <button class="word-btn" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">🏋️ Entrenamiento</button>
                 <button class="word-btn" onclick="openModal('modal-deposito')" data-i18n="menu_deposito">💎 Depósito</button>
                 <button class="word-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro">💸 Retiro</button>
+            </div>
+        </div>
+
+        <!-- ── MOBILE layout compacto para Telegram mini app (≤640px) ── -->
+        <div class="mobile-layout">
+            <!-- Fila: imagen + balones + botones de juego -->
+            <div class="mobile-hero-row">
+                <div class="mobile-hero-img-wrap">
+                    <img src="https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png" alt="FUTMUNDI" onerror="this.onerror=null;this.style.display='none';">
+                </div>
+                <div class="mobile-stats-panel">
+                    <div class="mobile-fuel-display">
+                        <span style="font-size:1.4em;filter:drop-shadow(0 0 8px rgba(0,255,136,0.7))">⚽</span>
+                        <div>
+                            <span class="mobile-fuel-num" id="fuel-count-display-m">0</span>
+                            <div class="mobile-fuel-label" data-i18n="balones">balones</div>
+                        </div>
+                    </div>
+                    <button class="mobile-action-btn" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
+                    <button class="mobile-action-btn" style="background:linear-gradient(135deg,rgba(0,180,255,0.12),rgba(0,100,200,0.08));border-color:rgba(0,212,255,0.5);color:var(--cyan);font-size:0.76em;" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
+                </div>
+            </div>
+
+            <!-- Grid 2×6 de todas las acciones -->
+            <div class="mobile-menu-grid">
+                <button class="mobile-menu-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas"><span class="btn-emoji">👕</span> Futbolistas</button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace"><span class="btn-emoji">🏪</span> Marketplace</button>
+                <button class="mobile-menu-btn btn-accent-gold" onclick="openModal('modal-recompensa-pts')" data-i18n="menu_recompensas"><span class="btn-emoji">⚽</span> Recompensas</button>
+                <button class="mobile-menu-btn btn-accent-cyan" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria"><span class="btn-emoji">🎁</span> Recompensa Diaria</button>
+                <button class="mobile-menu-btn btn-accent-purple" onclick="openModal('modal-logros')" data-i18n="menu_logros"><span class="btn-emoji">🏅</span> Logros</button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel"><span class="btn-emoji">⬆️</span> Nivel</button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo"><span class="btn-emoji">🏆</span> Torneo</button>
+                <button class="mobile-menu-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking"><span class="btn-emoji">📊</span> Ranking</button>
+                <button class="mobile-menu-btn btn-accent-orange" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento"><span class="btn-emoji">🏋️</span> Entrenamiento</button>
+                <button class="mobile-menu-btn btn-accent-gold" onclick="openModal('modal-deposito')" data-i18n="menu_deposito"><span class="btn-emoji">💎</span> Depósito</button>
+                <button class="mobile-menu-btn btn-accent-cyan" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro"><span class="btn-emoji">💸</span> Retiro</button>
+                <button class="mobile-menu-btn btn-accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();"><span class="btn-emoji">👥</span> Referidos</button>
             </div>
         </div>
 
@@ -1445,6 +1524,7 @@
         const mr=$id('my-rank-score');if(mr)mr.textContent=puntaje+' pts';
         const totalBalls=totalBallonesDisponibles();
         const fuelEl=$id('fuel-count-display');if(fuelEl)fuelEl.textContent=totalBalls;
+        const fuelElM=$id('fuel-count-display-m');if(fuelElM)fuelElM.textContent=totalBalls;
         const topForm=$id('gasolina');if(topForm)topForm.textContent=totalNFTs>0?`⚽${totalBalls}`:'—';
         const bonus=gemasBonus();
         const winB=Math.round(nivelWinBonus()*100);
