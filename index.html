@@ -76,28 +76,73 @@
         .primary-btn:hover { background: linear-gradient(135deg, rgba(45,122,31,0.35), rgba(0,200,80,0.25)); box-shadow: 0 0 25px rgba(0,255,136,0.4); color: #fff; }
         #status-msg { margin-top: 10px; font-size: 0.95em; color: #888; min-height: 20px; text-align: center; padding: 6px; font-weight: 600; }
 
-        /* ── MOBILE LAYOUT: hero compacto + grid de botones ── */
-        .mobile-layout { display: none; width: 100%; flex-direction: column; align-items: center; gap: 10px; }
-        .mobile-hero-row { display: flex; align-items: flex-start; gap: 11px; width: 100%; }
-        .mobile-hero-img-wrap { position: relative; flex-shrink: 0; width: 100px; border-radius: 12px; border: 2px solid rgba(45,122,31,0.7); box-shadow: 0 0 20px rgba(45,122,31,0.5); overflow: hidden; background: #000; }
-        .mobile-hero-img-wrap::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 14px; background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green)); z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.6; }
-        .mobile-hero-img-wrap img { width: 100%; display: block; object-fit: cover; border-radius: 10px; }
-        .mobile-stats-panel { flex: 1; display: flex; flex-direction: column; gap: 7px; }
-        .mobile-fuel-display { display: flex; align-items: center; gap: 7px; background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.25); border-radius: 10px; padding: 8px 12px; }
-        .mobile-fuel-num { font-family: 'Orbitron', sans-serif; font-size: 1.4em; font-weight: 900; color: var(--green); text-shadow: 0 0 10px rgba(0,255,136,0.6); }
-        .mobile-fuel-label { font-size: 0.65em; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-        .mobile-action-btn { padding: 8px 12px; background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12)); border: 1px solid rgba(45,122,31,0.7); color: var(--green); border-radius: 9px; font-weight: 700; font-size: 0.78em; font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase; letter-spacing: 1.2px; width: 100%; text-align: center; transition: all 0.25s; }
-        .mobile-action-btn:active { background: rgba(45,122,31,0.35); color: #fff; }
-        /* Grid 3 columnas para botones más compactos */
+        /* ── MOBILE LAYOUT: hero centrado con presencia + grid de botones ── */
+        .mobile-layout { display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px; }
+
+        /* Imagen central con glow y badge de balones inline */
+        .mobile-hero-center { position: relative; width: 72%; max-width: 240px; }
+        .mobile-hero-center::before {
+            content: ''; position: absolute; inset: -3px; border-radius: 18px;
+            background: linear-gradient(135deg, var(--green), var(--gold), var(--green));
+            z-index: 0; animation: borderGlow 3s linear infinite; opacity: 0.7;
+            filter: blur(1px);
+        }
+        .mobile-hero-center-img {
+            position: relative; z-index: 1; width: 100%; display: block;
+            border-radius: 16px; object-fit: cover;
+            box-shadow: 0 0 40px rgba(0,255,136,0.35), 0 8px 32px rgba(0,0,0,0.6);
+        }
+        /* Badge de balones: pequeño chip sobre la imagen */
+        .mobile-fuel-badge {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            z-index: 2; display: flex; align-items: center; gap: 5px;
+            background: rgba(0,0,0,0.82); border: 1px solid rgba(0,255,136,0.45);
+            border-radius: 20px; padding: 4px 12px 4px 8px;
+            backdrop-filter: blur(6px);
+            white-space: nowrap;
+        }
+        .mobile-fuel-badge-icon { font-size: 1em; filter: drop-shadow(0 0 5px rgba(0,255,136,0.8)); animation: ballGlow 2s ease-in-out infinite; }
+        .mobile-fuel-badge-num { font-family: 'Orbitron', sans-serif; font-size: 0.95em; font-weight: 900; color: var(--green); text-shadow: 0 0 8px rgba(0,255,136,0.7); }
+        .mobile-fuel-badge-label { font-size: 0.6em; color: #777; text-transform: uppercase; letter-spacing: 0.8px; }
+
+        /* Botones de juego principales: 2 columnas lado a lado */
+        .mobile-play-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+        .mobile-play-btn {
+            padding: 11px 10px; border-radius: 11px; font-weight: 700; font-size: 0.8em;
+            font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 1px; text-align: center; transition: all 0.22s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .mobile-play-btn:active { transform: scale(0.96); }
+        .mobile-play-btn-green {
+            background: linear-gradient(135deg, rgba(45,122,31,0.25), rgba(0,200,80,0.15));
+            border: 1px solid rgba(45,122,31,0.8); color: var(--green);
+            box-shadow: 0 0 14px rgba(0,255,136,0.12);
+        }
+        .mobile-play-btn-green:active { background: rgba(45,122,31,0.4); color: #fff; box-shadow: 0 0 20px rgba(0,255,136,0.3); }
+        .mobile-play-btn-cyan {
+            background: linear-gradient(135deg, rgba(0,140,200,0.18), rgba(0,212,255,0.1));
+            border: 1px solid rgba(0,212,255,0.55); color: var(--cyan);
+        }
+        .mobile-play-btn-cyan:active { background: rgba(0,212,255,0.25); color: #fff; }
+
+        /* Grid 3 columnas para acciones secundarias */
         .mobile-menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; width: 100%; }
-        .mobile-menu-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(45,122,31,0.22); border-radius: 10px; padding: 9px 4px 8px; color: #ccc; font-size: 0.72em; font-weight: 600; font-family: 'Fredoka', 'Rajdhani', sans-serif; cursor: pointer; text-align: center; transition: all 0.2s; letter-spacing: 0.2px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 54px; }
-        .mobile-menu-btn:active { transform: scale(0.95); background: rgba(45,122,31,0.18); border-color: rgba(45,122,31,0.55); color: #fff; }
-        .mobile-menu-btn .btn-emoji { font-size: 1.35em; line-height: 1; }
+        .mobile-menu-btn {
+            background: rgba(255,255,255,0.035); border: 1px solid rgba(45,122,31,0.2);
+            border-radius: 10px; padding: 8px 4px 7px; color: #bbb; font-size: 0.69em;
+            font-weight: 600; font-family: 'Fredoka', 'Rajdhani', sans-serif;
+            cursor: pointer; text-align: center; transition: all 0.18s; letter-spacing: 0.2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 3px; min-height: 50px;
+        }
+        .mobile-menu-btn:active { transform: scale(0.94); background: rgba(45,122,31,0.16); border-color: rgba(45,122,31,0.5); color: #fff; }
+        .mobile-menu-btn .btn-emoji { font-size: 1.3em; line-height: 1; }
         .mobile-menu-btn .btn-label { line-height: 1.1; }
-        .mobile-menu-btn.btn-accent-cyan { border-color: rgba(0,212,255,0.25); color: var(--cyan); }
-        .mobile-menu-btn.btn-accent-gold { border-color: rgba(255,215,0,0.25); color: var(--gold); }
-        .mobile-menu-btn.btn-accent-orange { border-color: rgba(255,159,28,0.25); color: var(--orange); }
-        .mobile-menu-btn.btn-accent-purple { border-color: rgba(181,108,255,0.25); color: var(--purple); }
+        .mobile-menu-btn.btn-accent-cyan { border-color: rgba(0,212,255,0.22); color: var(--cyan); }
+        .mobile-menu-btn.btn-accent-gold { border-color: rgba(255,215,0,0.22); color: var(--gold); }
+        .mobile-menu-btn.btn-accent-orange { border-color: rgba(255,159,28,0.22); color: var(--orange); }
+        .mobile-menu-btn.btn-accent-purple { border-color: rgba(181,108,255,0.22); color: var(--purple); }
 
         .fuel-section { width: 100%; }
         .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
@@ -605,25 +650,27 @@
 
         <!-- ── MOBILE layout compacto para Telegram mini app (≤640px) ── -->
         <div class="mobile-layout">
-            <!-- Fila: imagen + balones + botones de juego -->
-            <div class="mobile-hero-row">
-                <div class="mobile-hero-img-wrap">
-                    <img src="https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png" alt="FUTMUNDI" onerror="this.onerror=null;this.style.display='none';">
-                </div>
-                <div class="mobile-stats-panel">
-                    <div class="mobile-fuel-display">
-                        <span style="font-size:1.4em;filter:drop-shadow(0 0 8px rgba(0,255,136,0.7))">⚽</span>
-                        <div>
-                            <span class="mobile-fuel-num" id="fuel-count-display-m">0</span>
-                            <div class="mobile-fuel-label" data-i18n="balones">balones</div>
-                        </div>
-                    </div>
-                    <button class="mobile-action-btn" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
-                    <button class="mobile-action-btn" style="background:linear-gradient(135deg,rgba(0,180,255,0.12),rgba(0,100,200,0.08));border-color:rgba(0,212,255,0.5);color:var(--cyan);font-size:0.76em;" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
+
+            <!-- Imagen central con badge de balones encima -->
+            <div class="mobile-hero-center">
+                <img class="mobile-hero-center-img"
+                     src="https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png"
+                     alt="FUTMUNDI"
+                     onerror="this.onerror=null;this.style.display='none';">
+                <div class="mobile-fuel-badge">
+                    <span class="mobile-fuel-badge-icon">⚽</span>
+                    <span class="mobile-fuel-badge-num" id="fuel-count-display-m">0</span>
+                    <span class="mobile-fuel-badge-label" data-i18n="balones">balones</span>
                 </div>
             </div>
 
-            <!-- Grid 3×4 de todas las acciones — más compacto -->
+            <!-- Botones de juego principales -->
+            <div class="mobile-play-row">
+                <button class="mobile-play-btn mobile-play-btn-green" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
+                <button class="mobile-play-btn mobile-play-btn-cyan" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
+            </div>
+
+            <!-- Grid 3×4 de acciones -->
             <div class="mobile-menu-grid">
                 <button class="mobile-menu-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas"><span class="btn-emoji">👕</span><span class="btn-label">Futbolistas</span></button>
                 <button class="mobile-menu-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace"><span class="btn-emoji">🏪</span><span class="btn-label">Marketplace</span></button>
