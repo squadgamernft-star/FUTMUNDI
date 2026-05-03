@@ -12,19 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .side-check-badge {
-            animation: sideCheckPulse 2s ease-in-out infinite;
-        }
-        @keyframes sideCheckPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 6px rgba(0,255,136,0.8); }
-            50% { transform: scale(1.2); box-shadow: 0 0 12px rgba(0,255,136,1); }
-        }
-        .reward-day.claimed .day-icon { filter: drop-shadow(0 0 4px rgba(0,255,136,0.8)); }
-        .reward-day.today:not(.claimed) { animation: todayPulse 1.5s ease-in-out infinite; }
-        @keyframes todayPulse {
-            0%, 100% { box-shadow: 0 0 8px rgba(255,216,77,0.5); }
-            50% { box-shadow: 0 0 16px rgba(255,216,77,0.9); }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
             --cyan: #55d7ff; --green: #42f58d; --orange: #ff9f1c;
             --red: #ff5a6f; --gold: #ffd84d; --purple: #b56cff;
@@ -987,12 +975,12 @@
                     Cantidad de gemas 💎
                     <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
                 </label>
-                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 500 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
+                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 160 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
                 <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
                 <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
                     💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
                 </div>
-                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 500 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6%</div>
+                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 160 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6% + 1 USDT (van a la billetera del contrato)</div>
 
                 <!-- CAPTCHA -->
                 <label class="withdraw-label">🛡️ Verificación anti-bot</label>
@@ -1448,8 +1436,8 @@
         const ton = (amount/5).toFixed(4);
         return {validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:flow.address,amount:String(Math.round(parseFloat(ton)*1e9))}]};
     }
-    function getWithdrawalOrder(cantidad,usdt,userWallet){
-        return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),fecha:new Date().toISOString()});
+    function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
+        return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
     }
 
     // ── TABLA OFICIAL DE COSTOS DE ENTRENAMIENTO (USDT) POR NFT ───────────
@@ -1592,61 +1580,16 @@
         }
         return milestones;
     }
-    // ── HELPER: CHECK BADGE EN BOTONES LATERALES Y MÓVILES ───────────────
-    // Muestra/quita un badge ✅ en botones laterales y del grid móvil que abren un modal
-    function _updateSideBtnCheck(modalId, stateKey, val) {
-        // Guarda estado en memoria para esta sesión
-        if(!window._sideBtnState) window._sideBtnState = {};
-        window._sideBtnState[stateKey] = val;
-        // Actualiza todos los botones que abren ese modal
-        document.querySelectorAll(`button[onclick*="'${modalId}'"], button[onclick*='"${modalId}"']`).forEach(btn => {
-            let badge = btn.querySelector('.side-check-badge');
-            if(val) {
-                if(!badge) {
-                    badge = document.createElement('span');
-                    badge.className = 'side-check-badge';
-                    badge.style.cssText = 'position:absolute;top:-4px;right:-4px;background:#00ff88;color:#000;border-radius:50%;width:16px;height:16px;font-size:0.62em;display:flex;align-items:center;justify-content:center;font-weight:900;z-index:10;box-shadow:0 0 6px rgba(0,255,136,0.8);pointer-events:none;';
-                    badge.textContent = '✓';
-                    btn.style.position = 'relative';
-                    btn.appendChild(badge);
-                }
-            } else {
-                if(badge) badge.remove();
-            }
-        });
-    }
-
-    // Revisa qué checks deben estar activos al abrir/recargar
-    function _refreshAllSideChecks() {
-        // Recompensa diaria: check si YA fue reclamada hoy
-        const dailyClaimed = localStorage.getItem('tg_last_reward_day_key') === getUtcDayKey();
-        _updateSideBtnCheck('modal-recompensa', 'daily-claimed-today', dailyClaimed);
-        // Recompensas por goles: check si hay algún hito reclamable
-        const milestones = getGoalMilestones();
-        const hayGoalPendiente = milestones.some(m => m.claimed);
-        _updateSideBtnCheck('modal-recompensa-pts', 'goal-milestone-claimed', hayGoalPendiente);
-        // Logros: check si hay algún logro reclamado
-        const claimed = getSkillClaimedData();
-        const hayLogroReclamado = Object.keys(claimed).length > 0;
-        _updateSideBtnCheck('modal-logros', 'logro-claimed', hayLogroReclamado);
-        // Torneo: check si el torneo está activo
-        const now = new Date(); const day = now.getUTCDay();
-        const torneoActivo = (day>=1&&day<=4)||(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0);
-        _updateSideBtnCheck('modal-torneo', 'torneo-activo', torneoActivo);
-    }
-
     function claimGoalMilestone(key, gems) {
         const claimedGoals = JSON.parse(localStorage.getItem(_pfx()+'_claimed_goal_milestones')||'{}');
-        if(claimedGoals[key]) return;
-        gemas += gems;          // 💎 suma a diamantes
-        puntaje += gems * 10;   // 📘 suma puntos proporcionales
+        if(claimedGoals[key]) { mostrarMensaje('✅ Ya reclamado','#888'); return; }
+        gemas += gems;
         claimedGoals[key] = true;
         localStorage.setItem(_pfx()+'_claimed_goal_milestones', JSON.stringify(claimedGoals));
+        if(typeof saveState==='function') saveState();
         actualizarUI();
         buildRewardPts();
-        // Actualizar badge del botón lateral con check
-        _updateSideBtnCheck('modal-recompensa-pts', 'goal-milestone-claimed', true);
-        mostrarMensaje(`✅ +${gems} 💎 y +${gems*10} pts por hito de goles!`, '#00ff88');
+        mostrarMensaje(`✅ +${gems} 💎 por hito de goles!`, '#00ff88');
     }
 
     // ── BALONES ───────────────────────────────────────────────────────────
@@ -1754,8 +1697,6 @@
         buildUniforms();
         buildSkillLogros();
         buildFutsalaBody();
-        // Mostrar checks en botones laterales según estado de la wallet
-        setTimeout(_refreshAllSideChecks, 200);
         // Mostrar badge con dirección abreviada en top bar
         const badge=$id('wallet-addr-badge');
         const addrText=$id('wallet-addr-text');
@@ -1862,12 +1803,7 @@
                 const tx=buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
                     await tonConnectUI.sendTransaction(tx);
-                    // ✅ Al inscribirse al torneo: sumar pts al balance
-                    puntaje += 50; // +50 pts por inscripción al torneo
-                    actualizarUI();
-                    // Marcar badge check en botón de torneo
-                    _updateSideBtnCheck('modal-torneo', 'torneo-inscrito', true);
-                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada! +50 pts','#00ff88');
+                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
                     return true;
                 }catch(e){mostrarMensaje('❌ Inscripción cancelada','#ff4444');return false;}
             }
@@ -2099,19 +2035,18 @@
     function claimSkillMilestone(skillId, milestone) {
         const claimed = getSkillClaimedData();
         const key = getSkillClaimedKey(skillId, milestone);
-        if(claimed[key]) return;
+        if(claimed[key]) { mostrarMensaje('✅ Ya reclamado','#888'); return; }
         const count = skillCounts[skillId]||0;
         if(count < milestone) { mostrarMensaje('⚠️ Aún no alcanzas este hito','#ffaa00'); return; }
         const gems = getSkillMilestoneGems(milestone);
-        gemas += gems;       // 💎 suma a diamantes
-        puntaje += 100;      // 📘 suma 100 pts
+        gemas += gems;
+        puntaje += 100;
         claimed[key] = true;
         saveSkillClaimedData(claimed);
+        if(typeof saveState==='function') saveState();
         actualizarUI();
         buildSkillLogros();
-        // Actualizar badge del botón lateral con check
-        _updateSideBtnCheck('modal-logros', 'logro-claimed', true);
-        mostrarMensaje(`🏅 +${gems} 💎 y +100 pts por ${milestone} acciones de habilidad!`, '#ffd700');
+        mostrarMensaje(`🏅 +${gems} 💎 y +100 pts por ${milestone} acciones!`, '#ffd700');
     }
 
     function buildSkillLogros() {
@@ -3189,7 +3124,6 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
     }
 
     // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
-    // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
     function buildRewardPts(){
         actualizarUI();
         const milestones=getGoalMilestones();
@@ -3198,100 +3132,38 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
         milestones.forEach(m=>{
             const pct=Math.min(100,Math.round((info.goalsInCycle/m.goalsNeeded)*100));
             const canClaim=m.achieved&&!m.claimed;
-            const ptsBonus=m.gems*10;
-            html+=`<div class="reward-section" style="${m.claimed?'opacity:0.6;border-color:rgba(0,255,136,0.15)':''}${m.achieved&&!m.claimed?';border-color:rgba(0,255,136,0.5);box-shadow:0 0 10px rgba(0,255,136,0.15)':''}">
+            html+=`<div class="reward-section" style="${m.claimed?'opacity:0.5':''}${m.achieved&&!m.claimed?';border-color:rgba(0,255,136,0.4)':''}">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-    <div style="display:flex;align-items:center;gap:8px">
-        ${m.claimed?'<span style="font-size:1.3em">✅</span>':'<span style="font-size:1em;">⚽</span>'}
-        <strong style="font-size:0.9em;color:${m.claimed?'#666':m.achieved?'var(--green)':'#aaa'}">${m.goalsNeeded} goles</strong>
-        <span style="font-size:0.72em;color:#555">ciclo ${info.cycle}</span>
+    <div>
+        <span style="font-size:1em;">⚽</span>
+        <strong style="font-size:0.9em;margin-left:6px;color:${m.achieved?'var(--green)':'#aaa'}">${m.goalsNeeded} goles</strong>
+        <span style="font-size:0.72em;color:#555;margin-left:8px">en ciclo ${info.cycle}</span>
     </div>
-    <div style="text-align:right">
-        <div style="font-weight:700;color:${m.claimed?'#555':'var(--gold)'};font-family:'Orbitron',sans-serif;font-size:0.85em">+${m.gems} 💎</div>
-        <div style="font-size:0.68em;color:var(--cyan)">+${ptsBonus} pts</div>
-    </div>
+    <div style="font-weight:700;color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.85em">+${m.gems} 💎</div>
 </div>
-<div class="pts-bar-bg"><div class="pts-bar-fill" style="width:${pct}%;${m.claimed?'background:rgba(0,255,136,0.3)':''}"></div></div>
+<div class="pts-bar-bg"><div class="pts-bar-fill" style="width:${pct}%"></div></div>
 <div style="display:flex;justify-content:space-between;font-size:0.72em;color:#555;margin-top:4px">
     <span>Progreso: ${Math.min(info.goalsInCycle,m.goalsNeeded)} / ${m.goalsNeeded}</span>
-    <span style="color:${m.claimed?'#555':m.achieved?'var(--green)':'#555'}">${m.claimed?'✅ Reclamado':m.achieved?'✅ Logrado':'⏳ Pendiente'}</span>
+    <span style="color:${m.achieved?'var(--green)':'#555'}">${m.achieved?'✅ Logrado':'⏳ Pendiente'}</span>
 </div>
-${m.claimed
-    ?`<div style="text-align:center;margin-top:8px;padding:6px;background:rgba(0,255,136,0.05);border-radius:8px;font-size:0.78em;color:#555">✅ +${m.gems} 💎 y +${ptsBonus} pts sumados a tu balance</div>`
-    :`<button style="width:100%;margin-top:8px;padding:8px;background:${canClaim?'rgba(0,255,136,0.12)':'rgba(255,255,255,0.03)'};border:1px solid ${canClaim?'var(--green)':'rgba(255,255,255,0.07)'};border-radius:8px;color:${canClaim?'var(--green)':'#555'};font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84em;cursor:${canClaim?'pointer':'not-allowed'};text-transform:uppercase;transition:all 0.25s" onclick="${canClaim?`claimGoalMilestone('${m.key}',${m.gems})`:'void(0)'}">
-${canClaim?`✅ Reclamar +${m.gems} 💎 y +${ptsBonus} pts`:'⏳ Necesitas más goles'}</button>`
-}
+${!m.claimed?`<button style="width:100%;margin-top:8px;padding:8px;background:${canClaim?'rgba(0,255,136,0.1)':'rgba(255,255,255,0.03)'};border:1px solid ${canClaim?'var(--green)':'rgba(255,255,255,0.07)'};border-radius:8px;color:${canClaim?'var(--green)':'#555'};font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84em;cursor:${canClaim?'pointer':'not-allowed'};text-transform:uppercase;transition:all 0.25s" onclick="${canClaim?`claimGoalMilestone('${m.key}',${m.gems})`:'void(0)'}">
+${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
+:`<div style="text-align:center;margin-top:8px;font-size:0.78em;color:#555">✅ Ya reclamado</div>`}
 </div>`;
         });
         $id('goals-rewards-list').innerHTML=html;
     }
+
+    // ── RECOMPENSA DIARIA ─────────────────────────────────────────────────
     function getDailyRewardGems(dia){if(dia===30)return 25;if(dia%2===1)return 1;return 0;}
     function getDailyRewardXP(dia){return (dia%2===0&&dia!==30)?25:1;}
     function getUtcDayKey(){const n=new Date();return `${n.getUTCFullYear()}-${String(n.getUTCMonth()+1).padStart(2,'0')}-${String(n.getUTCDate()).padStart(2,'0')}`;}
     function getDailyCycleDay(){const start=Date.UTC(2025,0,1),now=new Date();const today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());return (Math.floor((today-start)/86400000)%30)+1;}
-    function buildRewardDays(){
-        const diaActual=getDailyCycleDay();
-        const claimedToday=localStorage.getItem('tg_last_reward_day_key')===getUtcDayKey();
-        const lastClaimedDay=parseInt(localStorage.getItem('tg_reward_day')||'0');
-        let html='';
-        for(let d=1;d<=30;d++){
-            const isToday=d===diaActual;
-            const isXP=d%2===0&&d!==30;
-            const isDay30=d===30;
-            const isPast=d<diaActual;
-            const isClaimed=(isToday&&claimedToday)||(isPast&&d===lastClaimedDay);
-            let cls='reward-day';
-            if(isDay30)cls+=' special';
-            else if(isXP)cls+=' gold-day';
-            if(isToday&&claimedToday)cls+=' claimed';
-            if(isToday)cls+=' today';
-            // Icon: show check if today was claimed, normal icon otherwise
-            let icon;
-            if(isToday&&claimedToday) icon='✅';
-            else if(isDay30) icon='👑';
-            else if(isXP) icon='📘';
-            else icon='💎';
-            const label=isDay30?'25💎':isXP?`+${getDailyRewardXP(d)} XP`:`${getDailyRewardGems(d)}💎`;
-            const todayIndicator=isToday?`<div style="position:absolute;top:2px;right:3px;width:6px;height:6px;border-radius:50%;background:${claimedToday?'#00ff88':'#ffd700'};box-shadow:0 0 5px ${claimedToday?'#00ff88':'#ffd700'};"></div>`:'';
-            html+=`<div class="${cls}" style="position:relative">${todayIndicator}<span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${isToday&&claimedToday?'✓ OK':label}</small></div>`;
-        }
-        $id('reward-days-grid').innerHTML=html;
-    }
-    function checkRewardStatus(){
-        buildRewardDays();
-        const canClaim=localStorage.getItem('tg_last_reward_day_key')!==getUtcDayKey();
-        const btn=$id('btn-claim-reward');
-        if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar recompensa de hoy':'⏳ Recompensa de hoy reclamada';}
-        updateDailyTimer(0,canClaim);
-        // Actualizar badge del botón lateral
-        _updateSideBtnCheck('modal-recompensa', 'daily-claimed-today', !canClaim);
-    }
+    function buildRewardDays(){const diaActual=getDailyCycleDay();const claimedToday=localStorage.getItem('tg_last_reward_day_key')===getUtcDayKey();let html='';for(let d=1;d<=30;d++){const isToday=d===diaActual,isXP=d%2===0&&d!==30,isDay30=d===30;let cls='reward-day';if(isDay30)cls+=' special';else if(isXP)cls+=' gold-day';if(isToday&&claimedToday)cls+=' claimed';if(isToday)cls+=' today';const icon=isDay30?'👑':isXP?'📘':'💎';const label=isDay30?'25💎':isXP?`+${getDailyRewardXP(d)} XP`:`${getDailyRewardGems(d)}💎`;const check=(isToday&&claimedToday)?'<div style="position:absolute;top:2px;right:4px;color:var(--green);font-weight:700;font-size:0.8em">✓</div>':'';html+=`<div class="${cls}" style="position:relative">${check}<span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${label}</small></div>`;}$id('reward-days-grid').innerHTML=html;}
+    function checkRewardStatus(){buildRewardDays();const canClaim=localStorage.getItem('tg_last_reward_day_key')!==getUtcDayKey();const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar recompensa de hoy':'✓ Recompensa de hoy reclamada';}updateDailyTimer(0,canClaim);}
     function updateDailyTimer(msR,canClaim){const el=$id('daily-timer-display');if(!el)return;if(canClaim){el.textContent='✅ Reclama solo la recompensa del día actual; si no la reclamas, se pierde.';el.style.color='var(--green)';return;}const n=new Date();const next=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1);const left=Math.max(0,next-n.getTime());const h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);el.textContent=`⏱ Próxima recompensa en ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;el.style.color='#666';}
     setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active'))checkRewardStatus();},1000);
-    function claimReward(){
-        const dayKey=getUtcDayKey();
-        if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}
-        const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;
-        // ── Sumar recompensas a los balances correspondientes ──
-        if(gemsGanadas>0) gemas+=gemsGanadas;   // 💎 Diamantes
-        if(xpGanado>0) puntaje+=xpGanado;        // 📘 Puntos / XP
-        // Verificar si subió de nivel
-        const nivelAntes=nivel;
-        nivel=calcularNivel();
-        const subioNivel=nivel>nivelAntes;
-        let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:(`💎 +${gemsGanadas} gema +${xpGanado} XP`);
-        if(subioNivel) msg+=' · ⬆️ ¡Subiste a Nivel '+nivel+'!';
-        localStorage.setItem('tg_last_reward_day_key',dayKey);
-        localStorage.setItem('tg_last_reward_ts',String(Date.now()));
-        localStorage.setItem('tg_reward_day',String(diaActual));
-        actualizarUI();
-        buildRewardDays();
-        // Actualizar badge del botón lateral de recompensa diaria con check
-        _updateSideBtnCheck('modal-recompensa', 'daily-claimed-today', true);
-        const btn=$id('btn-claim-reward');
-        if(btn){btn.disabled=true;btn.textContent='✅ Recompensa de hoy reclamada';}
-        mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');
-    }
+    function claimReward(){const dayKey=getUtcDayKey();if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;puntaje+=xpGanado;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:`💎 +${gemsGanadas} gema +${xpGanado} XP`;localStorage.setItem('tg_last_reward_day_key',dayKey);localStorage.setItem('tg_last_reward_ts',String(Date.now()));localStorage.setItem('tg_reward_day',String(diaActual));if(typeof saveState==='function')saveState();actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✓ Recompensa de hoy reclamada';}mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');}
 
     // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
     // Bonus de rendimiento progresivo por sesión:
@@ -3375,20 +3247,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎 y +${ptsBonus} pts`:'⏳ Necesitas más
 
     let _captchaAnswer=0;
     function generarCaptcha(){const a=Math.floor(Math.random()*9)+1,b=Math.floor(Math.random()*9)+1;_captchaAnswer=a+b;const q=$id('captcha-question');if(q)q.textContent=`${a} + ${b} = ?`;const ans=$id('captcha-answer');if(ans)ans.value='';}
-    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const neto=(bruto-descuento).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;const input=$id('retiro-cantidad'),warn=$id('retiro-warning');const invalid=cant>gemas;if(input)input.classList.toggle('invalid',invalid);if(warn)warn.classList.toggle('show',invalid);}
+    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const neto=Math.max(0,(bruto-descuento-fijo)).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;const input=$id('retiro-cantidad'),warn=$id('retiro-warning');const invalid=cant>gemas;if(input)input.classList.toggle('invalid',invalid);if(warn)warn.classList.toggle('show',invalid);}
     function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);actualizarConversionRetiro();}
 
     function retirar(){
         const cant=parseFloat($id('retiro-cantidad').value)||0;
         const addr=($id('retiro-address').value||'').trim();
         if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
-        if(cant<500){mostrarMensaje(t('msg_min'),'#ff4444');return;}
+        if(cant<160){mostrarMensaje(t('msg_min'),'#ff4444');return;}
         if(cant>3000){mostrarMensaje('❌ Máximo 3000 💎 por día','#ff4444');return;}
         if(cant>gemas){actualizarConversionRetiro();mostrarMensaje('🚫 No puedes hacer ese retiro: monto mayor a tu saldo disponible','#ff4444');return;}
         const userAns=parseInt($id('captcha-answer').value);
         if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
-        const bruto=cant/32;const descuento=bruto*0.06;const usdt=(bruto-descuento).toFixed(2);
-        const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr);
+        const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const usdt=Math.max(0,(bruto-descuento-fijo)).toFixed(2);
+        const feesToContract=(descuento+fijo).toFixed(2);
+        const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr,feesToContract);
         if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
         const refOwner=localStorage.getItem(_pfx()+'_my_referrer');
         if(refOwner){
@@ -3484,14 +3357,14 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎 y +${ptsBonus} pts`:'⏳ Necesitas más
 
     // ── IDIOMAS ───────────────────────────────────────────────────────────
     const TRANSLATIONS={
-        es:{tagline:'El juego de fútbol NFT más épico del mundo',menu_futbolistas:'👕 Futbolistas',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diaria',menu_logros:'🏅 Logros',menu_nivel:'⬆️ Nivel',menu_futcancha:'🏟️ FutCancha',menu_futsala:'🏃 Futsala',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Entrenamiento',menu_deposito:'💎 Depósito',menu_retiro:'💸 Retiro',balones_estamina:'⚽ Balones de Estamina',balones:'balones',referidos_btn:'👥 Referidos',ref_title:'👥 Programa de Referidos',ref_commission:'💰 GANA 5% DE COMISIÓN',ref_explain:'Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!',ref_total_label:'REFERIDOS',ref_earned_label:'GANADO',ref_link_label:'Tu enlace de invitación',ref_copy:'Copiar',ref_list_title:'📋 MIS REFERIDOS',ref_empty:'Aún no tienes referidos. ¡Comparte tu enlace!',ref_earned_from:'Generado',ref_copied:'Enlace copiado',msg_addr_req:'⚠️ Ingresa tu dirección USDT',msg_min:'❌ Mínimo 500 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
-        en:{tagline:"The world's most epic NFT football game",menu_futbolistas:'👕 Players',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Rewards',menu_recompensa_diaria:'🎁 Daily Reward',menu_logros:'🏅 Achievements',menu_nivel:'⬆️ Level',menu_futcancha:'🏟️ FutPitch',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournament',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Deposit',menu_retiro:'💸 Withdraw',balones_estamina:'⚽ Stamina Balls',balones:'balls',referidos_btn:'👥 Referrals',ref_title:'👥 Referral Program',ref_commission:'💰 EARN 5% COMMISSION',ref_explain:'Get <strong style="color:var(--gold)">5%</strong> in gems from every withdrawal your referral makes. Forever!',ref_total_label:'REFERRALS',ref_earned_label:'EARNED',ref_link_label:'Your invitation link',ref_copy:'Copy',ref_list_title:'📋 MY REFERRALS',ref_empty:'No referrals yet. Share your link!',ref_earned_from:'Generated',ref_copied:'Link copied',msg_addr_req:'⚠️ Enter your USDT address',msg_min:'❌ Minimum 500 💎',msg_insuf:'❌ Insufficient balance',msg_captcha:'🛡️ Wrong captcha, try again',msg_withdraw_ok:'Withdrawal of {usdt} USDT requested — credited within 24h to 48h'},
-        pt:{tagline:'O jogo de futebol NFT mais épico do mundo',menu_futbolistas:'👕 Jogadores',menu_marketplace:'🏪 Mercado',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diária',menu_logros:'🏅 Conquistas',menu_nivel:'⬆️ Nível',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneio',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Treino',menu_deposito:'💎 Depósito',menu_retiro:'💸 Saque',balones_estamina:'⚽ Bolas de Estamina',balones:'bolas',referidos_btn:'👥 Indicações',ref_title:'👥 Programa de Indicações',ref_commission:'💰 GANHE 5% DE COMISSÃO',ref_explain:'Receba <strong style="color:var(--gold)">5%</strong> em gemas de cada saque do seu indicado. Para sempre!',ref_total_label:'INDICAÇÕES',ref_earned_label:'GANHO',ref_link_label:'Seu link de convite',ref_copy:'Copiar',ref_list_title:'📋 MEUS INDICADOS',ref_empty:'Sem indicados ainda. Compartilhe seu link!',ref_earned_from:'Gerado',ref_copied:'Link copiado',msg_addr_req:'⚠️ Insira seu endereço USDT',msg_min:'❌ Mínimo 500 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha errado, tente novamente',msg_withdraw_ok:'Saque de {usdt} USDT solicitado — creditado em 24h a 48h'},
-        fr:{tagline:'Le jeu de football NFT le plus épique du monde',menu_futbolistas:'👕 Joueurs',menu_marketplace:'🏪 Marché',menu_recompensas:'⚽ Récompenses',menu_recompensa_diaria:'🎁 Récompense Quotidienne',menu_logros:'🏅 Succès',menu_nivel:'⬆️ Niveau',menu_futcancha:'🏟️ FutTerrain',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournoi',menu_ranking:'📊 Classement',menu_entrenamiento:'🏋️ Entraînement',menu_deposito:'💎 Dépôt',menu_retiro:'💸 Retrait',balones_estamina:'⚽ Balles d\u2019Endurance',balones:'balles',referidos_btn:'👥 Parrainage',ref_title:'👥 Programme de Parrainage',ref_commission:'💰 GAGNEZ 5% DE COMMISSION',ref_explain:'Recevez <strong style="color:var(--gold)">5%</strong> en gemmes de chaque retrait de votre filleul. Pour toujours!',ref_total_label:'FILLEULS',ref_earned_label:'GAGNÉ',ref_link_label:'Votre lien d\u2019invitation',ref_copy:'Copier',ref_list_title:'📋 MES FILLEULS',ref_empty:'Aucun filleul. Partagez votre lien!',ref_earned_from:'Généré',ref_copied:'Lien copié',msg_addr_req:'⚠️ Entrez votre adresse USDT',msg_min:'❌ Minimum 500 💎',msg_insuf:'❌ Solde insuffisant',msg_captcha:'🛡️ Captcha incorrect, réessayez',msg_withdraw_ok:'Retrait de {usdt} USDT demandé — crédité sous 24h à 48h'},
-        de:{tagline:'Das epischste NFT-Fußballspiel der Welt',menu_futbolistas:'👕 Spieler',menu_marketplace:'🏪 Marktplatz',menu_recompensas:'⚽ Belohnungen',menu_recompensa_diaria:'🎁 Tägliche Belohnung',menu_logros:'🏅 Erfolge',menu_nivel:'⬆️ Stufe',menu_futcancha:'🏟️ FutPlatz',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Turnier',menu_ranking:'📊 Rangliste',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Einzahlung',menu_retiro:'💸 Auszahlung',balones_estamina:'⚽ Ausdauerbälle',balones:'Bälle',referidos_btn:'👥 Empfehlungen',ref_title:'👥 Empfehlungsprogramm',ref_commission:'💰 5% PROVISION VERDIENEN',ref_explain:'Erhalte <strong style="color:var(--gold)">5%</strong> in Gems von jeder Auszahlung deines Empfohlenen. Für immer!',ref_total_label:'EMPFOHLENE',ref_earned_label:'VERDIENT',ref_link_label:'Dein Einladungslink',ref_copy:'Kopieren',ref_list_title:'📋 MEINE EMPFOHLENEN',ref_empty:'Noch keine Empfohlenen. Teile deinen Link!',ref_earned_from:'Generiert',ref_copied:'Link kopiert',msg_addr_req:'⚠️ Gib deine USDT-Adresse ein',msg_min:'❌ Minimum 500 💎',msg_insuf:'❌ Saldo unzureichend',msg_captcha:'🛡️ Captcha falsch, erneut versuchen',msg_withdraw_ok:'Auszahlung von {usdt} USDT angefordert — gutgeschrieben in 24h bis 48h'},
-        it:{tagline:'Il gioco di calcio NFT più epico del mondo',menu_futbolistas:'👕 Calciatori',menu_marketplace:'🏪 Mercato',menu_recompensas:'⚽ Ricompense',menu_recompensa_diaria:'🎁 Ricompensa Giornaliera',menu_logros:'🏅 Obiettivi',menu_nivel:'⬆️ Livello',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Classifica',menu_entrenamiento:'🏋️ Allenamento',menu_deposito:'💎 Deposito',menu_retiro:'💸 Prelievo',balones_estamina:'⚽ Palloni di Stamina',balones:'palloni',referidos_btn:'👥 Referral',ref_title:'👥 Programma Referral',ref_commission:'💰 GUADAGNA 5% DI COMMISSIONE',ref_explain:'Ricevi <strong style="color:var(--gold)">5%</strong> in gemme da ogni prelievo del tuo referral. Per sempre!',ref_total_label:'REFERRAL',ref_earned_label:'GUADAGNATO',ref_link_label:'Il tuo link di invito',ref_copy:'Copia',ref_list_title:'📋 I MIEI REFERRAL',ref_empty:'Nessun referral. Condividi il tuo link!',ref_earned_from:'Generato',ref_copied:'Link copiato',msg_addr_req:'⚠️ Inserisci il tuo indirizzo USDT',msg_min:'❌ Minimo 500 💎',msg_insuf:'❌ Saldo insufficiente',msg_captcha:'🛡️ Captcha errato, riprova',msg_withdraw_ok:'Prelievo di {usdt} USDT richiesto — accreditato in 24h-48h'},
-        ja:{tagline:'世界で最もエピックなNFTサッカーゲーム',menu_futbolistas:'👕 選手',menu_marketplace:'🏪 マーケット',menu_recompensas:'⚽ 報酬',menu_recompensa_diaria:'🎁 デイリー報酬',menu_logros:'🏅 実績',menu_nivel:'⬆️ レベル',menu_futcancha:'🏟️ フットピッチ',menu_futsala:'🏃 フットサル',menu_torneo:'🏆 トーナメント',menu_ranking:'📊 ランキング',menu_entrenamiento:'🏋️ トレーニング',menu_deposito:'💎 入金',menu_retiro:'💸 出金',balones_estamina:'⚽ スタミナボール',balones:'ボール',referidos_btn:'👥 紹介',ref_title:'👥 紹介プログラム',ref_commission:'💰 5%コミッション獲得',ref_explain:'紹介者の出金額の<strong style="color:var(--gold)">5%</strong>をジェムで永久に受け取れます！',ref_total_label:'紹介数',ref_earned_label:'獲得',ref_link_label:'あなたの招待リンク',ref_copy:'コピー',ref_list_title:'📋 私の紹介者',ref_empty:'まだ紹介者がいません。リンクを共有しましょう！',ref_earned_from:'生成',ref_copied:'リンクをコピーしました',msg_addr_req:'⚠️ USDTアドレスを入力',msg_min:'❌ 最小500 💎',msg_insuf:'❌ 残高不足',msg_captcha:'🛡️ キャプチャが違います',msg_withdraw_ok:'{usdt} USDTの出金リクエスト — 24〜48時間以内に入金'},
-        sv:{tagline:'Världens mest episka NFT-fotbollsspel',menu_futbolistas:'👕 Spelare',menu_marketplace:'🏪 Marknad',menu_recompensas:'⚽ Belöningar',menu_recompensa_diaria:'🎁 Daglig Belöning',menu_logros:'🏅 Prestationer',menu_nivel:'⬆️ Nivå',menu_futcancha:'🏟️ FutPlan',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Turnering',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Träning',menu_deposito:'💎 Insättning',menu_retiro:'💸 Uttag',balones_estamina:'⚽ Stamina-bollar',balones:'bollar',referidos_btn:'👥 Värvningar',ref_title:'👥 Värvningsprogram',ref_commission:'💰 TJÄNA 5% PROVISION',ref_explain:'Få <strong style="color:var(--gold)">5%</strong> i ädelstenar från varje uttag din värvning gör. För alltid!',ref_total_label:'VÄRVNINGAR',ref_earned_label:'INTJÄNAT',ref_link_label:'Din inbjudningslänk',ref_copy:'Kopiera',ref_list_title:'📋 MINA VÄRVNINGAR',ref_empty:'Inga värvningar än. Dela din länk!',ref_earned_from:'Genererat',ref_copied:'Länk kopierad',msg_addr_req:'⚠️ Ange din USDT-adress',msg_min:'❌ Minst 500 💎',msg_insuf:'❌ Otillräckligt saldo',msg_captcha:'🛡️ Fel captcha, försök igen',msg_withdraw_ok:'Uttag på {usdt} USDT begärt — krediteras inom 24-48 tim'}
+        es:{tagline:'El juego de fútbol NFT más épico del mundo',menu_futbolistas:'👕 Futbolistas',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diaria',menu_logros:'🏅 Logros',menu_nivel:'⬆️ Nivel',menu_futcancha:'🏟️ FutCancha',menu_futsala:'🏃 Futsala',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Entrenamiento',menu_deposito:'💎 Depósito',menu_retiro:'💸 Retiro',balones_estamina:'⚽ Balones de Estamina',balones:'balones',referidos_btn:'👥 Referidos',ref_title:'👥 Programa de Referidos',ref_commission:'💰 GANA 5% DE COMISIÓN',ref_explain:'Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!',ref_total_label:'REFERIDOS',ref_earned_label:'GANADO',ref_link_label:'Tu enlace de invitación',ref_copy:'Copiar',ref_list_title:'📋 MIS REFERIDOS',ref_empty:'Aún no tienes referidos. ¡Comparte tu enlace!',ref_earned_from:'Generado',ref_copied:'Enlace copiado',msg_addr_req:'⚠️ Ingresa tu dirección USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
+        en:{tagline:"The world's most epic NFT football game",menu_futbolistas:'👕 Players',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Rewards',menu_recompensa_diaria:'🎁 Daily Reward',menu_logros:'🏅 Achievements',menu_nivel:'⬆️ Level',menu_futcancha:'🏟️ FutPitch',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournament',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Deposit',menu_retiro:'💸 Withdraw',balones_estamina:'⚽ Stamina Balls',balones:'balls',referidos_btn:'👥 Referrals',ref_title:'👥 Referral Program',ref_commission:'💰 EARN 5% COMMISSION',ref_explain:'Get <strong style="color:var(--gold)">5%</strong> in gems from every withdrawal your referral makes. Forever!',ref_total_label:'REFERRALS',ref_earned_label:'EARNED',ref_link_label:'Your invitation link',ref_copy:'Copy',ref_list_title:'📋 MY REFERRALS',ref_empty:'No referrals yet. Share your link!',ref_earned_from:'Generated',ref_copied:'Link copied',msg_addr_req:'⚠️ Enter your USDT address',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Insufficient balance',msg_captcha:'🛡️ Wrong captcha, try again',msg_withdraw_ok:'Withdrawal of {usdt} USDT requested — credited within 24h to 48h'},
+        pt:{tagline:'O jogo de futebol NFT mais épico do mundo',menu_futbolistas:'👕 Jogadores',menu_marketplace:'🏪 Mercado',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diária',menu_logros:'🏅 Conquistas',menu_nivel:'⬆️ Nível',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneio',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Treino',menu_deposito:'💎 Depósito',menu_retiro:'💸 Saque',balones_estamina:'⚽ Bolas de Estamina',balones:'bolas',referidos_btn:'👥 Indicações',ref_title:'👥 Programa de Indicações',ref_commission:'💰 GANHE 5% DE COMISSÃO',ref_explain:'Receba <strong style="color:var(--gold)">5%</strong> em gemas de cada saque do seu indicado. Para sempre!',ref_total_label:'INDICAÇÕES',ref_earned_label:'GANHO',ref_link_label:'Seu link de convite',ref_copy:'Copiar',ref_list_title:'📋 MEUS INDICADOS',ref_empty:'Sem indicados ainda. Compartilhe seu link!',ref_earned_from:'Gerado',ref_copied:'Link copiado',msg_addr_req:'⚠️ Insira seu endereço USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha errado, tente novamente',msg_withdraw_ok:'Saque de {usdt} USDT solicitado — creditado em 24h a 48h'},
+        fr:{tagline:'Le jeu de football NFT le plus épique du monde',menu_futbolistas:'👕 Joueurs',menu_marketplace:'🏪 Marché',menu_recompensas:'⚽ Récompenses',menu_recompensa_diaria:'🎁 Récompense Quotidienne',menu_logros:'🏅 Succès',menu_nivel:'⬆️ Niveau',menu_futcancha:'🏟️ FutTerrain',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournoi',menu_ranking:'📊 Classement',menu_entrenamiento:'🏋️ Entraînement',menu_deposito:'💎 Dépôt',menu_retiro:'💸 Retrait',balones_estamina:'⚽ Balles d\u2019Endurance',balones:'balles',referidos_btn:'👥 Parrainage',ref_title:'👥 Programme de Parrainage',ref_commission:'💰 GAGNEZ 5% DE COMMISSION',ref_explain:'Recevez <strong style="color:var(--gold)">5%</strong> en gemmes de chaque retrait de votre filleul. Pour toujours!',ref_total_label:'FILLEULS',ref_earned_label:'GAGNÉ',ref_link_label:'Votre lien d\u2019invitation',ref_copy:'Copier',ref_list_title:'📋 MES FILLEULS',ref_empty:'Aucun filleul. Partagez votre lien!',ref_earned_from:'Généré',ref_copied:'Lien copié',msg_addr_req:'⚠️ Entrez votre adresse USDT',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Solde insuffisant',msg_captcha:'🛡️ Captcha incorrect, réessayez',msg_withdraw_ok:'Retrait de {usdt} USDT demandé — crédité sous 24h à 48h'},
+        de:{tagline:'Das epischste NFT-Fußballspiel der Welt',menu_futbolistas:'👕 Spieler',menu_marketplace:'🏪 Marktplatz',menu_recompensas:'⚽ Belohnungen',menu_recompensa_diaria:'🎁 Tägliche Belohnung',menu_logros:'🏅 Erfolge',menu_nivel:'⬆️ Stufe',menu_futcancha:'🏟️ FutPlatz',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Turnier',menu_ranking:'📊 Rangliste',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Einzahlung',menu_retiro:'💸 Auszahlung',balones_estamina:'⚽ Ausdauerbälle',balones:'Bälle',referidos_btn:'👥 Empfehlungen',ref_title:'👥 Empfehlungsprogramm',ref_commission:'💰 5% PROVISION VERDIENEN',ref_explain:'Erhalte <strong style="color:var(--gold)">5%</strong> in Gems von jeder Auszahlung deines Empfohlenen. Für immer!',ref_total_label:'EMPFOHLENE',ref_earned_label:'VERDIENT',ref_link_label:'Dein Einladungslink',ref_copy:'Kopieren',ref_list_title:'📋 MEINE EMPFOHLENEN',ref_empty:'Noch keine Empfohlenen. Teile deinen Link!',ref_earned_from:'Generiert',ref_copied:'Link kopiert',msg_addr_req:'⚠️ Gib deine USDT-Adresse ein',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Saldo unzureichend',msg_captcha:'🛡️ Captcha falsch, erneut versuchen',msg_withdraw_ok:'Auszahlung von {usdt} USDT angefordert — gutgeschrieben in 24h bis 48h'},
+        it:{tagline:'Il gioco di calcio NFT più epico del mondo',menu_futbolistas:'👕 Calciatori',menu_marketplace:'🏪 Mercato',menu_recompensas:'⚽ Ricompense',menu_recompensa_diaria:'🎁 Ricompensa Giornaliera',menu_logros:'🏅 Obiettivi',menu_nivel:'⬆️ Livello',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Classifica',menu_entrenamiento:'🏋️ Allenamento',menu_deposito:'💎 Deposito',menu_retiro:'💸 Prelievo',balones_estamina:'⚽ Palloni di Stamina',balones:'palloni',referidos_btn:'👥 Referral',ref_title:'👥 Programma Referral',ref_commission:'💰 GUADAGNA 5% DI COMMISSIONE',ref_explain:'Ricevi <strong style="color:var(--gold)">5%</strong> in gemme da ogni prelievo del tuo referral. Per sempre!',ref_total_label:'REFERRAL',ref_earned_label:'GUADAGNATO',ref_link_label:'Il tuo link di invito',ref_copy:'Copia',ref_list_title:'📋 I MIEI REFERRAL',ref_empty:'Nessun referral. Condividi il tuo link!',ref_earned_from:'Generato',ref_copied:'Link copiato',msg_addr_req:'⚠️ Inserisci il tuo indirizzo USDT',msg_min:'❌ Minimo 160 💎',msg_insuf:'❌ Saldo insufficiente',msg_captcha:'🛡️ Captcha errato, riprova',msg_withdraw_ok:'Prelievo di {usdt} USDT richiesto — accreditato in 24h-48h'},
+        ja:{tagline:'世界で最もエピックなNFTサッカーゲーム',menu_futbolistas:'👕 選手',menu_marketplace:'🏪 マーケット',menu_recompensas:'⚽ 報酬',menu_recompensa_diaria:'🎁 デイリー報酬',menu_logros:'🏅 実績',menu_nivel:'⬆️ レベル',menu_futcancha:'🏟️ フットピッチ',menu_futsala:'🏃 フットサル',menu_torneo:'🏆 トーナメント',menu_ranking:'📊 ランキング',menu_entrenamiento:'🏋️ トレーニング',menu_deposito:'💎 入金',menu_retiro:'💸 出金',balones_estamina:'⚽ スタミナボール',balones:'ボール',referidos_btn:'👥 紹介',ref_title:'👥 紹介プログラム',ref_commission:'💰 5%コミッション獲得',ref_explain:'紹介者の出金額の<strong style="color:var(--gold)">5%</strong>をジェムで永久に受け取れます！',ref_total_label:'紹介数',ref_earned_label:'獲得',ref_link_label:'あなたの招待リンク',ref_copy:'コピー',ref_list_title:'📋 私の紹介者',ref_empty:'まだ紹介者がいません。リンクを共有しましょう！',ref_earned_from:'生成',ref_copied:'リンクをコピーしました',msg_addr_req:'⚠️ USDTアドレスを入力',msg_min:'❌ 最小160 💎',msg_insuf:'❌ 残高不足',msg_captcha:'🛡️ キャプチャが違います',msg_withdraw_ok:'{usdt} USDTの出金リクエスト — 24〜48時間以内に入金'},
+        sv:{tagline:'Världens mest episka NFT-fotbollsspel',menu_futbolistas:'👕 Spelare',menu_marketplace:'🏪 Marknad',menu_recompensas:'⚽ Belöningar',menu_recompensa_diaria:'🎁 Daglig Belöning',menu_logros:'🏅 Prestationer',menu_nivel:'⬆️ Nivå',menu_futcancha:'🏟️ FutPlan',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Turnering',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Träning',menu_deposito:'💎 Insättning',menu_retiro:'💸 Uttag',balones_estamina:'⚽ Stamina-bollar',balones:'bollar',referidos_btn:'👥 Värvningar',ref_title:'👥 Värvningsprogram',ref_commission:'💰 TJÄNA 5% PROVISION',ref_explain:'Få <strong style="color:var(--gold)">5%</strong> i ädelstenar från varje uttag din värvning gör. För alltid!',ref_total_label:'VÄRVNINGAR',ref_earned_label:'INTJÄNAT',ref_link_label:'Din inbjudningslänk',ref_copy:'Kopiera',ref_list_title:'📋 MINA VÄRVNINGAR',ref_empty:'Inga värvningar än. Dela din länk!',ref_earned_from:'Genererat',ref_copied:'Länk kopierad',msg_addr_req:'⚠️ Ange din USDT-adress',msg_min:'❌ Minst 160 💎',msg_insuf:'❌ Otillräckligt saldo',msg_captcha:'🛡️ Fel captcha, försök igen',msg_withdraw_ok:'Uttag på {usdt} USDT begärt — krediteras inom 24-48 tim'}
     };
     let _currentLang=localStorage.getItem('tg_lang')||'es';
     function t(key){return (TRANSLATIONS[_currentLang]&&TRANSLATIONS[_currentLang][key])||TRANSLATIONS.es[key]||key;}
@@ -3604,8 +3477,6 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎 y +${ptsBonus} pts`:'⏳ Necesitas más
     buildSkillLogros();
     buildFutsalaBody();
     updateTorneoCountdown();
-    // Mostrar checks en botones laterales al iniciar
-    setTimeout(_refreshAllSideChecks, 300);
 
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
     </script>
