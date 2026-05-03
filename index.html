@@ -551,6 +551,75 @@
         .epa-close { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: #ccc; }
         .epa-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
         .inv-empty-hint { padding: 24px; text-align: center; color: #666; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 14px; font-size: 0.9em; line-height: 1.5; }
+    
+        /* ── TELEGRAM MINI APP: bottom nav + side floating columns ── */
+        .tg-bottom-nav {
+            display: none;
+            position: fixed; left: 0; right: 0; bottom: 0;
+            z-index: 200;
+            background: linear-gradient(180deg, rgba(6,20,7,0.85) 0%, rgba(6,20,7,0.98) 60%);
+            backdrop-filter: blur(14px);
+            border-top: 1px solid rgba(45,122,31,0.45);
+            padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+        }
+        .tg-bottom-nav .tg-nav-btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(45,122,31,0.35);
+            border-radius: 12px;
+            padding: 8px 4px 6px;
+            color: #cfd; font-size: 0.66em; font-weight: 700;
+            font-family: 'Fredoka','Rajdhani',sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 3px; cursor: pointer; transition: all 0.18s; text-align: center;
+            line-height: 1.05;
+        }
+        .tg-bottom-nav .tg-nav-btn:active { transform: scale(0.94); background: rgba(45,122,31,0.25); color: #fff; }
+        .tg-bottom-nav .tg-nav-btn .tg-nav-emoji { font-size: 1.45em; line-height: 1; }
+        .tg-bottom-nav .tg-nav-btn.accent-cyan   { border-color: rgba(0,212,255,0.45); color: var(--cyan); }
+        .tg-bottom-nav .tg-nav-btn.accent-gold   { border-color: rgba(255,215,0,0.45); color: var(--gold); }
+        .tg-bottom-nav .tg-nav-btn.accent-orange { border-color: rgba(255,159,28,0.45); color: var(--orange); }
+        .tg-bottom-nav .tg-nav-btn.accent-purple { border-color: rgba(181,108,255,0.45); color: var(--purple); }
+
+        .tg-side-col {
+            display: none;
+            position: fixed; top: 50%; transform: translateY(-50%);
+            z-index: 150;
+            flex-direction: column; gap: 8px;
+        }
+        .tg-side-col.left  { left: 6px; }
+        .tg-side-col.right { right: 6px; }
+        .tg-side-btn {
+            width: 50px; height: 50px; border-radius: 14px;
+            background: rgba(10,19,10,0.7);
+            border: 1px solid rgba(45,122,31,0.45);
+            color: #fff; font-size: 1.4em;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.18s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 12px rgba(0,255,136,0.08);
+        }
+        .tg-side-btn:active { transform: scale(0.9); background: rgba(45,122,31,0.4); }
+        .tg-side-btn.accent-cyan   { border-color: rgba(0,212,255,0.55); color: var(--cyan); }
+        .tg-side-btn.accent-gold   { border-color: rgba(255,215,0,0.55); color: var(--gold); }
+        .tg-side-btn.accent-purple { border-color: rgba(181,108,255,0.55); color: var(--purple); }
+        .tg-side-btn .tg-side-label { display: none; }
+
+        @media (max-width: 640px) {
+            /* Mostrar bottom nav + side floats */
+            .tg-bottom-nav { display: grid; }
+            .tg-side-col   { display: flex; }
+            /* Ocultar el grid de menú anterior, dejar que la imagen sea la protagonista */
+            .mobile-menu-grid { display: none !important; }
+            .mobile-play-row { margin-top: 6px; }
+            /* Espacio para que el contenido no quede tapado por el bottom nav */
+            .main-content { padding-bottom: 110px !important; }
+            /* Hero más grande, ya que tenemos más espacio */
+            .mobile-hero-center { margin: 4px 0 14px; }
+        }
+
     </style>
 </head>
 <body>
@@ -3362,5 +3431,36 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
     </script>
 </div>
+
+    <!-- ══════════ TELEGRAM MINI APP: NAV INFERIOR ══════════ -->
+    <nav class="tg-bottom-nav" aria-label="Navegación principal">
+        <button class="tg-nav-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">
+            <span class="tg-nav-emoji">🏪</span><span>Market</span>
+        </button>
+        <button class="tg-nav-btn accent-cyan" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">
+            <span class="tg-nav-emoji">👕</span><span>Futbolista</span>
+        </button>
+        <button class="tg-nav-btn accent-gold" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">
+            <span class="tg-nav-emoji">📊</span><span>Ranking</span>
+        </button>
+        <button class="tg-nav-btn accent-orange" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">
+            <span class="tg-nav-emoji">🏋️</span><span>Entrena.</span>
+        </button>
+    </nav>
+
+    <!-- ══════════ COLUMNAS LATERALES FLOTANTES ══════════ -->
+    <div class="tg-side-col left">
+        <button class="tg-side-btn accent-gold"   onclick="openModal('modal-recompensa-pts')"  title="Recompensas">⚽</button>
+        <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
+        <button class="tg-side-btn accent-purple" onclick="openModal('modal-logros')"          title="Logros">🏅</button>
+        <button class="tg-side-btn"               onclick="openModal('modal-nivel')"           title="Nivel">⬆️</button>
+    </div>
+    <div class="tg-side-col right">
+        <button class="tg-side-btn"               onclick="openModal('modal-torneo')"          title="Torneo">🏆</button>
+        <button class="tg-side-btn accent-gold"   onclick="openModal('modal-deposito')"        title="Depósito">💎</button>
+        <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">💸</button>
+        <button class="tg-side-btn accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();" title="Referidos">👥</button>
+    </div>
+
 </body>
 </html>
