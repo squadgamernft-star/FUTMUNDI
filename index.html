@@ -12,7 +12,19 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .side-check-badge {
+            animation: sideCheckPulse 2s ease-in-out infinite;
+        }
+        @keyframes sideCheckPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 6px rgba(0,255,136,0.8); }
+            50% { transform: scale(1.2); box-shadow: 0 0 12px rgba(0,255,136,1); }
+        }
+        .reward-day.claimed .day-icon { filter: drop-shadow(0 0 4px rgba(0,255,136,0.8)); }
+        .reward-day.today:not(.claimed) { animation: todayPulse 1.5s ease-in-out infinite; }
+        @keyframes todayPulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(255,216,77,0.5); }
+            50% { box-shadow: 0 0 16px rgba(255,216,77,0.9); }
+        }
         :root {
             --cyan: #55d7ff; --green: #42f58d; --orange: #ff9f1c;
             --red: #ff5a6f; --gold: #ffd84d; --purple: #b56cff;
@@ -1580,15 +1592,61 @@
         }
         return milestones;
     }
+    // ── HELPER: CHECK BADGE EN BOTONES LATERALES Y MÓVILES ───────────────
+    // Muestra/quita un badge ✅ en botones laterales y del grid móvil que abren un modal
+    function _updateSideBtnCheck(modalId, stateKey, val) {
+        // Guarda estado en memoria para esta sesión
+        if(!window._sideBtnState) window._sideBtnState = {};
+        window._sideBtnState[stateKey] = val;
+        // Actualiza todos los botones que abren ese modal
+        document.querySelectorAll(`button[onclick*="'${modalId}'"], button[onclick*='"${modalId}"']`).forEach(btn => {
+            let badge = btn.querySelector('.side-check-badge');
+            if(val) {
+                if(!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'side-check-badge';
+                    badge.style.cssText = 'position:absolute;top:-4px;right:-4px;background:#00ff88;color:#000;border-radius:50%;width:16px;height:16px;font-size:0.62em;display:flex;align-items:center;justify-content:center;font-weight:900;z-index:10;box-shadow:0 0 6px rgba(0,255,136,0.8);pointer-events:none;';
+                    badge.textContent = '✓';
+                    btn.style.position = 'relative';
+                    btn.appendChild(badge);
+                }
+            } else {
+                if(badge) badge.remove();
+            }
+        });
+    }
+
+    // Revisa qué checks deben estar activos al abrir/recargar
+    function _refreshAllSideChecks() {
+        // Recompensa diaria: check si YA fue reclamada hoy
+        const dailyClaimed = localStorage.getItem('tg_last_reward_day_key') === getUtcDayKey();
+        _updateSideBtnCheck('modal-recompensa', 'daily-claimed-today', dailyClaimed);
+        // Recompensas por goles: check si hay algún hito reclamable
+        const milestones = getGoalMilestones();
+        const hayGoalPendiente = milestones.some(m => m.claimed);
+        _updateSideBtnCheck('modal-recompensa-pts', 'goal-milestone-claimed', hayGoalPendiente);
+        // Logros: check si hay algún logro reclamado
+        const claimed = getSkillClaimedData();
+        const hayLogroReclamado = Object.keys(claimed).length > 0;
+        _updateSideBtnCheck('modal-logros', 'logro-claimed', hayLogroReclamado);
+        // Torneo: check si el torneo está activo
+        const now = new Date(); const day = now.getUTCDay();
+        const torneoActivo = (day>=1&&day<=4)||(day===5&&now.getUTCHours()===0&&now.getUTCMinutes()===0);
+        _updateSideBtnCheck('modal-torneo', 'torneo-activo', torneoActivo);
+    }
+
     function claimGoalMilestone(key, gems) {
         const claimedGoals = JSON.parse(localStorage.getItem(_pfx()+'_claimed_goal_milestones')||'{}');
         if(claimedGoals[key]) return;
-        gemas += gems;
+        gemas += gems;          // 💎 suma a diamantes
+        puntaje += gems * 10;   // 📘 suma puntos proporcionales
         claimedGoals[key] = true;
         localStorage.setItem(_pfx()+'_claimed_goal_milestones', JSON.stringify(claimedGoals));
         actualizarUI();
         buildRewardPts();
-        mostrarMensaje(`✅ +${gems} 💎 por hito de goles!`, '#00ff88');
+        // Actualizar badge del botón lateral con check
+        _updateSideBtnCheck('modal-recompensa-pts', 'goal-milestone-claimed', true);
+        mostrarMensaje(`✅ +${gems} 💎 y +${gems*10} pts por hito de goles!`, '#00ff88');
     }
 
     // ── BALONES ───────────────────────────────────────────────────────────
@@ -1696,6 +1754,8 @@
         buildUniforms();
         buildSkillLogros();
         buildFutsalaBody();
+        // Mostrar checks en botones laterales según estado de la wallet
+        setTimeout(_refreshAllSideChecks, 200);
         // Mostrar badge con dirección abreviada en top bar
         const badge=$id('wallet-addr-badge');
         const addrText=$id('wallet-addr-text');
@@ -1802,7 +1862,12 @@
                 const tx=buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
                     await tonConnectUI.sendTransaction(tx);
-                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
+                    // ✅ Al inscribirse al torneo: sumar pts al balance
+                    puntaje += 50; // +50 pts por inscripción al torneo
+                    actualizarUI();
+                    // Marcar badge check en botón de torneo
+                    _updateSideBtnCheck('modal-torneo', 'torneo-inscrito', true);
+                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada! +50 pts','#00ff88');
                     return true;
                 }catch(e){mostrarMensaje('❌ Inscripción cancelada','#ff4444');return false;}
             }
@@ -2038,12 +2103,14 @@
         const count = skillCounts[skillId]||0;
         if(count < milestone) { mostrarMensaje('⚠️ Aún no alcanzas este hito','#ffaa00'); return; }
         const gems = getSkillMilestoneGems(milestone);
-        gemas += gems;
-        puntaje += 100;
+        gemas += gems;       // 💎 suma a diamantes
+        puntaje += 100;      // 📘 suma 100 pts
         claimed[key] = true;
         saveSkillClaimedData(claimed);
         actualizarUI();
         buildSkillLogros();
+        // Actualizar badge del botón lateral con check
+        _updateSideBtnCheck('modal-logros', 'logro-claimed', true);
         mostrarMensaje(`🏅 +${gems} 💎 y +100 pts por ${milestone} acciones de habilidad!`, '#ffd700');
     }
 
@@ -3122,6 +3189,7 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
     }
 
     // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
+    // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
     function buildRewardPts(){
         actualizarUI();
         const milestones=getGoalMilestones();
@@ -3130,38 +3198,100 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
         milestones.forEach(m=>{
             const pct=Math.min(100,Math.round((info.goalsInCycle/m.goalsNeeded)*100));
             const canClaim=m.achieved&&!m.claimed;
-            html+=`<div class="reward-section" style="${m.claimed?'opacity:0.5':''}${m.achieved&&!m.claimed?';border-color:rgba(0,255,136,0.4)':''}">
+            const ptsBonus=m.gems*10;
+            html+=`<div class="reward-section" style="${m.claimed?'opacity:0.6;border-color:rgba(0,255,136,0.15)':''}${m.achieved&&!m.claimed?';border-color:rgba(0,255,136,0.5);box-shadow:0 0 10px rgba(0,255,136,0.15)':''}">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-    <div>
-        <span style="font-size:1em;">⚽</span>
-        <strong style="font-size:0.9em;margin-left:6px;color:${m.achieved?'var(--green)':'#aaa'}">${m.goalsNeeded} goles</strong>
-        <span style="font-size:0.72em;color:#555;margin-left:8px">en ciclo ${info.cycle}</span>
+    <div style="display:flex;align-items:center;gap:8px">
+        ${m.claimed?'<span style="font-size:1.3em">✅</span>':'<span style="font-size:1em;">⚽</span>'}
+        <strong style="font-size:0.9em;color:${m.claimed?'#666':m.achieved?'var(--green)':'#aaa'}">${m.goalsNeeded} goles</strong>
+        <span style="font-size:0.72em;color:#555">ciclo ${info.cycle}</span>
     </div>
-    <div style="font-weight:700;color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.85em">+${m.gems} 💎</div>
+    <div style="text-align:right">
+        <div style="font-weight:700;color:${m.claimed?'#555':'var(--gold)'};font-family:'Orbitron',sans-serif;font-size:0.85em">+${m.gems} 💎</div>
+        <div style="font-size:0.68em;color:var(--cyan)">+${ptsBonus} pts</div>
+    </div>
 </div>
-<div class="pts-bar-bg"><div class="pts-bar-fill" style="width:${pct}%"></div></div>
+<div class="pts-bar-bg"><div class="pts-bar-fill" style="width:${pct}%;${m.claimed?'background:rgba(0,255,136,0.3)':''}"></div></div>
 <div style="display:flex;justify-content:space-between;font-size:0.72em;color:#555;margin-top:4px">
     <span>Progreso: ${Math.min(info.goalsInCycle,m.goalsNeeded)} / ${m.goalsNeeded}</span>
-    <span style="color:${m.achieved?'var(--green)':'#555'}">${m.achieved?'✅ Logrado':'⏳ Pendiente'}</span>
+    <span style="color:${m.claimed?'#555':m.achieved?'var(--green)':'#555'}">${m.claimed?'✅ Reclamado':m.achieved?'✅ Logrado':'⏳ Pendiente'}</span>
 </div>
-${!m.claimed?`<button style="width:100%;margin-top:8px;padding:8px;background:${canClaim?'rgba(0,255,136,0.1)':'rgba(255,255,255,0.03)'};border:1px solid ${canClaim?'var(--green)':'rgba(255,255,255,0.07)'};border-radius:8px;color:${canClaim?'var(--green)':'#555'};font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84em;cursor:${canClaim?'pointer':'not-allowed'};text-transform:uppercase;transition:all 0.25s" onclick="${canClaim?`claimGoalMilestone('${m.key}',${m.gems})`:'void(0)'}">
-${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
-:`<div style="text-align:center;margin-top:8px;font-size:0.78em;color:#555">✅ Ya reclamado</div>`}
+${m.claimed
+    ?`<div style="text-align:center;margin-top:8px;padding:6px;background:rgba(0,255,136,0.05);border-radius:8px;font-size:0.78em;color:#555">✅ +${m.gems} 💎 y +${ptsBonus} pts sumados a tu balance</div>`
+    :`<button style="width:100%;margin-top:8px;padding:8px;background:${canClaim?'rgba(0,255,136,0.12)':'rgba(255,255,255,0.03)'};border:1px solid ${canClaim?'var(--green)':'rgba(255,255,255,0.07)'};border-radius:8px;color:${canClaim?'var(--green)':'#555'};font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84em;cursor:${canClaim?'pointer':'not-allowed'};text-transform:uppercase;transition:all 0.25s" onclick="${canClaim?`claimGoalMilestone('${m.key}',${m.gems})`:'void(0)'}">
+${canClaim?`✅ Reclamar +${m.gems} 💎 y +${ptsBonus} pts`:'⏳ Necesitas más goles'}</button>`
+}
 </div>`;
         });
         $id('goals-rewards-list').innerHTML=html;
     }
-
-    // ── RECOMPENSA DIARIA ─────────────────────────────────────────────────
     function getDailyRewardGems(dia){if(dia===30)return 25;if(dia%2===1)return 1;return 0;}
     function getDailyRewardXP(dia){return (dia%2===0&&dia!==30)?25:1;}
     function getUtcDayKey(){const n=new Date();return `${n.getUTCFullYear()}-${String(n.getUTCMonth()+1).padStart(2,'0')}-${String(n.getUTCDate()).padStart(2,'0')}`;}
     function getDailyCycleDay(){const start=Date.UTC(2025,0,1),now=new Date();const today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());return (Math.floor((today-start)/86400000)%30)+1;}
-    function buildRewardDays(){const diaActual=getDailyCycleDay();const claimedToday=localStorage.getItem('tg_last_reward_day_key')===getUtcDayKey();let html='';for(let d=1;d<=30;d++){const isToday=d===diaActual,isXP=d%2===0&&d!==30,isDay30=d===30;let cls='reward-day';if(isDay30)cls+=' special';else if(isXP)cls+=' gold-day';if(isToday&&claimedToday)cls+=' claimed';if(isToday)cls+=' today';const icon=isDay30?'👑':isXP?'📘':'💎';const label=isDay30?'25💎':isXP?`+${getDailyRewardXP(d)} XP`:`${getDailyRewardGems(d)}💎`;html+=`<div class="${cls}"><span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${label}</small></div>`;}$id('reward-days-grid').innerHTML=html;}
-    function checkRewardStatus(){buildRewardDays();const canClaim=localStorage.getItem('tg_last_reward_day_key')!==getUtcDayKey();const btn=$id('btn-claim-reward');if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar recompensa de hoy':'⏳ Recompensa de hoy reclamada';}updateDailyTimer(0,canClaim);}
+    function buildRewardDays(){
+        const diaActual=getDailyCycleDay();
+        const claimedToday=localStorage.getItem('tg_last_reward_day_key')===getUtcDayKey();
+        const lastClaimedDay=parseInt(localStorage.getItem('tg_reward_day')||'0');
+        let html='';
+        for(let d=1;d<=30;d++){
+            const isToday=d===diaActual;
+            const isXP=d%2===0&&d!==30;
+            const isDay30=d===30;
+            const isPast=d<diaActual;
+            const isClaimed=(isToday&&claimedToday)||(isPast&&d===lastClaimedDay);
+            let cls='reward-day';
+            if(isDay30)cls+=' special';
+            else if(isXP)cls+=' gold-day';
+            if(isToday&&claimedToday)cls+=' claimed';
+            if(isToday)cls+=' today';
+            // Icon: show check if today was claimed, normal icon otherwise
+            let icon;
+            if(isToday&&claimedToday) icon='✅';
+            else if(isDay30) icon='👑';
+            else if(isXP) icon='📘';
+            else icon='💎';
+            const label=isDay30?'25💎':isXP?`+${getDailyRewardXP(d)} XP`:`${getDailyRewardGems(d)}💎`;
+            const todayIndicator=isToday?`<div style="position:absolute;top:2px;right:3px;width:6px;height:6px;border-radius:50%;background:${claimedToday?'#00ff88':'#ffd700'};box-shadow:0 0 5px ${claimedToday?'#00ff88':'#ffd700'};"></div>`:'';
+            html+=`<div class="${cls}" style="position:relative">${todayIndicator}<span class="day-icon">${icon}</span><div style="font-weight:700">${d}</div><small>${isToday&&claimedToday?'✓ OK':label}</small></div>`;
+        }
+        $id('reward-days-grid').innerHTML=html;
+    }
+    function checkRewardStatus(){
+        buildRewardDays();
+        const canClaim=localStorage.getItem('tg_last_reward_day_key')!==getUtcDayKey();
+        const btn=$id('btn-claim-reward');
+        if(btn){btn.disabled=!canClaim;btn.textContent=canClaim?'✅ Reclamar recompensa de hoy':'⏳ Recompensa de hoy reclamada';}
+        updateDailyTimer(0,canClaim);
+        // Actualizar badge del botón lateral
+        _updateSideBtnCheck('modal-recompensa', 'daily-claimed-today', !canClaim);
+    }
     function updateDailyTimer(msR,canClaim){const el=$id('daily-timer-display');if(!el)return;if(canClaim){el.textContent='✅ Reclama solo la recompensa del día actual; si no la reclamas, se pierde.';el.style.color='var(--green)';return;}const n=new Date();const next=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1);const left=Math.max(0,next-n.getTime());const h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);el.textContent=`⏱ Próxima recompensa en ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;el.style.color='#666';}
     setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active'))checkRewardStatus();},1000);
-    function claimReward(){const dayKey=getUtcDayKey();if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;puntaje+=xpGanado;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:`💎 +${gemsGanadas} gema +${xpGanado} XP`;localStorage.setItem('tg_last_reward_day_key',dayKey);localStorage.setItem('tg_last_reward_ts',String(Date.now()));localStorage.setItem('tg_reward_day',String(diaActual));actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✅ Recompensa de hoy reclamada';}mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');}
+    function claimReward(){
+        const dayKey=getUtcDayKey();
+        if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}
+        const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;
+        // ── Sumar recompensas a los balances correspondientes ──
+        if(gemsGanadas>0) gemas+=gemsGanadas;   // 💎 Diamantes
+        if(xpGanado>0) puntaje+=xpGanado;        // 📘 Puntos / XP
+        // Verificar si subió de nivel
+        const nivelAntes=nivel;
+        nivel=calcularNivel();
+        const subioNivel=nivel>nivelAntes;
+        let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:(`💎 +${gemsGanadas} gema +${xpGanado} XP`);
+        if(subioNivel) msg+=' · ⬆️ ¡Subiste a Nivel '+nivel+'!';
+        localStorage.setItem('tg_last_reward_day_key',dayKey);
+        localStorage.setItem('tg_last_reward_ts',String(Date.now()));
+        localStorage.setItem('tg_reward_day',String(diaActual));
+        actualizarUI();
+        buildRewardDays();
+        // Actualizar badge del botón lateral de recompensa diaria con check
+        _updateSideBtnCheck('modal-recompensa', 'daily-claimed-today', true);
+        const btn=$id('btn-claim-reward');
+        if(btn){btn.disabled=true;btn.textContent='✅ Recompensa de hoy reclamada';}
+        mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');
+    }
 
     // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
     // Bonus de rendimiento progresivo por sesión:
@@ -3474,6 +3604,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     buildSkillLogros();
     buildFutsalaBody();
     updateTorneoCountdown();
+    // Mostrar checks en botones laterales al iniciar
+    setTimeout(_refreshAllSideChecks, 300);
 
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
     </script>
