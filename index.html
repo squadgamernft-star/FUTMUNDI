@@ -620,6 +620,38 @@
             .mobile-hero-center { margin: 4px 0 14px; }
         }
 
+        /* Cuando un modal está abierto, ocultar los iconos laterales para que no estorben */
+        body.modal-open .tg-side-col { display: none !important; }
+
+        @media (max-width: 640px) {
+            /* Centrar verticalmente el hero a la altura de los iconos laterales */
+            .mobile-layout {
+                min-height: calc(100vh - 280px);
+                justify-content: center;
+            }
+            .mobile-hero-center { margin: 0 auto 14px; }
+            /* Botones FutCancha / Futsala apilados verticalmente, solo icono, centrados */
+            .mobile-play-row {
+                grid-template-columns: 1fr !important;
+                width: auto !important;
+                justify-items: center;
+                gap: 10px !important;
+                margin: 6px auto 0 !important;
+            }
+            .mobile-play-row .mobile-play-btn {
+                width: 56px; height: 56px; padding: 0;
+                border-radius: 16px;
+                font-size: 0; /* oculta el texto del botón */
+                display: flex; align-items: center; justify-content: center;
+                position: relative;
+            }
+            .mobile-play-row .mobile-play-btn::before {
+                content: attr(data-emoji);
+                font-size: 1.8rem;
+                line-height: 1;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -735,8 +767,8 @@
 
             <!-- Botones de juego principales -->
             <div class="mobile-play-row">
-                <button class="mobile-play-btn mobile-play-btn-green" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
-                <button class="mobile-play-btn mobile-play-btn-cyan" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
+                <button class="mobile-play-btn mobile-play-btn-green" data-emoji="🏟️" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
+                <button class="mobile-play-btn mobile-play-btn-cyan" data-emoji="🏃" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
             </div>
 
             <!-- Grid 3×4 de acciones -->
@@ -1728,7 +1760,7 @@
     // ── MODALES ───────────────────────────────────────────────────────────
     function openModal(id){
         const el=$id(id);if(!el)return;
-        el.classList.add('active');document.body.style.overflow='hidden';
+        el.classList.add('active');document.body.style.overflow='hidden';document.body.classList.add('modal-open');
         if(id==='modal-marketplace'){actualizarUI();buildMarket();buildUniforms();buildItemsMarket();}
         if(id==='modal-recompensa')checkRewardStatus();
         if(id==='modal-recompensa-pts'){actualizarUI();buildRewardPts();}
@@ -1739,7 +1771,7 @@
         if(id==='modal-nivel')actualizarUI();
         if(id==='modal-torneo')updateTorneoCountdown();
     }
-    function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';}
+    function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';if(!document.querySelector('.modal-overlay.active'))document.body.classList.remove('modal-open');}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
     function irADepositoTorneo(){
