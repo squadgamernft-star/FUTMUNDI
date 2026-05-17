@@ -54,7 +54,7 @@
         @keyframes spinBall { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
         .title-sub { font-size: 0.82em; color: #888; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
 
-        /* ── DESKTOP layout: imagen central flanqueada por menús ── */
+        /* -- DESKTOP layout: imagen central flanqueada por menús -- */
         .layout-grid { display: flex; width: 100%; justify-content: center; align-items: center; gap: 50px; margin-bottom: 35px; }
         .car-container { position: relative; width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
         .car-base-glow { position: absolute; bottom: 65px; width: 75%; height: 18px; background: var(--green); filter: blur(35px); opacity: 0.35; z-index: 1; }
@@ -76,7 +76,7 @@
         .primary-btn:hover { background: linear-gradient(135deg, rgba(45,122,31,0.35), rgba(0,200,80,0.25)); box-shadow: 0 0 25px rgba(0,255,136,0.4); color: #fff; }
         #status-msg { margin-top: 10px; font-size: 0.95em; color: #888; min-height: 20px; text-align: center; padding: 6px; font-weight: 600; }
 
-        /* ── MOBILE LAYOUT: hero centrado con presencia + grid de botones ── */
+        /* -- MOBILE LAYOUT: hero centrado con presencia + grid de botones -- */
         .mobile-layout { display: none; width: 100%; flex-direction: column; align-items: center; gap: 12px; }
 
         /* Imagen central con glow y badge de balones inline */
@@ -242,7 +242,7 @@
         .claim-reward-btn:hover { background: rgba(0,255,136,0.22); color: #fff; }
         .claim-reward-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* ── LOGROS HABILIDADES ── */
+        /* -- LOGROS HABILIDADES -- */
         .logros-skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
         .logro-skill-card { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; transition: all 0.3s; }
         .logro-skill-card:hover { border-color: rgba(45,122,31,0.35); }
@@ -434,7 +434,7 @@
             .torneo-prizes-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* ── MOBILE: activar layout compacto para mini app Telegram ── */
+        /* -- MOBILE: activar layout compacto para mini app Telegram -- */
         @media (max-width: 640px) {
             body { min-height: 100dvh; }
             .main-content { padding: 10px 11px 18px; }
@@ -500,7 +500,7 @@
             .stats-container { font-size: 0.65em; gap: 4px; }
         }
 
-        /* ════════ ESTÉTICA PIXAR (sutil) ════════ */
+        /* ======== ESTÉTICA PIXAR (sutil) ======== */
         :root {
             --pixar-cream: #fff7e6;
             --pixar-soft: #ffd98a;
@@ -553,7 +553,7 @@
         .epa-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
         .inv-empty-hint { padding: 24px; text-align: center; color: #666; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 14px; font-size: 0.9em; line-height: 1.5; }
     
-        /* ── TELEGRAM MINI APP: bottom nav + side floating columns ── */
+        /* -- TELEGRAM MINI APP: bottom nav + side floating columns -- */
         .tg-bottom-nav {
             display: none;
             position: fixed; left: 0; right: 0; bottom: 0;
@@ -620,7 +620,7 @@
             /* Hero más grande, ya que tenemos más espacio */
             .mobile-hero-center { margin: 4px 0 14px; }
 
-            /* ── MODALES PANTALLA COMPLETA EN MÓVIL ── */
+            /* -- MODALES PANTALLA COMPLETA EN MÓVIL -- */
             .modal-overlay {
                 padding: 0 !important;
                 align-items: flex-end !important;
@@ -744,7 +744,7 @@
             <div class="title-sub" data-i18n="tagline">El juego de fútbol NFT más épico del mundo</div>
         </div>
 
-        <!-- ── DESKTOP layout (>640px): imagen central flanqueada por menús ── -->
+        <!-- -- DESKTOP layout (>640px): imagen central flanqueada por menús -- -->
         <div class="layout-grid">
             <div class="menu-column">
                 <button class="word-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">👕 Futbolistas</button>
@@ -784,7 +784,7 @@
             </div>
         </div>
 
-        <!-- ── MOBILE layout compacto para Telegram mini app (≤640px) ── -->
+        <!-- -- MOBILE layout compacto para Telegram mini app (≤640px) -- -->
         <div class="mobile-layout">
 
             <!-- Imagen central -->
@@ -835,7 +835,7 @@
         <div id="status-msg"></div>
     </div>
 
-    <!-- ══════════ MODALES ══════════ -->
+    <!-- ========== MODALES ========== -->
 
     <!-- MARKETPLACE -->
     <div class="modal-overlay" id="modal-marketplace">
@@ -986,7 +986,7 @@
         </div>
     </div>
 
-    <!-- ══════════ MODAL APUESTAS ══════════ -->
+    <!-- ========== MODAL APUESTAS ========== -->
     <div class="modal-overlay" id="modal-apuesta">
         <div class="modal">
             <div class="modal-header">
@@ -1013,7 +1013,7 @@
                     <button class="tab-btn"         id="tab-btn-mistickets" onclick="apTabSwitch('mistickets')">🎫 Mis Tickets</button>
                 </div>
 
-                <!-- ── TAB PARTIDOS ── -->
+                <!-- -- TAB PARTIDOS -- -->
                 <div id="ap-tab-partidos">
                     <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
                         <div style="flex:1;font-size:0.78em;color:#888;">Partidos del Mundial en vivo y próximos</div>
@@ -1026,12 +1026,12 @@
                     <div id="ap-partidos-lista" style="display:grid;gap:10px;max-height:320px;overflow-y:auto;padding-right:2px;"></div>
                 </div>
 
-                <!-- ── TAB MIS TICKETS ── -->
+                <!-- -- TAB MIS TICKETS -- -->
                 <div id="ap-tab-mistickets" style="display:none;">
                     <div id="ap-tickets-lista" style="display:grid;gap:10px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
                 </div>
 
-                <!-- ── PANEL DE CONFIRMACIÓN DE APUESTA (slide-in desde abajo) ── -->
+                <!-- -- PANEL DE CONFIRMACIÓN DE APUESTA (slide-in desde abajo) -- -->
                 <div id="ap-panel-confirmar" style="display:none;margin-top:14px;border:1px solid rgba(255,216,77,0.4);border-radius:16px;background:linear-gradient(145deg,rgba(20,15,0,0.95),rgba(10,19,10,0.95));padding:16px;animation:apPanelIn 0.28s ease;">
 
                     <!-- Partido seleccionado -->
@@ -1585,9 +1585,9 @@
     </div>
 
     <script>
-    // ── CONFIG ─────────────────────────────────────────────────────────────
+    // -- CONFIG -------------------------------------------------------------
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
-    // ── WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) ─────
+    // -- WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) -----
     const CONTRACT_WALLET = Object.freeze("EQDOiZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
     const WALLET = CONTRACT_WALLET;
     const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO'});
@@ -1611,7 +1611,7 @@
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
     }
 
-    // ── TABLA OFICIAL DE COSTOS DE ENTRENAMIENTO (USDT) POR NFT ───────────
+    // -- TABLA OFICIAL DE COSTOS DE ENTRENAMIENTO (USDT) POR NFT -----------
     // Mapeo: precio del NFT en gemas → costo de mantenimiento/entrenamiento en USDT
     const COSTO_ENTRENAMIENTO_USDT = {
         320:    1.00,
@@ -1634,11 +1634,11 @@
         return Math.max(1, +(precio/320).toFixed(2));
     }
 
-    // ── COSTO DE INSCRIPCIÓN AL TORNEO (USDT) ─────────────────────────────
+    // -- COSTO DE INSCRIPCIÓN AL TORNEO (USDT) -----------------------------
     const COSTO_TORNEO_USDT = 10.00;
     const MAX_PER_PLAYER = 20;
 
-    // ── GATE DEL TORNEO: requiere 100 usuarios con wallet + al menos 1 NFT ──
+    // -- GATE DEL TORNEO: requiere 100 usuarios con wallet + al menos 1 NFT --
     const TORNEO_MIN_USUARIOS = 100;
     // TODO: reemplazar por tu endpoint real. Debe devolver JSON:
     //   { "walletUsers": <n>, "usersWithNFT": <n> }
@@ -1706,7 +1706,7 @@
 
 
 
-    // ── CATÁLOGO DE JUGADORES ─────────────────────────────────────────────
+    // -- CATÁLOGO DE JUGADORES ---------------------------------------------
     const PLAYERS = [
         { nombre:"Neymar Jr.",       pais:"Brasil",     flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     color1:"#009c3b", color2:"#002776", img:"Neymar_320_gemass.png",          gemMin:8,     gemMax:15     },
         { nombre:"James Rodríguez",  pais:"Colombia",   flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", color1:"#fcd116", color2:"#003087", img:"james_rodriguez_1600_gemas.png",  gemMin:35,    gemMax:60     },
@@ -1723,7 +1723,7 @@
         { nombre:"Balón de Oro NFT", pais:"Mundo",      flag:"🌍",  precio:999999, hp:99, pos:"Leyenda",       color1:"#ffd700", color2:"#ff8c00", img:"bellingham_65000_gemass.png",     gemMin:24350, gemMax:53700  },
     ];
 
-    // ── CATÁLOGO DE HABILIDADES (LOGROS) ──────────────────────────────────
+    // -- CATÁLOGO DE HABILIDADES (LOGROS) ----------------------------------
     // Regla: 100 reps = 1💎, 200=2💎, 300=3💎, 400=4💎, 500+=5💎 (máx)
     // Cada hito reclamado = +100 pts
     const SKILLS = [
@@ -1762,7 +1762,7 @@
         return Math.min(5, milestone / 100);
     }
 
-    // ── SVG FALLBACK ──────────────────────────────────────────────────────
+    // -- SVG FALLBACK ------------------------------------------------------
     function generatePlayerSVG(player) {
         const {color1,color2,flag,pais,pos,hp}=player;
         const countryBgs={'Brasil':['#009c3b','#ffd700','#002776'],'Colombia':['#fcd116','#003087','#ce1126'],'Chile':['#d52b1e','#ffffff','#0032a0'],'Argentina':['#74acdf','#ffffff','#74acdf'],'Portugal':['#006600','#ff0000','#ffffff'],'Inglaterra':['#cf142b','#ffffff','#003399'],'Francia':['#002395','#ffffff','#ed2939'],'España':['#c60b1e','#ffc400','#c60b1e'],'Noruega':['#ef2b2d','#ffffff','#002868'],'Mundo':['#ffd700','#ff8c00','#ffa500']};
@@ -1773,7 +1773,7 @@
     function playerImgSrc(idx){const c=PLAYERS[idx];if(c.img)return GITHUB_IMG+c.img;return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(c));}
     function playerImgFallback(c){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(c));}
 
-    // ── ESTADO ────────────────────────────────────────────────────────────
+    // -- ESTADO ------------------------------------------------------------
     const $id = id => document.getElementById(id);
     const statusMsg = $id('status-msg');
     let gemas=0, hp=0, puntaje=0, nivel=1, statsPartidas=0;
@@ -1788,7 +1788,7 @@
     // Estado de habilidades: { skill_id: count }
     let skillCounts = {};
 
-    // ── SISTEMA DE NIVEL ──────────────────────────────────────────────────
+    // -- SISTEMA DE NIVEL --------------------------------------------------
     const NIVEL_THRESHOLDS = [0,1,3,5,8,12,17,23,30,38,47];
     function calcularNivel() {
         const totalNFTs = carrosComprados.reduce((s,e)=>s+e.qty,0);
@@ -1801,7 +1801,7 @@
     function gemasBonus() { return parseFloat(((nivel-1)*0.1).toFixed(1)); }
     function nivelWinBonus() { return Math.min(0.15, (nivel-1)*0.02); }
 
-    // ── SISTEMA DE GOLES ──────────────────────────────────────────────────
+    // -- SISTEMA DE GOLES --------------------------------------------------
     function getGoalCycleInfo() {
         const cycleSize = 1000;
         const cycle = Math.floor(totalGoals / cycleSize) + 1;
@@ -1831,9 +1831,9 @@
         mostrarMensaje(`✅ +${gems} 💎 por hito de goles!`, '#00ff88');
     }
 
-    // ── BALONES ───────────────────────────────────────────────────────────
+    // -- BALONES -----------------------------------------------------------
     function slotKey(idx,copy){return `${idx}_${copy}`;}
-    // ── NFT FREE (Alexis Sánchez): 1 por wallet, 2 balones/24h, 160 💎 en 90 días ──
+    // -- NFT FREE (Alexis Sánchez): 1 por wallet, 2 balones/24h, 160 💎 en 90 días --
     function isFreeNFT(idx){ return !!(PLAYERS[idx] && PLAYERS[idx].free); }
     function getBalonesCapacidad(idx){ return isFreeNFT(idx) ? (PLAYERS[idx].freeBalones||2) : 4; }
     function freshBalonesArr(idx){ return new Array(getBalonesCapacidad(idx)).fill(true); }
@@ -1882,10 +1882,10 @@
     }
     function getSlotOVR(idx,copy){const c=PLAYERS[idx];const b=getEquipBonuses(getSlotEquip(idx,copy));return c.hp+b.spd+b.def+b.phy;}
 
-    // ── MENSAJES ──────────────────────────────────────────────────────────
+    // -- MENSAJES ----------------------------------------------------------
     function mostrarMensaje(texto,color='#888'){statusMsg.textContent=texto;statusMsg.style.color=color;clearTimeout(mostrarMensaje._t);mostrarMensaje._t=setTimeout(()=>{statusMsg.textContent='';},5000);}
 
-    // ── PERSISTENCIA POR WALLET ───────────────────────────────────────────
+    // -- PERSISTENCIA POR WALLET -------------------------------------------
     // Cada wallet tiene su propio espacio de datos en localStorage.
     // Las claves se prefizan con la dirección de la wallet conectada.
     let _activeWalletAddr = null; // dirección activa (se setea al conectar)
@@ -1983,7 +1983,7 @@
         if(now.getUTCHours()>=7){carrosComprados.forEach(e=>{for(let c=0;c<e.qty;c++)ballonesPorJugador[slotKey(e.idx,c)]=freshBalonesArr(e.idx);});localStorage.setItem(_pfx()+'_ball_recharge_day',todayKey);saveState();}
     }
 
-    // ── UI ────────────────────────────────────────────────────────────────
+    // -- UI ----------------------------------------------------------------
     function actualizarUI(){
         nivel = calcularNivel();
         $id('gemas-stat').textContent=gemas.toFixed(1);
@@ -2019,7 +2019,7 @@
         saveState();
     }
 
-    // ── TORNEO COUNTDOWN ──────────────────────────────────────────────────
+    // -- TORNEO COUNTDOWN --------------------------------------------------
     function updateTorneoCountdown(){
         const now=new Date();const day=now.getUTCDay();
         const midnight=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
@@ -2038,7 +2038,7 @@
     }
     setInterval(updateTorneoCountdown,1000);
 
-    // ── MODALES ───────────────────────────────────────────────────────────
+    // -- MODALES -----------------------------------------------------------
     function openModal(id){
         const el=$id(id);if(!el)return;
         el.classList.add('active');document.body.style.overflow='hidden';document.body.classList.add('modal-open');
@@ -2075,7 +2075,7 @@
         });
     }
 
-    // ── MARKETPLACE: ZAPATILLAS Y ENTRENADORES ────────────────────────────
+    // -- MARKETPLACE: ZAPATILLAS Y ENTRENADORES ----------------------------
     const ITEMS_BASE_URL = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
     const ZAPATILLAS = [
         { nombre:'Zapatillas 1980', anio:1980, bonus:15, precio:300,  img:'zapatillas_1980_15%_300_gemas.png',  flag:'🥾' },
@@ -2143,7 +2143,7 @@
         mostrarMensaje(`✅ ${tipo} "${it.nombre}" añadido a tu inventario! Asígnalo desde Mi Plantilla`,'#00ff88');
     }
 
-    // ── MARKETPLACE ───────────────────────────────────────────────────────
+    // -- MARKETPLACE -------------------------------------------------------
     function buildMarket(){
         const md=$id('market-gemas-display');if(md)md.textContent=gemas.toFixed(1)+' 💎';
         $id('car-market-grid').innerHTML=PLAYERS.map((c,i)=>{
@@ -2242,7 +2242,7 @@
         mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`,'#00ff88');
     }
 
-    // ── UNIFORMES MARKETPLACE ─────────────────────────────────────────────
+    // -- UNIFORMES MARKETPLACE ---------------------------------------------
     const UNIFORMES = [
         {
             id: 'bronce',
@@ -2331,7 +2331,7 @@
         mostrarMensaje(`✅ ${u.nombre} añadido a tu inventario! ${u.fisico ? `+${u.fisico.toLocaleString()} pts físico` : u.bonus} · Asígnalo desde Mi Plantilla`, '#00ff88');
     }
 
-    // ── LOGROS DE HABILIDADES ─────────────────────────────────────────────
+    // -- LOGROS DE HABILIDADES ---------------------------------------------
     function getSkillClaimedKey(skillId, milestone) {
         return `skill_${skillId}_m${milestone}`;
     }
@@ -2447,7 +2447,7 @@
         }).join('');
     }
 
-    // ── GARAGE ────────────────────────────────────────────────────────────
+    // -- GARAGE ------------------------------------------------------------
     function buildGarage(){
         let html='';let slotNum=0;
         for(const entry of carrosComprados){
@@ -2469,7 +2469,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     }
     function selectSquadSlot(idx,copy){_selectedSquadSlot={idx,copy};buildGarage();}
 
-    // ── INVENTARIO EN GARAGE (Uniformes / Tenis / Entrenadores) ──────────
+    // -- INVENTARIO EN GARAGE (Uniformes / Tenis / Entrenadores) ----------
     function buildGarageInventory(){
         // UNIFORMES
         const gu = $id('garage-grid-uniformes');
@@ -2581,7 +2581,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         $id('eb-gems').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
     }
 
-    // ── PICKER DE EQUIPAMIENTO ────────────────────────────────────────────
+    // -- PICKER DE EQUIPAMIENTO --------------------------------------------
     let _equipPickerType = null;
     function openEquipModal(type){
         if(!_selectedSquadSlot){ mostrarMensaje('⚠️ Selecciona un jugador primero','#ffaa00'); return; }
@@ -2677,7 +2677,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         _equipPickerType = null;
     }
 
-    // ── PLAYER DETAIL ─────────────────────────────────────────────────────
+    // -- PLAYER DETAIL -----------------------------------------------------
     function openCarDetail(idx,fromGarage,copy=0){
         const c=PLAYERS[idx];const dur=getDurabilidad(idx,copy);const durCls=colorDurabilidad(dur);const balls=getBallonesJugador(idx,copy);const fuelLlenos=balls.filter(Boolean).length;const playerId=generatePlayerId(idx,copy);
         $id('car-detail-img').src=playerImgSrc(idx);$id('car-detail-name').textContent=c.nombre;$id('car-detail-country-flag').textContent=c.flag+' '+c.pais;$id('car-detail-player-id').textContent='ID: '+playerId;
@@ -2730,7 +2730,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     function closeCarDetail(){$id('modal-car-detail').classList.remove('active');document.body.style.overflow='';}
     $id('modal-car-detail').addEventListener('click',e=>{if(e.target===$id('modal-car-detail'))closeCarDetail();});
 
-    // ── SELECTOR JUGADOR ──────────────────────────────────────────────────
+    // -- SELECTOR JUGADOR --------------------------------------------------
     function abrirSeleccionJugadorPVP(modo){_pvpModeSelected=modo;_currentMatchMode='pvp';abrirModalSeleccionJugador('pvp');}
     function abrirSeleccionJugadorFutsala(cancha){_currentMatchCancha=cancha;_currentMatchMode='pve';abrirModalSeleccionJugador('pve');}
     function abrirModalSeleccionJugador(mode){
@@ -2770,7 +2770,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         iniciarVideoPartida();
     }
 
-    // ── VIDEO PARTIDO — JUEGO INTERACTIVO ────────────────────────────────
+    // -- VIDEO PARTIDO — JUEGO INTERACTIVO --------------------------------
     let _matchAnimFrame=null;
     let _gameState=null;
 
@@ -2844,7 +2844,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             playerBaseScoreAt: basePlayerGoals>0 ? Array.from({length:basePlayerGoals},(_,i)=>Math.floor(15+i*22)) : [],
         };
 
-        // ── INTRO ────────────────────────────────────────────────────────
+        // -- INTRO --------------------------------------------------------
         showScreen('match-intro-screen');
 
         // Rellenar datos de intro
@@ -2943,7 +2943,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         gs.goalEvents=[];
         gs.keys={};
 
-        // ── INPUT: TECLADO ────────────────────────────────────────────────
+        // -- INPUT: TECLADO ------------------------------------------------
         function onKey(e,down){
             const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
                        KeyW:'up',KeyS:'down',KeyA:'left',KeyD:'right',
@@ -2958,7 +2958,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             document.removeEventListener('keyup',e=>onKey(e,false));
         };
 
-        // ── INPUT: DPAD TÁCTIL ────────────────────────────────────────────
+        // -- INPUT: DPAD TÁCTIL --------------------------------------------
         ['up','down','left','right'].forEach(dir=>{
             const btn=$id('dpad-'+dir);
             if(!btn)return;
@@ -2975,7 +2975,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             shootBtn.addEventListener('mousedown',()=>dispararBola());
         }
 
-        // ── TOUCH SWIPE en CANVAS ─────────────────────────────────────────
+        // -- TOUCH SWIPE en CANVAS -----------------------------------------
         let touchStartX=0,touchStartY=0;
         canvas.addEventListener('touchstart',(e)=>{
             e.preventDefault();
@@ -3007,7 +3007,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             setTimeout(()=>{if($id('game-hint'))$id('game-hint').textContent='';},700);
         }
 
-        // ── LOOP ──────────────────────────────────────────────────────────
+        // -- LOOP ----------------------------------------------------------
         const GAME_FRAMES=Math.floor(60*35); // partido más rápido y dinámico
         let frame=0;
         const SPEED=6.2; // jugador controlado más veloz
@@ -3332,7 +3332,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
         }
 
-        // ── GAME LOOP ─────────────────────────────────────────────────────
+        // -- GAME LOOP -----------------------------------------------------
         const FPS_TARGET=1000/60;
         let lastTs=0;
         function loop(ts){
@@ -3452,7 +3452,7 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
         });
     }
 
-    // ── FUTSALA ───────────────────────────────────────────────────────────
+    // -- FUTSALA -----------------------------------------------------------
     function buildFutsalaBody(){
         $id('futsala-body').innerHTML=`
 <div class="futsala-info-box">✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; Gemas según tu NFT + pts estadísticas</div>
@@ -3473,7 +3473,7 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
 </div>`;
     }
 
-    // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
+    // -- RECOMPENSAS POR GOLES ---------------------------------------------
     function buildRewardPts(){
         actualizarUI();
         const milestones=getGoalMilestones();
@@ -3504,7 +3504,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         $id('goals-rewards-list').innerHTML=html;
     }
 
-    // ── RECOMPENSA DIARIA ─────────────────────────────────────────────────
+    // -- RECOMPENSA DIARIA -------------------------------------------------
     function getDailyRewardGems(dia){if(dia===30)return 25;if(dia%2===1)return 1;return 0;}
     function getDailyRewardXP(dia){return (dia%2===0&&dia!==30)?25:1;}
     function getUtcDayKey(){const n=new Date();return `${n.getUTCFullYear()}-${String(n.getUTCMonth()+1).padStart(2,'0')}-${String(n.getUTCDate()).padStart(2,'0')}`;}
@@ -3515,7 +3515,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active'))checkRewardStatus();},1000);
     function claimReward(){const dayKey=getUtcDayKey();if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;puntaje+=xpGanado;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:`💎 +${gemsGanadas} gema +${xpGanado} XP`;localStorage.setItem('tg_last_reward_day_key',dayKey);localStorage.setItem('tg_last_reward_ts',String(Date.now()));localStorage.setItem('tg_reward_day',String(diaActual));if(typeof saveState==='function')saveState();actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✓ Recompensa de hoy reclamada';}mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');}
 
-    // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
+    // -- ENTRENAMIENTO -----------------------------------------------------
     // Bonus de rendimiento progresivo por sesión:
     // Sesión 1=+5%, 2=+10%, 3=+15%, 4=+17%, 5=+19%, luego +2% por sesión hasta llegar a 80% → se reinicia a 0
     let trainingData = JSON.parse(localStorage.getItem('tg_training_data')||'{}'); // { slotKey: { sesiones: n, bonus: % } }
@@ -3649,7 +3649,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         });
     }
 
-    // ── REFERIDOS ─────────────────────────────────────────────────────────
+    // -- REFERIDOS ---------------------------------------------------------
     function getMyRefId(){let id=localStorage.getItem(_pfx()+'_my_ref_id');if(!id){id='FM'+Math.random().toString(36).substring(2,8).toUpperCase();localStorage.setItem(_pfx()+'_my_ref_id',id);}return id;}
     function getMyRefLink(){return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`;}
     function getMisReferidos(){return JSON.parse(localStorage.getItem(_pfx()+'_mis_referidos')||'[]');}
@@ -3705,7 +3705,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
     function copiarRefLink(){const i=$id('ref-link');i.select();try{document.execCommand('copy');mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff');}catch(e){navigator.clipboard?.writeText(i.value);}}
 
-    // ── IDIOMAS ───────────────────────────────────────────────────────────
+    // -- IDIOMAS -----------------------------------------------------------
     const TRANSLATIONS={
         es:{tagline:'El juego de fútbol NFT más épico del mundo',menu_futbolistas:'👕 Futbolistas',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diaria',menu_logros:'🏅 Logros',menu_nivel:'⬆️ Nivel',menu_futcancha:'🏟️ FutCancha',menu_futsala:'🏃 Futsala',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Entrenamiento',menu_deposito:'💎 Depósito',menu_retiro:'💸 Retiro',balones_estamina:'⚽ Balones de Estamina',balones:'balones',referidos_btn:'👥 Referidos',ref_title:'👥 Programa de Referidos',ref_commission:'💰 GANA 5% DE COMISIÓN',ref_explain:'Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!',ref_total_label:'REFERIDOS',ref_earned_label:'GANADO',ref_link_label:'Tu enlace de invitación',ref_copy:'Copiar',ref_list_title:'📋 MIS REFERIDOS',ref_empty:'Aún no tienes referidos. ¡Comparte tu enlace!',ref_earned_from:'Generado',ref_copied:'Enlace copiado',msg_addr_req:'⚠️ Ingresa tu dirección USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
         en:{tagline:"The world's most epic NFT football game",menu_futbolistas:'👕 Players',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Rewards',menu_recompensa_diaria:'🎁 Daily Reward',menu_logros:'🏅 Achievements',menu_nivel:'⬆️ Level',menu_futcancha:'🏟️ FutPitch',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournament',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Deposit',menu_retiro:'💸 Withdraw',balones_estamina:'⚽ Stamina Balls',balones:'balls',referidos_btn:'👥 Referrals',ref_title:'👥 Referral Program',ref_commission:'💰 EARN 5% COMMISSION',ref_explain:'Get <strong style="color:var(--gold)">5%</strong> in gems from every withdrawal your referral makes. Forever!',ref_total_label:'REFERRALS',ref_earned_label:'EARNED',ref_link_label:'Your invitation link',ref_copy:'Copy',ref_list_title:'📋 MY REFERRALS',ref_empty:'No referrals yet. Share your link!',ref_earned_from:'Generated',ref_copied:'Link copied',msg_addr_req:'⚠️ Enter your USDT address',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Insufficient balance',msg_captcha:'🛡️ Wrong captcha, try again',msg_withdraw_ok:'Withdrawal of {usdt} USDT requested — credited within 24h to 48h'},
@@ -3741,12 +3741,12 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         applyTranslations();
     })();
 
-    // ── BACKGROUND ────────────────────────────────────────────────────────
+    // -- BACKGROUND --------------------------------------------------------
     const FLAG_DATA=[{flag:'🇧🇷',lane:5},{flag:'🇦🇷',lane:18},{flag:'🇵🇹',lane:31},{flag:'🇬🇧',lane:44},{flag:'🇫🇷',lane:57},{flag:'🇩🇪',lane:70},{flag:'🇪🇸',lane:83},{flag:'🇺🇸',lane:10},{flag:'🇲🇽',lane:24},{flag:'🇯🇵',lane:37},{flag:'🇨🇴',lane:63},{flag:'🇦🇺',lane:90},{flag:'🇮🇹',lane:15},{flag:'🇳🇱',lane:50},{flag:'🇰🇷',lane:75},{flag:'🇨🇱',lane:30}];
     function buildFlagsBg(){const bg=$id('flags-bg');FLAG_DATA.forEach((item,i)=>{const el=document.createElement('div');el.className='flag-float';el.textContent=item.flag;el.style.cssText=`left:${item.lane}%;animation-duration:${18+i*2.8}s;animation-delay:${-(i*3.1)}s;`;bg.appendChild(el);});[8,22,38,52,68,82,12,45,77].forEach((lane,i)=>{const el=document.createElement('div');el.className='ball-float';el.textContent='⚽';el.style.cssText=`left:${lane}%;top:${15+i*9}%;animation-duration:${6+i*1.5}s;animation-delay:${-(i*0.8)}s;font-size:${1.2+(i%3)*0.4}em;`;bg.appendChild(el);});}
     buildFlagsBg();
 
-    // ── PAGO QR (CONTRATO INTELIGENTE) ────────────────────────────────────
+    // -- PAGO QR (CONTRATO INTELIGENTE) ------------------------------------
     let _pagoQRPendiente = null;
     function abrirPagoQR({tipo,titulo,descripcion,usdt,onConfirmar}){
         const flow = assertSecureContractFlow(tipo,getContractWallet());
@@ -3799,7 +3799,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }
     }
 
-    // ── TONCONNECT ────────────────────────────────────────────────────────
+    // -- TONCONNECT --------------------------------------------------------
     let tonConnectUI;
     function getConnectedWallet(){return tonConnectUI?.wallet||tonConnectUI?.account||tonConnectUI?.walletInfo||null;}
     function isWalletConnected(){return Boolean(window.tonConnectUI&&(tonConnectUI.connected||getConnectedWallet()?.account?.address||getConnectedWallet()?.address));}
@@ -3814,10 +3814,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
     catch(e){console.warn('TonConnect no disponible:',e);}
 
-    // ── TELEGRAM ──────────────────────────────────────────────────────────
+    // -- TELEGRAM ----------------------------------------------------------
     if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#060f06');Telegram.WebApp.setBackgroundColor('#060f06');}
 
-    // ── INIT ──────────────────────────────────────────────────────────────
+    // -- INIT --------------------------------------------------------------
     // Estado inicial: arranca en 0 hasta que el usuario conecte su wallet.
     // Al conectar, onWalletChange() carga los datos de esa wallet específica.
     resetStateVars();
@@ -3830,9 +3830,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
 
-    // ════════════════════════════════════════════════════════
+    // ========================================================
     // 🎲 SISTEMA DE APUESTAS MUNDIAL — RapidAPI Football + USDT
-    // ════════════════════════════════════════════════════════
+    // ========================================================
     const RAPIDAPI_KEY  = '5297cd7741msh18be9a82f0c0005p186a64jsn95c14debaff6';
     const RAPIDAPI_HOST = 'free-api-live-football-data.p.rapidapi.com';
     const AP_DB_KEY = () => 'fm_apuestas_' + (typeof walletAddr !== 'undefined' && walletAddr ? walletAddr : 'guest');
@@ -3843,7 +3843,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     let _apCuotaActual         = 1.0;
     let _apPartidosCache       = [];
 
-    // ── BASE DE DATOS LOCAL (localStorage) ──────────────────
+    // -- BASE DE DATOS LOCAL (localStorage) ------------------
     function apDB_getTickets()  { try { return JSON.parse(localStorage.getItem(AP_DB_KEY())||'[]'); } catch(e){ return []; } }
     function apDB_saveTickets(t){ localStorage.setItem(AP_DB_KEY(), JSON.stringify(t)); }
     function apDB_addTicket(tk) {
@@ -3857,7 +3857,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if (idx >= 0) { Object.assign(tickets[idx], changes); apDB_saveTickets(tickets); }
     }
 
-    // ── TABS ─────────────────────────────────────────────────
+    // -- TABS -------------------------------------------------
     function apTabSwitch(tab) {
         ['partidos','mistickets'].forEach(t => {
             $id('ap-tab-'+t).style.display = t === tab ? 'block' : 'none';
@@ -3867,7 +3867,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if (tab === 'mistickets') apRenderTickets();
     }
 
-    // ── CARGAR PARTIDOS VÍA API ──────────────────────────────
+    // -- CARGAR PARTIDOS VÍA API ------------------------------
     async function apCargarPartidos() {
         const statusEl = $id('ap-status');
         const listaEl  = $id('ap-partidos-lista');
@@ -3930,7 +3930,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }
     }
 
-    // ── PARTIDOS DE DEMO (cuando la API no retorna datos) ────
+    // -- PARTIDOS DE DEMO (cuando la API no retorna datos) ----
     function apGenerarPartidosDemo() {
         const hoy = new Date();
         const fmt  = d => d.toISOString().slice(0,10);
@@ -3945,7 +3945,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         ];
     }
 
-    // ── NORMALIZAR PARTIDO (múltiples formatos de API) ───────
+    // -- NORMALIZAR PARTIDO (múltiples formatos de API) -------
     function apNormalizarPartido(raw, idx) {
         // Si ya es formato demo, devolverlo tal cual
         if (raw._id) return raw;
@@ -3972,7 +3972,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         };
     }
 
-    // ── RENDERIZAR LISTA DE PARTIDOS ─────────────────────────
+    // -- RENDERIZAR LISTA DE PARTIDOS -------------------------
     function apRenderPartidos(rawList) {
         const el = $id('ap-partidos-lista');
         if (!el) return;
@@ -4013,7 +4013,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }).join('');
     }
 
-    // ── SELECCIONAR PARTIDO ──────────────────────────────────
+    // -- SELECCIONAR PARTIDO ----------------------------------
     function apSeleccionarPartido(idx) {
         document.querySelectorAll('.ap-partido-card').forEach(c => c.classList.remove('selected'));
         const card = $id('appc-'+idx);
@@ -4048,7 +4048,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
     }
 
-    // ── ELEGIR LOCAL / EMPATE / VISITA ──────────────────────
+    // -- ELEGIR LOCAL / EMPATE / VISITA ----------------------
     function apElegirResultado(opcion) {
         if (!_apPartidoSeleccionado) return;
         _apResultadoElegido = opcion;
@@ -4061,20 +4061,20 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         apActualizarGanancia();
     }
 
-    // ── MONTO RÁPIDO ─────────────────────────────────────────
+    // -- MONTO RÁPIDO -----------------------------------------
     function apSetMonto(val) {
         $id('ap-monto-input').value = val;
         apActualizarGanancia();
     }
 
-    // ── CALCULAR GANANCIA ────────────────────────────────────
+    // -- CALCULAR GANANCIA ------------------------------------
     function apActualizarGanancia() {
         const monto = parseFloat($id('ap-monto-input').value) || 0;
         const gan   = (monto * _apCuotaActual).toFixed(2);
         $id('ap-ganancia-display').textContent = monto > 0 ? '$' + gan : '$0.00';
     }
 
-    // ── CANCELAR PANEL ───────────────────────────────────────
+    // -- CANCELAR PANEL ---------------------------------------
     function apCancelarPanel() {
         $id('ap-panel-confirmar').style.display = 'none';
         document.querySelectorAll('.ap-partido-card').forEach(c => c.classList.remove('selected'));
@@ -4082,7 +4082,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         _apResultadoElegido    = null;
     }
 
-    // ── CONFIRMAR APUESTA → PAGO USDT ────────────────────────
+    // -- CONFIRMAR APUESTA → PAGO USDT ------------------------
     function apConfirmarApuesta() {
         if (!_apPartidoSeleccionado) { mostrarMensaje('⚠️ Selecciona un partido primero', '#ffaa00'); return; }
         if (!_apResultadoElegido)    { mostrarMensaje('⚠️ Elige tu pronóstico (Local / Empate / Visita)', '#ffaa00'); return; }
@@ -4138,7 +4138,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         });
     }
 
-    // ── RENDERIZAR MIS TICKETS ───────────────────────────────
+    // -- RENDERIZAR MIS TICKETS -------------------------------
     function apRenderTickets() {
         const el      = $id('ap-tickets-lista');
         if (!el) return;
@@ -4179,7 +4179,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }).join('');
     }
 
-    // ── HOOK: cuando se abre el modal ────────────────────────
+    // -- HOOK: cuando se abre el modal ------------------------
     const _apOrigOpen = openModal;
     openModal = function(id) {
         _apOrigOpen(id);
@@ -4188,10 +4188,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             apCargarPartidos();
         }
     };
-    // ════════════════════════════════════════════════════════
+    // ========================================================
 </div>
 
-    <!-- ══════════ TELEGRAM MINI APP: NAV INFERIOR ══════════ -->
+    <!-- ========== TELEGRAM MINI APP: NAV INFERIOR ========== -->
     <nav class="tg-bottom-nav" aria-label="Navegación principal">
         <button class="tg-nav-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">
             <span class="tg-nav-emoji">🏪</span><span>Market</span>
@@ -4207,7 +4207,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         </button>
     </nav>
 
-    <!-- ══════════ COLUMNAS LATERALES FLOTANTES ══════════ -->
+    <!-- ========== COLUMNAS LATERALES FLOTANTES ========== -->
     <div class="tg-side-col left">
         <button class="tg-side-btn accent-gold"   onclick="openModal('modal-recompensa-pts')"  title="Recompensas">⚽</button>
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
