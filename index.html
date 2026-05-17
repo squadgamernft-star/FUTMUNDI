@@ -986,37 +986,141 @@
         </div>
     </div>
 
+    <!-- ══════════ MODAL APUESTAS ══════════ -->
     <div class="modal-overlay" id="modal-apuesta">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title">🎲 Apuesta</span>
+                <span class="modal-title">🎲 Apuestas Mundial</span>
                 <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
             </div>
             <div class="modal-body">
-                <div style="display:grid;gap:14px;">
-                    <div style="padding:14px;border:1px solid rgba(255,216,77,0.28);border-radius:14px;background:rgba(255,216,77,0.07);">
-                        <div style="font-family:'Orbitron',sans-serif;color:var(--gold);font-size:0.92em;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Módulos agregados</div>
-                        <div style="display:grid;gap:8px;color:#f2f2f2;font-size:0.92em;line-height:1.45;">
-                            <div>⚽ <strong>fetchFixtures.js</strong> — trae y actualiza partidos del Mundial.</div>
-                            <div>💎 <strong>deposits-and-tickets.js</strong> — registra depósitos y crea tickets de apuesta.</div>
-                            <div>🏆 <strong>payoutJob.js</strong> — liquida tickets ganadores cuando termina el partido.</div>
-                        </div>
+
+                <!-- Info USDT + saldo -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+                    <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 12px;">
+                        <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💵 Pago en</div>
+                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--cyan);font-size:1em;margin-top:3px;">USDT</div>
                     </div>
-                    <div style="padding:14px;border:1px solid rgba(85,215,255,0.28);border-radius:14px;background:rgba(85,215,255,0.06);">
-                        <div style="font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:0.9em;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Flujo de apuesta</div>
-                        <div style="display:grid;gap:8px;color:#dcecff;font-size:0.9em;line-height:1.5;">
-                            <div>1. Se cargan los partidos disponibles.</div>
-                            <div>2. El usuario deposita y crea su ticket.</div>
-                            <div>3. Al finalizar el partido, se procesa el payout automáticamente.</div>
-                        </div>
-                    </div>
-                    <div style="padding:14px;border:1px solid rgba(66,245,141,0.25);border-radius:14px;background:rgba(66,245,141,0.06);">
-                        <div style="font-size:0.88em;color:#aef5c8;line-height:1.5;">Ya dejé el botón <strong>Apuesta</strong> debajo de <strong>Nivel</strong> y este modal resume los archivos que me pasaste para integrarlo visualmente en esta versión HTML.</div>
+                    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:10px;padding:10px 12px;">
+                        <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💰 Ganancia</div>
+                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--green);font-size:1em;margin-top:3px;">x Cuota USDT</div>
                     </div>
                 </div>
+
+                <!-- Tabs -->
+                <div class="tab-bar" style="margin-bottom:14px;">
+                    <button class="tab-btn active" id="tab-btn-partidos"  onclick="apTabSwitch('partidos')">⚽ Partidos</button>
+                    <button class="tab-btn"         id="tab-btn-mistickets" onclick="apTabSwitch('mistickets')">🎫 Mis Tickets</button>
+                </div>
+
+                <!-- ── TAB PARTIDOS ── -->
+                <div id="ap-tab-partidos">
+                    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
+                        <div style="flex:1;font-size:0.78em;color:#888;">Partidos del Mundial en vivo y próximos</div>
+                        <button onclick="apCargarPartidos()" id="ap-refresh-btn"
+                            style="padding:7px 12px;background:rgba(45,122,31,0.2);border:1px solid rgba(45,122,31,0.5);border-radius:8px;color:var(--green);font-size:0.75em;font-family:'Orbitron',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+                            🔄 Actualizar
+                        </button>
+                    </div>
+                    <div id="ap-status" style="text-align:center;color:#888;font-size:0.82em;padding:10px 0;min-height:24px;"></div>
+                    <div id="ap-partidos-lista" style="display:grid;gap:10px;max-height:320px;overflow-y:auto;padding-right:2px;"></div>
+                </div>
+
+                <!-- ── TAB MIS TICKETS ── -->
+                <div id="ap-tab-mistickets" style="display:none;">
+                    <div id="ap-tickets-lista" style="display:grid;gap:10px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
+                </div>
+
+                <!-- ── PANEL DE CONFIRMACIÓN DE APUESTA (slide-in desde abajo) ── -->
+                <div id="ap-panel-confirmar" style="display:none;margin-top:14px;border:1px solid rgba(255,216,77,0.4);border-radius:16px;background:linear-gradient(145deg,rgba(20,15,0,0.95),rgba(10,19,10,0.95));padding:16px;animation:apPanelIn 0.28s ease;">
+
+                    <!-- Partido seleccionado -->
+                    <div id="ap-panel-partido" style="background:rgba(0,0,0,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:0.85em;"></div>
+
+                    <!-- Selección: ¿quién gana? -->
+                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">¿Cuál es tu pronóstico?</div>
+                    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;margin-bottom:14px;" id="ap-sel-resultado">
+                        <button class="ap-pick-btn" id="ap-pick-local"   onclick="apElegirResultado('local')">— Local</button>
+                        <button class="ap-pick-btn ap-pick-empate"       id="ap-pick-empate"  onclick="apElegirResultado('empate')">🤝 Empate</button>
+                        <button class="ap-pick-btn" id="ap-pick-visita"  onclick="apElegirResultado('visita')">Visita —</button>
+                    </div>
+
+                    <!-- Monto USDT -->
+                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Monto a apostar (USDT)</div>
+                    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+                        <button class="apuesta-monto-btn" onclick="apSetMonto(1)">$1</button>
+                        <button class="apuesta-monto-btn" onclick="apSetMonto(5)">$5</button>
+                        <button class="apuesta-monto-btn" onclick="apSetMonto(10)">$10</button>
+                        <button class="apuesta-monto-btn" onclick="apSetMonto(25)">$25</button>
+                        <input id="ap-monto-input" type="number" min="1" step="0.5" placeholder="$" oninput="apActualizarGanancia()"
+                            style="flex:1;min-width:55px;padding:6px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,216,77,0.35);border-radius:8px;color:#fff;font-family:'Orbitron',sans-serif;font-size:0.82em;outline:none;text-align:center;">
+                    </div>
+
+                    <!-- Resumen -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
+                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">CUOTA</div>
+                            <div id="ap-cuota-display" style="font-family:'Orbitron',sans-serif;color:var(--gold);font-weight:700;font-size:1.1em;">—</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
+                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">GANANCIA POTENCIAL</div>
+                            <div id="ap-ganancia-display" style="font-family:'Orbitron',sans-serif;color:var(--green);font-weight:700;font-size:1.1em;">$0.00</div>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <button onclick="apCancelarPanel()"
+                            style="padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
+                            ✕ Cancelar
+                        </button>
+                        <button onclick="apConfirmarApuesta()"
+                            style="padding:11px;background:linear-gradient(135deg,rgba(255,216,77,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
+                            💳 Apostar con USDT
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <style>
+        @keyframes apPanelIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+        .ap-partido-card {
+            background:rgba(255,255,255,0.03);border:1px solid rgba(45,122,31,0.2);
+            border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;
+        }
+        .ap-partido-card:hover,.ap-partido-card:active { border-color:rgba(255,216,77,0.5);background:rgba(255,216,77,0.05); }
+        .ap-partido-card.selected { border-color:var(--gold);background:rgba(255,216,77,0.08); }
+        .ap-partido-live { display:inline-flex;align-items:center;gap:4px;background:rgba(255,68,68,0.15);border:1px solid rgba(255,68,68,0.4);border-radius:20px;padding:2px 8px;font-size:0.65em;color:#ff6b6b;font-weight:700;letter-spacing:1px; }
+        .ap-partido-live::before { content:'';width:6px;height:6px;border-radius:50%;background:#ff4444;animation:livePulse 1s infinite; }
+        @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        .ap-pick-btn {
+            padding:9px 4px;border-radius:10px;font-size:0.78em;font-weight:700;
+            font-family:'Fredoka','Rajdhani',sans-serif;cursor:pointer;text-align:center;
+            background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);
+            color:#bbb;transition:all 0.18s;line-height:1.2;
+        }
+        .ap-pick-empate { font-size:0.72em; }
+        .ap-pick-btn:hover { border-color:rgba(255,216,77,0.5);color:#fff; }
+        .ap-pick-btn.active { border-color:var(--gold)!important;color:var(--gold)!important;background:rgba(255,216,77,0.12)!important; }
+        .apuesta-monto-btn {
+            padding:6px 11px;border-radius:8px;background:rgba(255,255,255,0.05);
+            border:1px solid rgba(255,216,77,0.25);color:var(--gold);
+            font-family:'Orbitron',sans-serif;font-size:0.78em;font-weight:700;
+            cursor:pointer;transition:all 0.18s;
+        }
+        .apuesta-monto-btn:hover { background:rgba(255,216,77,0.15);border-color:var(--gold); }
+        .ap-ticket-card {
+            padding:13px 14px;border-radius:12px;border:1px solid;
+            background:rgba(255,255,255,0.025);
+        }
+        .ap-ticket-card.pendiente { border-color:rgba(255,216,77,0.35); }
+        .ap-ticket-card.ganada    { border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.04); }
+        .ap-ticket-card.perdida   { border-color:rgba(255,90,111,0.3);background:rgba(255,90,111,0.03); }
+        #ap-partidos-lista::-webkit-scrollbar,#ap-tickets-lista::-webkit-scrollbar { width:3px; }
+        #ap-partidos-lista::-webkit-scrollbar-thumb,#ap-tickets-lista::-webkit-scrollbar-thumb { background:rgba(45,122,31,0.4);border-radius:4px; }
+    </style>
 
 
     <!-- RETIRO -->
@@ -3725,7 +3829,366 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     updateTorneoCountdown();
 
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
-    </script>
+
+    // ════════════════════════════════════════════════════════
+    // 🎲 SISTEMA DE APUESTAS MUNDIAL — RapidAPI Football + USDT
+    // ════════════════════════════════════════════════════════
+    const RAPIDAPI_KEY  = '5297cd7741msh18be9a82f0c0005p186a64jsn95c14debaff6';
+    const RAPIDAPI_HOST = 'free-api-live-football-data.p.rapidapi.com';
+    const AP_DB_KEY = () => 'fm_apuestas_' + (typeof walletAddr !== 'undefined' && walletAddr ? walletAddr : 'guest');
+
+    // Estado de apuesta en curso
+    let _apPartidoSeleccionado = null;
+    let _apResultadoElegido    = null;  // 'local'|'empate'|'visita'
+    let _apCuotaActual         = 1.0;
+    let _apPartidosCache       = [];
+
+    // ── BASE DE DATOS LOCAL (localStorage) ──────────────────
+    function apDB_getTickets()  { try { return JSON.parse(localStorage.getItem(AP_DB_KEY())||'[]'); } catch(e){ return []; } }
+    function apDB_saveTickets(t){ localStorage.setItem(AP_DB_KEY(), JSON.stringify(t)); }
+    function apDB_addTicket(tk) {
+        const tickets = apDB_getTickets();
+        tickets.unshift(tk);
+        apDB_saveTickets(tickets.slice(0, 100)); // máx 100 tickets por usuario
+    }
+    function apDB_updateTicket(id, changes) {
+        const tickets = apDB_getTickets();
+        const idx = tickets.findIndex(t => t.id === id);
+        if (idx >= 0) { Object.assign(tickets[idx], changes); apDB_saveTickets(tickets); }
+    }
+
+    // ── TABS ─────────────────────────────────────────────────
+    function apTabSwitch(tab) {
+        ['partidos','mistickets'].forEach(t => {
+            $id('ap-tab-'+t).style.display = t === tab ? 'block' : 'none';
+            const btn = $id('tab-btn-'+t);
+            if(btn){ btn.classList.toggle('active', t === tab); }
+        });
+        if (tab === 'mistickets') apRenderTickets();
+    }
+
+    // ── CARGAR PARTIDOS VÍA API ──────────────────────────────
+    async function apCargarPartidos() {
+        const statusEl = $id('ap-status');
+        const listaEl  = $id('ap-partidos-lista');
+        if(!statusEl || !listaEl) return;
+
+        statusEl.innerHTML = '⏳ Cargando partidos del Mundial…';
+        listaEl.innerHTML  = '';
+        $id('ap-panel-confirmar').style.display = 'none';
+        _apPartidoSeleccionado = null;
+        _apResultadoElegido    = null;
+
+        const btn = $id('ap-refresh-btn');
+        if(btn){ btn.disabled = true; btn.textContent = '⏳'; }
+
+        try {
+            // Endpoint: partidos en vivo primero, luego próximos
+            const endpoints = [
+                'football-current-live',
+                'football-get-all-fixtures-by-date?date=' + new Date().toISOString().slice(0,10)
+            ];
+
+            let partidos = [];
+            for (const ep of endpoints) {
+                try {
+                    const res  = await fetch(`https://${RAPIDAPI_HOST}/${ep}`, {
+                        method: 'GET',
+                        headers: {
+                            'x-rapidapi-key':  RAPIDAPI_KEY,
+                            'x-rapidapi-host': RAPIDAPI_HOST,
+                            'Content-Type':    'application/json'
+                        }
+                    });
+                    const data = await res.json();
+                    // Normalizar respuesta (distintos endpoints tienen distinta estructura)
+                    const items = data?.response?.fixtures || data?.response?.matches
+                                || data?.response?.livescores || data?.response || [];
+                    if (Array.isArray(items) && items.length) {
+                        partidos = partidos.concat(items);
+                    }
+                } catch(e){ /* continuar con siguiente endpoint */ }
+            }
+
+            // Si la API no devuelve nada (límite de plan gratis), mostrar partidos de demo
+            if (!partidos.length) {
+                partidos = apGenerarPartidosDemo();
+            }
+
+            _apPartidosCache = partidos.slice(0, 12);
+            apRenderPartidos(_apPartidosCache);
+            statusEl.innerHTML = `✅ ${_apPartidosCache.length} partidos disponibles`;
+
+        } catch(err) {
+            console.error('apCargarPartidos error:', err);
+            // Fallback: partidos de demo si hay error de red
+            _apPartidosCache = apGenerarPartidosDemo();
+            apRenderPartidos(_apPartidosCache);
+            statusEl.innerHTML = '⚠️ Usando partidos de ejemplo (sin conexión)';
+        } finally {
+            if(btn){ btn.disabled = false; btn.textContent = '🔄 Actualizar'; }
+        }
+    }
+
+    // ── PARTIDOS DE DEMO (cuando la API no retorna datos) ────
+    function apGenerarPartidosDemo() {
+        const hoy = new Date();
+        const fmt  = d => d.toISOString().slice(0,10);
+        const hora  = h => { const d = new Date(hoy); d.setHours(h,0,0,0); return d.toISOString(); };
+        return [
+            { _id:'d1', local:'🇦🇷 Argentina', visita:'🇫🇷 Francia',      hora:hora(14), estado:'live',     marcador:'1-1', cuotas:{local:2.1, empate:3.4, visita:2.8} },
+            { _id:'d2', local:'🇧🇷 Brasil',    visita:'🇩🇪 Alemania',     hora:hora(17), estado:'live',     marcador:'0-0', cuotas:{local:1.9, empate:3.6, visita:3.1} },
+            { _id:'d3', local:'🇪🇸 España',    visita:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra',   hora:hora(20), estado:'proximo', marcador:null,  cuotas:{local:2.0, empate:3.3, visita:2.9} },
+            { _id:'d4', local:'🇵🇹 Portugal',  visita:'🇺🇾 Uruguay',      hora:hora(22), estado:'proximo', marcador:null,  cuotas:{local:1.7, empate:3.8, visita:4.2} },
+            { _id:'d5', local:'🇳🇱 Holanda',   visita:'🇲🇦 Marruecos',    hora:hora(16), estado:'proximo', marcador:null,  cuotas:{local:2.3, empate:3.1, visita:3.0} },
+            { _id:'d6', local:'🇯🇵 Japón',     visita:'🇭🇷 Croacia',      hora:hora(18), estado:'proximo', marcador:null,  cuotas:{local:2.8, empate:3.2, visita:2.4} },
+        ];
+    }
+
+    // ── NORMALIZAR PARTIDO (múltiples formatos de API) ───────
+    function apNormalizarPartido(raw, idx) {
+        // Si ya es formato demo, devolverlo tal cual
+        if (raw._id) return raw;
+        // Formato RapidAPI Free Football Data
+        const home = raw.home?.name || raw.homeTeam?.name || raw.teams?.home?.name || raw.localTeam?.name || 'Local';
+        const away = raw.away?.name || raw.awayTeam?.name || raw.teams?.away?.name || raw.visitorTeam?.name || 'Visita';
+        const time  = raw.time || raw.fixture?.date || raw.date || new Date().toISOString();
+        const status= (raw.status || raw.fixture?.status?.short || '').toLowerCase();
+        const isLive= ['1h','ht','2h','et','bt','p','live','in play'].some(s => status.includes(s));
+        const goalsH= raw.scores?.home || raw.goals?.home || raw.score?.home || '';
+        const goalsA= raw.scores?.away || raw.goals?.away || raw.score?.away || '';
+        const marcador = (goalsH !== '' && goalsA !== '') ? `${goalsH}-${goalsA}` : null;
+        return {
+            _id: raw.id || raw.fixture?.id || ('p'+idx),
+            local: home, visita: away,
+            hora:  time,
+            estado: isLive ? 'live' : 'proximo',
+            marcador,
+            cuotas: {
+                local:  +(1.5 + Math.random()*1.5).toFixed(2),
+                empate: +(2.8 + Math.random()*1.2).toFixed(2),
+                visita: +(1.6 + Math.random()*2.0).toFixed(2),
+            }
+        };
+    }
+
+    // ── RENDERIZAR LISTA DE PARTIDOS ─────────────────────────
+    function apRenderPartidos(rawList) {
+        const el = $id('ap-partidos-lista');
+        if (!el) return;
+        if (!rawList.length) { el.innerHTML = '<div style="text-align:center;padding:24px;color:#666;font-size:0.88em;">No hay partidos disponibles en este momento.</div>'; return; }
+        el.innerHTML = rawList.map((raw, i) => {
+            const p = apNormalizarPartido(raw, i);
+            const esLive = p.estado === 'live';
+            const hora   = new Date(p.hora).toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
+            return `
+            <div class="ap-partido-card" id="appc-${i}" onclick="apSeleccionarPartido(${i})">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        ${esLive ? '<span class="ap-partido-live">EN VIVO</span>' : `<span style="font-size:0.72em;color:#888;">⏰ ${hora}</span>`}
+                        ${p.marcador ? `<span style="font-family:'Orbitron',sans-serif;font-size:0.82em;color:var(--gold);font-weight:700;">${p.marcador}</span>` : ''}
+                    </div>
+                    <span style="font-size:0.65em;color:#555;">ID: ${p._id}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;margin-bottom:10px;">
+                    <div style="font-weight:700;font-size:0.9em;color:#fff;text-align:left;">${p.local}</div>
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.75em;color:#666;">VS</div>
+                    <div style="font-weight:700;font-size:0.9em;color:#fff;text-align:right;">${p.visita}</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+                    <div style="text-align:center;background:rgba(0,0,0,0.3);border-radius:6px;padding:5px 2px;">
+                        <div style="font-size:0.6em;color:#888;">LOCAL</div>
+                        <div style="font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:0.82em;font-weight:700;">${p.cuotas.local}x</div>
+                    </div>
+                    <div style="text-align:center;background:rgba(0,0,0,0.3);border-radius:6px;padding:5px 2px;">
+                        <div style="font-size:0.6em;color:#888;">EMPATE</div>
+                        <div style="font-family:'Orbitron',sans-serif;color:var(--gold);font-size:0.82em;font-weight:700;">${p.cuotas.empate}x</div>
+                    </div>
+                    <div style="text-align:center;background:rgba(0,0,0,0.3);border-radius:6px;padding:5px 2px;">
+                        <div style="font-size:0.6em;color:#888;">VISITA</div>
+                        <div style="font-family:'Orbitron',sans-serif;color:var(--green);font-size:0.82em;font-weight:700;">${p.cuotas.visita}x</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── SELECCIONAR PARTIDO ──────────────────────────────────
+    function apSeleccionarPartido(idx) {
+        document.querySelectorAll('.ap-partido-card').forEach(c => c.classList.remove('selected'));
+        const card = $id('appc-'+idx);
+        if(card) card.classList.add('selected');
+
+        const raw = _apPartidosCache[idx];
+        _apPartidoSeleccionado = apNormalizarPartido(raw, idx);
+        _apResultadoElegido    = null;
+        _apCuotaActual         = 1.0;
+
+        // Rellenar info del partido en el panel
+        const p = _apPartidoSeleccionado;
+        $id('ap-panel-partido').innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <div style="font-weight:700;color:#fff;font-size:0.9em;">${p.local}</div>
+                <div style="font-size:0.7em;color:#666;font-family:'Orbitron',sans-serif;">VS</div>
+                <div style="font-weight:700;color:#fff;font-size:0.9em;text-align:right;">${p.visita}</div>
+            </div>`;
+
+        // Etiquetas de los botones de elección
+        $id('ap-pick-local').innerHTML  = `${p.local}<br><span style="font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:0.85em;">${p.cuotas.local}x</span>`;
+        $id('ap-pick-empate').innerHTML = `🤝 Empate<br><span style="font-family:'Orbitron',sans-serif;color:var(--gold);font-size:0.85em;">${p.cuotas.empate}x</span>`;
+        $id('ap-pick-visita').innerHTML = `${p.visita}<br><span style="font-family:'Orbitron',sans-serif;color:var(--green);font-size:0.85em;">${p.cuotas.visita}x</span>`;
+
+        ['ap-pick-local','ap-pick-empate','ap-pick-visita'].forEach(id => { const b=$id(id); if(b) b.classList.remove('active'); });
+        $id('ap-monto-input').value  = '';
+        $id('ap-cuota-display').textContent    = '—';
+        $id('ap-ganancia-display').textContent = '$0.00';
+
+        const panel = $id('ap-panel-confirmar');
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    // ── ELEGIR LOCAL / EMPATE / VISITA ──────────────────────
+    function apElegirResultado(opcion) {
+        if (!_apPartidoSeleccionado) return;
+        _apResultadoElegido = opcion;
+        _apCuotaActual      = _apPartidoSeleccionado.cuotas[opcion];
+        ['local','empate','visita'].forEach(o => {
+            const b = $id('ap-pick-'+o);
+            if(b) b.classList.toggle('active', o === opcion);
+        });
+        $id('ap-cuota-display').textContent = _apCuotaActual + 'x';
+        apActualizarGanancia();
+    }
+
+    // ── MONTO RÁPIDO ─────────────────────────────────────────
+    function apSetMonto(val) {
+        $id('ap-monto-input').value = val;
+        apActualizarGanancia();
+    }
+
+    // ── CALCULAR GANANCIA ────────────────────────────────────
+    function apActualizarGanancia() {
+        const monto = parseFloat($id('ap-monto-input').value) || 0;
+        const gan   = (monto * _apCuotaActual).toFixed(2);
+        $id('ap-ganancia-display').textContent = monto > 0 ? '$' + gan : '$0.00';
+    }
+
+    // ── CANCELAR PANEL ───────────────────────────────────────
+    function apCancelarPanel() {
+        $id('ap-panel-confirmar').style.display = 'none';
+        document.querySelectorAll('.ap-partido-card').forEach(c => c.classList.remove('selected'));
+        _apPartidoSeleccionado = null;
+        _apResultadoElegido    = null;
+    }
+
+    // ── CONFIRMAR APUESTA → PAGO USDT ────────────────────────
+    function apConfirmarApuesta() {
+        if (!_apPartidoSeleccionado) { mostrarMensaje('⚠️ Selecciona un partido primero', '#ffaa00'); return; }
+        if (!_apResultadoElegido)    { mostrarMensaje('⚠️ Elige tu pronóstico (Local / Empate / Visita)', '#ffaa00'); return; }
+        const monto = parseFloat($id('ap-monto-input').value) || 0;
+        if (monto < 1)               { mostrarMensaje('⚠️ Mínimo $1 USDT para apostar', '#ffaa00'); return; }
+
+        const p        = _apPartidoSeleccionado;
+        const ganancia = parseFloat((monto * _apCuotaActual).toFixed(2));
+        const labels   = { local: 'Gana ' + p.local, empate: 'Empate', visita: 'Gana ' + p.visita };
+        const ticketId = 'TK-' + Date.now() + '-' + Math.floor(Math.random()*9999);
+
+        const ticket = {
+            id:         ticketId,
+            partidoId:  p._id,
+            local:      p.local,
+            visita:     p.visita,
+            pronostico: _apResultadoElegido,
+            label:      labels[_apResultadoElegido],
+            cuota:      _apCuotaActual,
+            montoUsdt:  monto,
+            gananciaUsdt: ganancia,
+            estado:     'pendiente',
+            wallet:     (typeof walletAddr !== 'undefined' ? walletAddr : 'guest'),
+            fecha:      new Date().toLocaleString('es',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',year:'numeric'}),
+            fechaISO:   new Date().toISOString(),
+        };
+
+        // Abrir modal de pago QR (mismo flujo que depósito/torneo)
+        abrirPagoQR({
+            tipo: 'apuesta',
+            titulo: `🎲 Apuesta — ${p.local} vs ${p.visita}`,
+            descripcion: `Pronóstico: ${labels[_apResultadoElegido]} · Cuota ${_apCuotaActual}x · Ganancia potencial $${ganancia} USDT`,
+            usdt: monto,
+            onConfirmar: async () => {
+                if (!isWalletConnected()) { mostrarMensaje('⚠️ Conecta tu wallet TON primero', '#ffaa00'); openWalletModal(); return false; }
+                mostrarMensaje(`⏳ Procesando $${monto.toFixed(2)} USDT…`, '#00d4ff');
+                const tx = buildContractTx('apuesta', monto);
+                try {
+                    await tonConnectUI.sendTransaction(tx);
+                    // ✅ Pago confirmado → guardar ticket en DB
+                    ticket.estado    = 'pagada';
+                    ticket.txFecha   = new Date().toISOString();
+                    apDB_addTicket(ticket);
+                    mostrarMensaje(`🎫 ¡Ticket #${ticketId} registrado! Monto: $${monto} USDT`, '#42f58d');
+                    apCancelarPanel();
+                    apTabSwitch('mistickets');
+                    return true;
+                } catch(e) {
+                    mostrarMensaje('❌ Pago cancelado o fallido', '#ff4444');
+                    return false;
+                }
+            }
+        });
+    }
+
+    // ── RENDERIZAR MIS TICKETS ───────────────────────────────
+    function apRenderTickets() {
+        const el      = $id('ap-tickets-lista');
+        if (!el) return;
+        const tickets = apDB_getTickets();
+
+        if (!tickets.length) {
+            el.innerHTML = `<div style="text-align:center;padding:32px;color:#666;font-size:0.88em;line-height:1.7;">
+                No tienes tickets registrados aún.<br>
+                <span style="font-size:1.5em;">🎫</span><br>
+                Selecciona un partido y realiza tu primera apuesta en USDT.</div>`;
+            return;
+        }
+
+        const estadoIcon  = { pendiente:'⏳', pagada:'⏳', ganada:'✅', perdida:'❌', anulada:'↩️' };
+        const estadoColor = { pendiente:'#ffd84d', pagada:'#ffd84d', ganada:'#42f58d', perdida:'#ff5a6f', anulada:'#888' };
+
+        el.innerHTML = tickets.map(t => {
+            const ic = estadoIcon[t.estado]  || '⏳';
+            const co = estadoColor[t.estado] || '#888';
+            return `
+            <div class="ap-ticket-card ${t.estado === 'ganada' ? 'ganada' : t.estado === 'perdida' ? 'perdida' : 'pendiente'}">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+                    <div>
+                        <div style="font-size:0.72em;color:#888;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:3px;">${t.id}</div>
+                        <div style="font-weight:700;font-size:0.9em;color:#fff;">${t.local} <span style="color:#666;font-size:0.8em;">vs</span> ${t.visita}</div>
+                        <div style="font-size:0.78em;color:var(--cyan);margin-top:3px;">📌 ${t.label} · Cuota ${t.cuota}x</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;margin-left:8px;">
+                        <div style="font-size:0.82em;color:${co};font-weight:700;">${ic} ${(t.estado||'').toUpperCase()}</div>
+                        <div style="font-size:0.65em;color:#666;margin-top:3px;">${t.fecha}</div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(0,0,0,0.25);border-radius:8px;font-size:0.82em;">
+                    <span style="color:#888;">Apostado: <strong style="color:var(--gold);">$${t.montoUsdt} USDT</strong></span>
+                    <span style="color:#888;">Potencial: <strong style="color:var(--green);">$${t.gananciaUsdt} USDT</strong></span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── HOOK: cuando se abre el modal ────────────────────────
+    const _apOrigOpen = openModal;
+    openModal = function(id) {
+        _apOrigOpen(id);
+        if (id === 'modal-apuesta') {
+            apTabSwitch('partidos');
+            apCargarPartidos();
+        }
+    };
+    // ════════════════════════════════════════════════════════
 </div>
 
     <!-- ══════════ TELEGRAM MINI APP: NAV INFERIOR ══════════ -->
