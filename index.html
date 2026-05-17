@@ -726,6 +726,7 @@
                 <button class="word-btn" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria">🎁 Recompensa Diaria</button>
                 <button class="word-btn" onclick="openModal('modal-logros')" data-i18n="menu_logros">🏅 Logros</button>
                 <button class="word-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel">⬆️ Nivel</button>
+                <button class="word-btn" onclick="openModal('modal-apuesta')" data-i18n="menu_apuesta">🎲 Apuesta</button>
             </div>
 
             <div class="car-container">
@@ -956,6 +957,23 @@
             </div>
         </div>
     </div>
+
+    <div class="modal-overlay" id="modal-apuesta">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🎲 Apuesta</span>
+                <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center;padding:20px 6px;">
+                    <div style="font-size:3em;margin-bottom:10px;">🎲</div>
+                    <div style="font-family:'Orbitron',sans-serif;font-size:1em;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Próximamente</div>
+                    <div style="color:#aaa;font-size:0.9em;line-height:1.5;">El módulo de apuestas estará disponible muy pronto. ¡Prepara tus gemas!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- RETIRO -->
     <div class="modal-overlay" id="modal-retiro">
@@ -1992,7 +2010,7 @@
             // Bloque de info: free vs normal
             const infoBlock = isFree
                 ? `<div class="car-card-country">${c.flag} ${c.pais}</div>
-                   <div style="font-size:0.68em;color:var(--gold);margin:4px 0 3px;font-weight:700">🎁 Generará ${c.freeGemasTotal} 💎 en ${c.freeDias} días</div>
+                   <div style="font-size:0.68em;color:var(--gold);margin:4px 0 3px;font-weight:700">🎁 Generará ${c.freeGemasTotal} 💎</div>
                    <div class="car-card-price" style="color:var(--green)">GRATIS</div>`
                 : `<div class="car-card-country">${c.flag} ${c.pais} · ⚡ OVR ${c.hp}</div>
                    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</div>
@@ -2057,7 +2075,7 @@
         nivel=calcularNivel();
         if(typeof saveState==='function') saveState();
         actualizarUI();buildMarket();
-        mostrarMensaje(`🎁 ¡${c.nombre} reclamado GRATIS! Generará ${c.freeGemasTotal} 💎 en ${c.freeDias} días`,'#42f58d');
+        mostrarMensaje(`🎁 ¡${c.nombre} reclamado GRATIS! Generará ${c.freeGemasTotal} 💎`,'#42f58d');
     }
 
     function comprarCarro(idx){
@@ -2522,7 +2540,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         $id('car-detail-dur').textContent=dur+'%';$id('car-detail-dur').style.color=dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)';
         $id('car-detail-fuel').textContent = _free ? `${fuelLlenos} / ${_cap}` : (fuelLlenos+' / 4');
         $id('car-detail-earn').textContent = _free
-            ? `🎁 ${c.freeGemasTotal} 💎 en ${c.freeDias} días`
+            ? `🎁 ${c.freeGemasTotal} 💎`
             : `${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
         if(_free){
             // En las estadísticas extra: SOLO mostrar la generación de 160 💎; ocultar velocidad/defensa/físico
@@ -2530,7 +2548,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 <div style="grid-column:1/-1;background:linear-gradient(135deg,rgba(66,245,141,0.10),rgba(255,216,77,0.08));border:1px solid var(--green);border-radius:10px;padding:14px;text-align:center">
     <div style="font-size:1.6em">🎁</div>
     <div style="font-size:0.7em;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-top:4px">NFT FREE · 1 por wallet</div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:1.15em;color:var(--green);font-weight:800;margin-top:6px">${c.freeGemasTotal} 💎 en ${c.freeDias} días</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:1.15em;color:var(--green);font-weight:800;margin-top:6px">${c.freeGemasTotal} 💎</div>
     <div style="font-size:0.72em;color:#888;margin-top:4px">⚽ ${_cap} balones cada 24h</div>
 </div>`;
         } else {
