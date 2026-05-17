@@ -966,10 +966,26 @@
                 <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
             </div>
             <div class="modal-body">
-                <div style="text-align:center;padding:20px 6px;">
-                    <div style="font-size:3em;margin-bottom:10px;">🎲</div>
-                    <div style="font-family:'Orbitron',sans-serif;font-size:1em;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Próximamente</div>
-                    <div style="color:#aaa;font-size:0.9em;line-height:1.5;">El módulo de apuestas estará disponible muy pronto. ¡Prepara tus gemas!</div>
+                <div style="display:grid;gap:14px;">
+                    <div style="padding:14px;border:1px solid rgba(255,216,77,0.28);border-radius:14px;background:rgba(255,216,77,0.07);">
+                        <div style="font-family:'Orbitron',sans-serif;color:var(--gold);font-size:0.92em;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Módulos agregados</div>
+                        <div style="display:grid;gap:8px;color:#f2f2f2;font-size:0.92em;line-height:1.45;">
+                            <div>⚽ <strong>fetchFixtures.js</strong> — trae y actualiza partidos del Mundial.</div>
+                            <div>💎 <strong>deposits-and-tickets.js</strong> — registra depósitos y crea tickets de apuesta.</div>
+                            <div>🏆 <strong>payoutJob.js</strong> — liquida tickets ganadores cuando termina el partido.</div>
+                        </div>
+                    </div>
+                    <div style="padding:14px;border:1px solid rgba(85,215,255,0.28);border-radius:14px;background:rgba(85,215,255,0.06);">
+                        <div style="font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:0.9em;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Flujo de apuesta</div>
+                        <div style="display:grid;gap:8px;color:#dcecff;font-size:0.9em;line-height:1.5;">
+                            <div>1. Se cargan los partidos disponibles.</div>
+                            <div>2. El usuario deposita y crea su ticket.</div>
+                            <div>3. Al finalizar el partido, se procesa el payout automáticamente.</div>
+                        </div>
+                    </div>
+                    <div style="padding:14px;border:1px solid rgba(66,245,141,0.25);border-radius:14px;background:rgba(66,245,141,0.06);">
+                        <div style="font-size:0.88em;color:#aef5c8;line-height:1.5;">Ya dejé el botón <strong>Apuesta</strong> debajo de <strong>Nivel</strong> y este modal resume los archivos que me pasaste para integrarlo visualmente en esta versión HTML.</div>
+                    </div>
                 </div>
             </div>
         </div>
