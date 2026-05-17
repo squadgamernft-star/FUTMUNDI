@@ -1287,7 +1287,12 @@
                 <div class="tournament-entry">
                     <h4>💳 INSCRIPCIÓN — $10.00 USDT</h4>
                     <p>El pago se envía directamente al <strong style="color:var(--gold)">contrato inteligente</strong>.<br>Al pulsar Inscribirme se mostrará el <strong style="color:var(--cyan)">QR y la dirección del contrato</strong> para depositar.</p>
-                    <button class="torneo-pay-btn" onclick="irADepositoTorneo()">💳 Inscribirme — Pagar $10 USDT</button>
+                    <div id="torneo-gate-status" style="font-size:0.8em;color:#aaa;margin-bottom:10px;line-height:1.6;">
+                        ⏳ Verificando requisitos del torneo…
+                    </div>
+                    <button id="btn-inscribirme-torneo" class="torneo-pay-btn" onclick="irADepositoTorneo()" disabled style="opacity:0.45;cursor:not-allowed;">
+                        🔒 Inscripción bloqueada
+                    </button>
                 </div>
             </div>
         </div>
@@ -1467,11 +1472,79 @@
     const COSTO_TORNEO_USDT = 10.00;
     const MAX_PER_PLAYER = 20;
 
+    // ── GATE DEL TORNEO: requiere 100 usuarios con wallet + al menos 1 NFT ──
+    const TORNEO_MIN_USUARIOS = 100;
+    // TODO: reemplazar por tu endpoint real. Debe devolver JSON:
+    //   { "walletUsers": <n>, "usersWithNFT": <n> }
+    // walletUsers   = usuarios registrados con wallet conectada
+    // usersWithNFT  = usuarios con al menos 1 NFT futbolista
+    const TORNEO_STATS_ENDPOINT = "/api/futmundi/stats";
+
+    async function fetchTorneoStats(){
+        try{
+            const r = await fetch(TORNEO_STATS_ENDPOINT, {cache:'no-store'});
+            if(!r.ok) throw new Error('HTTP '+r.status);
+            const d = await r.json();
+            return {
+                walletUsers: Number(d.walletUsers||0),
+                usersWithNFT: Number(d.usersWithNFT||0)
+            };
+        }catch(e){
+            console.warn('[torneo] stats no disponibles:', e);
+            return null;
+        }
+    }
+
+    async function actualizarGateTorneo(){
+        const btn = document.getElementById('btn-inscribirme-torneo');
+        const status = document.getElementById('torneo-gate-status');
+        if(!btn || !status) return;
+
+        const s = await fetchTorneoStats();
+        if(!s){
+            status.innerHTML = '⚠️ No se pudieron verificar los requisitos. Reintentando…';
+            btn.disabled = true;
+            btn.style.opacity = '0.45';
+            btn.style.cursor = 'not-allowed';
+            btn.textContent = '🔒 Inscripción bloqueada';
+            return;
+        }
+
+        const elegibles = Math.min(s.walletUsers, s.usersWithNFT);
+        const ok = elegibles >= TORNEO_MIN_USUARIOS;
+        const pct = Math.min(100, Math.round(elegibles*100/TORNEO_MIN_USUARIOS));
+
+        status.innerHTML =
+            `👛 Wallets registradas: <strong style="color:var(--cyan)">${s.walletUsers}</strong><br>`+
+            `⚽ Con al menos 1 NFT: <strong style="color:var(--green)">${s.usersWithNFT}</strong><br>`+
+            `🎯 Progreso: <strong style="color:var(--gold)">${elegibles}/${TORNEO_MIN_USUARIOS}</strong> (${pct}%)`;
+
+        if(ok){
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            btn.textContent = '💳 Inscribirme — Pagar $10 USDT';
+        }else{
+            btn.disabled = true;
+            btn.style.opacity = '0.45';
+            btn.style.cursor = 'not-allowed';
+            btn.textContent = `🔒 Faltan ${TORNEO_MIN_USUARIOS - elegibles} jugador(es)`;
+        }
+    }
+
+    // Verificar al cargar y cada 30s
+    document.addEventListener('DOMContentLoaded', ()=>{
+        actualizarGateTorneo();
+        setInterval(actualizarGateTorneo, 30000);
+    });
+
+
+
     // ── CATÁLOGO DE JUGADORES ─────────────────────────────────────────────
     const PLAYERS = [
         { nombre:"Neymar Jr.",       pais:"Brasil",     flag:"🇧🇷", precio:320,    hp:72, pos:"Delantero",     color1:"#009c3b", color2:"#002776", img:"Neymar_320_gemass.png",          gemMin:8,     gemMax:15     },
         { nombre:"James Rodríguez",  pais:"Colombia",   flag:"🇨🇴", precio:1600,   hp:78, pos:"Mediocampista", color1:"#fcd116", color2:"#003087", img:"james_rodriguez_1600_gemas.png",  gemMin:35,    gemMax:60     },
-        { nombre:"Alexis Sánchez",   pais:"Chile",      flag:"🇨🇱", precio:3300,   hp:82, pos:"Delantero",     color1:"#d52b1e", color2:"#ffffff", img:"Alexis_3300_gemass.png",          gemMin:80,    gemMax:150    },
+        { nombre:"Alexis Sánchez",   pais:"Chile",      flag:"🇨🇱", precio:0,      hp:82, pos:"Delantero",     color1:"#d52b1e", color2:"#ffffff", img:"Alexis_3300_gemass.png",          gemMin:1,     gemMax:2,     free:true, freeBalones:2, freeGemasTotal:160, freeDias:90 },
         { nombre:"Harry Kane",       pais:"Inglaterra", flag:"🇬🇧", precio:6900,   hp:84, pos:"Delantero",     color1:"#ffffff", color2:"#cf142b", img:"harry_kane_6900_gemas.png",       gemMin:150,   gemMax:320    },
         { nombre:"Pedri",            pais:"España",     flag:"🇪🇸", precio:9900,   hp:86, pos:"Mediocampista", color1:"#c60b1e", color2:"#ffc400", img:"Pedri_9900_gemas.jpg",            gemMin:230,   gemMax:500    },
         { nombre:"Vinícius Jr.",     pais:"Brasil",     flag:"🇧🇷", precio:12000,  hp:88, pos:"Extremo",       color1:"#009c3b", color2:"#ffd700", img:"Vinicius_Jr_12000_gemas.jpg",     gemMin:325,   gemMax:750    },
@@ -1594,7 +1667,33 @@
 
     // ── BALONES ───────────────────────────────────────────────────────────
     function slotKey(idx,copy){return `${idx}_${copy}`;}
-    function getBallonesJugador(idx,copy=0){const k=slotKey(idx,copy);if(!ballonesPorJugador[k])ballonesPorJugador[k]=[true,true,true,true];return ballonesPorJugador[k];}
+    // ── NFT FREE (Alexis Sánchez): 1 por wallet, 2 balones/24h, 160 💎 en 90 días ──
+    function isFreeNFT(idx){ return !!(PLAYERS[idx] && PLAYERS[idx].free); }
+    function getBalonesCapacidad(idx){ return isFreeNFT(idx) ? (PLAYERS[idx].freeBalones||2) : 4; }
+    function freshBalonesArr(idx){ return new Array(getBalonesCapacidad(idx)).fill(true); }
+    // Registro global de wallets que ya reclamaron el NFT free (persistente entre sesiones)
+    const FREE_NFT_CLAIMED_KEY = 'futmundi_free_nft_claimed_wallets';
+    function _claimedWalletsMap(){ try { return JSON.parse(localStorage.getItem(FREE_NFT_CLAIMED_KEY)||'{}'); } catch(e){ return {}; } }
+    function hasWalletClaimedFreeNFT(idx, walletAddr){
+        if(!walletAddr) return false;
+        const m = _claimedWalletsMap();
+        return !!(m[walletAddr] && m[walletAddr][idx]);
+    }
+    function markWalletClaimedFreeNFT(idx, walletAddr){
+        if(!walletAddr) return;
+        const m = _claimedWalletsMap();
+        if(!m[walletAddr]) m[walletAddr] = {};
+        m[walletAddr][idx] = { fecha: new Date().toISOString(), dias: PLAYERS[idx].freeDias||90, gemas: PLAYERS[idx].freeGemasTotal||160 };
+        localStorage.setItem(FREE_NFT_CLAIMED_KEY, JSON.stringify(m));
+    }
+    function currentWalletAddr(){
+        try {
+            const w = (typeof tonConnectUI!=='undefined') ? (tonConnectUI?.wallet||tonConnectUI?.account) : null;
+            return w?.account?.address || w?.address || null;
+        } catch(e){ return null; }
+    }
+
+    function getBallonesJugador(idx,copy=0){const k=slotKey(idx,copy);if(!ballonesPorJugador[k])ballonesPorJugador[k]=freshBalonesArr(idx);return ballonesPorJugador[k];}
     function consumirBalonJugador(idx,copy=0){const balls=getBallonesJugador(idx,copy);const pos=balls.findIndex(b=>b===true);if(pos===-1)return false;balls[pos]=false;ballonesPorJugador[slotKey(idx,copy)]=balls;return true;}
     function totalBallonesDisponibles(){return carrosComprados.reduce((sum,e)=>{for(let c=0;c<e.qty;c++)sum+=getBallonesJugador(e.idx,c).filter(Boolean).length;return sum;},0);}
     function totalBallonesMax(){return carrosComprados.reduce((sum,e)=>sum+e.qty*4,0);}
@@ -1715,7 +1814,7 @@
         const now=new Date();const todayKey=`${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
         const lastRecharge=localStorage.getItem(_pfx()+'_ball_recharge_day');
         if(lastRecharge===todayKey)return;
-        if(now.getUTCHours()>=7){carrosComprados.forEach(e=>{for(let c=0;c<e.qty;c++)ballonesPorJugador[slotKey(e.idx,c)]=[true,true,true,true];});localStorage.setItem(_pfx()+'_ball_recharge_day',todayKey);saveState();}
+        if(now.getUTCHours()>=7){carrosComprados.forEach(e=>{for(let c=0;c<e.qty;c++)ballonesPorJugador[slotKey(e.idx,c)]=freshBalonesArr(e.idx);});localStorage.setItem(_pfx()+'_ball_recharge_day',todayKey);saveState();}
     }
 
     // ── UI ────────────────────────────────────────────────────────────────
@@ -1882,34 +1981,87 @@
     function buildMarket(){
         const md=$id('market-gemas-display');if(md)md.textContent=gemas.toFixed(1)+' 💎';
         $id('car-market-grid').innerHTML=PLAYERS.map((c,i)=>{
-            const owned=getPlayerQty(i);const remaining=MAX_PER_PLAYER-owned;const imgSrc=playerImgSrc(i);const hasRealImg=!!c.img;
+            const owned=getPlayerQty(i);const imgSrc=playerImgSrc(i);const hasRealImg=!!c.img;
+            const isFree=isFreeNFT(i);
+            const walletAddr=currentWalletAddr();
+            const walletClaimed=isFree && hasWalletClaimedFreeNFT(i, walletAddr);
+            // Free NFT: máximo 1 por wallet; el resto: hasta MAX_PER_PLAYER
+            const maxAllowed = isFree ? 1 : MAX_PER_PLAYER;
+            const remaining = maxAllowed - owned;
             if(!_marketQty[i])_marketQty[i]=1;
+            // Bloque de info: free vs normal
+            const infoBlock = isFree
+                ? `<div class="car-card-country">${c.flag} ${c.pais}</div>
+                   <div style="font-size:0.68em;color:var(--gold);margin:4px 0 3px;font-weight:700">🎁 Generará ${c.freeGemasTotal} 💎 en ${c.freeDias} días</div>
+                   <div class="car-card-price" style="color:var(--green)">GRATIS</div>`
+                : `<div class="car-card-country">${c.flag} ${c.pais} · ⚡ OVR ${c.hp}</div>
+                   <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</div>
+                   <div class="car-card-price">💎 ${c.precio.toLocaleString()}</div>`;
+            // Bloque de acción
+            let actionBlock;
+            if(isFree){
+                if(owned>0 || walletClaimed){
+                    actionBlock = `<button class="buy-car-btn" disabled>✅ Ya reclamado (1/wallet)</button>`;
+                } else if(!walletAddr){
+                    actionBlock = `<button class="buy-car-btn" disabled style="opacity:0.6">🔒 Conecta tu wallet</button>`;
+                } else {
+                    actionBlock = `<button class="buy-car-btn" onclick="reclamarFreeNFT(${i})" style="background:linear-gradient(135deg,rgba(66,245,141,0.25),rgba(255,216,77,0.18));border-color:var(--green);color:var(--green)">🎁 Reclamar Gratis</button>`;
+                }
+            } else if(remaining>0){
+                actionBlock = `<div class="nft-qty-row">
+                    <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},-1)">−</button>
+                    <span class="nft-qty-num" id="mkt-qty-${i}">${_marketQty[i]||1}</span>
+                    <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},1)">+</button>
+                    <span class="nft-qty-max">(máx ${remaining})</span>
+                </div>
+                <div style="font-size:0.68em;color:var(--gold);margin-bottom:6px">Total: 💎 <span id="mkt-total-${i}">${((c.precio)*(_marketQty[i]||1)).toLocaleString()}</span></div>
+                <button class="buy-car-btn" id="buy-btn-${i}" onclick="comprarCarro(${i})">⚽ Fichar ×<span id="mkt-qty-label-${i}">${_marketQty[i]||1}</span></button>`;
+            } else {
+                actionBlock = `<button class="buy-car-btn" disabled>✅ Máximo (${MAX_PER_PLAYER})</button>`;
+            }
             return `<div class="car-card" id="card-${i}">
 <div class="car-card-img-wrap" onclick="openCarDetail(${i},false)">
     <img class="car-card-img" src="${imgSrc}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'" style="object-fit:cover">
-    ${hasRealImg?`<div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">NFT</div>`:''}
-    ${owned>0?`<div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.8);border:1px solid var(--gold);border-radius:4px;padding:2px 6px;font-size:0.55em;color:var(--gold);font-weight:800;font-family:'Orbitron',sans-serif">${owned}/${MAX_PER_PLAYER}</div>`:''}
+    ${hasRealImg?`<div style="position:absolute;top:6px;right:6px;background:${isFree?'rgba(255,216,77,0.95)':'rgba(0,255,136,0.9)'};border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">${isFree?'FREE NFT':'NFT'}</div>`:''}
+    ${owned>0?`<div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.8);border:1px solid var(--gold);border-radius:4px;padding:2px 6px;font-size:0.55em;color:var(--gold);font-weight:800;font-family:'Orbitron',sans-serif">${owned}/${maxAllowed}</div>`:''}
 </div>
 <div class="car-card-info">
     <div class="car-card-name">${c.nombre}</div>
-    <div class="car-card-country">${c.flag} ${c.pais} · ⚡ OVR ${c.hp}</div>
-    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</div>
-    <div class="car-card-price">💎 ${c.precio.toLocaleString()}</div>
-    ${remaining>0?`
-    <div class="nft-qty-row">
-        <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},-1)">−</button>
-        <span class="nft-qty-num" id="mkt-qty-${i}">${_marketQty[i]||1}</span>
-        <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},1)">+</button>
-        <span class="nft-qty-max">(máx ${remaining})</span>
-    </div>
-    <div style="font-size:0.68em;color:var(--gold);margin-bottom:6px">Total: 💎 <span id="mkt-total-${i}">${((c.precio)*(_marketQty[i]||1)).toLocaleString()}</span></div>
-    <button class="buy-car-btn" id="buy-btn-${i}" onclick="comprarCarro(${i})">⚽ Fichar ×<span id="mkt-qty-label-${i}">${_marketQty[i]||1}</span></button>`
-    :`<button class="buy-car-btn" disabled>✅ Máximo (${MAX_PER_PLAYER})</button>`}
+    ${infoBlock}
+    ${actionBlock}
 </div>
 </div>`;}).join('');
     }
-    function cambiarQtyMarket(idx,delta){const owned=getPlayerQty(idx);const remaining=MAX_PER_PLAYER-owned;if(!_marketQty[idx])_marketQty[idx]=1;_marketQty[idx]=Math.max(1,Math.min(remaining,_marketQty[idx]+delta));const q=_marketQty[idx];const el=$id(`mkt-qty-${idx}`);if(el)el.textContent=q;const tl=$id(`mkt-total-${idx}`);if(tl)tl.textContent=(PLAYERS[idx].precio*q).toLocaleString();const ll=$id(`mkt-qty-label-${idx}`);if(ll)ll.textContent=q;}
+    function cambiarQtyMarket(idx,delta){if(isFreeNFT(idx))return;const owned=getPlayerQty(idx);const remaining=MAX_PER_PLAYER-owned;if(!_marketQty[idx])_marketQty[idx]=1;_marketQty[idx]=Math.max(1,Math.min(remaining,_marketQty[idx]+delta));const q=_marketQty[idx];const el=$id(`mkt-qty-${idx}`);if(el)el.textContent=q;const tl=$id(`mkt-total-${idx}`);if(tl)tl.textContent=(PLAYERS[idx].precio*q).toLocaleString();const ll=$id(`mkt-qty-label-${idx}`);if(ll)ll.textContent=q;}
+
+    // Reclamar NFT FREE (Alexis Sánchez) — 1 por wallet, persistente
+    function reclamarFreeNFT(idx){
+        const c = PLAYERS[idx];
+        if(!isFreeNFT(idx)){ return; }
+        const walletAddr = currentWalletAddr();
+        if(!walletAddr){
+            mostrarMensaje('⚠️ Conecta tu wallet para reclamar el NFT free','#ffaa00');
+            if(typeof openWalletModal==='function') openWalletModal();
+            return;
+        }
+        if(hasWalletClaimedFreeNFT(idx, walletAddr) || getPlayerQty(idx)>0){
+            mostrarMensaje('❌ Esta wallet ya reclamó este NFT free','#ff4444');
+            return;
+        }
+        const entry=getPlayerEntry(idx);
+        if(entry){entry.qty+=1;}else{carrosComprados.push({idx,qty:1});}
+        hp+=c.hp; puntaje+=10;
+        durabilidades[slotKey(idx,0)]=100;
+        ballonesPorJugador[slotKey(idx,0)]=freshBalonesArr(idx);
+        markWalletClaimedFreeNFT(idx, walletAddr);
+        nivel=calcularNivel();
+        if(typeof saveState==='function') saveState();
+        actualizarUI();buildMarket();
+        mostrarMensaje(`🎁 ¡${c.nombre} reclamado GRATIS! Generará ${c.freeGemasTotal} 💎 en ${c.freeDias} días`,'#42f58d');
+    }
+
     function comprarCarro(idx){
+        if(isFreeNFT(idx)){ reclamarFreeNFT(idx); return; }
         const c=PLAYERS[idx];const qty=_marketQty[idx]||1;const owned=getPlayerQty(idx);const remaining=MAX_PER_PLAYER-owned;
         if(qty>remaining){mostrarMensaje(`⚠️ Solo puedes comprar ${remaining} más de este jugador`,'#ffaa00');return;}
         const totalCost=c.precio*qty;
@@ -1918,7 +2070,7 @@
         const entry=getPlayerEntry(idx);const startCopy=owned;
         if(entry){entry.qty+=qty;}else{carrosComprados.push({idx,qty});}
         hp+=c.hp*qty;puntaje+=Math.round(c.precio/10)*qty;
-        for(let copy=startCopy;copy<startCopy+qty;copy++){durabilidades[slotKey(idx,copy)]=100;ballonesPorJugador[slotKey(idx,copy)]=[true,true,true,true];}
+        for(let copy=startCopy;copy<startCopy+qty;copy++){durabilidades[slotKey(idx,copy)]=100;ballonesPorJugador[slotKey(idx,copy)]=freshBalonesArr(idx);}
         nivel=calcularNivel();
         actualizarUI();buildMarket();
         mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`,'#00ff88');
@@ -2363,18 +2515,50 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     function openCarDetail(idx,fromGarage,copy=0){
         const c=PLAYERS[idx];const dur=getDurabilidad(idx,copy);const durCls=colorDurabilidad(dur);const balls=getBallonesJugador(idx,copy);const fuelLlenos=balls.filter(Boolean).length;const playerId=generatePlayerId(idx,copy);
         $id('car-detail-img').src=playerImgSrc(idx);$id('car-detail-name').textContent=c.nombre;$id('car-detail-country-flag').textContent=c.flag+' '+c.pais;$id('car-detail-player-id').textContent='ID: '+playerId;
-        $id('car-detail-hp').textContent=c.hp+' OVR';$id('car-detail-dur').textContent=dur+'%';$id('car-detail-dur').style.color=dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)';
-        $id('car-detail-fuel').textContent=fuelLlenos+' / 4';
-        $id('car-detail-earn').textContent=`${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
-        const spd=Math.round(c.hp*0.9+3),def=Math.round(c.hp*0.6+5),phy=Math.round(c.hp*0.75+4);
-        $id('car-detail-extra-stats').innerHTML=`
+        const _free = isFreeNFT(idx);
+        const _cap = getBalonesCapacidad(idx);
+        // En el fichero del NFT FREE: ocultar OVR, balones y stats; mostrar SOLO la generación de gemas
+        $id('car-detail-hp').textContent = _free ? '—' : (c.hp+' OVR');
+        $id('car-detail-dur').textContent=dur+'%';$id('car-detail-dur').style.color=dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)';
+        $id('car-detail-fuel').textContent = _free ? `${fuelLlenos} / ${_cap}` : (fuelLlenos+' / 4');
+        $id('car-detail-earn').textContent = _free
+            ? `🎁 ${c.freeGemasTotal} 💎 en ${c.freeDias} días`
+            : `${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`;
+        if(_free){
+            // En las estadísticas extra: SOLO mostrar la generación de 160 💎; ocultar velocidad/defensa/físico
+            $id('car-detail-extra-stats').innerHTML = `
+<div style="grid-column:1/-1;background:linear-gradient(135deg,rgba(66,245,141,0.10),rgba(255,216,77,0.08));border:1px solid var(--green);border-radius:10px;padding:14px;text-align:center">
+    <div style="font-size:1.6em">🎁</div>
+    <div style="font-size:0.7em;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-top:4px">NFT FREE · 1 por wallet</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:1.15em;color:var(--green);font-weight:800;margin-top:6px">${c.freeGemasTotal} 💎 en ${c.freeDias} días</div>
+    <div style="font-size:0.72em;color:#888;margin-top:4px">⚽ ${_cap} balones cada 24h</div>
+</div>`;
+        } else {
+            const spd=Math.round(c.hp*0.9+3),def=Math.round(c.hp*0.6+5),phy=Math.round(c.hp*0.75+4);
+            $id('car-detail-extra-stats').innerHTML=`
 <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">⚡</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Velocidad</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--cyan);font-weight:700">${spd}</div></div>
 <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">🛡️</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Defensa</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--orange);font-weight:700">${def}</div></div>
 <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.2em">💪</div><div style="font-size:0.68em;color:#888;text-transform:uppercase">Físico</div><div style="font-family:'Orbitron',sans-serif;font-size:0.95em;color:var(--purple);font-weight:700">${phy}</div></div>`;
+        }
         $id('car-detail-dur-bar').innerHTML=`<div style="display:flex;justify-content:space-between;font-size:0.78em;color:#888;margin-bottom:5px"><span>💪 Forma Física</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div style="background:rgba(255,255,255,0.07);border-radius:50px;height:8px;overflow:hidden"><div class="dur-bar-fill ${durCls}" style="width:${dur}%"></div></div>`;
         const idHtml=`<div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:0.8em;color:#888">🆔 <strong style="color:var(--cyan);font-family:'Orbitron',sans-serif">${playerId}</strong></div>`;
         if(fromGarage){$id('car-detail-action-btn').innerHTML=idHtml+`<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-mantenimiento')">🏋️ Ir a Entrenamiento</button>`;}
-        else{const owned=getPlayerQty(idx);const remaining=MAX_PER_PLAYER-owned;$id('car-detail-action-btn').innerHTML=idHtml+(remaining>0?`<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-marketplace')">💎 Ver en Marketplace (${owned}/${MAX_PER_PLAYER})</button>`:`<button class="primary-btn" style="font-size:0.82em;opacity:0.5;cursor:default">✅ Máximo alcanzado</button>`);}
+        else{
+            const owned=getPlayerQty(idx);
+            if(_free){
+                const walletAddr=currentWalletAddr();
+                const claimed = owned>0 || hasWalletClaimedFreeNFT(idx, walletAddr);
+                const btn = claimed
+                    ? `<button class="primary-btn" style="font-size:0.82em;opacity:0.6;cursor:default">✅ Ya reclamado (1/wallet)</button>`
+                    : (walletAddr
+                        ? `<button class="primary-btn" style="font-size:0.82em;background:linear-gradient(135deg,#42f58d,#ffd84d);color:#000" onclick="closeCarDetail();reclamarFreeNFT(${idx})">🎁 Reclamar Gratis</button>`
+                        : `<button class="primary-btn" style="font-size:0.82em;opacity:0.7" onclick="closeCarDetail();openWalletModal&&openWalletModal()">🔒 Conecta tu wallet</button>`);
+                $id('car-detail-action-btn').innerHTML=idHtml+btn;
+            } else {
+                const remaining=MAX_PER_PLAYER-owned;
+                $id('car-detail-action-btn').innerHTML=idHtml+(remaining>0?`<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-marketplace')">💎 Ver en Marketplace (${owned}/${MAX_PER_PLAYER})</button>`:`<button class="primary-btn" style="font-size:0.82em;opacity:0.5;cursor:default">✅ Máximo alcanzado</button>`);
+            }
+        }
         $id('modal-car-detail').classList.add('active');document.body.style.overflow='hidden';
     }
     function closeCarDetail(){$id('modal-car-detail').classList.remove('active');document.body.style.overflow='';}
