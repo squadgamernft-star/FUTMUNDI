@@ -619,6 +619,33 @@
             .main-content { padding-bottom: 110px !important; }
             /* Hero más grande, ya que tenemos más espacio */
             .mobile-hero-center { margin: 4px 0 14px; }
+
+            /* ── MODALES PANTALLA COMPLETA EN MÓVIL ── */
+            .modal-overlay {
+                padding: 0 !important;
+                align-items: flex-end !important;
+            }
+            .modal {
+                max-width: 100% !important;
+                width: 100% !important;
+                max-height: 96dvh !important;
+                border-radius: 22px 22px 0 0 !important;
+                border-left: none !important;
+                border-right: none !important;
+                border-bottom: none !important;
+                animation: modalInMobile 0.32s cubic-bezier(0.175,0.885,0.32,1.275) !important;
+            }
+            @keyframes modalInMobile {
+                from { opacity:0; transform:translateY(60px); }
+                to   { opacity:1; transform:translateY(0); }
+            }
+            .modal-header {
+                border-radius: 22px 22px 0 0 !important;
+                padding: 16px 18px 12px !important;
+            }
+            .modal-body {
+                padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+            }
         }
 
         /* Cuando un modal está abierto, ocultar los iconos laterales para que no estorben */
@@ -3723,6 +3750,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
         <button class="tg-side-btn accent-purple" onclick="openModal('modal-logros')"          title="Logros">🏅</button>
         <button class="tg-side-btn"               onclick="openModal('modal-nivel')"           title="Nivel">⬆️</button>
+        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')"         title="Apuesta">🎲</button>
     </div>
     <div class="tg-side-col right">
         <button class="tg-side-btn"               onclick="openModal('modal-torneo')"          title="Torneo">🏆</button>
