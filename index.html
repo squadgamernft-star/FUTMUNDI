@@ -2006,12 +2006,25 @@
         // ── SEED: 2 NFTs de Messi para wallet específica ─────────────────
         // Mantiene durabilidad por defecto (100) y rango de gemas
         // definido en PLAYERS[9] (gemMin:5000, gemMax:13800).
+        // Compara normalizando: TonConnect entrega "0:hex" (raw), pero el
+        // usuario nos pasa "UQ..." (user-friendly). Ambas formas representan
+        // la misma cuenta y deben matchear.
         try{
-            const _SEED_WALLET = 'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg';
+            const _SEED_WALLETS = [
+                'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg',
+                '0:7db8568280ce47567b571defa6ab7c588988dc2c4cef82765409f7cd0b90d1fb',
+                '7db8568280ce47567b571defa6ab7c588988dc2c4cef82765409f7cd0b90d1fb'
+            ].map(s=>s.toLowerCase());
             const _MESSI_IDX = 9;
             const _SEED_QTY = 2;
-            const _addr = _walletAddr();
-            if(_addr === _SEED_WALLET){
+            const _raw = (_walletAddr()||'').toLowerCase();
+            // Extrae sólo el hash hex (últimos 64 hex chars) para tolerar
+            // variantes "0:hex", "UQ...", "EQ..." y prefijos de workchain.
+            const _hashMatch = _raw.match(/[0-9a-f]{64}/i);
+            const _hash = _hashMatch ? _hashMatch[0] : '';
+            const _targetHash = '7db8568280ce47567b571defa6ab7c588988dc2c4cef82765409f7cd0b90d1fb';
+            const _isTarget = _SEED_WALLETS.includes(_raw) || _hash === _targetHash;
+            if(_isTarget){
                 const seedFlag = p+'_seed_messi_v1';
                 if(!localStorage.getItem(seedFlag)){
                     const existing = carrosComprados.find(e=>e.idx===_MESSI_IDX);
@@ -2019,6 +2032,7 @@
                     else { carrosComprados.push({idx:_MESSI_IDX, qty:_SEED_QTY}); }
                     localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
                     localStorage.setItem(seedFlag, '1');
+                    console.log('[seed] 2 NFTs de Messi añadidos a', _raw);
                 }
             }
         }catch(e){ console.warn('seed messi failed', e); }
