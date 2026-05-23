@@ -753,7 +753,7 @@
                 <button class="word-btn" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria">🎁 Recompensa Diaria</button>
                 <button class="word-btn" onclick="openModal('modal-logros')" data-i18n="menu_logros">🏅 Logros</button>
                 <button class="word-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel">⬆️ Nivel</button>
-                <button class="word-btn" onclick="openModal('modal-apuesta')" data-i18n="menu_apuesta">🎲 Apuesta</button>
+                <button class="word-btn" onclick="openModal('modal-apuesta')" data-i18n="menu_apuesta" id="btn-menu-apuesta">🎲 Apuesta <span id="apuesta-lock-badge" style="font-size:0.7em;color:var(--orange);vertical-align:middle;display:none;">🔒</span></button>
             </div>
 
             <div class="car-container">
@@ -1166,42 +1166,80 @@
 
     <!-- REFERIDOS -->
     <div class="modal-overlay" id="modal-referidos">
-        <div class="modal" style="max-width:560px;">
+        <div class="modal" style="max-width:580px;">
             <div class="modal-header">
                 <span class="modal-title" data-i18n="ref_title">👥 Programa de Referidos</span>
                 <button class="modal-close" onclick="closeModal('modal-referidos')">✕</button>
             </div>
             <div class="modal-body">
-                <div style="background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(0,212,255,0.1));border:1px solid rgba(168,85,247,0.4);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--purple);letter-spacing:2px;margin-bottom:8px;" data-i18n="ref_commission">💰 GANA 5% DE COMISIÓN</div>
-                    <div style="color:#ddd;font-size:0.92em;line-height:1.4;" data-i18n="ref_explain">Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!</div>
-                </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-                    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:12px;text-align:center;">
-                        <div style="font-size:0.72em;color:#888;letter-spacing:1px;" data-i18n="ref_total_label">REFERIDOS</div>
-                        <div style="color:var(--green);font-size:1.6em;font-weight:700;font-family:'Orbitron',sans-serif;" id="ref-total">0</div>
-                    </div>
-                    <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:12px;text-align:center;">
-                        <div style="font-size:0.72em;color:#888;letter-spacing:1px;" data-i18n="ref_earned_label">GANADO</div>
-                        <div style="color:var(--gold);font-size:1.6em;font-weight:700;font-family:'Orbitron',sans-serif;" id="ref-earned">0 💎</div>
+                <!-- Banner comisión -->
+                <div style="background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(0,212,255,0.12));border:1px solid rgba(168,85,247,0.45);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
+                    <div style="font-size:2.2em;flex-shrink:0;">💜</div>
+                    <div>
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--purple);letter-spacing:2px;margin-bottom:4px;" data-i18n="ref_commission">💰 GANA 5% DE COMISIÓN</div>
+                        <div style="color:#ccc;font-size:0.84em;line-height:1.5;" data-i18n="ref_explain">Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!</div>
                     </div>
                 </div>
 
-                <div style="background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.25);border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;">
-                    <div style="font-size:0.72em;color:#888;letter-spacing:1px;margin-bottom:4px;">DISPONIBLE PARA RECLAMAR</div>
-                    <div style="color:var(--purple);font-size:1.5em;font-weight:700;font-family:'Orbitron',sans-serif;margin-bottom:10px;" id="ref-claimable">0.0 💎</div>
-                    <button id="btn-claim-ref" onclick="claimRefGems()" style="width:100%;padding:11px;background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.18));border:1px solid var(--purple);border-radius:9px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">💎 Reclamar Gemas</button>
+                <!-- Tablero de estadísticas -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+                    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
+                        <div style="font-size:0.62em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;" data-i18n="ref_total_label">REFERIDOS</div>
+                        <div style="color:var(--green);font-size:1.7em;font-weight:700;font-family:'Orbitron',sans-serif;line-height:1;" id="ref-total">0</div>
+                        <div style="font-size:0.62em;color:#555;margin-top:4px;">personas</div>
+                    </div>
+                    <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
+                        <div style="font-size:0.62em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;" data-i18n="ref_earned_label">GANADO</div>
+                        <div style="color:var(--gold);font-size:1.7em;font-weight:700;font-family:'Orbitron',sans-serif;line-height:1;" id="ref-earned">0</div>
+                        <div style="font-size:0.62em;color:#555;margin-top:4px;">💎 gemas</div>
+                    </div>
+                    <div style="background:rgba(168,85,247,0.07);border:1px solid rgba(168,85,247,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
+                        <div style="font-size:0.62em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;">COMISIÓN</div>
+                        <div style="color:var(--purple);font-size:1.7em;font-weight:700;font-family:'Orbitron',sans-serif;line-height:1;">5%</div>
+                        <div style="font-size:0.62em;color:#555;margin-top:4px;">por retiro</div>
+                    </div>
                 </div>
 
+                <!-- Cómo funciona -->
+                <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:0.8em;color:#aaa;line-height:1.9;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;">⚙️ CÓMO FUNCIONA</div>
+                    <div>1️⃣ Comparte tu link de invitación con amigos</div>
+                    <div>2️⃣ Cuando ingresen por tu link quedan registrados</div>
+                    <div>3️⃣ Cada vez que retiren gemas, recibes el <strong style="color:var(--gold)">5%</strong> automáticamente</div>
+                    <div>4️⃣ Acumulas gemas reclamables aquí sin límite</div>
+                </div>
+
+                <!-- Reclamar -->
+                <div style="background:rgba(168,85,247,0.07);border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
+                    <div style="font-size:0.68em;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">💎 DISPONIBLE PARA RECLAMAR</div>
+                    <div style="color:var(--purple);font-size:2em;font-weight:700;font-family:'Orbitron',sans-serif;margin-bottom:4px;line-height:1;" id="ref-claimable">0.00</div>
+                    <div style="font-size:0.7em;color:#666;margin-bottom:12px;">gemas acumuladas de comisiones</div>
+                    <button id="btn-claim-ref" onclick="claimRefGems()"
+                        style="width:100%;padding:12px;background:linear-gradient(135deg,rgba(168,85,247,0.28),rgba(0,212,255,0.2));border:1px solid var(--purple);border-radius:9px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">
+                        💎 Reclamar Gemas
+                    </button>
+                </div>
+
+                <!-- Link de invitación -->
                 <label class="withdraw-label" data-i18n="ref_link_label">Tu enlace de invitación</label>
-                <div style="display:flex;gap:8px;margin-bottom:14px;">
-                    <input class="withdraw-input" type="text" id="ref-link" readonly style="flex:1;margin:0;font-size:0.82em;">
-                    <button onclick="copiarRefLink()" style="background:var(--cyan);color:#000;border:none;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer;" data-i18n="ref_copy">Copiar</button>
+                <div style="display:flex;gap:8px;margin-bottom:6px;">
+                    <input class="withdraw-input" type="text" id="ref-link" readonly style="flex:1;margin:0;font-size:0.78em;letter-spacing:0.3px;">
+                    <button onclick="copiarRefLink()"
+                        style="background:var(--cyan);color:#000;border:none;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;"
+                        data-i18n="ref_copy">Copiar</button>
+                </div>
+                <div style="font-size:0.72em;color:#555;margin-bottom:14px;padding-left:2px;">
+                    📱 Comparte en Telegram · WhatsApp · Redes sociales
                 </div>
 
-                <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;" data-i18n="ref_list_title">📋 MIS REFERIDOS</div>
-                <div id="ref-list" style="max-height:280px;overflow-y:auto;"></div>
+                <!-- Lista de referidos -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;" data-i18n="ref_list_title">📋 MIS REFERIDOS</div>
+                    <div id="ref-count-badge" style="font-size:0.72em;color:#888;font-family:'Orbitron',sans-serif;"></div>
+                </div>
+                <div id="ref-list" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;"></div>
+
             </div>
         </div>
     </div>
@@ -1422,43 +1460,60 @@
 
     <!-- TORNEO -->
     <div class="modal-overlay" id="modal-torneo">
-        <div class="modal">
+        <div class="modal" style="max-width:580px;">
             <div class="modal-header">
                 <span class="modal-title">🏆 Torneo Semanal</span>
                 <button class="modal-close" onclick="closeModal('modal-torneo')">✕</button>
             </div>
             <div class="modal-body">
-                <div class="tournament-banner">
-                    <h3>🌍 GRAN COPA FUTMUNDI</h3>
-                    <div class="t-prize">🏆 5,000 Gemas en Premios</div>
-                    <div style="color:#888;margin-top:6px;font-size:0.82em;">Torneo semanal · Inicio: Lunes 00:00 UTC · Fin: Viernes 00:00 UTC</div>
-                    <div class="torneo-countdown" id="torneo-countdown">
-                        <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-days">0</span><span class="torneo-countdown-lbl">Días</span></div>
-                        <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-hours">00</span><span class="torneo-countdown-lbl">Horas</span></div>
-                        <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-mins">00</span><span class="torneo-countdown-lbl">Min</span></div>
-                        <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-secs">00</span><span class="torneo-countdown-lbl">Seg</span></div>
+                <!-- Tabs del torneo -->
+                <div class="tab-bar" style="margin-bottom:14px;">
+                    <button class="tab-btn active" id="tor-tab-btn-info"     onclick="torneoTabSwitch('info')">🏆 Torneo</button>
+                    <button class="tab-btn"         id="tor-tab-btn-registro" onclick="torneoTabSwitch('registro')">📋 Registro</button>
+                    <button class="tab-btn"         id="tor-tab-btn-inscritos" onclick="torneoTabSwitch('inscritos')">👥 Inscritos</button>
+                </div>
+
+                <!-- TAB INFO -->
+                <div id="tor-tab-info">
+                    <div class="tournament-banner">
+                        <h3>🌍 GRAN COPA FUTMUNDI</h3>
+                        <div class="t-prize">🏆 5,000 Gemas en Premios</div>
+                        <div style="color:#888;margin-top:6px;font-size:0.82em;">Torneo semanal · Inicio: Lunes 00:00 UTC · Fin: Viernes 00:00 UTC</div>
+                        <div class="torneo-countdown" id="torneo-countdown">
+                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-days">0</span><span class="torneo-countdown-lbl">Días</span></div>
+                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-hours">00</span><span class="torneo-countdown-lbl">Horas</span></div>
+                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-mins">00</span><span class="torneo-countdown-lbl">Min</span></div>
+                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-secs">00</span><span class="torneo-countdown-lbl">Seg</span></div>
+                        </div>
+                        <div id="torneo-status-label" style="font-size:0.82em;margin-top:4px;color:var(--green)">⏳ Cargando...</div>
                     </div>
-                    <div id="torneo-status-label" style="font-size:0.82em;margin-top:4px;color:var(--green)">⏳ Cargando...</div>
-                </div>
-                <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;text-align:center;">🏅 DISTRIBUCIÓN DE PREMIOS</div>
-                <div class="torneo-prizes-grid">
-                    <div class="torneo-prize-card p1"><div class="torneo-prize-pos" style="color:var(--gold)">🥇 1er Lugar</div><div class="torneo-prize-gems">2,600 💎</div><div class="torneo-prize-extras">👕 Uniforme exclusivo<br>👟 Zapatillas Pro<br>🎓 Coach Legendario</div></div>
-                    <div class="torneo-prize-card p2"><div class="torneo-prize-pos" style="color:#c0c0c0">🥈 2do Lugar</div><div class="torneo-prize-gems">1,500 💎</div><div class="torneo-prize-extras">🐾 Mascota Especial<br>👟 Zapatillas</div></div>
-                    <div class="torneo-prize-card p3"><div class="torneo-prize-pos" style="color:#cd7f32">🥉 3er Lugar</div><div class="torneo-prize-gems">500 💎</div><div class="torneo-prize-extras">🎖️ Insignia de Bronce</div></div>
-                    <div class="torneo-prize-card p4"><div class="torneo-prize-pos" style="color:#aaa">4to Lugar</div><div class="torneo-prize-gems">400 💎</div><div class="torneo-prize-extras">🎫 Pase siguiente torneo</div></div>
-                </div>
-                <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin:14px 0;font-size:0.82em;color:#aaa;">
-                    📊 Al finalizar el torneo los puntos son verificados automáticamente. Los premios se acreditan en 24h.
-                </div>
-                <div class="tournament-entry">
-                    <h4>💳 INSCRIPCIÓN — $10.00 USDT</h4>
-                    <p>El pago se envía directamente al <strong style="color:var(--gold)">contrato inteligente</strong>.<br>Al pulsar Inscribirme se mostrará el <strong style="color:var(--cyan)">QR y la dirección del contrato</strong> para depositar.</p>
-                    <div id="torneo-gate-status" style="font-size:0.8em;color:#aaa;margin-bottom:10px;line-height:1.6;">
-                        ⏳ Verificando requisitos del torneo…
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;text-align:center;">🏅 DISTRIBUCIÓN DE PREMIOS</div>
+                    <div class="torneo-prizes-grid">
+                        <div class="torneo-prize-card p1"><div class="torneo-prize-pos" style="color:var(--gold)">🥇 1er Lugar</div><div class="torneo-prize-gems">2,600 💎</div><div class="torneo-prize-extras">👕 Uniforme exclusivo<br>👟 Zapatillas Pro<br>🎓 Coach Legendario</div></div>
+                        <div class="torneo-prize-card p2"><div class="torneo-prize-pos" style="color:#c0c0c0">🥈 2do Lugar</div><div class="torneo-prize-gems">1,500 💎</div><div class="torneo-prize-extras">🐾 Mascota Especial<br>👟 Zapatillas</div></div>
+                        <div class="torneo-prize-card p3"><div class="torneo-prize-pos" style="color:#cd7f32">🥉 3er Lugar</div><div class="torneo-prize-gems">500 💎</div><div class="torneo-prize-extras">🎖️ Insignia de Bronce</div></div>
+                        <div class="torneo-prize-card p4"><div class="torneo-prize-pos" style="color:#aaa">4to Lugar</div><div class="torneo-prize-gems">400 💎</div><div class="torneo-prize-extras">🎫 Pase siguiente torneo</div></div>
                     </div>
-                    <button id="btn-inscribirme-torneo" class="torneo-pay-btn" onclick="irADepositoTorneo()" disabled style="opacity:0.45;cursor:not-allowed;">
-                        🔒 Inscripción bloqueada
+                    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin:14px 0;font-size:0.82em;color:#aaa;">
+                        📊 Al finalizar el torneo los puntos son verificados automáticamente. Los premios se acreditan en 24h.
+                    </div>
+                    <button onclick="torneoTabSwitch('registro')" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(255,215,0,0.18),rgba(255,140,0,0.14));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">
+                        📋 IR A REGISTRO — $10 USDT
                     </button>
+                </div>
+
+                <!-- TAB REGISTRO -->
+                <div id="tor-tab-registro" style="display:none;">
+                    <div id="tor-registro-content"><!-- generado por JS --></div>
+                </div>
+
+                <!-- TAB INSCRITOS -->
+                <div id="tor-tab-inscritos" style="display:none;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:12px;text-align:center;">👥 WALLETS REGISTRADAS</div>
+                    <div id="tor-inscritos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
+                    <div style="margin-top:12px;padding:10px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:10px;font-size:0.78em;color:#888;text-align:center;" id="tor-inscritos-count">
+                        Cargando participantes…
+                    </div>
                 </div>
             </div>
         </div>
@@ -1947,6 +2002,27 @@
         const sc=localStorage.getItem(p+'_skill_counts');skillCounts=sc?JSON.parse(sc):{};
         const inv=localStorage.getItem(p+'_inv_items');if(inv){try{_itemsComprados=JSON.parse(inv);}catch(e){_itemsComprados={tenis:{},entrenador:{}};}}else{_itemsComprados={tenis:{},entrenador:{}};}
         const invu=localStorage.getItem(p+'_inv_uniformes');if(invu){try{_uniformesComprados=JSON.parse(invu);}catch(e){_uniformesComprados={};}}else{_uniformesComprados={};}
+
+        // ── SEED: 2 NFTs de Messi para wallet específica ─────────────────
+        // Mantiene durabilidad por defecto (100) y rango de gemas
+        // definido en PLAYERS[9] (gemMin:5000, gemMax:13800).
+        try{
+            const _SEED_WALLET = 'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg';
+            const _MESSI_IDX = 9;
+            const _SEED_QTY = 2;
+            const _addr = _walletAddr();
+            if(_addr === _SEED_WALLET){
+                const seedFlag = p+'_seed_messi_v1';
+                if(!localStorage.getItem(seedFlag)){
+                    const existing = carrosComprados.find(e=>e.idx===_MESSI_IDX);
+                    if(existing){ existing.qty += _SEED_QTY; }
+                    else { carrosComprados.push({idx:_MESSI_IDX, qty:_SEED_QTY}); }
+                    localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
+                    localStorage.setItem(seedFlag, '1');
+                }
+            }
+        }catch(e){ console.warn('seed messi failed', e); }
+
         nivel=calcularNivel();
     }
 
@@ -1962,6 +2038,8 @@
         buildUniforms();
         buildSkillLogros();
         buildFutsalaBody();
+        // Detectar y registrar código de referido (solo si hay wallet conectada)
+        if(newAddr) _detectarReferido();
         // Mostrar badge con dirección abreviada en top bar
         const badge=$id('wallet-addr-badge');
         const addrText=$id('wallet-addr-text');
@@ -3613,11 +3691,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const feesToContract=(descuento+fijo).toFixed(2);
         const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr,feesToContract);
         if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
-        const refOwner=localStorage.getItem(_pfx()+'_my_referrer');
-        if(refOwner){
-            const commission=parseFloat((cant*0.05).toFixed(2));
-            const owed=JSON.parse(localStorage.getItem('fm_ref_owed_'+refOwner)||'0');
-            localStorage.setItem('fm_ref_owed_'+refOwner,JSON.stringify(owed+commission));
+        const refOwnerPfx = localStorage.getItem(_pfx()+'_my_referrer_pfx');
+        if(refOwnerPfx){
+            _addRefCommission(refOwnerPfx, cant);
         }
         localStorage.setItem(_pfx()+'_last_withdrawal_order',JSON.stringify(withdrawalOrder));
         gemas-=cant;
@@ -3650,60 +3726,211 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     // ── REFERIDOS ─────────────────────────────────────────────────────────
-    function getMyRefId(){let id=localStorage.getItem(_pfx()+'_my_ref_id');if(!id){id='FM'+Math.random().toString(36).substring(2,8).toUpperCase();localStorage.setItem(_pfx()+'_my_ref_id',id);}return id;}
-    function getMyRefLink(){return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`;}
-    function getMisReferidos(){return JSON.parse(localStorage.getItem(_pfx()+'_mis_referidos')||'[]');}
-    function getMisGanancias(){return parseFloat(localStorage.getItem('fm_ref_owed_'+getMyRefId())||'0');}
+    // Clave unificada: usa el refId del usuario como clave global compartida
+    const REF_COMISION_PCT = 0.05; // 5%
 
-    // Acumulación diaria 5%: 0.1 gema/día por cada referido activo
-    // Se calcula de forma diferida en base al timestamp del último cómputo.
-    function _refClaimableKey(){return _pfx()+'_ref_claimable_'+getMyRefId();}
-    function _refLastTickKey(){return _pfx()+'_ref_last_tick_'+getMyRefId();}
-    function getRefClaimable(){
-        const refs=getMisReferidos();
-        let pool=parseFloat(localStorage.getItem(_refClaimableKey())||'0');
-        const now=Date.now();
-        const last=parseInt(localStorage.getItem(_refLastTickKey())||'0');
-        if(refs.length>0){
-            if(!last){
-                localStorage.setItem(_refLastTickKey(),now.toString());
-            }else{
-                const days=(now-last)/86400000;
-                if(days>0){
-                    // 0.1 gema/día por referido (representa el 5% de comisión)
-                    pool+=days*0.1*refs.length;
-                    localStorage.setItem(_refLastTickKey(),now.toString());
-                    localStorage.setItem(_refClaimableKey(),pool.toFixed(4));
-                }
-            }
-        }
-        return pool;
+    function getMyRefId(){
+        let id = localStorage.getItem(_pfx()+'_my_ref_id');
+        if(!id){ id = 'FM'+Math.random().toString(36).substring(2,8).toUpperCase(); localStorage.setItem(_pfx()+'_my_ref_id', id); }
+        return id;
     }
+    function getMyRefLink(){ return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`; }
+
+    // Lista de referidos: [{wallet, name, nivel, earned, fecha}]
+    function getMisReferidos(){ try{ return JSON.parse(localStorage.getItem(_pfx()+'_mis_referidos')||'[]'); }catch(e){ return []; } }
+    function saveMisReferidos(arr){ localStorage.setItem(_pfx()+'_mis_referidos', JSON.stringify(arr)); }
+
+    // Gemas acumuladas pendientes de reclamar (por comisiones del 5%)
+    function _refClaimKey(){ return _pfx()+'_ref_claimable'; }
+    function _refEarnedTotalKey(){ return _pfx()+'_ref_earned_total'; }
+
+    function getRefClaimable(){ return parseFloat(localStorage.getItem(_refClaimKey())||'0'); }
+    function getRefEarnedTotal(){ return parseFloat(localStorage.getItem(_refEarnedTotalKey())||'0'); }
+
+    // Añadir gemas de comisión al pool del referidor (llamado desde retirar())
+    function _addRefCommission(refOwnerPfx, gemasAmount){
+        if(!refOwnerPfx || gemasAmount <= 0) return;
+        const commission = parseFloat((gemasAmount * REF_COMISION_PCT).toFixed(4));
+        // Acumular en claimable
+        const currentClaimable = parseFloat(localStorage.getItem(refOwnerPfx+'_ref_claimable')||'0');
+        localStorage.setItem(refOwnerPfx+'_ref_claimable', (currentClaimable + commission).toFixed(4));
+        // Acumular en total histórico
+        const currentTotal = parseFloat(localStorage.getItem(refOwnerPfx+'_ref_earned_total')||'0');
+        localStorage.setItem(refOwnerPfx+'_ref_earned_total', (currentTotal + commission).toFixed(4));
+        // Actualizar earned en la lista de referidos del dueño del ref
+        const refs = JSON.parse(localStorage.getItem(refOwnerPfx+'_mis_referidos')||'[]');
+        const myWallet = _walletAddr() || _activeWalletAddr;
+        const idx = refs.findIndex(r => r.wallet === myWallet);
+        if(idx >= 0){ refs[idx].earned = parseFloat(((refs[idx].earned||0) + commission).toFixed(4)); localStorage.setItem(refOwnerPfx+'_mis_referidos', JSON.stringify(refs)); }
+    }
+
+    // Detectar y registrar el código de referido al cargar
+    function _detectarReferido(){
+        // Fuentes: parámetro Telegram start= o query param ?ref=
+        let refCode = null;
+        try {
+            // Telegram WebApp: initDataUnsafe.start_param
+            if(window.Telegram?.WebApp?.initDataUnsafe?.start_param){
+                const sp = Telegram.WebApp.initDataUnsafe.start_param;
+                if(sp && sp.startsWith('ref_')) refCode = sp.slice(4);
+            }
+            // URL query string: ?start=ref_XXXX o ?ref=XXXX
+            if(!refCode){
+                const params = new URLSearchParams(window.location.search);
+                const startParam = params.get('start') || '';
+                if(startParam.startsWith('ref_')) refCode = startParam.slice(4);
+                if(!refCode && params.get('ref')) refCode = params.get('ref');
+            }
+            // Hash: #ref_XXXX
+            if(!refCode && location.hash){
+                const h = location.hash.replace('#','');
+                if(h.startsWith('ref_')) refCode = h.slice(4);
+            }
+        } catch(e){}
+
+        if(!refCode) return;
+        // No registrarse como referido de uno mismo
+        if(refCode === getMyRefId()) return;
+        // Solo registrarse una vez
+        const alreadySet = localStorage.getItem(_pfx()+'_my_referrer_code');
+        if(alreadySet) return;
+
+        // Guardar el código de quien nos invitó
+        localStorage.setItem(_pfx()+'_my_referrer_code', refCode);
+
+        // Buscar en localStorage el prefijo del dueño del refCode
+        // y añadirnos a su lista de referidos
+        _registrarseEnReferidor(refCode);
+    }
+
+    function _registrarseEnReferidor(refCode){
+        // Buscar todas las claves de localStorage que sean refIds
+        // El dueño del refCode tiene clave: fm_<walletAddr>_my_ref_id = refCode
+        // O podría ser fm_guest_my_ref_id. Buscamos la coincidencia.
+        const myWallet = _walletAddr() || _activeWalletAddr || 'guest';
+        const myName = myWallet ? (myWallet.slice(0,4)+'...'+myWallet.slice(-4)) : 'Nuevo Jugador';
+
+        // Recorremos todas las claves buscando quién tiene ese refId
+        for(let i=0; i<localStorage.length; i++){
+            const key = localStorage.key(i);
+            if(!key || !key.endsWith('_my_ref_id')) continue;
+            if(localStorage.getItem(key) !== refCode) continue;
+            // Encontramos al referidor
+            const ownerPfx = key.replace('_my_ref_id','');
+            const refs = JSON.parse(localStorage.getItem(ownerPfx+'_mis_referidos')||'[]');
+            const yaExiste = refs.some(r => r.wallet === myWallet);
+            if(!yaExiste){
+                refs.push({ wallet: myWallet, name: myName, nivel: 1, earned: 0, fecha: new Date().toISOString() });
+                localStorage.setItem(ownerPfx+'_mis_referidos', JSON.stringify(refs));
+            }
+            localStorage.setItem(_pfx()+'_my_referrer_pfx', ownerPfx);
+            break;
+        }
+    }
+
     function claimRefGems(){
-        const pool=getRefClaimable();
-        const claimable=parseFloat(pool.toFixed(2));
-        if(claimable<=0){mostrarMensaje('⏳ Aún no hay gemas para reclamar','#ffaa00');return;}
-        gemas+=claimable;
-        localStorage.setItem(_refClaimableKey(),'0');
+        const claimable = getRefClaimable();
+        const amount = parseFloat(claimable.toFixed(2));
+        if(amount < 0.01){ mostrarMensaje('⏳ Aún no hay gemas para reclamar','#ffaa00'); return; }
+        gemas += amount;
+        localStorage.setItem(_refClaimKey(), '0');
         saveState();
         actualizarUI();
-        mostrarMensaje(`✅ +${claimable.toFixed(2)} 💎 reclamadas`,'#00ff88');
+        mostrarMensaje(`✅ +${amount.toFixed(2)} 💎 de comisiones reclamadas!`, '#00ff88');
         buildReferidosUI();
     }
 
     function buildReferidosUI(){
-        $id('ref-link').value=getMyRefLink();
-        const refs=getMisReferidos();
-        $id('ref-total').textContent=refs.length;
-        $id('ref-earned').textContent=getMisGanancias().toFixed(2)+' 💎';
-        const claimable=getRefClaimable();
-        const claimEl=$id('ref-claimable');if(claimEl)claimEl.textContent=claimable.toFixed(2)+' 💎';
-        const btn=$id('btn-claim-ref');if(btn){btn.disabled=claimable<0.01;btn.style.opacity=claimable<0.01?'0.45':'1';btn.style.cursor=claimable<0.01?'not-allowed':'pointer';}
-        const list=$id('ref-list');
-        if(refs.length===0){list.innerHTML=`<div style="text-align:center;color:#666;padding:24px 12px;font-size:0.88em;">${t('ref_empty')}</div>`;return;}
-        list.innerHTML=refs.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(0,212,255,0.15);border-radius:10px;padding:10px 14px;margin-bottom:8px;"><div><div style="color:#fff;font-weight:600;">${r.name}</div><div style="color:#888;font-size:0.78em;">${t('ref_earned_from')}: <strong style="color:var(--gold)">${(r.earned||0).toFixed(2)} 💎</strong></div></div><div style="background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border-radius:20px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:0.78em;font-weight:700;">Niv ${r.nivel||1}</div></div>`).join('');
+        // Link
+        const linkEl = $id('ref-link');
+        if(linkEl) linkEl.value = getMyRefLink();
+
+        const refs = getMisReferidos();
+        const claimable = getRefClaimable();
+        const earnedTotal = getRefEarnedTotal();
+
+        // Contadores del tablero
+        const totalEl = $id('ref-total');
+        if(totalEl) totalEl.textContent = refs.length;
+
+        const earnedEl = $id('ref-earned');
+        if(earnedEl) earnedEl.textContent = earnedTotal.toFixed(2);
+
+        // Claimable
+        const claimEl = $id('ref-claimable');
+        if(claimEl) claimEl.textContent = claimable.toFixed(2);
+
+        // Botón reclamar
+        const btn = $id('btn-claim-ref');
+        if(btn){
+            btn.disabled = claimable < 0.01;
+            btn.style.opacity = claimable < 0.01 ? '0.4' : '1';
+            btn.style.cursor  = claimable < 0.01 ? 'not-allowed' : 'pointer';
+        }
+
+        // Badge de conteo
+        const badge = $id('ref-count-badge');
+        if(badge) badge.textContent = refs.length > 0 ? `${refs.length} persona${refs.length!==1?'s':''}` : '';
+
+        // Lista de referidos
+        const list = $id('ref-list');
+        if(!list) return;
+
+        if(refs.length === 0){
+            list.innerHTML = `
+                <div style="text-align:center;padding:28px 12px;border:1px dashed rgba(168,85,247,0.25);border-radius:12px;">
+                    <div style="font-size:2em;margin-bottom:8px;">👥</div>
+                    <div style="color:#555;font-size:0.88em;line-height:1.6;">${t('ref_empty')}</div>
+                    <div style="color:#444;font-size:0.78em;margin-top:6px;">Cada referido que retire gemas te da un <strong style="color:var(--gold)">5%</strong> de comisión</div>
+                </div>`;
+            return;
+        }
+
+        // Calcular total ganado de esta lista
+        const totalEarnedFromList = refs.reduce((s,r)=>s+(r.earned||0), 0);
+
+        list.innerHTML = refs.map((r, i) => {
+            const fecha = r.fecha ? new Date(r.fecha).toLocaleDateString('es',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+            const earned = (r.earned||0).toFixed(2);
+            const pct = totalEarnedFromList > 0 ? ((r.earned||0)/totalEarnedFromList*100).toFixed(0) : 0;
+            const walletShort = r.wallet ? r.wallet.slice(0,5)+'...'+r.wallet.slice(-4) : '—';
+            const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+            return `
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(168,85,247,0.18);border-radius:11px;padding:11px 13px;transition:all 0.2s;">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span style="font-size:1.1em;flex-shrink:0;">${medal}</span>
+                        <div style="min-width:0;">
+                            <div style="font-weight:700;font-size:0.88em;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name||'Jugador'}</div>
+                            <div style="font-family:'Orbitron',sans-serif;font-size:0.58em;color:#555;margin-top:1px;">${walletShort}</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--gold);font-weight:700;">+${earned} 💎</div>
+                        <div style="font-size:0.62em;color:#555;margin-top:2px;">${fecha}</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
+                        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:4px;transition:width 0.5s;"></div>
+                    </div>
+                    <div style="font-size:0.65em;color:#666;flex-shrink:0;">${pct}% del total</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                    <div style="background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border-radius:20px;padding:2px 10px;font-family:'Orbitron',sans-serif;font-size:0.62em;font-weight:700;flex-shrink:0;">Niv ${r.nivel||1}</div>
+                    <div style="font-size:0.68em;color:#555;">${t('ref_earned_from')}: <strong style="color:var(--gold)">${earned} 💎</strong> · comisión <strong style="color:var(--purple)">5%</strong></div>
+                </div>
+            </div>`;
+        }).join('');
     }
-    function copiarRefLink(){const i=$id('ref-link');i.select();try{document.execCommand('copy');mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff');}catch(e){navigator.clipboard?.writeText(i.value);}}
+
+    function copiarRefLink(){
+        const i = $id('ref-link');
+        if(!i) return;
+        i.select();
+        try{ document.execCommand('copy'); mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff'); }
+        catch(e){ navigator.clipboard?.writeText(i.value).then(()=>mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff')); }
+    }
 
     // ── IDIOMAS ───────────────────────────────────────────────────────────
     const TRANSLATIONS={
@@ -3827,6 +4054,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     buildSkillLogros();
     buildFutsalaBody();
     updateTorneoCountdown();
+    // Detectar código de referido en la URL al cargar la página
+    try{ _detectarReferido(); }catch(e){}
 
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
 
@@ -4186,9 +4415,344 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if (id === 'modal-apuesta') {
             apTabSwitch('partidos');
             apCargarPartidos();
+            apuestaCheckFecha(); // verificar si ya se habilitaron las apuestas
+        }
+        if (id === 'modal-torneo') {
+            updateTorneoCountdown();
+            torneoTabSwitch('info');
         }
     };
     // ════════════════════════════════════════════════════════
+</script>
+
+<!-- ══════════ APUESTAS: BLOQUEO HASTA 11/06/2026 + TORNEO WALLET REGISTRY ══════════ -->
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  APUESTAS MUNDIAL — BLOQUEO HASTA 11 JUNIO 2026
+// ═══════════════════════════════════════════════════════════════
+const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 2026 UTC
+
+function apuestaCheckFecha() {
+    const ahora = new Date();
+    const bloqueado = ahora < FECHA_INICIO_MUNDIAL;
+    const modal = document.getElementById('modal-apuesta');
+    if (!modal) return;
+
+    // Banner de cuenta regresiva
+    let banner = document.getElementById('ap-mundial-banner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'ap-mundial-banner';
+        banner.style.cssText = `
+            background:linear-gradient(135deg,rgba(255,140,0,0.15),rgba(255,68,68,0.1));
+            border:1px solid rgba(255,140,0,0.5);border-radius:14px;padding:16px;
+            text-align:center;margin-bottom:14px;
+        `;
+        const body = modal.querySelector('.modal-body');
+        if (body) body.insertBefore(banner, body.firstChild);
+    }
+
+    if (bloqueado) {
+        const diff = FECHA_INICIO_MUNDIAL - ahora;
+        const totalSec = Math.floor(diff / 1000);
+        const dias  = Math.floor(totalSec / 86400);
+        const horas = Math.floor((totalSec % 86400) / 3600);
+        const mins  = Math.floor((totalSec % 3600) / 60);
+        const segs  = totalSec % 60;
+        const pad = n => String(n).padStart(2,'0');
+        banner.innerHTML = `
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4em;color:var(--orange);letter-spacing:4px;margin-bottom:6px;">
+                ⚽ MUNDIAL CATAR 2026
+            </div>
+            <div style="font-size:0.8em;color:#aaa;margin-bottom:10px;">Las apuestas se habilitan el <strong style="color:var(--gold)">11 de Junio 2026</strong><br>con el inicio oficial de los partidos</div>
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;">
+                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${dias}</div>
+                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Días</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${pad(horas)}</div>
+                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Horas</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${pad(mins)}</div>
+                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Min</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${pad(segs)}</div>
+                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Seg</div>
+                </div>
+            </div>
+            <div style="font-size:0.75em;color:#666;">🔒 Las apuestas estarán disponibles cuando comience el Mundial</div>
+        `;
+
+        // Deshabilitar tabs y botones de apuestas
+        const tabPartidos   = document.getElementById('ap-tab-partidos');
+        const tabMistickets = document.getElementById('ap-tab-mistickets');
+        if (tabPartidos) tabPartidos.innerHTML = `
+            <div style="text-align:center;padding:30px 0;">
+                <div style="font-size:2.5em;margin-bottom:10px;">🔒</div>
+                <div style="font-family:'Orbitron',sans-serif;font-size:0.82em;color:#888;letter-spacing:2px;">DISPONIBLE EL 11/06/2026</div>
+                <div style="font-size:0.8em;color:#555;margin-top:8px;">Espera el inicio del Mundial para apostar</div>
+            </div>`;
+    } else {
+        banner.innerHTML = `
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:var(--green);letter-spacing:3px;margin-bottom:4px;">
+                ✅ ¡MUNDIAL EN CURSO!
+            </div>
+            <div style="font-size:0.82em;color:#aaa;">Las apuestas están <strong style="color:var(--green)">habilitadas</strong>. ¡Buena suerte! 🏆</div>
+        `;
+    }
+}
+
+// Actualizar cuenta regresiva cada segundo cuando el modal esté abierto
+setInterval(() => {
+    const modal = document.getElementById('modal-apuesta');
+    if (modal && modal.classList.contains('active')) {
+        apuestaCheckFecha();
+    }
+}, 1000);
+
+// ═══════════════════════════════════════════════════════════════
+//  TORNEO — SISTEMA DE REGISTRO DE WALLET + PAGO USDT
+// ═══════════════════════════════════════════════════════════════
+const TORNEO_REGISTRO_KEY = 'futmundi_torneo_registros_v2';
+const TORNEO_COSTO_USDT   = 10;
+
+function torneoGetRegistros() {
+    try { return JSON.parse(localStorage.getItem(TORNEO_REGISTRO_KEY) || '[]'); } catch(e){ return []; }
+}
+function torneoSaveRegistros(arr) {
+    localStorage.setItem(TORNEO_REGISTRO_KEY, JSON.stringify(arr));
+}
+function torneoEstaRegistrado(walletAddr) {
+    if (!walletAddr) return false;
+    return torneoGetRegistros().some(r => r.wallet === walletAddr);
+}
+function torneoRegistrar(walletAddr, alias) {
+    const registros = torneoGetRegistros();
+    if (torneoEstaRegistrado(walletAddr)) return false;
+    registros.push({
+        wallet: walletAddr,
+        alias: alias || 'Jugador #' + (registros.length + 1),
+        fecha: new Date().toISOString(),
+        pagado: true,
+        monto: TORNEO_COSTO_USDT
+    });
+    torneoSaveRegistros(registros);
+    return true;
+}
+
+function torneoTabSwitch(tab) {
+    ['info','registro','inscritos'].forEach(t => {
+        const el = document.getElementById('tor-tab-' + t);
+        const btn = document.getElementById('tor-tab-btn-' + t);
+        if (el)  el.style.display = t === tab ? '' : 'none';
+        if (btn) btn.classList.toggle('active', t === tab);
+    });
+    if (tab === 'registro')  torneoRenderRegistro();
+    if (tab === 'inscritos') torneoRenderInscritos();
+}
+
+function torneoRenderRegistro() {
+    const el = document.getElementById('tor-registro-content');
+    if (!el) return;
+
+    const walletAddr = (typeof _walletAddr === 'function') ? _walletAddr() : null;
+    const yaRegistrado = torneoEstaRegistrado(walletAddr);
+    const conectado = !!walletAddr;
+
+    if (yaRegistrado) {
+        const reg = torneoGetRegistros().find(r => r.wallet === walletAddr);
+        const fecha = reg ? new Date(reg.fecha).toLocaleDateString('es', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+        el.innerHTML = `
+            <div style="text-align:center;padding:20px 0;">
+                <div style="font-size:3em;margin-bottom:10px;">✅</div>
+                <div style="font-family:'Orbitron',sans-serif;font-size:0.9em;color:var(--green);letter-spacing:2px;margin-bottom:6px;">¡YA ESTÁS INSCRITO!</div>
+                <div style="font-size:0.82em;color:#aaa;margin-bottom:14px;">Tu wallet fue registrada el <strong style="color:var(--gold)">${fecha}</strong></div>
+                <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:14px;text-align:left;margin-bottom:14px;">
+                    <div style="font-size:0.72em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">🔑 Tu Wallet Registrada</div>
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);word-break:break-all;">${walletAddr}</div>
+                </div>
+                <div style="font-size:0.8em;color:#666;">Pago de <strong style="color:var(--gold)">$${TORNEO_COSTO_USDT} USDT</strong> confirmado · Partida el próximo Lunes 00:00 UTC</div>
+            </div>`;
+        return;
+    }
+
+    if (!conectado) {
+        el.innerHTML = `
+            <div style="text-align:center;padding:20px 0;">
+                <div style="font-size:2.5em;margin-bottom:10px;">🔗</div>
+                <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--orange);letter-spacing:2px;margin-bottom:10px;">CONECTA TU WALLET</div>
+                <div style="font-size:0.84em;color:#aaa;margin-bottom:16px;line-height:1.6;">Para inscribirte al torneo necesitas conectar tu wallet TON.<br>El pago de inscripción se enviará desde tu wallet.</div>
+                <div style="background:rgba(255,140,0,0.08);border:1px solid rgba(255,140,0,0.3);border-radius:12px;padding:14px;font-size:0.82em;color:#ffd9a8;margin-bottom:16px;">
+                    ⚠️ Conecta tu wallet TON usando el botón en la barra superior antes de continuar.
+                </div>
+                <button onclick="torneoRenderRegistro()" style="padding:10px 24px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:10px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">
+                    🔄 Verificar Conexión
+                </button>
+            </div>`;
+        return;
+    }
+
+    const registros = torneoGetRegistros();
+    const numInscritos = registros.length;
+
+    el.innerHTML = `
+        <div style="background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4em;color:var(--gold);letter-spacing:4px;margin-bottom:4px;">INSCRIPCIÓN AL TORNEO</div>
+            <div style="font-size:0.82em;color:#aaa;">Gran Copa FUTMUNDI · Torneo Semanal</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+            <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">💳 Costo</div>
+                <div style="font-family:'Orbitron',sans-serif;font-weight:900;color:var(--gold);font-size:1.2em;">$${TORNEO_COSTO_USDT} USDT</div>
+            </div>
+            <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">👥 Inscritos</div>
+                <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--cyan);font-size:1.2em;">${numInscritos}</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+            <label style="font-size:0.78em;color:#888;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">👤 Tu Alias (opcional)</label>
+            <input id="tor-alias-input" type="text" maxlength="20" placeholder="Ej: Messi10, Jugador Estrella..."
+                style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:10px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.92em;outline:none;transition:border-color 0.2s;"
+                onfocus="this.style.borderColor='var(--cyan)'" onblur="this.style.borderColor='rgba(0,212,255,0.3)'">
+        </div>
+
+        <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.8em;color:#aaa;">
+            <div style="margin-bottom:6px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:0.78em;letter-spacing:1px;">🔑 WALLET CONECTADA</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;word-break:break-all;color:#bbb;">${walletAddr}</div>
+        </div>
+
+        <div style="background:rgba(255,140,0,0.08);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.8em;color:#ffd9a8;line-height:1.6;">
+            💡 Al confirmar, se procesará el pago de <strong style="color:var(--gold)">$${TORNEO_COSTO_USDT} USDT</strong> desde tu wallet TON al contrato inteligente FUTMUNDI. Tu wallet quedará registrada en el torneo.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button onclick="torneoTabSwitch('info')"
+                style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
+                ← Volver
+            </button>
+            <button onclick="torneoProcesarPago()"
+                style="padding:12px;background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
+                💳 Pagar e Inscribirse
+            </button>
+        </div>`;
+}
+
+function torneoRenderInscritos() {
+    const lista = document.getElementById('tor-inscritos-lista');
+    const count = document.getElementById('tor-inscritos-count');
+    const registros = torneoGetRegistros();
+
+    if (!lista) return;
+
+    if (registros.length === 0) {
+        lista.innerHTML = `<div style="text-align:center;padding:30px 0;color:#555;">
+            <div style="font-size:2em;margin-bottom:8px;">🏟️</div>
+            <div style="font-size:0.85em;">Aún no hay inscripciones confirmadas</div>
+        </div>`;
+        if (count) count.textContent = '0 participantes registrados';
+        return;
+    }
+
+    lista.innerHTML = registros.map((r, i) => {
+        const fecha = new Date(r.fecha).toLocaleDateString('es', {day:'2-digit',month:'short',year:'numeric'});
+        const walletShort = r.wallet ? r.wallet.slice(0,8)+'...'+r.wallet.slice(-6) : '—';
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+        return `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(45,122,31,0.2);border-radius:10px;">
+            <div style="font-size:1.3em;flex-shrink:0;">${medal}</div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;font-size:0.88em;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.alias || 'Jugador #'+(i+1)}</div>
+                <div style="font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--cyan);margin-top:2px;">${walletShort}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:0.7em;color:var(--green);font-weight:700;">✅ $${r.monto} USDT</div>
+                <div style="font-size:0.62em;color:#555;margin-top:2px;">${fecha}</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    if (count) count.textContent = `${registros.length} participante${registros.length !== 1 ? 's' : ''} registrado${registros.length !== 1 ? 's' : ''}`;
+}
+
+async function torneoProcesarPago() {
+    const walletAddr = (typeof _walletAddr === 'function') ? _walletAddr() : null;
+    if (!walletAddr) {
+        if (typeof mostrarMensaje === 'function') mostrarMensaje('⚠️ Conecta tu wallet primero', '#ffaa00');
+        return;
+    }
+    if (torneoEstaRegistrado(walletAddr)) {
+        if (typeof mostrarMensaje === 'function') mostrarMensaje('✅ Ya estás inscrito en este torneo', '#00ff88');
+        torneoRenderRegistro();
+        return;
+    }
+
+    const alias = (document.getElementById('tor-alias-input') || {}).value || '';
+    const btn = document.querySelector('#tor-registro-content button[onclick="torneoProcesarPago()"]');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Procesando…'; }
+
+    try {
+        if (typeof abrirPagoQR === 'function') {
+            abrirPagoQR({
+                tipo: 'torneo',
+                titulo: '🏆 Inscripción al Torneo',
+                descripcion: `Inscripción al torneo FUTMUNDI. El pago va al contrato inteligente.`,
+                usdt: TORNEO_COSTO_USDT,
+                onConfirmar: async () => {
+                    if (typeof isWalletConnected === 'function' && !isWalletConnected()) {
+                        if (typeof mostrarMensaje === 'function') mostrarMensaje('⚠️ Conecta tu wallet', '#ffaa00');
+                        return false;
+                    }
+                    if (typeof mostrarMensaje === 'function') mostrarMensaje(`⏳ Procesando $${TORNEO_COSTO_USDT} USDT…`, '#00d4ff');
+                    try {
+                        if (typeof buildContractTx === 'function' && typeof tonConnectUI !== 'undefined') {
+                            const tx = buildContractTx('torneo', TORNEO_COSTO_USDT);
+                            await tonConnectUI.sendTransaction(tx);
+                        }
+                        torneoRegistrar(walletAddr, alias || null);
+                        if (typeof mostrarMensaje === 'function') mostrarMensaje('✅ ¡Inscripción confirmada!', '#00ff88');
+                        torneoRenderRegistro();
+                        return true;
+                    } catch(e) {
+                        if (typeof mostrarMensaje === 'function') mostrarMensaje('❌ Pago cancelado', '#ff4444');
+                        return false;
+                    }
+                }
+            });
+        } else {
+            // Fallback: registrar directamente (demo sin TonConnect)
+            torneoRegistrar(walletAddr, alias || null);
+            if (typeof mostrarMensaje === 'function') mostrarMensaje('✅ ¡Inscripción registrada!', '#00ff88');
+            torneoRenderRegistro();
+        }
+    } catch(e) {
+        if (typeof mostrarMensaje === 'function') mostrarMensaje('❌ Error al procesar', '#ff4444');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '💳 Pagar e Inscribirse'; }
+    }
+}
+// ════════════════════════════════════════════════════════════════
+// Init: mostrar ícono de candado en botón apuesta si aún no abrió
+(function() {
+    function initApuestaBadge() {
+        const ahora = new Date();
+        const badge = document.getElementById('apuesta-lock-badge');
+        if (badge && ahora < new Date('2026-06-11T00:00:00Z')) {
+            badge.style.display = 'inline';
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApuestaBadge);
+    } else {
+        initApuestaBadge();
+    }
+})();
+// ════════════════════════════════════════════════════════════════
 </script>
 
     <!-- ══════════ TELEGRAM MINI APP: NAV INFERIOR ══════════ -->
@@ -4213,7 +4777,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
         <button class="tg-side-btn accent-purple" onclick="openModal('modal-logros')"          title="Logros">🏅</button>
         <button class="tg-side-btn"               onclick="openModal('modal-nivel')"           title="Nivel">⬆️</button>
-        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')"         title="Apuesta">🎲</button>
+        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')" id="btn-side-apuesta" title="Apuesta Mundial">🎲</button>
     </div>
     <div class="tg-side-col right">
         <button class="tg-side-btn"               onclick="openModal('modal-torneo')"          title="Torneo">🏆</button>
