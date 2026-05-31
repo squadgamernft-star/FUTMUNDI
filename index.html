@@ -1222,15 +1222,58 @@
                 </div>
 
                 <!-- Link de invitación -->
-                <label class="withdraw-label" data-i18n="ref_link_label">Tu enlace de invitación</label>
-                <div style="display:flex;gap:8px;margin-bottom:6px;">
-                    <input class="withdraw-input" type="text" id="ref-link" readonly style="flex:1;margin:0;font-size:0.78em;letter-spacing:0.3px;">
-                    <button onclick="copiarRefLink()"
-                        style="background:var(--cyan);color:#000;border:none;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;"
-                        data-i18n="ref_copy">Copiar</button>
+                <div style="font-family:'Orbitron',sans-serif;font-size:0.65em;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase;" data-i18n="ref_link_label">🔗 Tu enlace de invitación</div>
+
+                <!-- Link Telegram (primario) -->
+                <div style="background:rgba(0,136,212,0.08);border:1px solid rgba(0,136,212,0.3);border-radius:10px;padding:10px 12px;margin-bottom:8px;">
+                    <div style="font-size:0.6em;color:#29b6f6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">✈️ TELEGRAM (recomendado)</div>
+                    <div style="display:flex;gap:7px;align-items:center;">
+                        <input class="withdraw-input" type="text" id="ref-link" readonly
+                            style="flex:1;margin:0;font-size:0.72em;letter-spacing:0.3px;background:rgba(0,0,0,0.3);border-color:rgba(0,136,212,0.25);">
+                        <button onclick="copiarRefLink('ref-link','btn-copy-tg')" id="btn-copy-tg"
+                            style="background:#29b6f6;color:#000;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.75em;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;min-width:60px;transition:all 0.2s;">
+                            📋 Copiar</button>
+                    </div>
                 </div>
-                <div style="font-size:0.72em;color:#555;margin-bottom:14px;padding-left:2px;">
-                    📱 Comparte en Telegram · WhatsApp · Redes sociales
+
+                <!-- Link Web (alternativo para países sin Telegram) -->
+                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+                    <div style="font-size:0.6em;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">🌐 LINK WEB (todos los países)</div>
+                    <div style="display:flex;gap:7px;align-items:center;">
+                        <input class="withdraw-input" type="text" id="ref-link-web" readonly
+                            style="flex:1;margin:0;font-size:0.72em;letter-spacing:0.3px;background:rgba(0,0,0,0.3);border-color:rgba(0,255,136,0.2);">
+                        <button onclick="copiarRefLink('ref-link-web','btn-copy-web')" id="btn-copy-web"
+                            style="background:var(--green);color:#000;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.75em;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;min-width:60px;transition:all 0.2s;">
+                            📋 Copiar</button>
+                    </div>
+                    <div style="font-size:0.6em;color:#444;margin-top:5px;">Este link funciona en cualquier país y navegador</div>
+                </div>
+
+                <!-- Botones de compartir directo -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:14px;">
+                    <button onclick="compartirRefTelegram()"
+                        style="background:rgba(0,136,212,0.15);border:1px solid rgba(0,136,212,0.4);border-radius:9px;color:#29b6f6;font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                        <span style="font-size:1.5em;">✈️</span>Telegram
+                    </button>
+                    <button onclick="compartirRefWhatsApp()"
+                        style="background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.35);border-radius:9px;color:#25d366;font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                        <span style="font-size:1.5em;">💬</span>WhatsApp
+                    </button>
+                    <button onclick="compartirRefNativo()"
+                        style="background:rgba(255,159,28,0.12);border:1px solid rgba(255,159,28,0.35);border-radius:9px;color:var(--orange);font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                        <span style="font-size:1.5em;">📤</span>Compartir
+                    </button>
+                    <button onclick="toggleQRReferido()"
+                        style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.35);border-radius:9px;color:var(--purple);font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                        <span style="font-size:1.5em;">📷</span>QR Code
+                    </button>
+                </div>
+
+                <!-- QR Container -->
+                <div id="ref-qr-container" style="display:none;text-align:center;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.25);border-radius:12px;padding:16px;margin-bottom:14px;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--purple);letter-spacing:2px;margin-bottom:10px;">📷 ESCANEA PARA UNIRTE A FUTMUNDI</div>
+                    <canvas id="ref-qr-canvas" style="border-radius:8px;max-width:180px;background:#fff;padding:8px;display:block;margin:0 auto;"></canvas>
+                    <div style="font-size:0.65em;color:#555;margin-top:8px;">Muéstrale este QR a tus amigos — funciona en cualquier país</div>
                 </div>
 
                 <!-- Lista de referidos -->
@@ -2053,7 +2096,7 @@
         buildSkillLogros();
         buildFutsalaBody();
         // Detectar y registrar código de referido (solo si hay wallet conectada)
-        if(newAddr) _detectarReferido();
+        if(newAddr) { _detectarReferido(); _resolverPendientesDeReferidos(); }
         // Mostrar badge con dirección abreviada en top bar
         const badge=$id('wallet-addr-badge');
         const addrText=$id('wallet-addr-text');
@@ -3739,107 +3782,240 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         });
     }
 
-    // ── REFERIDOS ─────────────────────────────────────────────────────────
-    // Clave unificada: usa el refId del usuario como clave global compartida
-    const REF_COMISION_PCT = 0.05; // 5%
+    // ══════════════════════════════════════════════════════════════════════
+    // ── SISTEMA DE REFERIDOS (cross-device / cross-country) ───────────────
+    //
+    // ARQUITECTURA:
+    // El refCode (ej: FMAB12) se guarda como clave GLOBAL en localStorage
+    // bajo la clave especial "fm_refmap_FMAB12" → {walletOwner, pfx}
+    // Esto permite que el enlace funcione en cualquier dispositivo/país:
+    //   1. Referidor genera link con su refCode
+    //   2. Nuevo usuario abre el link → Telegram pasa start_param
+    //   3. Se guarda el refCode pendiente en sessionStorage + localStorage
+    //   4. Al conectar wallet, se registra en el mapa global y en la lista
+    //      del referidor usando su pfx conocido
+    // ══════════════════════════════════════════════════════════════════════
 
+    const REF_COMISION_PCT = 0.05; // 5%
+    const _REF_MAP_KEY = 'fm_refmap_'; // prefijo global del mapa refCode→wallet
+
+    // ── Genera o recupera el refId único del usuario ──────────────────────
     function getMyRefId(){
+        // Primero busca bajo el prefijo de wallet actual
         let id = localStorage.getItem(_pfx()+'_my_ref_id');
-        if(!id){ id = 'FM'+Math.random().toString(36).substring(2,8).toUpperCase(); localStorage.setItem(_pfx()+'_my_ref_id', id); }
+        if(id) return id;
+        // Fallback: busca en guest (por si se generó antes de conectar wallet)
+        const guestId = localStorage.getItem('fm_guest_my_ref_id');
+        if(guestId){
+            // Migrar al prefijo de wallet
+            localStorage.setItem(_pfx()+'_my_ref_id', guestId);
+            // Registrar en el mapa global con la wallet actual
+            _registrarEnMapaGlobal(guestId);
+            return guestId;
+        }
+        // Crear nuevo refId
+        id = 'FM' + Math.random().toString(36).substring(2,8).toUpperCase();
+        localStorage.setItem(_pfx()+'_my_ref_id', id);
+        _registrarEnMapaGlobal(id);
         return id;
     }
-    function getMyRefLink(){ return `https://t.me/FutmundiBot?start=ref_${getMyRefId()}`; }
 
-    // Lista de referidos: [{wallet, name, nivel, earned, fecha}]
+    // ── Registra refCode→{pfx, wallet} en el mapa global ─────────────────
+    // Esto es lo que permite a otros dispositivos encontrar al referidor
+    function _registrarEnMapaGlobal(refId){
+        if(!refId) return;
+        const pfx = _pfx();
+        const wallet = _walletAddr() || _activeWalletAddr || 'guest';
+        try {
+            localStorage.setItem(_REF_MAP_KEY + refId, JSON.stringify({ pfx, wallet, ts: Date.now() }));
+        } catch(e){}
+    }
+
+    // ── Genera el link de invitación con múltiples formatos ──────────────
+    // Funciona con Telegram Mini App (start_param) y como URL directa
+    function getMyRefLink(){
+        const refId = getMyRefId();
+        // Formato primario: Telegram Bot deep link con start_param
+        // Telegram lo pasa automáticamente como initDataUnsafe.start_param
+        return `https://t.me/FutmundiBot?start=ref_${refId}`;
+    }
+
+    // Link alternativo (para países con Telegram bloqueado o acceso web directo)
+    function getMyRefLinkWeb(){
+        const refId = getMyRefId();
+        const base = window.location.origin + window.location.pathname;
+        return `${base}?ref=${refId}`;
+    }
+
+    // ── Lista de referidos ────────────────────────────────────────────────
     function getMisReferidos(){ try{ return JSON.parse(localStorage.getItem(_pfx()+'_mis_referidos')||'[]'); }catch(e){ return []; } }
     function saveMisReferidos(arr){ localStorage.setItem(_pfx()+'_mis_referidos', JSON.stringify(arr)); }
 
-    // Gemas acumuladas pendientes de reclamar (por comisiones del 5%)
+    // ── Gemas pendientes de reclamar ──────────────────────────────────────
     function _refClaimKey(){ return _pfx()+'_ref_claimable'; }
     function _refEarnedTotalKey(){ return _pfx()+'_ref_earned_total'; }
-
     function getRefClaimable(){ return parseFloat(localStorage.getItem(_refClaimKey())||'0'); }
     function getRefEarnedTotal(){ return parseFloat(localStorage.getItem(_refEarnedTotalKey())||'0'); }
 
-    // Añadir gemas de comisión al pool del referidor (llamado desde retirar())
+    // ── Añade comisión al referidor (llamado desde retirar()) ─────────────
     function _addRefCommission(refOwnerPfx, gemasAmount){
         if(!refOwnerPfx || gemasAmount <= 0) return;
         const commission = parseFloat((gemasAmount * REF_COMISION_PCT).toFixed(4));
-        // Acumular en claimable
         const currentClaimable = parseFloat(localStorage.getItem(refOwnerPfx+'_ref_claimable')||'0');
         localStorage.setItem(refOwnerPfx+'_ref_claimable', (currentClaimable + commission).toFixed(4));
-        // Acumular en total histórico
         const currentTotal = parseFloat(localStorage.getItem(refOwnerPfx+'_ref_earned_total')||'0');
         localStorage.setItem(refOwnerPfx+'_ref_earned_total', (currentTotal + commission).toFixed(4));
-        // Actualizar earned en la lista de referidos del dueño del ref
         const refs = JSON.parse(localStorage.getItem(refOwnerPfx+'_mis_referidos')||'[]');
         const myWallet = _walletAddr() || _activeWalletAddr;
         const idx = refs.findIndex(r => r.wallet === myWallet);
         if(idx >= 0){ refs[idx].earned = parseFloat(((refs[idx].earned||0) + commission).toFixed(4)); localStorage.setItem(refOwnerPfx+'_mis_referidos', JSON.stringify(refs)); }
     }
 
-    // Detectar y registrar el código de referido al cargar
-    function _detectarReferido(){
-        // Fuentes: parámetro Telegram start= o query param ?ref=
+    // ── Extrae el refCode de todas las fuentes posibles ───────────────────
+    function _extraerRefCode(){
         let refCode = null;
         try {
-            // Telegram WebApp: initDataUnsafe.start_param
+            // 1. Telegram Mini App: start_param (más fiable dentro de Telegram)
             if(window.Telegram?.WebApp?.initDataUnsafe?.start_param){
-                const sp = Telegram.WebApp.initDataUnsafe.start_param;
-                if(sp && sp.startsWith('ref_')) refCode = sp.slice(4);
+                const sp = String(Telegram.WebApp.initDataUnsafe.start_param).trim();
+                if(sp.startsWith('ref_')) refCode = sp.slice(4).toUpperCase();
+                else if(/^FM[A-Z0-9]{4,10}$/.test(sp)) refCode = sp; // refCode directo
             }
-            // URL query string: ?start=ref_XXXX o ?ref=XXXX
+            // 2. URL query string: ?start=ref_XXXX o ?ref=XXXX o ?startapp=ref_XXXX
             if(!refCode){
                 const params = new URLSearchParams(window.location.search);
-                const startParam = params.get('start') || '';
-                if(startParam.startsWith('ref_')) refCode = startParam.slice(4);
-                if(!refCode && params.get('ref')) refCode = params.get('ref');
+                const candidates = [
+                    params.get('start'), params.get('startapp'),
+                    params.get('ref'), params.get('tgWebAppStartParam')
+                ];
+                for(const c of candidates){
+                    if(!c) continue;
+                    const s = String(c).trim();
+                    if(s.startsWith('ref_')){ refCode = s.slice(4).toUpperCase(); break; }
+                    if(/^FM[A-Z0-9]{4,10}$/.test(s)){ refCode = s; break; }
+                }
             }
-            // Hash: #ref_XXXX
+            // 3. Hash: #ref_XXXX o #FMXXXX
             if(!refCode && location.hash){
-                const h = location.hash.replace('#','');
-                if(h.startsWith('ref_')) refCode = h.slice(4);
+                const h = location.hash.replace('#','').trim();
+                if(h.startsWith('ref_')) refCode = h.slice(4).toUpperCase();
+                else if(/^FM[A-Z0-9]{4,10}$/.test(h)) refCode = h;
+            }
+            // 4. sessionStorage (por si recargó la página)
+            if(!refCode){
+                const saved = sessionStorage.getItem('fm_pending_ref');
+                if(saved) refCode = saved;
             }
         } catch(e){}
+        return refCode;
+    }
 
+    // ── Detecta y registra el código de referido ──────────────────────────
+    function _detectarReferido(){
+        const refCode = _extraerRefCode();
         if(!refCode) return;
+
+        // Guardar en sessionStorage por si el usuario recarga antes de conectar wallet
+        try{ sessionStorage.setItem('fm_pending_ref', refCode); }catch(e){}
+
         // No registrarse como referido de uno mismo
         if(refCode === getMyRefId()) return;
-        // Solo registrarse una vez
+
+        // Solo registrarse una vez por wallet
         const alreadySet = localStorage.getItem(_pfx()+'_my_referrer_code');
         if(alreadySet) return;
 
-        // Guardar el código de quien nos invitó
+        // Guardar el código del referidor
         localStorage.setItem(_pfx()+'_my_referrer_code', refCode);
 
-        // Buscar en localStorage el prefijo del dueño del refCode
-        // y añadirnos a su lista de referidos
+        // Intentar registrarse en la lista del referidor
         _registrarseEnReferidor(refCode);
     }
 
+    // ── Registra al nuevo usuario en la lista del referidor ───────────────
+    // Funciona cross-device usando el mapa global fm_refmap_XXXX
     function _registrarseEnReferidor(refCode){
-        // Buscar todas las claves de localStorage que sean refIds
-        // El dueño del refCode tiene clave: fm_<walletAddr>_my_ref_id = refCode
-        // O podría ser fm_guest_my_ref_id. Buscamos la coincidencia.
+        if(!refCode) return;
         const myWallet = _walletAddr() || _activeWalletAddr || 'guest';
-        const myName = myWallet ? (myWallet.slice(0,4)+'...'+myWallet.slice(-4)) : 'Nuevo Jugador';
+        const myName = (myWallet && myWallet !== 'guest')
+            ? (myWallet.slice(0,4)+'...'+myWallet.slice(-4))
+            : 'Nuevo Jugador';
 
-        // Recorremos todas las claves buscando quién tiene ese refId
+        // ── MÉTODO 1: Mapa global (cross-device, funciona en cualquier país) ──
+        // El referidor registró su refCode→pfx en el mapa global al generarlo
+        try {
+            const mapRaw = localStorage.getItem(_REF_MAP_KEY + refCode);
+            if(mapRaw){
+                const map = JSON.parse(mapRaw);
+                const ownerPfx = map.pfx;
+                if(ownerPfx && ownerPfx !== _pfx()){
+                    const refs = JSON.parse(localStorage.getItem(ownerPfx+'_mis_referidos')||'[]');
+                    const yaExiste = refs.some(r => r.wallet === myWallet);
+                    if(!yaExiste){
+                        refs.push({ wallet: myWallet, name: myName, nivel: 1, earned: 0, fecha: new Date().toISOString(), refCode });
+                        localStorage.setItem(ownerPfx+'_mis_referidos', JSON.stringify(refs));
+                    }
+                    localStorage.setItem(_pfx()+'_my_referrer_pfx', ownerPfx);
+                    return; // ✅ Registrado via mapa global
+                }
+            }
+        } catch(e){}
+
+        // ── MÉTODO 2: Búsqueda local (mismo dispositivo / mismo navegador) ──
+        // Fallback para cuando referidor y referido usan el mismo dispositivo
         for(let i=0; i<localStorage.length; i++){
             const key = localStorage.key(i);
             if(!key || !key.endsWith('_my_ref_id')) continue;
             if(localStorage.getItem(key) !== refCode) continue;
-            // Encontramos al referidor
             const ownerPfx = key.replace('_my_ref_id','');
+            if(ownerPfx === _pfx()) continue; // no registrarse a sí mismo
             const refs = JSON.parse(localStorage.getItem(ownerPfx+'_mis_referidos')||'[]');
             const yaExiste = refs.some(r => r.wallet === myWallet);
             if(!yaExiste){
-                refs.push({ wallet: myWallet, name: myName, nivel: 1, earned: 0, fecha: new Date().toISOString() });
+                refs.push({ wallet: myWallet, name: myName, nivel: 1, earned: 0, fecha: new Date().toISOString(), refCode });
                 localStorage.setItem(ownerPfx+'_mis_referidos', JSON.stringify(refs));
             }
             localStorage.setItem(_pfx()+'_my_referrer_pfx', ownerPfx);
             break;
         }
+
+        // ── MÉTODO 3: Guardar refCode pendiente ──────────────────────────────
+        // Si el referidor usa este mismo dispositivo más tarde, se puede resolver
+        localStorage.setItem('fm_pending_ref_registration_'+refCode, JSON.stringify({
+            newWallet: myWallet, name: myName, fecha: new Date().toISOString()
+        }));
+    }
+
+    // ── Al conectar wallet, resolver registros pendientes ─────────────────
+    // Cuando alguien genera su link y luego un amigo abre el link en el
+    // mismo navegador (o cuando el referidor abre la app tras su amigo)
+    function _resolverPendientesDeReferidos(){
+        try {
+            const myRefId = getMyRefId();
+            // Registrar en mapa global (crucial para cross-device)
+            _registrarEnMapaGlobal(myRefId);
+
+            // Buscar si alguien se registró con mi refCode antes de que yo abriera la app
+            const pendKey = 'fm_pending_ref_registration_' + myRefId;
+            const pendRaw = localStorage.getItem(pendKey);
+            if(pendRaw){
+                const pend = JSON.parse(pendRaw);
+                const refs = getMisReferidos();
+                const yaExiste = refs.some(r => r.wallet === pend.newWallet);
+                if(!yaExiste && pend.newWallet && pend.newWallet !== (_walletAddr()||'guest')){
+                    refs.push({ wallet: pend.newWallet, name: pend.name||'Jugador', nivel:1, earned:0, fecha: pend.fecha||new Date().toISOString() });
+                    saveMisReferidos(refs);
+                }
+                localStorage.removeItem(pendKey);
+            }
+
+            // Re-intentar registro propio si quedó pendiente
+            const myRefCode = localStorage.getItem(_pfx()+'_my_referrer_code');
+            if(myRefCode){
+                const myPfx = localStorage.getItem(_pfx()+'_my_referrer_pfx');
+                if(!myPfx) _registrarseEnReferidor(myRefCode);
+            }
+        } catch(e){}
     }
 
     function claimRefGems(){
@@ -3855,9 +4031,11 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     function buildReferidosUI(){
-        // Link
+        // Links
         const linkEl = $id('ref-link');
         if(linkEl) linkEl.value = getMyRefLink();
+        const linkWebEl = $id('ref-link-web');
+        if(linkWebEl) linkWebEl.value = getMyRefLinkWeb();
 
         const refs = getMisReferidos();
         const claimable = getRefClaimable();
@@ -3938,12 +4116,84 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }).join('');
     }
 
-    function copiarRefLink(){
-        const i = $id('ref-link');
-        if(!i) return;
-        i.select();
-        try{ document.execCommand('copy'); mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff'); }
-        catch(e){ navigator.clipboard?.writeText(i.value).then(()=>mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff')); }
+    function copiarRefLink(inputId, btnId){
+        inputId = inputId || 'ref-link';
+        const input = $id(inputId);
+        if(!input) return;
+        const link = input.value;
+        const btn = btnId ? $id(btnId) : null;
+        const originalHTML = btn ? btn.innerHTML : null;
+        const originalBg = btn ? btn.style.background : null;
+        const _restore = ()=>{ if(btn){ btn.innerHTML=originalHTML; btn.style.background=originalBg; } };
+        const _ok = ()=>{
+            mostrarMensaje('📋 '+t('ref_copied'),'#00d4ff');
+            if(btn){ btn.innerHTML='✅ Copiado!'; btn.style.background='var(--green)'; setTimeout(_restore,2000); }
+        };
+        try{
+            if(navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(link).then(_ok).catch(()=>{ input.select(); document.execCommand('copy'); _ok(); });
+            } else { input.select(); document.execCommand('copy'); _ok(); }
+        } catch(e){ mostrarMensaje('⚠️ Copia manual el link','#ffaa00'); }
+    }
+
+    function compartirRefTelegram(){
+        const link = getMyRefLink();
+        const texto = encodeURIComponent('⚽ ¡Únete a FUTMUNDI! El juego de fútbol NFT más épico. Gana TON y USDT jugando. Entra por mi link: ' + link);
+        window.open('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+texto, '_blank');
+    }
+
+    function compartirRefWhatsApp(){
+        // Usa el link web para máxima compatibilidad en WhatsApp
+        const link = getMyRefLinkWeb();
+        const texto = encodeURIComponent('⚽ ¡Juega FUTMUNDI conmigo! Gana cripto real jugando fútbol NFT en la blockchain TON. Entra aquí: ' + link);
+        window.open('https://wa.me/?text='+texto, '_blank');
+    }
+
+    function compartirRefNativo(){
+        const link = getMyRefLink();
+        const webLink = getMyRefLinkWeb();
+        if(navigator.share){
+            navigator.share({
+                title: '⚽ FUTMUNDI - Juego NFT de Fútbol',
+                text: '¡Únete a FUTMUNDI! Gana cripto real jugando fútbol NFT en la blockchain TON.',
+                url: link
+            }).catch(()=>{
+                // Fallback: copiar el link web
+                navigator.clipboard?.writeText(webLink).then(()=>mostrarMensaje('📋 Link copiado para compartir','#00d4ff'));
+            });
+        } else {
+            // Si no hay Web Share API, copiar el link web
+            navigator.clipboard?.writeText(webLink)
+                .then(()=>mostrarMensaje('📋 Link copiado — pégalo donde quieras!','#00d4ff'))
+                .catch(()=>mostrarMensaje('📋 Copia el link web de arriba','#ffaa00'));
+        }
+    }
+
+    function toggleQRReferido(){
+        const container = $id('ref-qr-container');
+        if(!container) return;
+        if(container.style.display !== 'none'){
+            container.style.display = 'none';
+            return;
+        }
+        container.style.display = 'block';
+        const canvas = $id('ref-qr-canvas');
+        if(!canvas) return;
+        // Usar link Telegram como QR primario (Telegram no está bloqueado en la mayoría de países)
+        const link = getMyRefLink();
+        if(typeof QRCode !== 'undefined'){
+            try{
+                QRCode.toCanvas(canvas, link, { width:180, margin:2, color:{ dark:'#000000', light:'#ffffff' } });
+            } catch(e){ container.innerHTML += '<p style="color:#888;font-size:0.8em;">QR no disponible, copia el link</p>'; }
+        } else {
+            // Fallback: img tag con API pública de QR
+            const img = document.createElement('img');
+            img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(link);
+            img.style.cssText = 'border-radius:8px;max-width:180px;display:block;margin:0 auto;';
+            canvas.style.display = 'none';
+            canvas.parentNode.insertBefore(img, canvas.nextSibling);
+        }
+        container.scrollIntoView({ behavior:'smooth', block:'nearest' });
     }
 
     // ── IDIOMAS ───────────────────────────────────────────────────────────
@@ -4069,7 +4319,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     buildFutsalaBody();
     updateTorneoCountdown();
     // Detectar código de referido en la URL al cargar la página
-    try{ _detectarReferido(); }catch(e){}
+    try{ _detectarReferido(); _resolverPendientesDeReferidos(); }catch(e){}
 
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
 
