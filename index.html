@@ -1225,9 +1225,9 @@
                 <!-- Link de invitación -->
                 <div style="font-family:'Orbitron',sans-serif;font-size:0.65em;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase;" data-i18n="ref_link_label">🔗 Tu enlace de invitación</div>
 
-                <!-- Link Telegram (primario) -->
-                <div style="background:rgba(0,136,212,0.08);border:1px solid rgba(0,136,212,0.3);border-radius:10px;padding:10px 12px;margin-bottom:8px;">
-                    <div style="font-size:0.6em;color:#29b6f6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">✈️ TELEGRAM (recomendado)</div>
+                <!-- Link único de invitación (Telegram bot - funciona globalmente) -->
+                <div style="background:rgba(0,136,212,0.08);border:1px solid rgba(0,136,212,0.3);border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+                    <div style="font-size:0.6em;color:#29b6f6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">🔗 TU LINK DE INVITACIÓN</div>
                     <div style="display:flex;gap:7px;align-items:center;">
                         <input class="withdraw-input" type="text" id="ref-link" readonly
                             style="flex:1;margin:0;font-size:0.72em;letter-spacing:0.3px;background:rgba(0,0,0,0.3);border-color:rgba(0,136,212,0.25);">
@@ -1235,19 +1235,7 @@
                             style="background:#29b6f6;color:#000;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.75em;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;min-width:60px;transition:all 0.2s;">
                             📋 Copiar</button>
                     </div>
-                </div>
-
-                <!-- Link Web (alternativo para países sin Telegram) -->
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;">
-                    <div style="font-size:0.6em;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">🌐 LINK WEB (todos los países)</div>
-                    <div style="display:flex;gap:7px;align-items:center;">
-                        <input class="withdraw-input" type="text" id="ref-link-web" readonly
-                            style="flex:1;margin:0;font-size:0.72em;letter-spacing:0.3px;background:rgba(0,0,0,0.3);border-color:rgba(0,255,136,0.2);">
-                        <button onclick="copiarRefLink('ref-link-web','btn-copy-web')" id="btn-copy-web"
-                            style="background:var(--green);color:#000;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.75em;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;min-width:60px;transition:all 0.2s;">
-                            📋 Copiar</button>
-                    </div>
-                    <div style="font-size:0.6em;color:#444;margin-top:5px;">Este link funciona en cualquier país y navegador</div>
+                    <div style="font-size:0.6em;color:#444;margin-top:5px;">Funciona en cualquier país donde Telegram esté disponible</div>
                 </div>
 
                 <!-- Botones de compartir directo -->
@@ -4092,8 +4080,6 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         // Links
         const linkEl = $id('ref-link');
         if(linkEl) linkEl.value = getMyRefLink();
-        const linkWebEl = $id('ref-link-web');
-        if(linkWebEl) linkWebEl.value = getMyRefLinkWeb();
 
         const refs = getMisReferidos();
         const claimable = getRefClaimable();
