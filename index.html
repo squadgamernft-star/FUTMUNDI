@@ -3817,22 +3817,38 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         return id;
     }
 
+    // ── Device pfx: identificador estable por dispositivo aunque no haya wallet
+    // Permite registrar referidos cross-device incluso si el usuario aun no conecto wallet TON.
+    function _devicePfx(){
+        let id = localStorage.getItem('fm_device_id');
+        if(!id){
+            id = 'dev_' + Math.random().toString(36).substring(2,10) + Date.now().toString(36);
+            try { localStorage.setItem('fm_device_id', id); } catch(e){}
+        }
+        return 'fm_'+id;
+    }
+    // pfx efectivo para referidos: wallet si existe, si no el device pfx (NUNCA 'fm_guest' colectivo)
+    function _refPfx(){
+        const w = _walletAddr() || _activeWalletAddr;
+        return w ? ('fm_'+w) : _devicePfx();
+    }
+
     // ── Registra refCode → {pfx, wallet} en la nube ───────────────────────
     // Esto es lo que permite a otros dispositivos/paises encontrar al referidor
     async function _registrarEnMapaGlobal(refId){
         if(!refId) return;
-        const pfx = _pfx();
+        const pfx = _refPfx();
         const wallet = _walletAddr() || _activeWalletAddr || null;
         // Cache local (compatibilidad con codigo legacy)
         try { localStorage.setItem(_REF_MAP_KEY + refId, JSON.stringify({ pfx, wallet: wallet||'guest', ts: Date.now() })); } catch(e){}
-        // Push a la nube (fire-and-forget). Solo si hay wallet real conectada.
+        // Push a la nube (fire-and-forget). Ya no exigimos wallet ni tonProof:
+        // queremos que el contador de referidos funcione desde la primera apertura.
         const sb = _supa();
-        if(!sb || !wallet || pfx === 'guest') return;
-        // ANTI-FRAUDE: solo subimos a la nube si hay tonProof (firma de la wallet)
-        const pd = getStoredTonProof();
+        if(!sb) return;
+        const pd = (typeof getStoredTonProof === 'function') ? getStoredTonProof() : null;
         const hasProof = pd && pd.proof && pd.walletAddress;
         try {
-            const row = { ref_code: refId, pfx, wallet, updated_at: new Date().toISOString() };
+            const row = { ref_code: refId, pfx, wallet: wallet||null, updated_at: new Date().toISOString() };
             if(hasProof){
                 row.ton_proof = pd.proof;
                 row.proof_payload = pd.payload;
@@ -3842,9 +3858,12 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     // ── Link de invitacion (Telegram Bot deep link) ──────────────────────
+    // Usamos `startapp` (NO `start`) para que Telegram abra directamente el Mini App
+    // y `Telegram.WebApp.initDataUnsafe.start_param` reciba el codigo `ref_XXXX`.
+    // El parametro `start` solo abre el chat del bot y el codigo se pierde.
     function getMyRefLink(){
         const refId = getMyRefId();
-        return `https://t.me/futmundi_bot?start=ref_${refId}`;
+        return `https://t.me/futmundi_bot?startapp=ref_${refId}`;
     }
     function getMyRefLinkWeb(){
         const refId = getMyRefId();
@@ -3971,7 +3990,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     // ── Registra al nuevo usuario como referido (en la nube) ──────────────
     async function _registrarseEnReferidor(refCode){
         if(!refCode) return;
-        const myPfx = _pfx();
+        const myPfx = _refPfx();
         const myWallet = _walletAddr() || _activeWalletAddr || null;
 
         const sb = _supa();
@@ -3989,35 +4008,40 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                         console.warn('[refs] auto-referido bloqueado (misma wallet)');
                         return;
                     }
-                    // ANTI-FRAUDE 2: requerir tonProof (firma criptográfica de la wallet)
-                    const pd = getStoredTonProof();
-                    if(!myWallet || !pd || !pd.proof || String(pd.walletAddress).toLowerCase() !== String(myWallet).toLowerCase()){
-                        console.warn('[refs] registro bloqueado: falta tonProof válido para esta wallet');
-                        return;
-                    }
+                    // tonProof OPCIONAL: si esta presente lo guardamos, pero ya no bloquea el registro.
+                    // De este modo el contador de referidos se incrementa desde la primera apertura,
+                    // y la verificacion anti-fraude se hace al momento del retiro/pago de comision.
+                    const pd = (typeof getStoredTonProof === 'function') ? getStoredTonProof() : null;
+                    const hasValidProof = pd && pd.proof && myWallet &&
+                        String(pd.walletAddress||'').toLowerCase() === String(myWallet).toLowerCase();
                     // ANTI-FRAUDE 3: esta wallet ya tiene un referidor (1 wallet = 1 referidor)
-                    try {
-                        const { data: existing } = await sb
-                            .from('referrals_list')
-                            .select('owner_ref_code')
-                            .eq('referred_wallet', myWallet)
-                            .limit(1)
-                            .maybeSingle();
-                        if(existing && existing.owner_ref_code && existing.owner_ref_code !== refCode){
-                            console.warn('[refs] wallet ya registrada con otro referidor');
-                            return;
-                        }
-                    } catch(e){}
+                    if(myWallet){
+                        try {
+                            const { data: existing } = await sb
+                                .from('referrals_list')
+                                .select('owner_ref_code')
+                                .eq('referred_wallet', myWallet)
+                                .limit(1)
+                                .maybeSingle();
+                            if(existing && existing.owner_ref_code && existing.owner_ref_code !== refCode){
+                                console.warn('[refs] wallet ya registrada con otro referidor');
+                                return;
+                            }
+                        } catch(e){}
+                    }
                     // 2. Insertar en su lista (idempotente por UNIQUE(owner, referred_pfx))
+                    const row = {
+                        owner_ref_code: refCode,
+                        referred_pfx: myPfx,
+                        referred_wallet: myWallet,
+                        earned: 0
+                    };
+                    if(hasValidProof){
+                        row.ton_proof = pd.proof;
+                        row.proof_payload = pd.payload;
+                    }
                     await sb.from('referrals_list').upsert(
-                        {
-                            owner_ref_code: refCode,
-                            referred_pfx: myPfx,
-                            referred_wallet: myWallet,
-                            earned: 0,
-                            ton_proof: pd.proof,
-                            proof_payload: pd.payload
-                        },
+                        row,
                         { onConflict: 'owner_ref_code,referred_pfx', ignoreDuplicates: true }
                     );
                     localStorage.setItem(_pfx()+'_my_referrer_pfx', owner.pfx);
@@ -4025,6 +4049,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 }
             } catch(e){ console.warn('[refs] cloud register failed', e); }
         }
+
 
         // Fallback offline: mismo navegador
         const myName = (myWallet && myWallet.length > 8)
