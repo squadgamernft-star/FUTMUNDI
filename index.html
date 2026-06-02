@@ -1265,6 +1265,22 @@
                     <div style="font-size:0.65em;color:#555;margin-top:8px;">Muéstrale este QR a tus amigos — funciona en cualquier país</div>
                 </div>
 
+
+                <!-- ADMIN: Enviar Regalo NFT (solo wallet autorizada) -->
+                <div id="admin-gift-panel" style="display:none;background:linear-gradient(135deg,rgba(255,216,77,0.08),rgba(168,85,247,0.08));border:1px solid rgba(255,216,77,0.35);border-radius:12px;padding:14px;margin-bottom:14px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--gold);letter-spacing:2px;">🎁 ENVIAR REGALO NFT</div>
+                        <div style="font-size:0.6em;color:#888;background:rgba(255,216,77,0.1);border:1px solid rgba(255,216,77,0.3);border-radius:6px;padding:2px 7px;">ADMIN</div>
+                    </div>
+                    <div style="color:#bbb;font-size:0.78em;line-height:1.5;margin-bottom:10px;">Ingresa el <strong style="color:var(--gold)">código de referido</strong> del jugador y obtén su wallet TON lista para enviar el NFT.</div>
+                    <div style="display:flex;gap:6px;margin-bottom:10px;">
+                        <input id="admin-gift-code" type="text" placeholder="Código de referido (ej: ABC123)" autocomplete="off" spellcheck="false"
+                            style="flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(255,216,77,0.35);border-radius:8px;color:#fff;padding:9px 11px;font-family:'Orbitron',sans-serif;font-size:0.82em;letter-spacing:1px;text-transform:uppercase;outline:none;">
+                        <button onclick="adminBuscarWalletReferido()"
+                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px 14px;cursor:pointer;font-family:'Fredoka',sans-serif;">🔍 Buscar</button>
+                    </div>
+                    <div id="admin-gift-result" style="display:none;"></div>
+                </div>
                 <!-- Lista de referidos -->
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
                     <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;" data-i18n="ref_list_title">📋 MIS REFERIDOS</div>
@@ -4815,6 +4831,131 @@ function apuestaCheckFecha() {
     const modal = document.getElementById('modal-apuesta');
     if (!modal) return;
 
+
+    // ═══════════════════════════════════════════════════════════════
+    //  ADMIN: ENVIAR REGALO NFT — buscar wallet por código de referido
+    // ═══════════════════════════════════════════════════════════════
+    const ADMIN_GIFT_WALLET = 'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg';
+
+    // Convierte UQ/EQ (base64url, 36 bytes) -> raw "wc:hex32"
+    function _friendlyToRawTon(s){
+        try{
+            s = String(s||'').trim().replace(/-/g,'+').replace(/_/g,'/');
+            const bin = atob(s);
+            if(bin.length !== 36) return null;
+            const wc = bin.charCodeAt(1) > 127 ? bin.charCodeAt(1)-256 : bin.charCodeAt(1);
+            let hex='';
+            for(let i=2;i<34;i++) hex += bin.charCodeAt(i).toString(16).padStart(2,'0');
+            return wc + ':' + hex;
+        }catch(e){ return null; }
+    }
+    function _normalizeTonAddr(a){
+        if(!a) return null;
+        a = String(a).trim();
+        if(a.includes(':')) return a.toLowerCase();
+        const r = _friendlyToRawTon(a);
+        return r ? r.toLowerCase() : a.toLowerCase();
+    }
+    const _ADMIN_RAW = _normalizeTonAddr(ADMIN_GIFT_WALLET);
+
+    function _esWalletAdminGift(){
+        try{
+            const w = (typeof currentWalletAddr==='function') ? currentWalletAddr() : null;
+            return !!w && _normalizeTonAddr(w) === _ADMIN_RAW;
+        }catch(e){ return false; }
+    }
+
+    function _toggleAdminGiftPanel(){
+        const el = document.getElementById('admin-gift-panel');
+        if(!el) return;
+        el.style.display = _esWalletAdminGift() ? 'block' : 'none';
+    }
+
+    async function adminBuscarWalletReferido(){
+        const inp = document.getElementById('admin-gift-code');
+        const out = document.getElementById('admin-gift-result');
+        if(!inp || !out) return;
+        const code = (inp.value||'').trim().toUpperCase();
+        out.style.display = 'block';
+        if(!code){
+            out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">⚠️ Ingresa un código de referido</div>';
+            return;
+        }
+        out.innerHTML = '<div style="color:#888;font-size:0.82em;padding:8px;">⏳ Buscando en la base de datos...</div>';
+        try{
+            if(typeof sb === 'undefined' || !sb){
+                out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ Base de datos no disponible</div>';
+                return;
+            }
+            const { data, error } = await sb
+                .from('referrals_map')
+                .select('ref_code, wallet, pfx')
+                .eq('ref_code', code)
+                .maybeSingle();
+            if(error){
+                out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ Error: '+(error.message||'desconocido')+'</div>';
+                return;
+            }
+            if(!data){
+                out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">🔎 No se encontró ningún jugador con ese código</div>';
+                return;
+            }
+            const wallet = data.wallet || '';
+            if(!wallet){
+                out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">⚠️ Jugador encontrado, pero aún no ha conectado una wallet TON.<br><span style="color:#888;font-size:0.92em;">pfx: '+(data.pfx||'—')+'</span></div>';
+                return;
+            }
+            const safeWallet = wallet.replace(/"/g,'&quot;');
+            const short = wallet.length>14 ? wallet.slice(0,8)+'...'+wallet.slice(-6) : wallet;
+            out.innerHTML = `
+                <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(66,245,141,0.35);border-radius:10px;padding:12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--green);letter-spacing:2px;">✅ WALLET ENCONTRADA</div>
+                        <div style="font-size:0.62em;color:#888;">${code}</div>
+                    </div>
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:#fff;word-break:break-all;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px;line-height:1.45;">${safeWallet}</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;">
+                        <button onclick="adminCopiarWalletGift('${safeWallet}', this)"
+                            style="background:linear-gradient(135deg,var(--cyan),#2bb6ff);border:none;border-radius:8px;color:#001a22;font-weight:800;font-size:0.78em;padding:9px;cursor:pointer;font-family:'Fredoka',sans-serif;">📋 Copiar dirección</button>
+                        <a href="https://tonkeeper.com/transfer/${encodeURIComponent(wallet)}" target="_blank" rel="noopener"
+                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px;cursor:pointer;font-family:'Fredoka',sans-serif;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;">🎁 Abrir Tonkeeper</a>
+                    </div>
+                    <div style="font-size:0.7em;color:#888;margin-top:8px;line-height:1.5;">
+                        Abre tu wallet TON (Tonkeeper, Tonhub, MyTonWallet), pega esta dirección y envía el NFT desde tu colección.
+                    </div>
+                </div>`;
+        }catch(e){
+            out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ '+(e.message||'Error inesperado')+'</div>';
+        }
+    }
+
+    function adminCopiarWalletGift(addr, btn){
+        const _ok = ()=>{
+            if(btn){ const o=btn.innerHTML; btn.innerHTML='✅ Copiado'; setTimeout(()=>{btn.innerHTML=o;},1800); }
+            if(typeof mostrarMensaje==='function') mostrarMensaje('📋 Dirección copiada','#42f58d');
+        };
+        try{
+            if(navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(addr).then(_ok).catch(()=>{
+                    const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();_ok();
+                });
+            } else {
+                const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();_ok();
+            }
+        }catch(e){}
+    }
+
+    // Engancha al build de la UI de referidos
+    (function(){
+        const _orig = window.buildReferidosUI;
+        if(typeof _orig === 'function'){
+            window.buildReferidosUI = function(){
+                const r = _orig.apply(this, arguments);
+                try{ _toggleAdminGiftPanel(); }catch(e){}
+                return r;
+            };
+        }
+    })();
     // Banner de cuenta regresiva
     let banner = document.getElementById('ap-mundial-banner');
     if (!banner) {
