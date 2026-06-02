@@ -4825,19 +4825,13 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 // ═══════════════════════════════════════════════════════════════
 const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 2026 UTC
 
-function apuestaCheckFecha() {
-    const ahora = new Date();
-    const bloqueado = ahora < FECHA_INICIO_MUNDIAL;
-    const modal = document.getElementById('modal-apuesta');
-    if (!modal) return;
-
-
-    // ═══════════════════════════════════════════════════════════════
-    //  ADMIN: ENVIAR REGALO NFT — buscar wallet por código de referido
-    // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  ADMIN: ENVIAR REGALO NFT — buscar wallet por código de referido
+//  (BLOQUE GLOBAL — fuera de cualquier función)
+// ═══════════════════════════════════════════════════════════════
+(function(){
     const ADMIN_GIFT_WALLET = 'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg';
 
-    // Convierte UQ/EQ (base64url, 36 bytes) -> raw "wc:hex32"
     function _friendlyToRawTon(s){
         try{
             s = String(s||'').trim().replace(/-/g,'+').replace(/_/g,'/');
@@ -4858,20 +4852,37 @@ function apuestaCheckFecha() {
     }
     const _ADMIN_RAW = _normalizeTonAddr(ADMIN_GIFT_WALLET);
 
-    function _esWalletAdminGift(){
+    function _getWallet(){
         try{
-            const w = (typeof currentWalletAddr==='function') ? currentWalletAddr() : null;
-            return !!w && _normalizeTonAddr(w) === _ADMIN_RAW;
-        }catch(e){ return false; }
+            if(typeof window.currentWalletAddr === 'function') return window.currentWalletAddr();
+            const tc = window.tonConnectUI;
+            const w = tc?.wallet || tc?.account;
+            return w?.account?.address || w?.address || null;
+        }catch(e){ return null; }
     }
-
-    function _toggleAdminGiftPanel(){
+    function _esAdmin(){
+        const w = _getWallet();
+        return !!w && _normalizeTonAddr(w) === _ADMIN_RAW;
+    }
+    function _togglePanel(){
         const el = document.getElementById('admin-gift-panel');
         if(!el) return;
-        el.style.display = _esWalletAdminGift() ? 'block' : 'none';
+        el.style.display = _esAdmin() ? 'block' : 'none';
+    }
+    window._toggleAdminGiftPanel = _togglePanel;
+
+    function _getSb(){
+        try{
+            if(typeof window._supa === 'function'){ const s = window._supa(); if(s) return s; }
+            if(window._sb) return window._sb;
+            if(window.supabase && typeof window.SUPABASE_URL === 'string'){
+                return window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, { auth:{ persistSession:false, autoRefreshToken:false } });
+            }
+        }catch(e){}
+        return null;
     }
 
-    async function adminBuscarWalletReferido(){
+    window.adminBuscarWalletReferido = async function(){
         const inp = document.getElementById('admin-gift-code');
         const out = document.getElementById('admin-gift-result');
         if(!inp || !out) return;
@@ -4883,7 +4894,8 @@ function apuestaCheckFecha() {
         }
         out.innerHTML = '<div style="color:#888;font-size:0.82em;padding:8px;">⏳ Buscando en la base de datos...</div>';
         try{
-            if(typeof sb === 'undefined' || !sb){
+            const sb = _getSb();
+            if(!sb){
                 out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ Base de datos no disponible</div>';
                 return;
             }
@@ -4906,7 +4918,6 @@ function apuestaCheckFecha() {
                 return;
             }
             const safeWallet = wallet.replace(/"/g,'&quot;');
-            const short = wallet.length>14 ? wallet.slice(0,8)+'...'+wallet.slice(-6) : wallet;
             out.innerHTML = `
                 <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(66,245,141,0.35);border-radius:10px;padding:12px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -4918,7 +4929,7 @@ function apuestaCheckFecha() {
                         <button onclick="adminCopiarWalletGift('${safeWallet}', this)"
                             style="background:linear-gradient(135deg,var(--cyan),#2bb6ff);border:none;border-radius:8px;color:#001a22;font-weight:800;font-size:0.78em;padding:9px;cursor:pointer;font-family:'Fredoka',sans-serif;">📋 Copiar dirección</button>
                         <a href="https://tonkeeper.com/transfer/${encodeURIComponent(wallet)}" target="_blank" rel="noopener"
-                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px;cursor:pointer;font-family:'Fredoka',sans-serif;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;">🎁 Abrir Tonkeeper</a>
+                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;">🎁 Abrir Tonkeeper</a>
                     </div>
                     <div style="font-size:0.7em;color:#888;margin-top:8px;line-height:1.5;">
                         Abre tu wallet TON (Tonkeeper, Tonhub, MyTonWallet), pega esta dirección y envía el NFT desde tu colección.
@@ -4927,35 +4938,73 @@ function apuestaCheckFecha() {
         }catch(e){
             out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ '+(e.message||'Error inesperado')+'</div>';
         }
-    }
+    };
 
-    function adminCopiarWalletGift(addr, btn){
-        const _ok = ()=>{
+    window.adminCopiarWalletGift = function(addr, btn){
+        const ok = ()=>{
             if(btn){ const o=btn.innerHTML; btn.innerHTML='✅ Copiado'; setTimeout(()=>{btn.innerHTML=o;},1800); }
-            if(typeof mostrarMensaje==='function') mostrarMensaje('📋 Dirección copiada','#42f58d');
+            if(typeof window.mostrarMensaje==='function') window.mostrarMensaje('📋 Dirección copiada','#42f58d');
         };
         try{
             if(navigator.clipboard && navigator.clipboard.writeText){
-                navigator.clipboard.writeText(addr).then(_ok).catch(()=>{
-                    const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();_ok();
+                navigator.clipboard.writeText(addr).then(ok).catch(()=>{
+                    const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();ok();
                 });
             } else {
-                const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();_ok();
+                const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();ok();
             }
         }catch(e){}
+    };
+
+    // Hook buildReferidosUI para refrescar el panel cada vez que se abra
+    function _hookBuild(){
+        const orig = window.buildReferidosUI;
+        if(typeof orig !== 'function') return false;
+        if(orig.__giftHooked) return true;
+        const wrapped = function(){
+            const r = orig.apply(this, arguments);
+            try{ _togglePanel(); }catch(e){}
+            return r;
+        };
+        wrapped.__giftHooked = true;
+        window.buildReferidosUI = wrapped;
+        return true;
+    }
+    if(!_hookBuild()){
+        let tries = 0;
+        const iv = setInterval(()=>{ if(_hookBuild() || ++tries>40) clearInterval(iv); }, 250);
     }
 
-    // Engancha al build de la UI de referidos
-    (function(){
-        const _orig = window.buildReferidosUI;
-        if(typeof _orig === 'function'){
-            window.buildReferidosUI = function(){
-                const r = _orig.apply(this, arguments);
-                try{ _toggleAdminGiftPanel(); }catch(e){}
-                return r;
-            };
-        }
-    })();
+    // Re-evaluar cuando cambie el estado de la wallet
+    function _watchWallet(){
+        try{
+            if(window.tonConnectUI && typeof window.tonConnectUI.onStatusChange === 'function'){
+                window.tonConnectUI.onStatusChange(()=>{ setTimeout(_togglePanel, 100); });
+                return true;
+            }
+        }catch(e){}
+        return false;
+    }
+    if(!_watchWallet()){
+        let t = 0;
+        const iv = setInterval(()=>{ if(_watchWallet() || ++t>40) clearInterval(iv); }, 300);
+    }
+
+    // Chequeo periódico de respaldo mientras el modal esté visible
+    setInterval(()=>{
+        const m = document.getElementById('modal-referidos');
+        if(m && m.classList.contains('active')) _togglePanel();
+    }, 1500);
+})();
+
+
+
+function apuestaCheckFecha() {
+    const ahora = new Date();
+    const bloqueado = ahora < FECHA_INICIO_MUNDIAL;
+    const modal = document.getElementById('modal-apuesta');
+    if (!modal) return;
+
     // Banner de cuenta regresiva
     let banner = document.getElementById('ap-mundial-banner');
     if (!banner) {
