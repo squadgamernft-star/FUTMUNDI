@@ -501,6 +501,55 @@
             .stats-container { font-size: 0.65em; gap: 4px; }
         }
 
+        /* ══════════ ADMIN NFT GIFT PANEL — ESTILOS ══════════ */
+        .admin-gift-panel-wrap { display:none; margin-top:20px; border:1.5px solid rgba(255,215,0,0.45); border-radius:16px; background:linear-gradient(145deg,rgba(40,15,0,0.96),rgba(20,8,0,0.98)); overflow:hidden; box-shadow:0 0 32px rgba(255,170,0,0.18); }
+        .admin-gift-header { display:flex; align-items:center; gap:10px; padding:13px 18px; background:linear-gradient(90deg,rgba(255,140,0,0.18),rgba(255,215,0,0.10)); border-bottom:1px solid rgba(255,215,0,0.2); }
+        .admin-gift-header .ag-crown { font-size:1.4em; }
+        .admin-gift-header h4 { font-family:'Bebas Neue',sans-serif; font-size:1.05em; color:var(--gold); letter-spacing:3px; flex:1; }
+        .admin-gift-header .ag-badge { background:rgba(255,68,68,0.2); border:1px solid rgba(255,68,68,0.5); border-radius:20px; padding:2px 10px; font-size:0.6em; color:#ff9999; letter-spacing:2px; font-family:'Orbitron',sans-serif; text-transform:uppercase; }
+        .admin-gift-body { padding:16px 18px; }
+        .admin-search-row { display:flex; gap:8px; margin-bottom:12px; }
+        .admin-search-input { flex:1; padding:9px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,215,0,0.3); border-radius:10px; color:#fff; font-family:'Orbitron',sans-serif; font-size:0.75em; letter-spacing:1px; outline:none; transition:border-color 0.2s; }
+        .admin-search-input:focus { border-color:var(--gold); }
+        .admin-search-input::placeholder { color:#555; }
+        .admin-search-btn { padding:9px 16px; background:linear-gradient(135deg,rgba(255,140,0,0.25),rgba(255,215,0,0.18)); border:1px solid var(--gold); border-radius:10px; color:var(--gold); font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.72em; letter-spacing:1.5px; cursor:pointer; transition:all 0.2s; text-transform:uppercase; white-space:nowrap; }
+        .admin-search-btn:hover { background:rgba(255,215,0,0.28); color:#fff; }
+        .admin-gift-result-wrap { margin-bottom:14px; }
+        /* NFT item grid selector */
+        .admin-nft-select-section { margin-top:4px; }
+        .admin-nft-select-label { font-family:'Orbitron',sans-serif; font-size:0.68em; color:var(--cyan); letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+        .admin-nft-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px; max-height:280px; overflow-y:auto; padding:4px 2px 4px 2px; scrollbar-width:thin; scrollbar-color:rgba(255,215,0,0.3) transparent; }
+        .admin-nft-grid::-webkit-scrollbar { width:4px; }
+        .admin-nft-grid::-webkit-scrollbar-thumb { background:rgba(255,215,0,0.3); border-radius:4px; }
+        .admin-nft-card { background:rgba(255,255,255,0.03); border:2px solid rgba(255,215,0,0.15); border-radius:12px; overflow:hidden; cursor:pointer; transition:all 0.22s; position:relative; }
+        .admin-nft-card:hover { border-color:rgba(255,215,0,0.6); transform:translateY(-3px); box-shadow:0 0 16px rgba(255,170,0,0.25); }
+        .admin-nft-card.selected { border-color:var(--gold); box-shadow:0 0 18px rgba(255,215,0,0.45); background:rgba(255,215,0,0.06); }
+        .admin-nft-card img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
+        .admin-nft-card-info { padding:6px 7px; }
+        .admin-nft-card-name { font-family:'Orbitron',sans-serif; font-size:0.48em; color:#ddd; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .admin-nft-card-ovr { font-size:0.65em; color:var(--gold); font-weight:700; margin-top:1px; }
+        .admin-nft-card-rarity { font-size:0.58em; color:#888; margin-top:1px; }
+        .admin-nft-card .admin-nft-checkmark { display:none; position:absolute; top:5px; right:5px; background:var(--gold); color:#111; border-radius:50%; width:18px; height:18px; align-items:center; justify-content:center; font-size:0.7em; font-weight:900; }
+        .admin-nft-card.selected .admin-nft-checkmark { display:flex; }
+        /* Selected preview + gift button */
+        .admin-gift-preview { display:none; background:rgba(0,255,136,0.06); border:1px solid rgba(0,255,136,0.25); border-radius:12px; padding:12px 14px; margin-top:12px; }
+        .admin-gift-preview.visible { display:flex; align-items:center; gap:12px; }
+        .admin-gift-preview img { width:54px; height:72px; object-fit:cover; border-radius:8px; border:1px solid rgba(0,255,136,0.4); flex-shrink:0; }
+        .admin-gift-preview-info { flex:1; min-width:0; }
+        .admin-gift-preview-name { font-family:'Orbitron',sans-serif; font-size:0.68em; color:#fff; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .admin-gift-preview-attrs { display:flex; gap:8px; flex-wrap:wrap; }
+        .admin-gift-preview-attr { background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:2px 7px; font-size:0.6em; color:#aaa; }
+        .admin-gift-btn { width:100%; margin-top:12px; padding:12px; background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.15)); border:1px solid var(--green); border-radius:10px; color:var(--green); font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.78em; letter-spacing:2px; cursor:pointer; text-transform:uppercase; transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .admin-gift-btn:hover { background:rgba(0,255,136,0.3); color:#fff; box-shadow:0 0 20px rgba(0,255,136,0.3); }
+        .admin-gift-btn:disabled { opacity:0.4; cursor:not-allowed; }
+        .admin-gift-log { margin-top:10px; font-size:0.72em; min-height:18px; text-align:center; color:#888; font-family:'Orbitron',sans-serif; letter-spacing:1px; }
+        /* Tournament NFT selector */
+        .torneo-nft-picker { margin:12px 0; }
+        .torneo-nft-picker-label { font-size:0.78em; color:var(--cyan); margin-bottom:8px; display:block; font-family:'Orbitron',sans-serif; letter-spacing:1px; }
+        .torneo-nft-picker select { width:100%; padding:10px 14px; background:rgba(0,0,0,0.55); border:1px solid rgba(0,212,255,0.3); border-radius:10px; color:#fff; font-family:'Fredoka',sans-serif; font-size:0.92em; outline:none; appearance:none; -webkit-appearance:none; cursor:pointer; }
+        .torneo-nft-picker select:focus { border-color:var(--cyan); }
+        /* ══════════ END ADMIN NFT GIFT STYLES ══════════ */
+
         /* ======== ESTETICA PIXAR (sutil) ======== */
         :root {
             --pixar-cream: #fff7e6;
@@ -1267,20 +1316,65 @@
 
 
                 <!-- ADMIN: Enviar Regalo NFT (solo wallet autorizada) -->
-                <div id="admin-gift-panel" style="display:none;background:linear-gradient(135deg,rgba(255,216,77,0.08),rgba(168,85,247,0.08));border:1px solid rgba(255,216,77,0.35);border-radius:12px;padding:14px;margin-bottom:14px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                        <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--gold);letter-spacing:2px;">🎁 ENVIAR REGALO NFT</div>
-                        <div style="font-size:0.6em;color:#888;background:rgba(255,216,77,0.1);border:1px solid rgba(255,216,77,0.3);border-radius:6px;padding:2px 7px;">ADMIN</div>
+                <!-- ══ ADMIN NFT GIFT PANEL ══ -->
+                <div id="admin-gift-panel" class="admin-gift-panel-wrap">
+                    <div class="admin-gift-header">
+                        <span class="ag-crown">👑</span>
+                        <h4>🎁 GIFTING NFT — ADMIN</h4>
+                        <span class="ag-badge">ADMIN ONLY</span>
                     </div>
-                    <div style="color:#bbb;font-size:0.78em;line-height:1.5;margin-bottom:10px;">Ingresa el <strong style="color:var(--gold)">código de referido</strong> del jugador y obtén su wallet TON lista para enviar el NFT.</div>
-                    <div style="display:flex;gap:6px;margin-bottom:10px;">
-                        <input id="admin-gift-code" type="text" placeholder="Código de referido (ej: ABC123)" autocomplete="off" spellcheck="false"
-                            style="flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(255,216,77,0.35);border-radius:8px;color:#fff;padding:9px 11px;font-family:'Orbitron',sans-serif;font-size:0.82em;letter-spacing:1px;text-transform:uppercase;outline:none;">
-                        <button onclick="adminBuscarWalletReferido()"
-                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px 14px;cursor:pointer;font-family:'Fredoka',sans-serif;">🔍 Buscar</button>
+                    <div class="admin-gift-body">
+                        <!-- Step 1: Search referrer -->
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.65em;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">① Buscar Wallet del Referido</div>
+                        <div class="admin-search-row">
+                            <input id="admin-gift-code" type="text" placeholder="CÓDIGO DE REFERIDO (ej: FM4X9B)" autocomplete="off" spellcheck="false" class="admin-search-input">
+                            <button onclick="adminBuscarWalletReferido()" class="admin-search-btn">🔍 Buscar</button>
+                        </div>
+                        <div id="admin-gift-result" class="admin-gift-result-wrap" style="display:none;"></div>
+
+                        <!-- Step 2: Choose NFT item to gift (shown after wallet found) -->
+                        <div id="admin-nft-select-section" class="admin-nft-select-section" style="display:none;">
+                            <div style="height:1px;background:rgba(255,215,0,0.15);margin:14px 0;"></div>
+                            <div class="admin-nft-select-label">
+                                ② Selecciona el NFT a Regalar
+                                <span style="color:#888;font-size:0.85em;">· Click para elegir</span>
+                            </div>
+                            <div class="admin-nft-grid" id="admin-nft-grid">
+                                <!-- Populated by adminRenderNFTInventory() -->
+                            </div>
+
+                            <!-- Selected item preview -->
+                            <div class="admin-gift-preview" id="admin-gift-preview">
+                                <img id="admin-gift-preview-img" src="" alt="">
+                                <div class="admin-gift-preview-info">
+                                    <div class="admin-gift-preview-name" id="admin-gift-preview-name">—</div>
+                                    <div class="admin-gift-preview-attrs" id="admin-gift-preview-attrs"></div>
+                                </div>
+                            </div>
+
+                            <!-- Recipient info banner -->
+                            <div id="admin-gift-recipient-banner" style="display:none;margin-top:10px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 12px;font-size:0.72em;color:#aaa;">
+                                <span style="color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:0.85em;letter-spacing:1px;">👤 DESTINATARIO</span><br>
+                                <span id="admin-gift-recipient-wallet" style="font-family:'Orbitron',sans-serif;font-size:0.92em;color:#bbb;word-break:break-all;"></span>
+                            </div>
+
+                            <!-- Gift button -->
+                            <button class="admin-gift-btn" id="admin-do-gift-btn" onclick="adminEjecutarGiftNFT()" disabled>
+                                🎁 <span>Transferir NFT Internamente</span>
+                            </button>
+                            <div class="admin-gift-log" id="admin-gift-log"></div>
+
+                            <!-- Rules info -->
+                            <div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:10px;font-size:0.7em;color:#666;line-height:1.7;">
+                                ✅ Transferencia <strong style="color:#aaa">100% interna</strong> — sin gas, sin blockchain.<br>
+                                🔒 El item conserva OVR, rareza, durabilidad y parámetros originales.<br>
+                                ⚽ Elegible para PvP y Torneos. Requiere <strong style="color:var(--gold)">$10 USDT</strong> de inscripción para Torneo.<br>
+                                🏋️ Durabilidad se reduce en juego. Reparar en <strong style="color:var(--cyan)">Área de Entrenamiento</strong>.
+                            </div>
+                        </div>
                     </div>
-                    <div id="admin-gift-result" style="display:none;"></div>
                 </div>
+                <!-- ══ END ADMIN NFT GIFT PANEL ══ -->
                 <!-- Lista de referidos -->
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
                     <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;" data-i18n="ref_list_title">📋 MIS REFERIDOS</div>
@@ -4868,6 +4962,8 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         const el = document.getElementById('admin-gift-panel');
         if(!el) return;
         el.style.display = _esAdmin() ? 'block' : 'none';
+        // apply the styled class so CSS takes effect
+        if(_esAdmin()) el.classList.add('admin-gift-panel-wrap');
     }
     window._toggleAdminGiftPanel = _togglePanel;
 
@@ -4882,6 +4978,11 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         return null;
     }
 
+    // ── State for gift session ────────────────────────────────────────────
+    let _adminGiftTargetWallet = null;
+    let _adminGiftTargetPfx    = null;
+    let _adminGiftSelectedNFT  = null; // { idx, rarity, name, img, hp, gemMin, gemMax }
+
     window.adminBuscarWalletReferido = async function(){
         const inp = document.getElementById('admin-gift-code');
         const out = document.getElementById('admin-gift-result');
@@ -4893,6 +4994,12 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
             return;
         }
         out.innerHTML = '<div style="color:#888;font-size:0.82em;padding:8px;">⏳ Buscando en la base de datos...</div>';
+        // Hide NFT section while searching
+        const nftSection = document.getElementById('admin-nft-select-section');
+        if(nftSection) nftSection.style.display = 'none';
+        _adminGiftTargetWallet = null;
+        _adminGiftSelectedNFT  = null;
+
         try{
             const sb = _getSb();
             if(!sb){
@@ -4917,6 +5024,11 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                 out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">⚠️ Jugador encontrado, pero aún no ha conectado una wallet TON.<br><span style="color:#888;font-size:0.92em;">pfx: '+(data.pfx||'—')+'</span></div>';
                 return;
             }
+
+            // Store target for gift transfer
+            _adminGiftTargetWallet = wallet;
+            _adminGiftTargetPfx    = data.pfx || ('fm_'+wallet);
+
             const safeWallet = wallet.replace(/"/g,'&quot;');
             out.innerHTML = `
                 <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(66,245,141,0.35);border-radius:10px;padding:12px;">
@@ -4929,14 +5041,210 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                         <button onclick="adminCopiarWalletGift('${safeWallet}', this)"
                             style="background:linear-gradient(135deg,var(--cyan),#2bb6ff);border:none;border-radius:8px;color:#001a22;font-weight:800;font-size:0.78em;padding:9px;cursor:pointer;font-family:'Fredoka',sans-serif;">📋 Copiar dirección</button>
                         <a href="https://tonkeeper.com/transfer/${encodeURIComponent(wallet)}" target="_blank" rel="noopener"
-                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;">🎁 Abrir Tonkeeper</a>
-                    </div>
-                    <div style="font-size:0.7em;color:#888;margin-top:8px;line-height:1.5;">
-                        Abre tu wallet TON (Tonkeeper, Tonhub, MyTonWallet), pega esta dirección y envía el NFT desde tu colección.
+                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;">🔗 Tonkeeper</a>
                     </div>
                 </div>`;
+
+            // Show NFT selection grid
+            adminRenderNFTInventory(wallet);
         }catch(e){
             out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ '+(e.message||'Error inesperado')+'</div>';
+        }
+    };
+
+    // ── Render NFT inventory grid for admin to pick from ─────────────────
+    function adminRenderNFTInventory(recipientWallet){
+        const section  = document.getElementById('admin-nft-select-section');
+        const grid     = document.getElementById('admin-nft-grid');
+        const preview  = document.getElementById('admin-gift-preview');
+        const giftBtn  = document.getElementById('admin-do-gift-btn');
+        const logEl    = document.getElementById('admin-gift-log');
+        const recBanner= document.getElementById('admin-gift-recipient-banner');
+        const recWallet= document.getElementById('admin-gift-recipient-wallet');
+        if(!section || !grid) return;
+
+        // Reset selection state
+        _adminGiftSelectedNFT = null;
+        if(preview)   preview.classList.remove('visible');
+        if(giftBtn)   giftBtn.disabled = true;
+        if(logEl)     logEl.textContent = '';
+        if(recBanner) recBanner.style.display = 'block';
+        if(recWallet) recWallet.textContent = recipientWallet;
+
+        section.style.display = 'block';
+
+        // Build grid from PLAYERS catalog (represents Admin's NFT inventory)
+        const GITHUB = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
+        const players = (typeof window.PLAYERS !== 'undefined') ? window.PLAYERS : [];
+
+        if(!players.length){
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#666;font-size:0.8em;padding:20px;">No hay ítems en el inventario del Admin.</div>';
+            return;
+        }
+
+        // Rarity tiers by OVR
+        function getRarity(hp){
+            if(hp>=97) return { label:'⭐ LEYENDA',  border:'rgba(255,215,0,0.8)', glow:'rgba(255,215,0,0.4)' };
+            if(hp>=93) return { label:'💎 ÉPICO',    border:'rgba(181,108,255,0.7)', glow:'rgba(181,108,255,0.3)' };
+            if(hp>=88) return { label:'🔥 RARO',     border:'rgba(255,140,0,0.7)', glow:'rgba(255,140,0,0.3)' };
+            if(hp>=82) return { label:'✨ POCO COM.', border:'rgba(0,212,255,0.5)', glow:'rgba(0,212,255,0.2)' };
+            return { label:'⚪ COMÚN',  border:'rgba(255,255,255,0.15)', glow:'rgba(255,255,255,0.08)' };
+        }
+
+        grid.innerHTML = players.map((p, idx) => {
+            const rar   = getRarity(p.hp);
+            const imgSrc = p.img ? (GITHUB + p.img) : '';
+            const svgFb  = (typeof generatePlayerSVG === 'function') ? 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(p)) : '';
+            return `
+            <div class="admin-nft-card" id="admin-nft-card-${idx}"
+                 onclick="adminSelectNFT(${idx},'${p.nombre.replace(/'/g,"\\'")}','${p.img||''}',${p.hp},${p.gemMin},${p.gemMax},'${rar.label}')"
+                 style="border-color:${rar.border};">
+                <span class="admin-nft-checkmark">✓</span>
+                <img src="${imgSrc}" alt="${p.nombre}"
+                     onerror="this.onerror=null;this.src='${svgFb}'"
+                     style="display:block;width:100%;aspect-ratio:3/4;object-fit:cover;">
+                <div class="admin-nft-card-info">
+                    <div class="admin-nft-card-name">${p.flag} ${p.nombre}</div>
+                    <div class="admin-nft-card-ovr">OVR ${p.hp}</div>
+                    <div class="admin-nft-card-rarity" style="color:${rar.border.replace('rgba','rgb').replace(/,[\d.]+\)$/,')')};">${rar.label}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── Select an NFT card in the grid ────────────────────────────────────
+    window.adminSelectNFT = function(idx, name, img, hp, gemMin, gemMax, rarity){
+        const GITHUB = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
+        _adminGiftSelectedNFT = { idx, name, img, hp, gemMin, gemMax, rarity };
+
+        // Update card selection state
+        document.querySelectorAll('.admin-nft-card').forEach(c => c.classList.remove('selected'));
+        const card = document.getElementById('admin-nft-card-'+idx);
+        if(card) card.classList.add('selected');
+
+        // Update preview
+        const preview  = document.getElementById('admin-gift-preview');
+        const prevImg  = document.getElementById('admin-gift-preview-img');
+        const prevName = document.getElementById('admin-gift-preview-name');
+        const prevAttr = document.getElementById('admin-gift-preview-attrs');
+        const giftBtn  = document.getElementById('admin-do-gift-btn');
+        const players  = (typeof window.PLAYERS !== 'undefined') ? window.PLAYERS : [];
+        const player   = players[idx];
+        const svgFb    = (player && typeof generatePlayerSVG === 'function') ? 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(player)) : '';
+
+        if(preview)  preview.classList.add('visible');
+        if(prevImg)  { prevImg.src = img ? (GITHUB+img) : svgFb; prevImg.onerror = function(){ this.onerror=null; this.src=svgFb; }; }
+        if(prevName) prevName.textContent = name;
+        if(prevAttr) prevAttr.innerHTML = [
+            `<span class="admin-gift-preview-attr">OVR ${hp}</span>`,
+            `<span class="admin-gift-preview-attr">${rarity}</span>`,
+            `<span class="admin-gift-preview-attr">💎 ${gemMin}–${gemMax}/día</span>`,
+            `<span class="admin-gift-preview-attr">💪 Dur: 100%</span>`,
+            `<span class="admin-gift-preview-attr">⚽ PvP ✅ Torneo ✅</span>`,
+        ].join('');
+        if(giftBtn && _adminGiftTargetWallet) giftBtn.disabled = false;
+    };
+
+    // ── Execute the internal NFT gift transfer (DB owner_id swap) ─────────
+    window.adminEjecutarGiftNFT = async function(){
+        const giftBtn = document.getElementById('admin-do-gift-btn');
+        const logEl   = document.getElementById('admin-gift-log');
+
+        if(!_adminGiftTargetWallet){
+            if(logEl) logEl.textContent = '❌ No hay wallet de destino. Busca un referido primero.';
+            return;
+        }
+        if(!_adminGiftSelectedNFT){
+            if(logEl) logEl.textContent = '❌ Selecciona un NFT para regalar.';
+            return;
+        }
+        if(!_esAdmin()){
+            if(logEl) logEl.textContent = '🔒 Solo el Administrador puede usar esta función.';
+            return;
+        }
+
+        if(giftBtn) { giftBtn.disabled = true; giftBtn.querySelector('span').textContent = '⏳ Transfiriendo…'; }
+        if(logEl)   logEl.textContent = '⏳ Procesando transferencia interna…';
+
+        try{
+            const sb = _getSb();
+            const nft = _adminGiftSelectedNFT;
+
+            // ── Build the gifted item record (preserves ALL attributes) ───
+            // The owner_id changes from ADMIN → recipient wallet/pfx.
+            // All gameplay params (OVR, rarity, gemMin/Max, durability) are
+            // copied verbatim from the master PLAYERS catalog entry.
+            const giftRecord = {
+                owner_wallet:         _adminGiftTargetWallet,
+                owner_pfx:            _adminGiftTargetPfx,
+                nft_idx:              nft.idx,
+                nft_name:             nft.name,
+                nft_img:              nft.img,
+                ovr:                  nft.hp,
+                rarity:               nft.rarity,
+                gem_min:              nft.gemMin,
+                gem_max:              nft.gemMax,
+                durability:           100,          // starts at 100%
+                durability_locked:    false,
+                pvp_eligible:         true,
+                tournament_eligible:  true,         // eligible BUT needs $10 fee to enter
+                is_gift:              true,
+                gifted_by_admin:      true,
+                gifted_at:            new Date().toISOString(),
+                // tournament_fee_paid must be set by user when they pay & register
+                tournament_fee_paid:  false,
+                // repair rules
+                repair_required_below: 30,          // warn below 30% durability
+                repair_area:          'entrenamiento',
+            };
+
+            if(sb){
+                // Upsert to nft_gifts table (create if needed)
+                const { error } = await sb.from('nft_gifts').insert(giftRecord);
+                if(error) throw new Error(error.message || 'DB insert failed');
+            } else {
+                // Offline fallback: write to localStorage of the recipient
+                const lsKey = _adminGiftTargetPfx + '_gifted_nfts';
+                let gifts = [];
+                try{ gifts = JSON.parse(localStorage.getItem(lsKey)||'[]'); }catch(e){}
+                gifts.push(giftRecord);
+                localStorage.setItem(lsKey, JSON.stringify(gifts));
+            }
+
+            // ── Also add the NFT to the recipient's carrosComprados (local mirror) ─
+            // When the recipient logs in, onWalletChange() loads their state.
+            // We pre-seed it here so if they're on the same device it's immediate.
+            const recipientLsCarros = _adminGiftTargetPfx + '_carros';
+            let recipientCarros = [];
+            try{ recipientCarros = JSON.parse(localStorage.getItem(recipientLsCarros)||'[]'); }catch(e){}
+            const existing = recipientCarros.find(e => e.idx === nft.idx);
+            if(existing){ existing.qty += 1; }
+            else { recipientCarros.push({ idx: nft.idx, qty: 1, isGift: true }); }
+            localStorage.setItem(recipientLsCarros, JSON.stringify(recipientCarros));
+
+            // ── Durability: initialize to 100 for recipient's slot ─────────
+            const recipientLsDur = _adminGiftTargetPfx + '_durabilidades';
+            let recipientDur = {};
+            try{ recipientDur = JSON.parse(localStorage.getItem(recipientLsDur)||'{}'); }catch(e){}
+            // copy slot = qty before gift
+            const giftCopyNum = existing ? (existing.qty - 1) : 0;
+            recipientDur[nft.idx + '_' + giftCopyNum] = 100;
+            localStorage.setItem(recipientLsDur, JSON.stringify(recipientDur));
+
+            if(logEl) logEl.innerHTML = `<span style="color:var(--green);">✅ NFT "${nft.name}" transferido internamente a<br>${_adminGiftTargetWallet.slice(0,12)}...${_adminGiftTargetWallet.slice(-8)}</span>`;
+            if(typeof mostrarMensaje === 'function') mostrarMensaje(`✅ Gift enviado: ${nft.name} → ${_adminGiftTargetWallet.slice(0,8)}…`, '#00ff88');
+
+            // Reset selection
+            _adminGiftSelectedNFT = null;
+            document.querySelectorAll('.admin-nft-card').forEach(c => c.classList.remove('selected'));
+            const preview = document.getElementById('admin-gift-preview');
+            if(preview) preview.classList.remove('visible');
+
+        }catch(err){
+            if(logEl) logEl.innerHTML = `<span style="color:var(--red);">❌ Error: ${err.message||'desconocido'}</span>`;
+            if(typeof mostrarMensaje === 'function') mostrarMensaje('❌ Error al transferir NFT', '#ff4444');
+        } finally {
+            if(giftBtn) { giftBtn.disabled = false; giftBtn.querySelector('span').textContent = 'Transferir NFT Internamente'; }
         }
     };
 
@@ -5096,19 +5404,43 @@ function torneoEstaRegistrado(walletAddr) {
     if (!walletAddr) return false;
     return torneoGetRegistros().some(r => r.wallet === walletAddr);
 }
-function torneoRegistrar(walletAddr, alias) {
+function torneoRegistrar(walletAddr, alias, nftIdx, nftCopy) {
     const registros = torneoGetRegistros();
     if (torneoEstaRegistrado(walletAddr)) return false;
-    registros.push({
-        wallet: walletAddr,
-        alias: alias || 'Jugador #' + (registros.length + 1),
-        fecha: new Date().toISOString(),
-        pagado: true,
-        monto: TORNEO_COSTO_USDT
-    });
+    // ── SERVER-SIDE GATE (client mirror): valida fee pagado ────────────────
+    // El registro solo se completa si tournament_fee_paid === true.
+    // La verificación real ocurre en el bloque onConfirmar() de abrirPagoQR;
+    // este flag se setea SOLO después de que tonConnect confirma la tx.
+    const row = {
+        wallet:               walletAddr,
+        alias:                alias || 'Jugador #' + (registros.length + 1),
+        fecha:                new Date().toISOString(),
+        pagado:               true,
+        tournament_fee_paid:  true,   // gate flag — MUST be true to play
+        monto:                TORNEO_COSTO_USDT,
+        nft_idx:              nftIdx !== undefined ? nftIdx : null,
+        nft_copy:             nftCopy !== undefined ? nftCopy : 0,
+        nft_locked:           false,  // set true if item disabled for tournament
+    };
+    registros.push(row);
     torneoSaveRegistros(registros);
     return true;
 }
+
+// ── VALIDATE TOURNAMENT ACCESS (gate: $10 fee required) ────────────────────
+// Called before any tournament match; returns { allowed, reason }
+function torneoValidarAcceso(walletAddr, nftIdx) {
+    if (!walletAddr) return { allowed: false, reason: '🔗 Wallet no conectada. Conecta tu wallet TON.' };
+    const reg = torneoGetRegistros().find(r => r.wallet === walletAddr);
+    if (!reg)                         return { allowed: false, reason: '💳 No inscrito. Paga los $10 USDT de inscripción para acceder.' };
+    if (!reg.tournament_fee_paid)     return { allowed: false, reason: '🔒 Pago de inscripción ($10 USDT) no confirmado. Completa el pago para desbloquear el Torneo.' };
+    if (nftIdx !== undefined && nftIdx !== null) {
+        const dur = (typeof getDurabilidad === 'function') ? getDurabilidad(nftIdx, reg.nft_copy || 0) : 100;
+        if (dur <= 0) return { allowed: false, reason: '🏋️ Durabilidad 0%. Repara este NFT en el Área de Entrenamiento antes de competir.' };
+    }
+    return { allowed: true, reason: '✅ Acceso al torneo confirmado.' };
+}
+window.torneoValidarAcceso = torneoValidarAcceso;
 
 function torneoTabSwitch(tab) {
     ['info','registro','inscritos'].forEach(t => {
@@ -5132,15 +5464,17 @@ function torneoRenderRegistro() {
     if (yaRegistrado) {
         const reg = torneoGetRegistros().find(r => r.wallet === walletAddr);
         const fecha = reg ? new Date(reg.fecha).toLocaleDateString('es', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+        const nftName = (reg && reg.nft_idx !== null && typeof PLAYERS !== 'undefined') ? (PLAYERS[reg.nft_idx]?.nombre || 'NFT #'+reg.nft_idx) : '—';
         el.innerHTML = `
             <div style="text-align:center;padding:20px 0;">
                 <div style="font-size:3em;margin-bottom:10px;">✅</div>
                 <div style="font-family:'Orbitron',sans-serif;font-size:0.9em;color:var(--green);letter-spacing:2px;margin-bottom:6px;">¡YA ESTÁS INSCRITO!</div>
                 <div style="font-size:0.82em;color:#aaa;margin-bottom:14px;">Tu wallet fue registrada el <strong style="color:var(--gold)">${fecha}</strong></div>
-                <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:14px;text-align:left;margin-bottom:14px;">
+                <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:12px;padding:14px;text-align:left;margin-bottom:10px;">
                     <div style="font-size:0.72em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">🔑 Tu Wallet Registrada</div>
                     <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);word-break:break-all;">${walletAddr}</div>
                 </div>
+                ${nftName !== '—' ? `<div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.25);border-radius:10px;padding:10px 14px;text-align:left;margin-bottom:10px;"><div style="font-size:0.68em;color:#888;margin-bottom:4px;">🎮 NFT SELECCIONADO</div><div style="font-family:'Orbitron',sans-serif;font-size:0.76em;color:var(--gold);">${nftName}</div></div>` : ''}
                 <div style="font-size:0.8em;color:#666;">Pago de <strong style="color:var(--gold)">$${TORNEO_COSTO_USDT} USDT</strong> confirmado · Partida el próximo Lunes 00:00 UTC</div>
             </div>`;
         return;
@@ -5189,6 +5523,16 @@ function torneoRenderRegistro() {
                 onfocus="this.style.borderColor='var(--cyan)'" onblur="this.style.borderColor='rgba(0,212,255,0.3)'">
         </div>
 
+        <div class="torneo-nft-picker">
+            <span class="torneo-nft-picker-label">🎮 Selecciona tu NFT para el Torneo</span>
+            <select id="tor-nft-select" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.55);border:1px solid rgba(0,212,255,0.3);border-radius:10px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.92em;outline:none;cursor:pointer;">
+                <option value="">— Elige tu Futbolista NFT —</option>
+            </select>
+            <div id="tor-nft-durability-warn" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(255,90,111,0.1);border:1px solid rgba(255,90,111,0.4);border-radius:8px;font-size:0.78em;color:var(--red);line-height:1.5;">
+                ⚠️ La durabilidad de este NFT es baja (&lt;30%). Considera repararlo en el <strong>Área de Entrenamiento</strong> para óptimo rendimiento.
+            </div>
+        </div>
+
         <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.8em;color:#aaa;">
             <div style="margin-bottom:6px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:0.78em;letter-spacing:1px;">🔑 WALLET CONECTADA</div>
             <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;word-break:break-all;color:#bbb;">${walletAddr}</div>
@@ -5208,6 +5552,51 @@ function torneoRenderRegistro() {
                 💳 Pagar e Inscribirse
             </button>
         </div>`;
+
+    // ── Populate NFT dropdown ──────────────────────────────────────────────
+    (function _populateTorneoNFTSelect(){
+        const sel  = document.getElementById('tor-nft-select');
+        const warn = document.getElementById('tor-nft-durability-warn');
+        if (!sel) return;
+
+        // Build options from carrosComprados
+        const items = (typeof carrosComprados !== 'undefined') ? carrosComprados : [];
+        sel.innerHTML = '<option value="">— Elige tu Futbolista NFT —</option>';
+
+        if (!items.length) {
+            sel.innerHTML += '<option value="" disabled>⚠️ No tienes futbolistas NFT</option>';
+            return;
+        }
+        items.forEach(entry => {
+            for (let copy = 0; copy < entry.qty; copy++) {
+                const player = (typeof PLAYERS !== 'undefined') ? PLAYERS[entry.idx] : null;
+                if (!player) continue;
+                const dur    = (typeof getDurabilidad === 'function') ? getDurabilidad(entry.idx, copy) : 100;
+                const durStr = dur < 30 ? ` ⚠️${dur}%` : ``;
+                const qty    = entry.qty > 1 ? ` #${copy+1}` : '';
+                const label  = `${player.flag} ${player.nombre}${qty} · OVR ${player.hp} · 💎${player.gemMin}–${player.gemMax}/día${durStr}`;
+                const opt    = document.createElement('option');
+                opt.value    = `${entry.idx}_${copy}`;
+                opt.textContent = label;
+                if (dur <= 0) {
+                    opt.disabled    = true;
+                    opt.textContent += ' [Reparar primero]';
+                }
+                sel.appendChild(opt);
+            }
+        });
+
+        // Show durability warning on change
+        sel.onchange = function() {
+            if (!warn) return;
+            const parts = (this.value||'').split('_');
+            if (!parts[0]) { warn.style.display='none'; return; }
+            const idx  = parseInt(parts[0],10);
+            const copy = parseInt(parts[1]||'0',10);
+            const dur  = (typeof getDurabilidad === 'function') ? getDurabilidad(idx,copy) : 100;
+            warn.style.display = dur < 30 ? 'block' : 'none';
+        };
+    })();
 }
 
 function torneoRenderInscritos() {
@@ -5259,7 +5648,28 @@ async function torneoProcesarPago() {
         return;
     }
 
-    const alias = (document.getElementById('tor-alias-input') || {}).value || '';
+    const alias      = (document.getElementById('tor-alias-input')  || {}).value || '';
+    const nftSelect  = document.getElementById('tor-nft-select');
+    const nftVal     = nftSelect ? nftSelect.value : '';
+    let   nftIdx     = null;
+    let   nftCopy    = 0;
+
+    // Parse "idx_copy" value from the select element
+    if (nftVal && nftVal !== '') {
+        const parts = nftVal.split('_');
+        nftIdx  = parseInt(parts[0], 10);
+        nftCopy = parseInt(parts[1] || '0', 10);
+    }
+
+    // ── GATE: validate NFT durability if item selected ────────────────────
+    if (nftIdx !== null) {
+        const dur = (typeof getDurabilidad === 'function') ? getDurabilidad(nftIdx, nftCopy) : 100;
+        if (dur <= 0) {
+            if (typeof mostrarMensaje === 'function') mostrarMensaje('🏋️ Durabilidad 0% — repara en el Área de Entrenamiento primero', '#ff4444');
+            return;
+        }
+    }
+
     const btn = document.querySelector('#tor-registro-content button[onclick="torneoProcesarPago()"]');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Procesando…'; }
 
@@ -5268,7 +5678,7 @@ async function torneoProcesarPago() {
             abrirPagoQR({
                 tipo: 'torneo',
                 titulo: '🏆 Inscripción al Torneo',
-                descripcion: `Inscripción al torneo FUTMUNDI. El pago va al contrato inteligente.`,
+                descripcion: `Inscripción al torneo FUTMUNDI. El pago va al contrato inteligente. Cuota obligatoria: $${TORNEO_COSTO_USDT} USDT.`,
                 usdt: TORNEO_COSTO_USDT,
                 onConfirmar: async () => {
                     if (typeof isWalletConnected === 'function' && !isWalletConnected()) {
@@ -5281,19 +5691,38 @@ async function torneoProcesarPago() {
                             const tx = buildContractTx('torneo', TORNEO_COSTO_USDT);
                             await tonConnectUI.sendTransaction(tx);
                         }
-                        torneoRegistrar(walletAddr, alias || null);
-                        if (typeof mostrarMensaje === 'function') mostrarMensaje('✅ ¡Inscripción confirmada!', '#00ff88');
+                        // ── Register with tournament_fee_paid = true + selected NFT ──
+                        torneoRegistrar(walletAddr, alias || null, nftIdx, nftCopy);
+
+                        // ── Sync to Supabase (fire-and-forget) ────────────────────
+                        try {
+                            const sb = (typeof _supa === 'function') ? _supa() : null;
+                            if (sb) {
+                                await sb.from('tournament_registrations').upsert({
+                                    wallet:              walletAddr,
+                                    alias:               alias || null,
+                                    nft_idx:             nftIdx,
+                                    nft_copy:            nftCopy,
+                                    tournament_fee_paid: true,
+                                    fee_amount_usdt:     TORNEO_COSTO_USDT,
+                                    registered_at:       new Date().toISOString()
+                                }, { onConflict: 'wallet' });
+                            }
+                        } catch(dbErr){ console.warn('[torneo] DB sync failed:', dbErr); }
+
+                        if (typeof mostrarMensaje === 'function') mostrarMensaje('✅ ¡Inscripción confirmada! $10 USDT pagados.', '#00ff88');
                         torneoRenderRegistro();
                         return true;
                     } catch(e) {
-                        if (typeof mostrarMensaje === 'function') mostrarMensaje('❌ Pago cancelado', '#ff4444');
+                        // ── GATE: if payment fails, tournament_fee_paid stays false ──
+                        if (typeof mostrarMensaje === 'function') mostrarMensaje('❌ Pago cancelado — sin pago no hay acceso al Torneo', '#ff4444');
                         return false;
                     }
                 }
             });
         } else {
             // Fallback: registrar directamente (demo sin TonConnect)
-            torneoRegistrar(walletAddr, alias || null);
+            torneoRegistrar(walletAddr, alias || null, nftIdx, nftCopy);
             if (typeof mostrarMensaje === 'function') mostrarMensaje('✅ ¡Inscripción registrada!', '#00ff88');
             torneoRenderRegistro();
         }
