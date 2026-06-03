@@ -2087,14 +2087,28 @@
     // Las claves se prefizan con la dirección de la wallet conectada.
     let _activeWalletAddr = null; // dirección activa (se setea al conectar)
 
+    function _isLikelyTonWalletAddress(addr){
+        const s = String(addr||'').trim();
+        if(!s || s === 'guest' || s.startsWith('fm_') || s.startsWith('dev_')) return false;
+        if(/^0:[0-9a-fA-F]{64}$/.test(s)) return true;
+        if(/^(EQ|UQ)[A-Za-z0-9_-]{40,70}$/.test(s)) return true;
+        return false;
+    }
+
+    function _shortTonWallet(addr){
+        const s = String(addr||'').trim();
+        return s ? (s.slice(0,5)+'...'+s.slice(-5)) : '—';
+    }
+
     function _walletAddr(){
-        // Intenta obtener la dirección real de TonConnect
+        // Intenta obtener únicamente la dirección real de TonConnect.
+        // Nunca devuelve IDs internos generados por la web.
         try{
             const w = tonConnectUI?.wallet || tonConnectUI?.account;
             const addr = w?.account?.address || w?.address || null;
-            if(addr && typeof addr==='string' && addr.length>10) return addr;
+            if(_isLikelyTonWalletAddress(addr)) return addr;
         }catch(e){}
-        return _activeWalletAddr;
+        return _isLikelyTonWalletAddress(_activeWalletAddr) ? _activeWalletAddr : null;
     }
 
     function _pfx(){
@@ -2229,14 +2243,15 @@
         // Mostrar badge con dirección abreviada en top bar
         const badge=$id('wallet-addr-badge');
         const addrText=$id('wallet-addr-text');
-        if(newAddr){
-            const short=newAddr.slice(0,4)+'...'+newAddr.slice(-4);
-            if(addrText)addrText.textContent=short;
+        const tonAddr = _isLikelyTonWalletAddress(newAddr) ? newAddr : '';
+        if(tonAddr){
+            const short=_shortTonWallet(tonAddr);
+            if(addrText)addrText.textContent='TON '+short;
             if(badge)badge.style.display='flex';
-            mostrarMensaje('✅ Sesión iniciada: '+short,'#00ff88');
+            mostrarMensaje('✅ TON Wallet vinculada: '+short,'#00ff88');
         } else {
             if(badge)badge.style.display='none';
-            mostrarMensaje('🔌 Wallet desconectada','#888');
+            mostrarMensaje(newAddr ? '🔒 ID interno oculto' : '🔌 Wallet desconectada','#888');
         }
     }
 
@@ -3970,7 +3985,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     // pfx efectivo para referidos: wallet si existe, si no el device pfx (NUNCA 'fm_guest' colectivo)
     function _refPfx(){
         const w = _walletAddr() || _activeWalletAddr;
-        return w ? ('fm_'+w) : _devicePfx();
+        return _isLikelyTonWalletAddress(w) ? ('fm_'+w) : _devicePfx();
     }
 
     // ── Registra refCode → {pfx, wallet} en la nube ───────────────────────
@@ -3978,9 +3993,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function _registrarEnMapaGlobal(refId){
         if(!refId) return;
         const pfx = _refPfx();
-        const wallet = _walletAddr() || _activeWalletAddr || null;
-        // Cache local (compatibilidad con codigo legacy)
-        try { localStorage.setItem(_REF_MAP_KEY + refId, JSON.stringify({ pfx, wallet: wallet||'guest', ts: Date.now() })); } catch(e){}
+        const connectedWallet = _walletAddr() || _activeWalletAddr || null;
+        const wallet = _isLikelyTonWalletAddress(connectedWallet) ? connectedWallet : null;
+        // Cache local (compatibilidad con codigo legacy). No guardamos IDs internos como wallet pública.
+        try { localStorage.setItem(_REF_MAP_KEY + refId, JSON.stringify({ pfx, wallet: wallet||null, ts: Date.now() })); } catch(e){}
         // Push a la nube (fire-and-forget). Ya no exigimos wallet ni tonProof:
         // queremos que el contador de referidos funcione desde la primera apertura.
         const sb = _supa();
@@ -4030,9 +4046,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             if(error){ console.warn('[refs] list fetch error', error); return; }
             if(!data) return;
             const refs = data.map(r => {
-                const w = r.referred_wallet || r.referred_pfx || '';
-                const name = (w && w.length > 8) ? (w.slice(0,4)+'...'+w.slice(-4)) : 'Jugador';
-                return { wallet: w, name, nivel: 1, earned: Number(r.earned||0), fecha: r.joined_at };
+                const tonW = _isLikelyTonWalletAddress(r.referred_wallet) ? r.referred_wallet : '';
+                const name = tonW ? _shortTonWallet(tonW) : 'Jugador';
+                return { wallet: tonW, internalPfx: r.referred_pfx || '', name, nivel: 1, earned: Number(r.earned||0), fecha: r.joined_at };
             });
             saveMisReferidos(refs);
             // Actualizar total ganado historico
@@ -4294,7 +4310,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             const fecha = r.fecha ? new Date(r.fecha).toLocaleDateString('es',{day:'2-digit',month:'short',year:'numeric'}) : '—';
             const earned = (r.earned||0).toFixed(2);
             const pct = totalEarnedFromList > 0 ? ((r.earned||0)/totalEarnedFromList*100).toFixed(0) : 0;
-            const walletShort = r.wallet ? r.wallet.slice(0,5)+'...'+r.wallet.slice(-4) : '—';
+            const tonWallet = _isLikelyTonWalletAddress(r.wallet) ? r.wallet : '';
+            const walletShort = tonWallet ? _shortTonWallet(tonWallet) : 'TON no vinculada';
             const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
             return `
             <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(168,85,247,0.18);border-radius:11px;padding:11px 13px;transition:all 0.2s;">
@@ -5049,12 +5066,13 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                 out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">🔎 No se encontró ningún jugador con ese código</div>';
                 return;
             }
-            const tonWallet = data.wallet || '';
-            const internalPfx = data.pfx || (tonWallet ? ('fm_'+tonWallet) : '');
-            // La "billetera interna" mostrada al admin = el pfx sin el prefijo 'fm_'
-            // (es el identificador único que la página genera para cada jugador,
-            //  ya sea derivado de su wallet TON o de su device id).
+            const rawWallet = String(data.wallet || '').trim();
+            const internalPfx = data.pfx || (_isLikelyTonWalletAddress(rawWallet) ? ('fm_'+rawWallet) : '');
+            // La billetera interna mostrada solo al admin = el pfx sin el prefijo 'fm_'.
+            // Si el pfx contiene una dirección TON real, también la tratamos como TON vinculada
+            // para no confundirla con un ID interno generado por la web.
             const internalWallet = internalPfx ? internalPfx.replace(/^fm_/, '') : '';
+            const tonWallet = _isLikelyTonWalletAddress(rawWallet) ? rawWallet : (_isLikelyTonWalletAddress(internalWallet) ? internalWallet : '');
 
             if(!tonWallet && !internalWallet){
                 out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">⚠️ Jugador encontrado pero sin wallet ni id interno registrado.</div>';
@@ -5268,20 +5286,41 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         try{ localStorage.setItem(ADMIN_INV_LS_KEY, JSON.stringify(arr)); }catch(e){}
     }
     // Force-rebuild if catalog sizes changed (new blueprint added) — keeps 100 dupes guarantee per blueprint.
+    function _adminBlueprintKey(r){
+        return r.category + '|' + (r.blueprint_id != null ? r.blueprint_id : r.blueprint_idx);
+    }
+
     function _ensureAdminInventoryFresh(){
         const inv = _loadAdminInventory();
-        const adminRows = inv.filter(r => r.owner_id === ADMIN_OWNER_ID);
-        const PL = (typeof PLAYERS !== 'undefined') ? PLAYERS : [];
-        const ZP = (typeof ZAPATILLAS !== 'undefined') ? ZAPATILLAS : [];
-        const UN = (typeof UNIFORMES !== 'undefined') ? UNIFORMES : [];
-        const EN = (typeof ENTRENADORES !== 'undefined') ? ENTRENADORES : [];
-        const expected = (PL.length + ZP.length + UN.length + EN.length) * ADMIN_DUPES;
-        if(adminRows.length < expected){
-            // Re-seed missing categories without wiping transferred rows.
-            const transferred = inv.filter(r => r.owner_id !== ADMIN_OWNER_ID);
-            const fresh = _buildAdminInventorySeed().concat(transferred);
-            _saveAdminInventory(fresh);
-            return fresh;
+        const seed = _buildAdminInventorySeed();
+        const seededIds = new Set(seed.map(r => r.row_id));
+        const cleaned = inv.filter(r => r.owner_id !== ADMIN_OWNER_ID || seededIds.has(r.row_id));
+        if(cleaned.length !== inv.length){
+            _saveAdminInventory(cleaned);
+            return _ensureAdminInventoryFresh();
+        }
+        const existingIds = new Set(inv.map(r => r.row_id));
+        const totalByBlueprint = {};
+        inv.forEach(r => {
+            const k = _adminBlueprintKey(r);
+            totalByBlueprint[k] = (totalByBlueprint[k] || 0) + 1;
+        });
+
+        // Solo agregamos filas si aparece un blueprint nuevo o si faltan unidades físicas.
+        // NO reponemos unidades ya transferidas: esas siguen contando dentro de su blueprint,
+        // pero dejan de tener owner_id='Admin', por eso el stock visible baja de 100 a 99.
+        const additions = [];
+        seed.forEach(r => {
+            const k = _adminBlueprintKey(r);
+            if((totalByBlueprint[k] || 0) >= ADMIN_DUPES) return;
+            if(existingIds.has(r.row_id)) return;
+            additions.push(r);
+            existingIds.add(r.row_id);
+            totalByBlueprint[k] = (totalByBlueprint[k] || 0) + 1;
+        });
+        if(additions.length){
+            inv.push(...additions);
+            _saveAdminInventory(inv);
         }
         return inv;
     }
@@ -5310,9 +5349,10 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         if(logEl)     logEl.textContent = '';
         if(recBanner) recBanner.style.display = 'block';
         if(recWallet){
-            const tonW = _adminGiftTargetWallet || recipientWallet || '';
-            const intW = (_adminGiftTargetPfx||'').replace(/^fm_/,'');
-            const sameAsInt = (tonW === intW);
+            const targetW = _adminGiftTargetWallet || recipientWallet || '';
+            const tonW = _isLikelyTonWalletAddress(targetW) ? targetW : '';
+            const intW = (_adminGiftTargetPfx||'').replace(/^fm_/,'') || (!_isLikelyTonWalletAddress(targetW) ? targetW : '');
+            const sameAsInt = (tonW && tonW === intW);
             recWallet.innerHTML =
                 `<div style="margin-bottom:4px;"><span style="color:var(--green);font-weight:700;">🔗 TON:</span> <span style="color:#fff;">${tonW||'<i style=\'color:#888\'>no conectada</i>'}</span></div>`+
                 (intW && !sameAsInt ? `<div><span style="color:var(--cyan);font-weight:700;">🏦 Interna:</span> <span style="color:#fff;">${intW}</span></div>` : '');
@@ -5565,7 +5605,7 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                 }
             }catch(_e){ /* DB optional */ }
 
-            const _tonOk = !!(target.owner_wallet && target.owner_wallet.length > 30);
+            const _tonOk = _isLikelyTonWalletAddress(target.owner_wallet);
             const _linkLabel = _tonOk ? '🔗 TON' : '🏦 Interna';
             if(logEl) logEl.innerHTML = `<span style="color:var(--green);">✅ "${target.name}" (${target.category}) transferido → ${_linkLabel} ${_adminGiftTargetWallet.slice(0,12)}...${_adminGiftTargetWallet.slice(-8)}</span>`;
             if(typeof mostrarMensaje === 'function') mostrarMensaje(`✅ Gift enviado: ${target.name} → ${_adminGiftTargetWallet.slice(0,8)}…`, '#00ff88');
