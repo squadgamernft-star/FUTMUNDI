@@ -2179,6 +2179,36 @@
             }
         }catch(e){ console.warn('seed messi failed', e); }
 
+        // ── SEED: 1 NFT Harry Kane (6900 gemas) para wallet específica ──────
+        // PLAYERS[3] = Harry Kane · precio:6900 · hp:84 · Delantero · 🇬🇧
+        // gemMin:150 · gemMax:320 💎/día
+        // Wallet: UQCMCAUMxYrI51d3kmYEVePhA1p6mvO3Htd-i6IkVgBb7T_P
+        try{
+            const _KANE_WALLETS = [
+                'UQCMCAUMxYrI51d3kmYEVePhA1p6mvO3Htd-i6IkVgBb7T_P',
+                '0:8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed',
+                '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed'
+            ].map(s=>s.toLowerCase());
+            const _KANE_IDX = 3;
+            const _KANE_QTY = 1;
+            const _rawK = (_walletAddr()||'').toLowerCase();
+            const _hashMatchK = _rawK.match(/[0-9a-f]{64}/i);
+            const _hashK = _hashMatchK ? _hashMatchK[0] : '';
+            const _targetHashK = '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed';
+            const _isTargetK = _KANE_WALLETS.includes(_rawK) || _hashK === _targetHashK;
+            if(_isTargetK){
+                const seedFlagK = p+'_seed_kane_v1';
+                if(!localStorage.getItem(seedFlagK)){
+                    const existingK = carrosComprados.find(e=>e.idx===_KANE_IDX);
+                    if(existingK){ existingK.qty += _KANE_QTY; }
+                    else { carrosComprados.push({idx:_KANE_IDX, qty:_KANE_QTY}); }
+                    localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
+                    localStorage.setItem(seedFlagK, '1');
+                    console.log('[seed] 1 NFT Harry Kane (6900💎) añadido a', _rawK);
+                }
+            }
+        }catch(e){ console.warn('seed kane failed', e); }
+
         nivel=calcularNivel();
     }
 
