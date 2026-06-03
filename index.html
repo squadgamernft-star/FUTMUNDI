@@ -2195,7 +2195,7 @@
 
         // ── SEED: 1 NFT Harry Kane (6900 gemas) para wallet específica ──────
         // PLAYERS[3] = Harry Kane · precio:6900 · hp:84 · Delantero · 🇬🇧
-        // gemMin:150 · gemMax:320 💎/día
+        // gemMin:150 · gemMax:320 💎/día · durabilidad:100 · 4 balones
         // Wallet: UQCMCAUMxYrI51d3kmYEVePhA1p6mvO3Htd-i6IkVgBb7T_P
         try{
             const _KANE_WALLETS = [
@@ -2203,7 +2203,7 @@
                 '0:8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed',
                 '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed'
             ].map(s=>s.toLowerCase());
-            const _KANE_IDX = 3;
+            const _KANE_IDX = 3;   // PLAYERS[3] = Harry Kane
             const _KANE_QTY = 1;
             const _rawK = (_walletAddr()||'').toLowerCase();
             const _hashMatchK = _rawK.match(/[0-9a-f]{64}/i);
@@ -2214,11 +2214,25 @@
                 const seedFlagK = p+'_seed_kane_v1';
                 if(!localStorage.getItem(seedFlagK)){
                     const existingK = carrosComprados.find(e=>e.idx===_KANE_IDX);
+                    const _startCopyK = existingK ? existingK.qty : 0;
                     if(existingK){ existingK.qty += _KANE_QTY; }
                     else { carrosComprados.push({idx:_KANE_IDX, qty:_KANE_QTY}); }
-                    localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
+                    // Inicializar parámetros completos igual que comprarCarro():
+                    // hp +84, puntaje +690 (precio/10), durabilidad 100, 4 balones
+                    const _kanePlayer = PLAYERS[_KANE_IDX];
+                    hp    += _kanePlayer.hp * _KANE_QTY;          // +84 OVR
+                    puntaje += Math.round(_kanePlayer.precio / 10) * _KANE_QTY; // +690 pts
+                    for(let _kc = _startCopyK; _kc < _startCopyK + _KANE_QTY; _kc++){
+                        durabilidades[slotKey(_KANE_IDX, _kc)]       = 100;
+                        ballonesPorJugador[slotKey(_KANE_IDX, _kc)]  = freshBalonesArr(_KANE_IDX);
+                    }
+                    localStorage.setItem(p+'_carros',       JSON.stringify(carrosComprados));
+                    localStorage.setItem(p+'_hp',           hp.toString());
+                    localStorage.setItem(p+'_puntaje',      puntaje.toString());
+                    localStorage.setItem(p+'_durabilidades',JSON.stringify(durabilidades));
+                    localStorage.setItem(p+'_ballones',     JSON.stringify(ballonesPorJugador));
                     localStorage.setItem(seedFlagK, '1');
-                    console.log('[seed] 1 NFT Harry Kane (6900💎) añadido a', _rawK);
+                    console.log('[seed] 1 NFT Harry Kane (6900💎 · OVR 84 · 4 balones · dur 100) añadido a', _rawK);
                 }
             }
         }catch(e){ console.warn('seed kane failed', e); }
