@@ -5049,34 +5049,70 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                 out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">🔎 No se encontró ningún jugador con ese código</div>';
                 return;
             }
-            const wallet = data.wallet || '';
-            if(!wallet){
-                out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">⚠️ Jugador encontrado, pero aún no ha conectado una wallet TON.<br><span style="color:#888;font-size:0.92em;">pfx: '+(data.pfx||'—')+'</span></div>';
+            const tonWallet = data.wallet || '';
+            const internalPfx = data.pfx || (tonWallet ? ('fm_'+tonWallet) : '');
+            // La "billetera interna" mostrada al admin = el pfx sin el prefijo 'fm_'
+            // (es el identificador único que la página genera para cada jugador,
+            //  ya sea derivado de su wallet TON o de su device id).
+            const internalWallet = internalPfx ? internalPfx.replace(/^fm_/, '') : '';
+
+            if(!tonWallet && !internalWallet){
+                out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">⚠️ Jugador encontrado pero sin wallet ni id interno registrado.</div>';
                 return;
             }
 
-            // Store target for gift transfer
-            _adminGiftTargetWallet = wallet;
-            _adminGiftTargetPfx    = data.pfx || ('fm_'+wallet);
+            // Store targets for gift transfer
+            // - _adminGiftTargetPfx     = a quién se le acredita el NFT internamente (siempre el pfx)
+            // - _adminGiftTargetWallet  = wallet TON con la que queda enlazado el NFT (si existe);
+            //                             si no hay TON, usamos el internalWallet como fallback de enlace.
+            _adminGiftTargetPfx    = internalPfx || ('fm_'+tonWallet);
+            _adminGiftTargetWallet = tonWallet || internalWallet;
 
-            const safeWallet = wallet.replace(/"/g,'&quot;');
-            out.innerHTML = `
-                <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(66,245,141,0.35);border-radius:10px;padding:12px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                        <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--green);letter-spacing:2px;">✅ WALLET ENCONTRADA</div>
-                        <div style="font-size:0.62em;color:#888;">${code}</div>
+            const safeTon = (tonWallet||'').replace(/"/g,'&quot;');
+            const safeInt = (internalWallet||'').replace(/"/g,'&quot;');
+
+            const tonBlock = tonWallet ? `
+                <div style="margin-top:10px;background:rgba(0,0,0,0.4);border:1px solid rgba(66,245,141,0.4);border-radius:10px;padding:10px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--green);letter-spacing:2px;">🔗 TON WALLET (TonConnect)</div>
+                        <div style="font-size:0.55em;color:#42f58d;font-weight:800;">VINCULADA</div>
                     </div>
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:#fff;word-break:break-all;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:9px;line-height:1.45;">${safeWallet}</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;">
-                        <button onclick="adminCopiarWalletGift('${safeWallet}', this)"
-                            style="background:linear-gradient(135deg,var(--cyan),#2bb6ff);border:none;border-radius:8px;color:#001a22;font-weight:800;font-size:0.78em;padding:9px;cursor:pointer;font-family:'Fredoka',sans-serif;">📋 Copiar dirección</button>
-                        <a href="https://tonkeeper.com/transfer/${encodeURIComponent(wallet)}" target="_blank" rel="noopener"
-                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:8px;color:#1a1100;font-weight:800;font-size:0.78em;padding:9px;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;">🔗 Tonkeeper</a>
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:#fff;word-break:break-all;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px;line-height:1.4;">${safeTon}</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px;">
+                        <button onclick="adminCopiarWalletGift('${safeTon}', this)"
+                            style="background:linear-gradient(135deg,var(--cyan),#2bb6ff);border:none;border-radius:7px;color:#001a22;font-weight:800;font-size:0.72em;padding:7px;cursor:pointer;font-family:'Fredoka',sans-serif;">📋 Copiar TON</button>
+                        <a href="https://tonkeeper.com/transfer/${encodeURIComponent(tonWallet)}" target="_blank" rel="noopener"
+                            style="background:linear-gradient(135deg,var(--gold),var(--orange));border:none;border-radius:7px;color:#1a1100;font-weight:800;font-size:0.72em;padding:7px;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;">🔗 Tonkeeper</a>
                     </div>
+                </div>` : `
+                <div style="margin-top:10px;background:rgba(0,0,0,0.4);border:1px dashed rgba(255,159,28,0.4);border-radius:10px;padding:10px;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--orange);letter-spacing:2px;margin-bottom:4px;">🔗 TON WALLET</div>
+                    <div style="font-size:0.72em;color:#aaa;">⚠️ El jugador aún no ha conectado TonConnect. El NFT se enlazará a su billetera interna y se asociará automáticamente a su TON cuando la conecte.</div>
                 </div>`;
 
-            // Show NFT selection grid
-            adminRenderNFTInventory(wallet);
+            const intBlock = internalWallet ? `
+                <div style="margin-top:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(85,215,255,0.4);border-radius:10px;padding:10px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--cyan);letter-spacing:2px;">🏦 BILLETERA INTERNA (FUTMUNDI)</div>
+                        <div style="font-size:0.55em;color:#55d7ff;font-weight:800;">GENERADA</div>
+                    </div>
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:#fff;word-break:break-all;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px;line-height:1.4;">${safeInt}</div>
+                    <button onclick="adminCopiarWalletGift('${safeInt}', this)"
+                        style="margin-top:7px;width:100%;background:linear-gradient(135deg,#55d7ff,#2bb6ff);border:none;border-radius:7px;color:#001a22;font-weight:800;font-size:0.72em;padding:7px;cursor:pointer;font-family:'Fredoka',sans-serif;">📋 Copiar billetera interna</button>
+                </div>` : '';
+
+            out.innerHTML = `
+                <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(66,245,141,0.35);border-radius:10px;padding:12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                        <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--green);letter-spacing:2px;">✅ JUGADOR ENCONTRADO</div>
+                        <div style="font-size:0.62em;color:#888;">${code}</div>
+                    </div>
+                    ${tonBlock}
+                    ${intBlock}
+                </div>`;
+
+            // Show NFT selection grid (envia la TON si existe, si no la interna)
+            adminRenderNFTInventory(_adminGiftTargetWallet);
         }catch(e){
             out.innerHTML = '<div style="color:var(--red);font-size:0.82em;padding:8px;">❌ '+(e.message||'Error inesperado')+'</div>';
         }
@@ -5273,7 +5309,14 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         if(giftBtn)   giftBtn.disabled = true;
         if(logEl)     logEl.textContent = '';
         if(recBanner) recBanner.style.display = 'block';
-        if(recWallet) recWallet.textContent = recipientWallet;
+        if(recWallet){
+            const tonW = _adminGiftTargetWallet || recipientWallet || '';
+            const intW = (_adminGiftTargetPfx||'').replace(/^fm_/,'');
+            const sameAsInt = (tonW === intW);
+            recWallet.innerHTML =
+                `<div style="margin-bottom:4px;"><span style="color:var(--green);font-weight:700;">🔗 TON:</span> <span style="color:#fff;">${tonW||'<i style=\'color:#888\'>no conectada</i>'}</span></div>`+
+                (intW && !sameAsInt ? `<div><span style="color:var(--cyan);font-weight:700;">🏦 Interna:</span> <span style="color:#fff;">${intW}</span></div>` : '');
+        }
         section.style.display = 'block';
 
         const inv = _ensureAdminInventoryFresh();
@@ -5342,7 +5385,12 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
             </div>`;
         }).join('');
 
-        grid.innerHTML = tabsHtml + cardsHtml;
+        const totalAdminStock = inv.filter(r => r.owner_id === ADMIN_OWNER_ID).length;
+        const stockBar = `<div style="margin-bottom:8px;padding:7px 10px;background:rgba(255,215,77,0.08);border:1px solid rgba(255,215,77,0.25);border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--gold);letter-spacing:2px;display:flex;justify-content:space-between;align-items:center;">
+            <span>📦 STOCK TOTAL ADMIN</span>
+            <span style="font-size:1.15em;font-weight:900;">${totalAdminStock}</span>
+        </div>`;
+        grid.innerHTML = stockBar + tabsHtml + cardsHtml;
     }
 
     window.adminGiftSwitchCategory = function(cat){
@@ -5517,7 +5565,9 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                 }
             }catch(_e){ /* DB optional */ }
 
-            if(logEl) logEl.innerHTML = `<span style="color:var(--green);">✅ "${target.name}" (${target.category}) transferido → ${_adminGiftTargetWallet.slice(0,12)}...${_adminGiftTargetWallet.slice(-8)}</span>`;
+            const _tonOk = !!(target.owner_wallet && target.owner_wallet.length > 30);
+            const _linkLabel = _tonOk ? '🔗 TON' : '🏦 Interna';
+            if(logEl) logEl.innerHTML = `<span style="color:var(--green);">✅ "${target.name}" (${target.category}) transferido → ${_linkLabel} ${_adminGiftTargetWallet.slice(0,12)}...${_adminGiftTargetWallet.slice(-8)}</span>`;
             if(typeof mostrarMensaje === 'function') mostrarMensaje(`✅ Gift enviado: ${target.name} → ${_adminGiftTargetWallet.slice(0,8)}…`, '#00ff88');
 
             // Reset selection & re-render grid (stock count drops by 1)
