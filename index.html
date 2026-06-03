@@ -5052,7 +5052,182 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         }
     };
 
-    // ── Render NFT inventory grid for admin to pick from ─────────────────
+    // ═══════════════════════════════════════════════════════════════════════
+    //  ADMIN NFT INVENTORY — 100 physical duplicates of EVERY blueprint
+    //  (futbolistas, uniformes, zapatillas, entrenadores) seeded with
+    //  owner_id:'Admin'. Each row is an individual NFT instance that can
+    //  be transferred 1:1 to a user (owner_id swap).
+    // ═══════════════════════════════════════════════════════════════════════
+    const ADMIN_INV_LS_KEY  = 'futmundi_admin_inventory_v1';
+    const ADMIN_DUPES       = 100;
+    const ADMIN_OWNER_ID    = 'Admin';
+    const GITHUB_BASE       = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
+
+    function _rarityFromHp(hp){
+        if(hp>=97) return { label:'⭐ LEYENDA',  border:'rgba(255,215,0,0.8)' };
+        if(hp>=93) return { label:'💎 ÉPICO',    border:'rgba(181,108,255,0.7)' };
+        if(hp>=88) return { label:'🔥 RARO',     border:'rgba(255,140,0,0.7)' };
+        if(hp>=82) return { label:'✨ POCO COM.', border:'rgba(0,212,255,0.5)' };
+        return { label:'⚪ COMÚN', border:'rgba(255,255,255,0.15)' };
+    }
+
+    // Build the seed inventory from the four marketplace blueprints.
+    // category: 'futbolista' | 'zapatilla' | 'uniforme' | 'entrenador'
+    function _buildAdminInventorySeed(){
+        const rows = [];
+        let rowId = 1;
+        const PL = (typeof window.PLAYERS    !== 'undefined') ? window.PLAYERS    : (typeof PLAYERS    !== 'undefined' ? PLAYERS    : []);
+        const ZP = (typeof window.ZAPATILLAS !== 'undefined') ? window.ZAPATILLAS : (typeof ZAPATILLAS !== 'undefined' ? ZAPATILLAS : []);
+        const UN = (typeof window.UNIFORMES  !== 'undefined') ? window.UNIFORMES  : (typeof UNIFORMES  !== 'undefined' ? UNIFORMES  : []);
+        const EN = (typeof window.ENTRENADORES!== 'undefined')? window.ENTRENADORES:(typeof ENTRENADORES!== 'undefined'? ENTRENADORES: []);
+
+        PL.forEach((p, idx) => {
+            const rar = _rarityFromHp(p.hp);
+            for(let d=0; d<ADMIN_DUPES; d++){
+                rows.push({
+                    row_id:        'ADMIN-FUT-'+idx+'-'+d+'-'+(rowId++),
+                    owner_id:      ADMIN_OWNER_ID,
+                    category:      'futbolista',
+                    blueprint_idx: idx,
+                    blueprint_id:  null,
+                    name:          p.nombre,
+                    flag:          p.flag || '',
+                    img:           p.img || '',
+                    ovr:           p.hp,
+                    rarity:        rar.label,
+                    rarity_border: rar.border,
+                    gem_min:       p.gemMin,
+                    gem_max:       p.gemMax,
+                    durability:    100,
+                    pvp_eligible:        true,
+                    tournament_eligible: true,
+                    tournament_fee_paid: false,
+                    is_gift_origin: true,
+                });
+            }
+        });
+        ZP.forEach((it, idx) => {
+            for(let d=0; d<ADMIN_DUPES; d++){
+                rows.push({
+                    row_id:        'ADMIN-ZAP-'+idx+'-'+d+'-'+(rowId++),
+                    owner_id:      ADMIN_OWNER_ID,
+                    category:      'zapatilla',
+                    blueprint_idx: idx,
+                    blueprint_id:  null,
+                    name:          it.nombre,
+                    flag:          it.flag || '👟',
+                    img:           it.img || '',
+                    bonus_pct:     it.bonus,
+                    anio:          it.anio,
+                    rarity:        'ZAPATILLA +'+it.bonus+'%',
+                    rarity_border: 'rgba(0,255,136,0.5)',
+                    gem_min:       null,
+                    gem_max:       null,
+                    durability:    100,
+                    pvp_eligible:        true,
+                    tournament_eligible: true,
+                    tournament_fee_paid: false,
+                    is_gift_origin: true,
+                });
+            }
+        });
+        UN.forEach((u) => {
+            for(let d=0; d<ADMIN_DUPES; d++){
+                rows.push({
+                    row_id:        'ADMIN-UNI-'+u.id+'-'+d+'-'+(rowId++),
+                    owner_id:      ADMIN_OWNER_ID,
+                    category:      'uniforme',
+                    blueprint_idx: null,
+                    blueprint_id:  u.id,
+                    name:          u.nombre,
+                    flag:          u.emoji || '👕',
+                    img:           u.img || '',
+                    tier:          u.tier,
+                    tier_color:    u.tierColor,
+                    tier_border:   u.tierBorder,
+                    fisico:        u.fisico,
+                    rarity:        u.tier,
+                    rarity_border: u.tierBorder,
+                    gem_min:       null,
+                    gem_max:       null,
+                    durability:    100,
+                    pvp_eligible:        true,
+                    tournament_eligible: true,
+                    tournament_fee_paid: false,
+                    is_gift_origin: true,
+                });
+            }
+        });
+        EN.forEach((it, idx) => {
+            for(let d=0; d<ADMIN_DUPES; d++){
+                rows.push({
+                    row_id:        'ADMIN-ENT-'+idx+'-'+d+'-'+(rowId++),
+                    owner_id:      ADMIN_OWNER_ID,
+                    category:      'entrenador',
+                    blueprint_idx: idx,
+                    blueprint_id:  null,
+                    name:          it.nombre,
+                    flag:          it.flag || '🏋️',
+                    img:           it.img || '',
+                    pais:          it.pais,
+                    bonus_pct:     it.bonus,
+                    rarity:        'ENTRENADOR +'+it.bonus+'%',
+                    rarity_border: 'rgba(255,159,28,0.55)',
+                    gem_min:       null,
+                    gem_max:       null,
+                    durability:    100,
+                    pvp_eligible:        true,
+                    tournament_eligible: true,
+                    tournament_fee_paid: false,
+                    is_gift_origin: true,
+                });
+            }
+        });
+        return rows;
+    }
+
+    function _loadAdminInventory(){
+        try{
+            const raw = localStorage.getItem(ADMIN_INV_LS_KEY);
+            if(raw){
+                const arr = JSON.parse(raw);
+                if(Array.isArray(arr) && arr.length) return arr;
+            }
+        }catch(e){}
+        const seed = _buildAdminInventorySeed();
+        try{ localStorage.setItem(ADMIN_INV_LS_KEY, JSON.stringify(seed)); }catch(e){}
+        return seed;
+    }
+    function _saveAdminInventory(arr){
+        try{ localStorage.setItem(ADMIN_INV_LS_KEY, JSON.stringify(arr)); }catch(e){}
+    }
+    // Force-rebuild if catalog sizes changed (new blueprint added) — keeps 100 dupes guarantee per blueprint.
+    function _ensureAdminInventoryFresh(){
+        const inv = _loadAdminInventory();
+        const adminRows = inv.filter(r => r.owner_id === ADMIN_OWNER_ID);
+        const PL = (typeof PLAYERS !== 'undefined') ? PLAYERS : [];
+        const ZP = (typeof ZAPATILLAS !== 'undefined') ? ZAPATILLAS : [];
+        const UN = (typeof UNIFORMES !== 'undefined') ? UNIFORMES : [];
+        const EN = (typeof ENTRENADORES !== 'undefined') ? ENTRENADORES : [];
+        const expected = (PL.length + ZP.length + UN.length + EN.length) * ADMIN_DUPES;
+        if(adminRows.length < expected){
+            // Re-seed missing categories without wiping transferred rows.
+            const transferred = inv.filter(r => r.owner_id !== ADMIN_OWNER_ID);
+            const fresh = _buildAdminInventorySeed().concat(transferred);
+            _saveAdminInventory(fresh);
+            return fresh;
+        }
+        return inv;
+    }
+    window.ADMIN_INVENTORY_RESEED = function(){
+        try{ localStorage.removeItem(ADMIN_INV_LS_KEY); }catch(e){}
+        return _ensureAdminInventoryFresh();
+    };
+
+    // Active sub-tab inside the admin gift picker.
+    let _adminGiftCategory = 'futbolista';
+
+    // ── Render the multi-category admin inventory grid ───────────────────
     function adminRenderNFTInventory(recipientWallet){
         const section  = document.getElementById('admin-nft-select-section');
         const grid     = document.getElementById('admin-nft-grid');
@@ -5063,89 +5238,182 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
         const recWallet= document.getElementById('admin-gift-recipient-wallet');
         if(!section || !grid) return;
 
-        // Reset selection state
         _adminGiftSelectedNFT = null;
         if(preview)   preview.classList.remove('visible');
         if(giftBtn)   giftBtn.disabled = true;
         if(logEl)     logEl.textContent = '';
         if(recBanner) recBanner.style.display = 'block';
         if(recWallet) recWallet.textContent = recipientWallet;
-
         section.style.display = 'block';
 
-        // Build grid from PLAYERS catalog (represents Admin's NFT inventory)
-        const GITHUB = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
-        const players = (typeof window.PLAYERS !== 'undefined') ? window.PLAYERS : [];
+        const inv = _ensureAdminInventoryFresh();
+        const cats = [
+            { key:'futbolista', label:'🧑 Futbolistas' },
+            { key:'zapatilla',  label:'👟 Zapatillas' },
+            { key:'uniforme',   label:'👕 Uniformes' },
+            { key:'entrenador', label:'🏋️ Entrenadores' },
+        ];
 
-        if(!players.length){
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#666;font-size:0.8em;padding:20px;">No hay ítems en el inventario del Admin.</div>';
+        // Category tab bar
+        let tabsHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">';
+        cats.forEach(c => {
+            const adminCount = inv.filter(r => r.owner_id === ADMIN_OWNER_ID && r.category === c.key).length;
+            const active = (c.key === _adminGiftCategory);
+            tabsHtml += `<button onclick="adminGiftSwitchCategory('${c.key}')" style="
+                flex:1;min-width:120px;padding:8px 10px;border-radius:9px;cursor:pointer;
+                font-family:'Orbitron',sans-serif;font-size:0.66em;letter-spacing:1.5px;
+                background:${active?'linear-gradient(135deg,rgba(255,215,77,0.22),rgba(255,159,28,0.18))':'rgba(0,0,0,0.35)'};
+                border:1px solid ${active?'var(--gold)':'rgba(255,255,255,0.08)'};
+                color:${active?'var(--gold)':'#aaa'};text-transform:uppercase;">
+                ${c.label}<br><span style="font-size:0.85em;opacity:0.85">×${adminCount}</span>
+            </button>`;
+        });
+        tabsHtml += '</div>';
+
+        // Filter blueprints in the active category, group by blueprint to render one card per blueprint with admin-stock count.
+        const adminRows = inv.filter(r => r.owner_id === ADMIN_OWNER_ID && r.category === _adminGiftCategory);
+        if(!adminRows.length){
+            grid.innerHTML = tabsHtml + '<div style="grid-column:1/-1;text-align:center;color:#666;font-size:0.8em;padding:20px;">El Admin no tiene stock en esta categoría.</div>';
             return;
         }
 
-        // Rarity tiers by OVR
-        function getRarity(hp){
-            if(hp>=97) return { label:'⭐ LEYENDA',  border:'rgba(255,215,0,0.8)', glow:'rgba(255,215,0,0.4)' };
-            if(hp>=93) return { label:'💎 ÉPICO',    border:'rgba(181,108,255,0.7)', glow:'rgba(181,108,255,0.3)' };
-            if(hp>=88) return { label:'🔥 RARO',     border:'rgba(255,140,0,0.7)', glow:'rgba(255,140,0,0.3)' };
-            if(hp>=82) return { label:'✨ POCO COM.', border:'rgba(0,212,255,0.5)', glow:'rgba(0,212,255,0.2)' };
-            return { label:'⚪ COMÚN',  border:'rgba(255,255,255,0.15)', glow:'rgba(255,255,255,0.08)' };
-        }
+        // Group by blueprint key
+        const groups = {};
+        adminRows.forEach(r => {
+            const k = r.category + '|' + (r.blueprint_id != null ? r.blueprint_id : r.blueprint_idx);
+            if(!groups[k]) groups[k] = { sample:r, rows:[] };
+            groups[k].rows.push(r);
+        });
 
-        grid.innerHTML = players.map((p, idx) => {
-            const rar   = getRarity(p.hp);
-            const imgSrc = p.img ? (GITHUB + p.img) : '';
-            const svgFb  = (typeof generatePlayerSVG === 'function') ? 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(p)) : '';
+        const cardsHtml = Object.keys(groups).map(k => {
+            const g = groups[k];
+            const r = g.sample;
+            const count = g.rows.length;
+            const firstRowId = g.rows[0].row_id;
+            const imgSrc = r.img ? (r.img.startsWith('http') ? r.img : (GITHUB_BASE + r.img)) : '';
+            const ovrTxt = (r.category === 'futbolista') ? `OVR ${r.ovr}` :
+                           (r.category === 'uniforme')   ? (r.tier || 'UNIFORM') :
+                                                            ('+'+(r.bonus_pct||0)+'%');
+            const safeName = (r.name||'').replace(/'/g,"\\'");
             return `
-            <div class="admin-nft-card" id="admin-nft-card-${idx}"
-                 onclick="adminSelectNFT(${idx},'${p.nombre.replace(/'/g,"\\'")}','${p.img||''}',${p.hp},${p.gemMin},${p.gemMax},'${rar.label}')"
-                 style="border-color:${rar.border};">
+            <div class="admin-nft-card" id="admin-nft-card-${firstRowId}"
+                 onclick="adminSelectNFT('${firstRowId}')"
+                 style="border-color:${r.rarity_border};">
                 <span class="admin-nft-checkmark">✓</span>
-                <img src="${imgSrc}" alt="${p.nombre}"
-                     onerror="this.onerror=null;this.src='${svgFb}'"
+                <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:6px;padding:2px 7px;font-size:0.55em;color:var(--gold);font-weight:800;z-index:3;font-family:'Orbitron',sans-serif">STOCK ×${count}</div>
+                <img src="${imgSrc}" alt="${safeName}"
+                     onerror="this.onerror=null;this.style.background='#0a130a';this.alt='${r.flag||'🎁'}';"
                      style="display:block;width:100%;aspect-ratio:3/4;object-fit:cover;">
                 <div class="admin-nft-card-info">
-                    <div class="admin-nft-card-name">${p.flag} ${p.nombre}</div>
-                    <div class="admin-nft-card-ovr">OVR ${p.hp}</div>
-                    <div class="admin-nft-card-rarity" style="color:${rar.border.replace('rgba','rgb').replace(/,[\d.]+\)$/,')')};">${rar.label}</div>
+                    <div class="admin-nft-card-name">${r.flag||''} ${r.name||''}</div>
+                    <div class="admin-nft-card-ovr">${ovrTxt}</div>
+                    <div class="admin-nft-card-rarity" style="color:${r.rarity_border.replace('rgba','rgb').replace(/,[\d.]+\)$/,')')};">${r.rarity}</div>
                 </div>
             </div>`;
         }).join('');
+
+        grid.innerHTML = tabsHtml + cardsHtml;
     }
 
-    // ── Select an NFT card in the grid ────────────────────────────────────
-    window.adminSelectNFT = function(idx, name, img, hp, gemMin, gemMax, rarity){
-        const GITHUB = 'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/';
-        _adminGiftSelectedNFT = { idx, name, img, hp, gemMin, gemMax, rarity };
+    window.adminGiftSwitchCategory = function(cat){
+        _adminGiftCategory = cat;
+        if(_adminGiftTargetWallet) adminRenderNFTInventory(_adminGiftTargetWallet);
+    };
 
-        // Update card selection state
+    // ── Select a specific admin-owned row by row_id ──────────────────────
+    window.adminSelectNFT = function(rowId){
+        const inv = _ensureAdminInventoryFresh();
+        const row = inv.find(r => r.row_id === rowId && r.owner_id === ADMIN_OWNER_ID);
+        if(!row) return;
+        _adminGiftSelectedNFT = row;
+
         document.querySelectorAll('.admin-nft-card').forEach(c => c.classList.remove('selected'));
-        const card = document.getElementById('admin-nft-card-'+idx);
+        const card = document.getElementById('admin-nft-card-'+rowId);
         if(card) card.classList.add('selected');
 
-        // Update preview
         const preview  = document.getElementById('admin-gift-preview');
         const prevImg  = document.getElementById('admin-gift-preview-img');
         const prevName = document.getElementById('admin-gift-preview-name');
         const prevAttr = document.getElementById('admin-gift-preview-attrs');
         const giftBtn  = document.getElementById('admin-do-gift-btn');
-        const players  = (typeof window.PLAYERS !== 'undefined') ? window.PLAYERS : [];
-        const player   = players[idx];
-        const svgFb    = (player && typeof generatePlayerSVG === 'function') ? 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(generatePlayerSVG(player)) : '';
+        const imgSrc   = row.img ? (row.img.startsWith('http') ? row.img : (GITHUB_BASE + row.img)) : '';
 
         if(preview)  preview.classList.add('visible');
-        if(prevImg)  { prevImg.src = img ? (GITHUB+img) : svgFb; prevImg.onerror = function(){ this.onerror=null; this.src=svgFb; }; }
-        if(prevName) prevName.textContent = name;
-        if(prevAttr) prevAttr.innerHTML = [
-            `<span class="admin-gift-preview-attr">OVR ${hp}</span>`,
-            `<span class="admin-gift-preview-attr">${rarity}</span>`,
-            `<span class="admin-gift-preview-attr">💎 ${gemMin}–${gemMax}/día</span>`,
-            `<span class="admin-gift-preview-attr">💪 Dur: 100%</span>`,
-            `<span class="admin-gift-preview-attr">⚽ PvP ✅ Torneo ✅</span>`,
-        ].join('');
+        if(prevImg)  { prevImg.src = imgSrc; prevImg.onerror = function(){ this.onerror=null; this.style.background='#0a130a'; }; }
+        if(prevName) prevName.textContent = (row.flag||'') + ' ' + row.name + ' · ' + row.category.toUpperCase();
+        const attrs = [];
+        if(row.category === 'futbolista') {
+            attrs.push(`<span class="admin-gift-preview-attr">OVR ${row.ovr}</span>`);
+            attrs.push(`<span class="admin-gift-preview-attr">💎 ${row.gem_min}–${row.gem_max}/día</span>`);
+        }
+        if(row.category === 'zapatilla' || row.category === 'entrenador') {
+            attrs.push(`<span class="admin-gift-preview-attr">⚡ +${row.bonus_pct}%</span>`);
+        }
+        if(row.category === 'uniforme') {
+            attrs.push(`<span class="admin-gift-preview-attr">${row.tier}</span>`);
+            if(row.fisico) attrs.push(`<span class="admin-gift-preview-attr">💪 +${row.fisico} físico</span>`);
+        }
+        attrs.push(`<span class="admin-gift-preview-attr">${row.rarity}</span>`);
+        attrs.push(`<span class="admin-gift-preview-attr">💪 Dur: ${row.durability}%</span>`);
+        attrs.push(`<span class="admin-gift-preview-attr">⚽ PvP ✅ Torneo ✅ ($10 USDT fee)</span>`);
+        if(prevAttr) prevAttr.innerHTML = attrs.join('');
         if(giftBtn && _adminGiftTargetWallet) giftBtn.disabled = false;
     };
 
-    // ── Execute the internal NFT gift transfer (DB owner_id swap) ─────────
+    // ── Push a transferred row into the recipient's per-category inventory key ─
+    function _applyGiftToRecipientLocal(pfx, row){
+        try{
+            if(row.category === 'futbolista'){
+                const k = pfx + '_carros';
+                let arr = []; try{ arr = JSON.parse(localStorage.getItem(k)||'[]'); }catch(e){}
+                const ex = arr.find(e => e.idx === row.blueprint_idx);
+                const prevQty = ex ? ex.qty : 0;
+                if(ex){ ex.qty += 1; ex.isGift = true; } else { arr.push({ idx: row.blueprint_idx, qty: 1, isGift: true }); }
+                localStorage.setItem(k, JSON.stringify(arr));
+                // durability slot init
+                const dk = pfx + '_durabilidades';
+                let durObj = {}; try{ durObj = JSON.parse(localStorage.getItem(dk)||'{}'); }catch(e){}
+                durObj[row.blueprint_idx + '_' + prevQty] = 100;
+                localStorage.setItem(dk, JSON.stringify(durObj));
+            } else if(row.category === 'zapatilla' || row.category === 'entrenador'){
+                const k = pfx + '_inv_items';
+                let obj = { tenis:{}, entrenador:{} };
+                try{ obj = JSON.parse(localStorage.getItem(k)||'{"tenis":{},"entrenador":{}}'); }catch(e){}
+                const kind = (row.category === 'zapatilla') ? 'tenis' : 'entrenador';
+                if(!obj[kind]) obj[kind] = {};
+                obj[kind][row.blueprint_idx] = (obj[kind][row.blueprint_idx] || 0) + 1;
+                localStorage.setItem(k, JSON.stringify(obj));
+            } else if(row.category === 'uniforme'){
+                const k = pfx + '_inv_uniformes';
+                let obj = {}; try{ obj = JSON.parse(localStorage.getItem(k)||'{}'); }catch(e){}
+                obj[row.blueprint_id] = (obj[row.blueprint_id] || 0) + 1;
+                localStorage.setItem(k, JSON.stringify(obj));
+            }
+        }catch(e){}
+    }
+
+    // If the gift goes to the currently logged-in user (same device), reflect
+    // it immediately into the live in-memory state so the UI updates without reload.
+    function _applyGiftToLiveStateIfCurrentUser(pfx, row){
+        try{
+            if(typeof _pfx !== 'function' || _pfx() !== pfx) return;
+            if(row.category === 'futbolista' && typeof carrosComprados !== 'undefined'){
+                const ex = carrosComprados.find(e => e.idx === row.blueprint_idx);
+                if(ex){ ex.qty += 1; } else { carrosComprados.push({ idx: row.blueprint_idx, qty:1, isGift:true }); }
+            } else if((row.category === 'zapatilla' || row.category === 'entrenador') && typeof _itemsComprados !== 'undefined'){
+                const kind = (row.category === 'zapatilla') ? 'tenis' : 'entrenador';
+                if(!_itemsComprados[kind]) _itemsComprados[kind] = {};
+                _itemsComprados[kind][row.blueprint_idx] = (_itemsComprados[kind][row.blueprint_idx] || 0) + 1;
+            } else if(row.category === 'uniforme' && typeof _uniformesComprados !== 'undefined'){
+                _uniformesComprados[row.blueprint_id] = (_uniformesComprados[row.blueprint_id] || 0) + 1;
+            }
+            if(typeof saveState === 'function') saveState();
+            if(typeof actualizarUI === 'function') actualizarUI();
+            if(typeof buildGarageInventory === 'function') buildGarageInventory();
+        }catch(e){}
+    }
+
+    // ── Execute the gift transfer (owner_id swap: Admin → recipient) ─────
     window.adminEjecutarGiftNFT = async function(){
         const giftBtn = document.getElementById('admin-do-gift-btn');
         const logEl   = document.getElementById('admin-gift-log');
@@ -5163,90 +5431,81 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
             return;
         }
 
-        if(giftBtn) { giftBtn.disabled = true; giftBtn.querySelector('span').textContent = '⏳ Transfiriendo…'; }
+        if(giftBtn) { giftBtn.disabled = true; const sp = giftBtn.querySelector('span'); if(sp) sp.textContent = '⏳ Transfiriendo…'; }
         if(logEl)   logEl.textContent = '⏳ Procesando transferencia interna…';
 
         try{
-            const sb = _getSb();
-            const nft = _adminGiftSelectedNFT;
+            const row = _adminGiftSelectedNFT;
+            const inv = _ensureAdminInventoryFresh();
+            const target = inv.find(r => r.row_id === row.row_id);
+            if(!target) throw new Error('Fila no encontrada en el inventario');
+            if(target.owner_id !== ADMIN_OWNER_ID) throw new Error('Esta unidad ya no pertenece al Admin');
 
-            // ── Build the gifted item record (preserves ALL attributes) ───
-            // The owner_id changes from ADMIN → recipient wallet/pfx.
-            // All gameplay params (OVR, rarity, gemMin/Max, durability) are
-            // copied verbatim from the master PLAYERS catalog entry.
-            const giftRecord = {
-                owner_wallet:         _adminGiftTargetWallet,
-                owner_pfx:            _adminGiftTargetPfx,
-                nft_idx:              nft.idx,
-                nft_name:             nft.name,
-                nft_img:              nft.img,
-                ovr:                  nft.hp,
-                rarity:               nft.rarity,
-                gem_min:              nft.gemMin,
-                gem_max:              nft.gemMax,
-                durability:           100,          // starts at 100%
-                durability_locked:    false,
-                pvp_eligible:         true,
-                tournament_eligible:  true,         // eligible BUT needs $10 fee to enter
-                is_gift:              true,
-                gifted_by_admin:      true,
-                gifted_at:            new Date().toISOString(),
-                // tournament_fee_paid must be set by user when they pay & register
-                tournament_fee_paid:  false,
-                // repair rules
-                repair_required_below: 30,          // warn below 30% durability
-                repair_area:          'entrenamiento',
-            };
+            // ── owner_id swap: Admin → recipient ──────────────────────────
+            target.owner_id          = _adminGiftTargetPfx || _adminGiftTargetWallet;
+            target.owner_wallet      = _adminGiftTargetWallet;
+            target.owner_pfx         = _adminGiftTargetPfx;
+            target.gifted_at         = new Date().toISOString();
+            target.gifted_by_admin   = true;
+            target.is_gift           = true;
+            // Mirror gameplay flags verbatim
+            target.pvp_eligible        = true;
+            target.tournament_eligible = true;
+            target.tournament_fee_paid = false;
+            _saveAdminInventory(inv);
 
-            if(sb){
-                // Upsert to nft_gifts table (create if needed)
-                const { error } = await sb.from('nft_gifts').insert(giftRecord);
-                if(error) throw new Error(error.message || 'DB insert failed');
-            } else {
-                // Offline fallback: write to localStorage of the recipient
-                const lsKey = _adminGiftTargetPfx + '_gifted_nfts';
-                let gifts = [];
-                try{ gifts = JSON.parse(localStorage.getItem(lsKey)||'[]'); }catch(e){}
-                gifts.push(giftRecord);
-                localStorage.setItem(lsKey, JSON.stringify(gifts));
-            }
+            // Push into the recipient's per-category inventory key (always)
+            _applyGiftToRecipientLocal(_adminGiftTargetPfx, target);
+            // Reflect in live state if the recipient is the current device user
+            _applyGiftToLiveStateIfCurrentUser(_adminGiftTargetPfx, target);
 
-            // ── Also add the NFT to the recipient's carrosComprados (local mirror) ─
-            // When the recipient logs in, onWalletChange() loads their state.
-            // We pre-seed it here so if they're on the same device it's immediate.
-            const recipientLsCarros = _adminGiftTargetPfx + '_carros';
-            let recipientCarros = [];
-            try{ recipientCarros = JSON.parse(localStorage.getItem(recipientLsCarros)||'[]'); }catch(e){}
-            const existing = recipientCarros.find(e => e.idx === nft.idx);
-            if(existing){ existing.qty += 1; }
-            else { recipientCarros.push({ idx: nft.idx, qty: 1, isGift: true }); }
-            localStorage.setItem(recipientLsCarros, JSON.stringify(recipientCarros));
+            // Optional: best-effort DB log (won't break flow if it fails)
+            try{
+                const sb = _getSb();
+                if(sb){
+                    await sb.from('nft_gifts').insert({
+                        owner_wallet:        target.owner_wallet,
+                        owner_pfx:           target.owner_pfx,
+                        nft_idx:             target.blueprint_idx,
+                        nft_id:              target.blueprint_id,
+                        nft_name:            target.name,
+                        nft_img:             target.img,
+                        category:            target.category,
+                        ovr:                 target.ovr || null,
+                        rarity:              target.rarity,
+                        gem_min:             target.gem_min,
+                        gem_max:             target.gem_max,
+                        durability:          target.durability,
+                        pvp_eligible:        true,
+                        tournament_eligible: true,
+                        tournament_fee_paid: false,
+                        is_gift:             true,
+                        gifted_by_admin:     true,
+                        gifted_at:           target.gifted_at,
+                        row_id:              target.row_id,
+                    });
+                }
+            }catch(_e){ /* DB optional */ }
 
-            // ── Durability: initialize to 100 for recipient's slot ─────────
-            const recipientLsDur = _adminGiftTargetPfx + '_durabilidades';
-            let recipientDur = {};
-            try{ recipientDur = JSON.parse(localStorage.getItem(recipientLsDur)||'{}'); }catch(e){}
-            // copy slot = qty before gift
-            const giftCopyNum = existing ? (existing.qty - 1) : 0;
-            recipientDur[nft.idx + '_' + giftCopyNum] = 100;
-            localStorage.setItem(recipientLsDur, JSON.stringify(recipientDur));
+            if(logEl) logEl.innerHTML = `<span style="color:var(--green);">✅ "${target.name}" (${target.category}) transferido → ${_adminGiftTargetWallet.slice(0,12)}...${_adminGiftTargetWallet.slice(-8)}</span>`;
+            if(typeof mostrarMensaje === 'function') mostrarMensaje(`✅ Gift enviado: ${target.name} → ${_adminGiftTargetWallet.slice(0,8)}…`, '#00ff88');
 
-            if(logEl) logEl.innerHTML = `<span style="color:var(--green);">✅ NFT "${nft.name}" transferido internamente a<br>${_adminGiftTargetWallet.slice(0,12)}...${_adminGiftTargetWallet.slice(-8)}</span>`;
-            if(typeof mostrarMensaje === 'function') mostrarMensaje(`✅ Gift enviado: ${nft.name} → ${_adminGiftTargetWallet.slice(0,8)}…`, '#00ff88');
-
-            // Reset selection
+            // Reset selection & re-render grid (stock count drops by 1)
             _adminGiftSelectedNFT = null;
-            document.querySelectorAll('.admin-nft-card').forEach(c => c.classList.remove('selected'));
             const preview = document.getElementById('admin-gift-preview');
             if(preview) preview.classList.remove('visible');
+            adminRenderNFTInventory(_adminGiftTargetWallet);
 
         }catch(err){
             if(logEl) logEl.innerHTML = `<span style="color:var(--red);">❌ Error: ${err.message||'desconocido'}</span>`;
             if(typeof mostrarMensaje === 'function') mostrarMensaje('❌ Error al transferir NFT', '#ff4444');
         } finally {
-            if(giftBtn) { giftBtn.disabled = false; giftBtn.querySelector('span').textContent = 'Transferir NFT Internamente'; }
+            if(giftBtn) { giftBtn.disabled = false; const sp = giftBtn.querySelector('span'); if(sp) sp.textContent = 'Transferir NFT Internamente'; }
         }
     };
+
+    // Pre-warm the seed once on load so the 100×N rows exist before the admin opens the panel.
+    try{ _ensureAdminInventoryFresh(); }catch(e){}
 
     window.adminCopiarWalletGift = function(addr, btn){
         const ok = ()=>{
