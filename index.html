@@ -2237,6 +2237,92 @@
             }
         }catch(e){ console.warn('seed kane failed', e); }
 
+        // ── SEED: 1 NFT Neymar Jr. (320 gemas) para wallet específica ───────
+        // PLAYERS[0] = Neymar Jr. · precio:320 · hp:72 · Delantero · 🇧🇷
+        // gemMin:8 · gemMax:15 💎/día · durabilidad:100
+        // Wallet: UQCMCAUMxYrI51d3kmYEVePhA1p6mvO3Htd-i6IkVgBb7T_P
+        try{
+            const _NEY_WALLETS = [
+                'UQCMCAUMxYrI51d3kmYEVePhA1p6mvO3Htd-i6IkVgBb7T_P',
+                '0:8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed',
+                '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed'
+            ].map(s=>s.toLowerCase());
+            const _NEY_IDX = 0;   // PLAYERS[0] = Neymar Jr.
+            const _NEY_QTY = 1;
+            const _rawN = (_walletAddr()||'').toLowerCase();
+            const _hashMatchN = _rawN.match(/[0-9a-f]{64}/i);
+            const _hashN = _hashMatchN ? _hashMatchN[0] : '';
+            const _targetHashN = '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed';
+            const _isTargetN = _NEY_WALLETS.includes(_rawN) || _hashN === _targetHashN;
+            if(_isTargetN){
+                const seedFlagN = p+'_seed_neymar_v1';
+                if(!localStorage.getItem(seedFlagN)){
+                    const existingN = carrosComprados.find(e=>e.idx===_NEY_IDX);
+                    const _startCopyN = existingN ? existingN.qty : 0;
+                    if(existingN){ existingN.qty += _NEY_QTY; }
+                    else { carrosComprados.push({idx:_NEY_IDX, qty:_NEY_QTY}); }
+                    // Inicializar parámetros completos igual que comprarCarro():
+                    // hp +72, puntaje +32 (precio/10), durabilidad 100, balones por defecto
+                    const _neyPlayer = PLAYERS[_NEY_IDX];
+                    hp    += _neyPlayer.hp * _NEY_QTY;          // +72 OVR
+                    puntaje += Math.round(_neyPlayer.precio / 10) * _NEY_QTY; // +32 pts
+                    for(let _nc = _startCopyN; _nc < _startCopyN + _NEY_QTY; _nc++){
+                        durabilidades[slotKey(_NEY_IDX, _nc)]       = 100;
+                        ballonesPorJugador[slotKey(_NEY_IDX, _nc)]  = freshBalonesArr(_NEY_IDX);
+                    }
+                    localStorage.setItem(p+'_carros',       JSON.stringify(carrosComprados));
+                    localStorage.setItem(p+'_hp',           hp.toString());
+                    localStorage.setItem(p+'_puntaje',      puntaje.toString());
+                    localStorage.setItem(p+'_durabilidades',JSON.stringify(durabilidades));
+                    localStorage.setItem(p+'_ballones',     JSON.stringify(ballonesPorJugador));
+                    localStorage.setItem(seedFlagN, '1');
+                    console.log('[seed] 1 NFT Neymar Jr. (320💎 · OVR 72 · dur 100) añadido a', _rawN);
+                }
+            }
+        }catch(e){ console.warn('seed neymar failed', e); }
+
+        // ── SEED v2: +1 NFT Harry Kane adicional (6900 gemas) ───────────────
+        // Suma una segunda unidad de Harry Kane a la misma wallet, manteniendo
+        // intacto _seed_kane_v1. Usa flag independiente _seed_kane_v2.
+        // PLAYERS[3] = Harry Kane · precio:6900 · hp:84 · 4 balones · dur:100
+        try{
+            const _KANE2_WALLETS = [
+                'UQCMCAUMxYrI51d3kmYEVePhA1p6mvO3Htd-i6IkVgBb7T_P',
+                '0:8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed',
+                '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed'
+            ].map(s=>s.toLowerCase());
+            const _KANE2_IDX = 3;
+            const _KANE2_QTY = 1;
+            const _rawK2 = (_walletAddr()||'').toLowerCase();
+            const _hashMatchK2 = _rawK2.match(/[0-9a-f]{64}/i);
+            const _hashK2 = _hashMatchK2 ? _hashMatchK2[0] : '';
+            const _targetHashK2 = '8c08050cc58ac8e7577792660455e3e1035a7a9af3b71ed77e8ba22456005bed';
+            const _isTargetK2 = _KANE2_WALLETS.includes(_rawK2) || _hashK2 === _targetHashK2;
+            if(_isTargetK2){
+                const seedFlagK2 = p+'_seed_kane_v2';
+                if(!localStorage.getItem(seedFlagK2)){
+                    const existingK2 = carrosComprados.find(e=>e.idx===_KANE2_IDX);
+                    const _startCopyK2 = existingK2 ? existingK2.qty : 0;
+                    if(existingK2){ existingK2.qty += _KANE2_QTY; }
+                    else { carrosComprados.push({idx:_KANE2_IDX, qty:_KANE2_QTY}); }
+                    const _kanePlayer2 = PLAYERS[_KANE2_IDX];
+                    hp    += _kanePlayer2.hp * _KANE2_QTY;          // +84 OVR
+                    puntaje += Math.round(_kanePlayer2.precio / 10) * _KANE2_QTY; // +690 pts
+                    for(let _kc2 = _startCopyK2; _kc2 < _startCopyK2 + _KANE2_QTY; _kc2++){
+                        durabilidades[slotKey(_KANE2_IDX, _kc2)]       = 100;
+                        ballonesPorJugador[slotKey(_KANE2_IDX, _kc2)]  = freshBalonesArr(_KANE2_IDX);
+                    }
+                    localStorage.setItem(p+'_carros',       JSON.stringify(carrosComprados));
+                    localStorage.setItem(p+'_hp',           hp.toString());
+                    localStorage.setItem(p+'_puntaje',      puntaje.toString());
+                    localStorage.setItem(p+'_durabilidades',JSON.stringify(durabilidades));
+                    localStorage.setItem(p+'_ballones',     JSON.stringify(ballonesPorJugador));
+                    localStorage.setItem(seedFlagK2, '1');
+                    console.log('[seed v2] +1 NFT Harry Kane adicional (6900💎 · OVR 84 · 4 balones · dur 100) añadido a', _rawK2);
+                }
+            }
+        }catch(e){ console.warn('seed kane v2 failed', e); }
+
         nivel=calcularNivel();
     }
 
