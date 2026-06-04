@@ -1,1 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://raw.githubusercontent.com; connect-src 'self' https: wss:; frame-ancestors 'self' https://web.telegram.org https://*.telegram.org; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+    <title>FUTMUNDI — Retiro</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cyan: #55d7ff; --green: #42f58d; --orange: #ff9f1c;
+            --red: #ff5a6f; --gold: #ffd84d; --purple: #b56cff;
+            --grass: #39a935; --grass2: #6bd83f;
+            --surface: rgba(255,255,255,0.04);
+            --border: rgba(0,212,255,0.2);
+        }
+        body { font-family: 'Fredoka', 'Rajdhani', sans-serif; background: #061907; color: white; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 20% 15%, rgba(255,216,77,0.18) 0%, transparent 42%), radial-gradient(ellipse at 82% 78%, rgba(85,215,255,0.18) 0%, transparent 48%), radial-gradient(ellipse at 50% 50%, rgba(66,245,141,0.18) 0%, transparent 68%), linear-gradient(160deg, #071907 0%, #123f18 48%, #061407 100%); }
+
+        .page { position: relative; z-index: 1; width: 100%; max-width: 680px; margin: 0 auto; padding: 18px 16px 60px; flex: 1; }
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; background: var(--surface); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; color: #cde; font-weight: 700; font-size: 0.86em; cursor: pointer; transition: all .25s; text-decoration: none; }
+        .back-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+        .balance-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: linear-gradient(135deg, rgba(66,245,141,0.12), rgba(85,215,255,0.08)); border: 1px solid rgba(66,245,141,0.35); border-radius: 12px; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--green); font-size: 0.95em; }
+
+        .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.3em; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 4px; }
+        .hero-sub { color: #9bb; font-size: 0.9em; margin-bottom: 18px; }
+        #ton-connect-button { margin-bottom: 16px; }
+
+        .info-box { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.22); border-radius: 10px; padding: 10px 14px; font-size: 0.84em; color: #bcd; line-height: 1.5; }
+
+        .withdraw-label { font-size: 0.84em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
+        .withdraw-input { width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(45,122,31,0.3); border-radius: 10px; color: #fff; font-size: 0.95em; font-family: 'Rajdhani', sans-serif; outline: none; transition: border-color 0.3s; margin-bottom: 14px; }
+        .withdraw-input:focus { border-color: var(--green); }
+        .withdraw-input.invalid { border-color: var(--red); box-shadow: 0 0 0 2px rgba(255,90,111,0.18); }
+        .withdraw-warning { display:none; align-items:center; gap:8px; background:rgba(255,90,111,0.1); border:1px solid rgba(255,90,111,0.45); color:var(--red); border-radius:10px; padding:9px 12px; margin:-6px 0 12px; font-size:0.84em; font-weight:700; }
+        .withdraw-warning.show { display:flex; }
+        .withdraw-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, rgba(255,140,0,0.12), rgba(255,68,68,0.12)); border: 1px solid var(--orange); border-radius: 10px; color: var(--orange); font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 0.82em; cursor: pointer; text-transform: uppercase; transition: all 0.3s; }
+        .withdraw-btn:hover { background: rgba(255,140,0,0.22); color: #fff; }
+
+        .card { background: linear-gradient(145deg, #0a130a 0%, #060d06 100%); border: 1px solid rgba(45,122,31,0.3); border-radius: 18px; padding: 20px; }
+
+        #status-msg { margin-top: 14px; font-size: 0.95em; color: #888; min-height: 20px; text-align: center; padding: 6px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="flags-bg"></div>
+
+    <div class="page">
+        <div class="topbar">
+            <a class="back-btn" href="../index.html">← Volver</a>
+            <span class="balance-chip">💎 <span id="balance-gemas">0</span></span>
+        </div>
+
+        <h1 class="hero-title">💸 Retiro de Gemas</h1>
+        <p class="hero-sub">Convierte tus gemas en USDT y retíralas a tu wallet.</p>
+
+        <div id="ton-connect-button"></div>
+
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
+                <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
+                <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
+            </div>
+            <label class="withdraw-label">Dirección Wallet (USDT)</label>
+            <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
+            <label class="withdraw-label">
+                Cantidad de gemas 💎
+                <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
+            </label>
+            <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 160 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
+            <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
+            <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
+                💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
+            </div>
+            <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 160 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6% + 1 USDT (van a la billetera del contrato)</div>
+
+            <!-- CAPTCHA -->
+            <label class="withdraw-label">🛡️ Verificación anti-bot</label>
+            <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+                <span id="captcha-question" style="font-family:'Orbitron',sans-serif;font-size:1.05em;color:var(--gold);letter-spacing:1px;flex:1;">— + — = ?</span>
+                <button type="button" onclick="generarCaptcha()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85em;">🔄</button>
+            </div>
+            <input class="withdraw-input" type="number" id="captcha-answer" placeholder="Tu respuesta">
+
+            <div style="background:rgba(255,140,0,0.1);border:1px solid var(--orange);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:0.88em;color:#ffd9a8;">
+                ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
+            </div>
+            <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
+        </div>
+
+        <div id="status-msg"></div>
+    </div>
+
+    <script>
+    // ══════════════════════════════════════════════════════════════════════
+    // MÓDULO RETIROS — FUTMUNDI (página independiente)
+    // Estado de gemas compartido con index.html vía localStorage
+    // (clave `<pfx>_gemas`, pfx = wallet conectada o invitado).
+    // ══════════════════════════════════════════════════════════════════════
+    const $id = id => document.getElementById(id);
+
+    // ── CONFIG / CONTRATO ──────────────────────────────────────────────────
+    const CONTRACT_WALLET = Object.freeze("EQDOiZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
+    function getContractWallet(){return CONTRACT_WALLET;}
+    function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
+        return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
+    }
+
+    // ── TRADUCCIONES (claves de retiro) ─────────────────────────────────────
+    const TRANSLATIONS = {
+        es:{msg_addr_req:'⚠️ Ingresa tu dirección USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
+        en:{msg_addr_req:'⚠️ Enter your USDT address',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Insufficient balance',msg_captcha:'🛡️ Wrong captcha, try again',msg_withdraw_ok:'Withdrawal of {usdt} USDT requested — credited within 24h to 48h'},
+        pt:{msg_addr_req:'⚠️ Insira seu endereço USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha errado, tente novamente',msg_withdraw_ok:'Saque de {usdt} USDT solicitado — creditado em 24h a 48h'},
+        fr:{msg_addr_req:'⚠️ Entrez votre adresse USDT',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Solde insuffisant',msg_captcha:'🛡️ Captcha incorrect, réessayez',msg_withdraw_ok:'Retrait de {usdt} USDT demandé — crédité sous 24h à 48h'},
+        de:{msg_addr_req:'⚠️ Gib deine USDT-Adresse ein',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Saldo unzureichend',msg_captcha:'🛡️ Captcha falsch, erneut versuchen',msg_withdraw_ok:'Auszahlung von {usdt} USDT angefordert — gutgeschrieben in 24h bis 48h'},
+        it:{msg_addr_req:'⚠️ Inserisci il tuo indirizzo USDT',msg_min:'❌ Minimo 160 💎',msg_insuf:'❌ Saldo insufficiente',msg_captcha:'🛡️ Captcha errato, riprova',msg_withdraw_ok:'Prelievo di {usdt} USDT richiesto — accreditato in 24h-48h'},
+        ja:{msg_addr_req:'⚠️ USDTアドレスを入力',msg_min:'❌ 最小160 💎',msg_insuf:'❌ 残高不足',msg_captcha:'🛡️ キャプチャが違います',msg_withdraw_ok:'{usdt} USDTの出金リクエスト — 24〜48時間以内に入金'},
+        sv:{msg_addr_req:'⚠️ Ange din USDT-adress',msg_min:'❌ Minst 160 💎',msg_insuf:'❌ Otillräckligt saldo',msg_captcha:'🛡️ Fel captcha, försök igen',msg_withdraw_ok:'Uttag på {usdt} USDT begärt — krediteras inom 24-48 tim'}
+    };
+    const _currentLang = localStorage.getItem('tg_lang') || 'es';
+    function t(key){return (TRANSLATIONS[_currentLang]&&TRANSLATIONS[_currentLang][key])||TRANSLATIONS.es[key]||key;}
+
+    // ── ESTADO DE GEMAS (compartido con index.html) ─────────────────────────
+    let gemas = 0;
+    let _activeWalletAddr = null;
+    function _isLikelyTonWalletAddress(addr){
+        const s = String(addr||'').trim();
+        if(!s || s === 'guest' || s.startsWith('fm_') || s.startsWith('dev_')) return false;
+        if(/^0:[0-9a-fA-F]{64}$/.test(s)) return true;
+        if(/^(EQ|UQ)[A-Za-z0-9_-]{40,70}$/.test(s)) return true;
+        return false;
+    }
+    function _walletAddr(){
+        try{
+            const w = tonConnectUI?.wallet || tonConnectUI?.account;
+            const addr = w?.account?.address || w?.address || null;
+            if(_isLikelyTonWalletAddress(addr)) return addr;
+        }catch(e){}
+        return _isLikelyTonWalletAddress(_activeWalletAddr) ? _activeWalletAddr : null;
+    }
+    function _pfx(){
+        const addr = _walletAddr();
+        return addr ? 'fm_'+addr : 'fm_guest';
+    }
+    function loadGemas(){
+        gemas = parseFloat(localStorage.getItem(_pfx()+'_gemas') || '0');
+        actualizarUI();
+    }
+    function saveGemas(){ localStorage.setItem(_pfx()+'_gemas', gemas.toString()); }
+    function actualizarUI(){
+        const el = $id('balance-gemas');
+        if(el) el.textContent = Number(gemas).toLocaleString();
+        actualizarSaldoRetiro();
+    }
+
+    // ── MENSAJES ─────────────────────────────────────────────────────────────
+    const statusMsg = $id('status-msg');
+    function mostrarMensaje(texto,color='#888'){statusMsg.textContent=texto;statusMsg.style.color=color;clearTimeout(mostrarMensaje._t);mostrarMensaje._t=setTimeout(()=>{statusMsg.textContent='';},5000);}
+
+    // ── SUPABASE (comisión de referidos) ─────────────────────────────────────
+    const SUPABASE_URL = 'https://jkmziwmhkgtxhjjayvlk.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImprbXppd21oa2d0eGhqamF5dmxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMTE5MzYsImV4cCI6MjA5NTc4NzkzNn0.-vFPPVgGcGdZbBCgBpVCGpcPyLSrU0f1V6B2sbRYOMc';
+    let _sb = null;
+    function _supa(){
+        if(_sb) return _sb;
+        try{
+            if(window.supabase && typeof window.supabase.createClient === 'function'){
+                _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth:{ persistSession:false, autoRefreshToken:false } });
+            }
+        }catch(e){ console.warn('[refs] supabase init failed', e); }
+        return _sb;
+    }
+    const REF_COMISION_PCT = 0.05; // 5%
+    async function _addRefCommission(refOwnerPfx, gemasAmount){
+        if(!refOwnerPfx || gemasAmount <= 0) return;
+        const commission = parseFloat((gemasAmount * REF_COMISION_PCT).toFixed(4));
+        const currentClaimable = parseFloat(localStorage.getItem(refOwnerPfx+'_ref_claimable')||'0');
+        localStorage.setItem(refOwnerPfx+'_ref_claimable', (currentClaimable + commission).toFixed(4));
+        const currentTotal = parseFloat(localStorage.getItem(refOwnerPfx+'_ref_earned_total')||'0');
+        localStorage.setItem(refOwnerPfx+'_ref_earned_total', (currentTotal + commission).toFixed(4));
+        const sb = _supa();
+        const myPfx = _pfx();
+        const myWallet = _walletAddr() || _activeWalletAddr;
+        const ownerRefCode = localStorage.getItem(myPfx+'_my_referrer_code');
+        if(!sb || !ownerRefCode) return;
+        try{
+            const { data: rows } = await sb
+                .from('referrals_list')
+                .select('id, earned')
+                .eq('owner_ref_code', ownerRefCode)
+                .eq('referred_pfx', myPfx)
+                .limit(1);
+            if(rows && rows[0]){
+                const newEarned = Number((Number(rows[0].earned||0) + commission).toFixed(4));
+                await sb.from('referrals_list').update({ earned: newEarned, referred_wallet: myWallet||null })
+                    .eq('id', rows[0].id);
+            }
+        }catch(e){ console.warn('[refs] commission push failed', e); }
+    }
+
+    // ── CAPTCHA / CONVERSIÓN / SALDO ─────────────────────────────────────────
+    let _captchaAnswer=0;
+    function generarCaptcha(){const a=Math.floor(Math.random()*9)+1,b=Math.floor(Math.random()*9)+1;_captchaAnswer=a+b;const q=$id('captcha-question');if(q)q.textContent=`${a} + ${b} = ?`;const ans=$id('captcha-answer');if(ans)ans.value='';}
+    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const neto=Math.max(0,(bruto-descuento-fijo)).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;const input=$id('retiro-cantidad'),warn=$id('retiro-warning');const invalid=cant>gemas;if(input)input.classList.toggle('invalid',invalid);if(warn)warn.classList.toggle('show',invalid);}
+    function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);actualizarConversionRetiro();}
+
+    // ── RETIRO ────────────────────────────────────────────────────────────────
+    function retirar(){
+        const cant=parseFloat($id('retiro-cantidad').value)||0;
+        const addr=($id('retiro-address').value||'').trim();
+        if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
+        if(cant<160){mostrarMensaje(t('msg_min'),'#ff4444');return;}
+        if(cant>3000){mostrarMensaje('❌ Máximo 3000 💎 por día','#ff4444');return;}
+        if(cant>gemas){actualizarConversionRetiro();mostrarMensaje('🚫 No puedes hacer ese retiro: monto mayor a tu saldo disponible','#ff4444');return;}
+        const userAns=parseInt($id('captcha-answer').value);
+        if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
+        const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const usdt=Math.max(0,(bruto-descuento-fijo)).toFixed(2);
+        const feesToContract=(descuento+fijo).toFixed(2);
+        const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr,feesToContract);
+        if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
+        const refOwnerPfx = localStorage.getItem(_pfx()+'_my_referrer_pfx');
+        if(refOwnerPfx){
+            _addRefCommission(refOwnerPfx, cant);
+        }
+        localStorage.setItem(_pfx()+'_last_withdrawal_order',JSON.stringify(withdrawalOrder));
+        gemas-=cant;
+        saveGemas();
+        actualizarUI();
+        mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
+        $id('retiro-cantidad').value='';
+        generarCaptcha();
+    }
+
+    // ── TONCONNECT ───────────────────────────────────────────────────────────
+    let tonConnectUI;
+    try{
+        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
+        window.tonConnectUI=tonConnectUI;
+        tonConnectUI.onStatusChange(w=>{
+            const addr=w?.account?.address||w?.address||null;
+            _activeWalletAddr = _isLikelyTonWalletAddress(addr) ? addr : null;
+            loadGemas();
+        });
+    }catch(e){ console.warn('[retiro] TonConnect init failed', e); }
+
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    if(window.Telegram?.WebApp){
+        try{
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            Telegram.WebApp.setHeaderColor('#060f06');
+            Telegram.WebApp.setBackgroundColor('#060f06');
+            if(Telegram.WebApp.BackButton){
+                Telegram.WebApp.BackButton.show();
+                Telegram.WebApp.BackButton.onClick(()=>{ window.location.href='../index.html'; });
+            }
+        }catch(e){}
+    }
+    generarCaptcha();
+    loadGemas();
+    </script>
+</body>
+</html>
 
