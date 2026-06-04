@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://raw.githubusercontent.com; connect-src 'self' https: wss:; frame-ancestors 'self' https://web.telegram.org https://*.telegram.org; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+    <title>FUTMUNDI — Depósito</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cyan: #55d7ff; --green: #42f58d; --orange: #ff9f1c;
+            --red: #ff5a6f; --gold: #ffd84d; --purple: #b56cff;
+            --grass: #39a935; --grass2: #6bd83f;
+            --surface: rgba(255,255,255,0.04);
+            --border: rgba(0,212,255,0.2);
+        }
+        body { font-family: 'Fredoka', 'Rajdhani', sans-serif; background: #061907; color: white; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 20% 15%, rgba(255,216,77,0.18) 0%, transparent 42%), radial-gradient(ellipse at 82% 78%, rgba(85,215,255,0.18) 0%, transparent 48%), radial-gradient(ellipse at 50% 50%, rgba(66,245,141,0.18) 0%, transparent 68%), linear-gradient(160deg, #071907 0%, #123f18 48%, #061407 100%); }
+
+        .page { position: relative; z-index: 1; width: 100%; max-width: 680px; margin: 0 auto; padding: 18px 16px 60px; flex: 1; }
+
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; background: var(--surface); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; color: #cde; font-weight: 700; font-size: 0.86em; cursor: pointer; transition: all .25s; text-decoration: none; }
+        .back-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        .balance-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: linear-gradient(135deg, rgba(255,216,77,0.12), rgba(255,159,28,0.08)); border: 1px solid rgba(255,216,77,0.35); border-radius: 12px; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--gold); font-size: 0.95em; }
+
+        .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.3em; letter-spacing: 3px; color: var(--green); text-transform: uppercase; margin-bottom: 4px; }
+        .hero-sub { color: #9bb; font-size: 0.9em; margin-bottom: 18px; }
+
+        #ton-connect-button { margin-bottom: 16px; }
+
+        .info-banner { background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.2); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.82em; color: var(--cyan); }
+
+        .gem-tiers { display: flex; flex-direction: column; gap: 11px; }
+        .gem-tier { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; background: var(--surface); border-radius: 12px; border: 1px solid rgba(255,215,0,0.15); cursor: pointer; transition: all 0.3s; }
+        .gem-tier:hover { border-color: var(--gold); box-shadow: 0 0 12px rgba(255,215,0,0.1); }
+        .gem-tier-left { display: flex; align-items: center; gap: 12px; }
+        .gem-tier-icon { font-size: 1.8em; }
+        .gem-tier-info h4 { font-weight: 700; color: var(--gold); font-size: 0.9em; }
+        .gem-tier-info p { font-size: 0.78em; color: #888; margin-top: 2px; }
+        .gem-tier-price { font-family: 'Orbitron', sans-serif; font-size: 0.84em; color: var(--cyan); font-weight: 700; }
+
+        #status-msg { margin-top: 14px; font-size: 0.95em; color: #888; min-height: 20px; text-align: center; padding: 6px; font-weight: 600; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: linear-gradient(145deg, #0a130a 0%, #060d06 100%); border: 1px solid rgba(45,122,31,0.3); border-radius: 18px; max-width: 460px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 0 60px rgba(0,255,136,0.1); animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
+        @keyframes modalIn { from { opacity:0; transform: translateY(20px) scale(.96);} to { opacity:1; transform:none;} }
+        .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid rgba(45,122,31,0.25); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #0a130a; border-radius: 18px 18px 0 0; z-index: 2; }
+        .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3em; font-weight: 400; color: var(--green); letter-spacing: 3px; text-transform: uppercase; }
+        .modal-close { background: none; border: none; color: #888; font-size: 1.6em; cursor: pointer; transition: color 0.2s, transform 0.2s; line-height: 1; }
+        .modal-close:hover { color: var(--red); transform: rotate(90deg); }
+        .modal-body { padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="flags-bg"></div>
+
+    <div class="page">
+        <div class="topbar">
+            <a class="back-btn" href="../index.html">← Volver</a>
+            <span class="balance-chip">💎 <span id="balance-gemas">0</span></span>
+        </div>
+
+        <h1 class="hero-title">💎 Depósito de Gemas</h1>
+        <p class="hero-sub">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
+
+        <div id="ton-connect-button"></div>
+
+        <div class="info-banner">
+            💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
+        </div>
+
+        <div class="gem-tiers">
+            <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
+            <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
+            <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
+            <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
+            <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
+        </div>
+
+        <div id="status-msg"></div>
+    </div>
+
+    <!-- PAGO QR — CONTRATO INTELIGENTE -->
+    <div class="modal-overlay" id="modal-pago-qr">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="pago-qr-title">💳 Pago al Contrato Inteligente</span>
+                <button class="modal-close" onclick="closeModal('modal-pago-qr')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="pago-qr-desc" style="color:#aaa;font-size:0.86em;margin-bottom:10px;"></p>
+                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
+                    <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
+                    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
+                    <div style="font-size:0.74em;color:#888;margin-top:2px;">≈ <span id="pago-qr-ton">0.0000</span> TON · Red TON (Jetton USDT)</div>
+                </div>
+                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
+                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
+                </div>
+                <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
+                <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                    <code id="pago-qr-address" style="flex:1;color:var(--cyan);font-size:0.78em;word-break:break-all;font-family:'Orbitron',monospace;"></code>
+                    <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
+                </div>
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
+                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
+                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
+                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ══════════════════════════════════════════════════════════════════════
+    // MÓDULO DEPÓSITOS — FUTMUNDI (página independiente)
+    // El estado de gemas se comparte con index.html vía localStorage
+    // (misma clave `<pfx>_gemas`, donde pfx = wallet conectada o invitado).
+    // ══════════════════════════════════════════════════════════════════════
+    const $id = id => document.getElementById(id);
+
+    // ── CONFIG / CONTRATO ──────────────────────────────────────────────────
+    const CONTRACT_WALLET = Object.freeze("EQDOiZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
+    const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO'});
+    function isValidTonAddress(addr){return typeof addr==='string' && /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(addr.trim());}
+    function getContractWallet(){return CONTRACT_WALLET;}
+    function assertSecureContractFlow(tipo,address){
+        const safeType = PAYMENT_TYPES[tipo] ? tipo : 'deposito';
+        const expected = getContractWallet();
+        if(!isValidTonAddress(expected)){throw new Error('Contrato FUTMUNDI inválido');}
+        if(address !== expected){throw new Error(`Dirección no autorizada para ${PAYMENT_TYPES[safeType]}`);}
+        return {tipo:safeType,address:expected};
+    }
+    function buildContractTx(tipo,usdt){
+        const flow = assertSecureContractFlow(tipo,getContractWallet());
+        const amount = Number(usdt);
+        if(!Number.isFinite(amount) || amount<=0){throw new Error('Monto inválido');}
+        const ton = (amount/5).toFixed(4);
+        return {validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:flow.address,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+    }
+
+    // ── ESTADO DE GEMAS (compartido con index.html) ────────────────────────
+    let gemas = 0;
+    let _activeWalletAddr = null;
+
+    function _isLikelyTonWalletAddress(addr){
+        const s = String(addr||'').trim();
+        if(!s || s === 'guest' || s.startsWith('fm_') || s.startsWith('dev_')) return false;
+        if(/^0:[0-9a-fA-F]{64}$/.test(s)) return true;
+        if(/^(EQ|UQ)[A-Za-z0-9_-]{40,70}$/.test(s)) return true;
+        return false;
+    }
+    function _walletAddr(){
+        try{
+            const w = tonConnectUI?.wallet || tonConnectUI?.account;
+            const addr = w?.account?.address || w?.address || null;
+            if(_isLikelyTonWalletAddress(addr)) return addr;
+        }catch(e){}
+        return _isLikelyTonWalletAddress(_activeWalletAddr) ? _activeWalletAddr : null;
+    }
+    function _pfx(){
+        const addr = _walletAddr();
+        return addr ? 'fm_'+addr : 'fm_guest';
+    }
+    function loadGemas(){
+        gemas = parseFloat(localStorage.getItem(_pfx()+'_gemas') || '0');
+        actualizarUI();
+    }
+    function saveGemas(){
+        localStorage.setItem(_pfx()+'_gemas', gemas.toString());
+    }
+    function actualizarUI(){
+        const el = $id('balance-gemas');
+        if(el) el.textContent = Number(gemas).toLocaleString();
+    }
+
+    // ── MENSAJES ───────────────────────────────────────────────────────────
+    const statusMsg = $id('status-msg');
+    function mostrarMensaje(texto,color='#888'){statusMsg.textContent=texto;statusMsg.style.color=color;clearTimeout(mostrarMensaje._t);mostrarMensaje._t=setTimeout(()=>{statusMsg.textContent='';},5000);}
+
+    // ── MODALES ──────────────────────────────────────────────────────────────
+    function openModal(id){const el=$id(id);if(!el)return;el.classList.add('active');document.body.style.overflow='hidden';}
+    function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';}
+    document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
+
+    // ── PAGO QR (CONTRATO INTELIGENTE) ───────────────────────────────────────
+    let _pagoQRPendiente = null;
+    function abrirPagoQR({tipo,titulo,descripcion,usdt,onConfirmar}){
+        const flow = assertSecureContractFlow(tipo,getContractWallet());
+        const amount = Number(usdt);
+        if(!Number.isFinite(amount) || amount<=0){mostrarMensaje('❌ Monto de pago inválido','#ff4444');return;}
+        _pagoQRPendiente = {tipo:flow.tipo,usdt:amount,address:flow.address,onConfirmar};
+        const ton = (usdt/5).toFixed(4);
+        $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
+        $id('pago-qr-desc').textContent  = descripcion || '';
+        $id('pago-qr-amount').textContent = amount.toFixed(2);
+        $id('pago-qr-ton').textContent    = ton;
+        $id('pago-qr-address').textContent = flow.address;
+        const nano = Math.round(parseFloat(ton)*1e9);
+        const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
+        const qrPayload = `ton://transfer/${flow.address}?amount=${nano}&text=${memo}`;
+        const canvas = $id('pago-qr-canvas');
+        if(window.QRCode && canvas){
+            QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
+                if(err) console.warn('QR error',err);
+            });
+        }
+        openModal('modal-pago-qr');
+    }
+    function copiarDireccionContrato(){
+        const addr = getContractWallet();
+        if(!isValidTonAddress(addr)){mostrarMensaje('❌ Contrato inválido','#ff4444');return;}
+        if(navigator.clipboard){
+            navigator.clipboard.writeText(addr).then(
+                ()=>mostrarMensaje('📋 Dirección copiada','#00ff88'),
+                ()=>mostrarMensaje('⚠️ No se pudo copiar','#ffaa00')
+            );
+        } else {
+            const ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();
+            try{document.execCommand('copy');mostrarMensaje('📋 Dirección copiada','#00ff88');}catch(e){mostrarMensaje('⚠️ No se pudo copiar','#ffaa00');}
+            document.body.removeChild(ta);
+        }
+    }
+    async function confirmarPagoQR(){
+        if(!_pagoQRPendiente) return;
+        try{assertSecureContractFlow(_pagoQRPendiente.tipo,_pagoQRPendiente.address);}catch(e){mostrarMensaje('❌ Pago bloqueado: contrato no coincide','#ff4444');return;}
+        const btn = $id('pago-qr-confirm-btn');
+        const original = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '⏳ Procesando...';
+        try{
+            const ok = await _pagoQRPendiente.onConfirmar();
+            if(ok) closeModal('modal-pago-qr');
+        } finally {
+            btn.disabled = false; btn.innerHTML = original;
+        }
+    }
+
+    // ── COMPRA DE GEMAS (DEPÓSITO) ───────────────────────────────────────────
+    async function comprarGemas(cantidad,usdtAmount){
+        abrirPagoQR({
+            tipo:'deposito',
+            titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
+            descripcion:`Depósito de gemas. El pago se envía directamente al mismo contrato inteligente usado en torneo y entrenamiento.`,
+            usdt:usdtAmount,
+            onConfirmar:async()=>{
+                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
+                mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
+                const tx=buildContractTx('deposito',usdtAmount);
+                try{
+                    await tonConnectUI.sendTransaction(tx);
+                    loadGemas();          // re-sincroniza por si la wallet cambió el pfx
+                    gemas+=cantidad;
+                    saveGemas();
+                    actualizarUI();
+                    mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');
+                    return true;
+                }catch(e){mostrarMensaje('❌ Depósito cancelado','#ff4444');return false;}
+            }
+        });
+    }
+
+    // ── TONCONNECT ───────────────────────────────────────────────────────────
+    let tonConnectUI;
+    function getConnectedWallet(){return tonConnectUI?.wallet||tonConnectUI?.account||tonConnectUI?.walletInfo||null;}
+    function isWalletConnected(){return Boolean(window.tonConnectUI&&(tonConnectUI.connected||getConnectedWallet()?.account?.address||getConnectedWallet()?.address));}
+    function openWalletModal(){if(window.tonConnectUI&&typeof tonConnectUI.openModal==='function')tonConnectUI.openModal();}
+
+    try{
+        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
+        window.tonConnectUI=tonConnectUI;
+        tonConnectUI.onStatusChange(w=>{
+            const addr=w?.account?.address||w?.address||null;
+            _activeWalletAddr = _isLikelyTonWalletAddress(addr) ? addr : null;
+            loadGemas();
+        });
+    }catch(e){ console.warn('[deposito] TonConnect init failed', e); }
+
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    if(window.Telegram?.WebApp){
+        try{
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            Telegram.WebApp.setHeaderColor('#060f06');
+            Telegram.WebApp.setBackgroundColor('#060f06');
+            if(Telegram.WebApp.BackButton){
+                Telegram.WebApp.BackButton.show();
+                Telegram.WebApp.BackButton.onClick(()=>{ window.location.href='../index.html'; });
+            }
+        }catch(e){}
+    }
+    loadGemas();
+    </script>
+</body>
+</html>
 
