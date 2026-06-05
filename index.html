@@ -5986,12 +5986,22 @@ async function torneoProcesarPago() {
             
             const promises = Object.entries(components).map(async ([id, file]) => {
                 try {
-                    const response = await fetch(file);
+                    const response = await fetch('./' + file + '?v=' + new Date().getTime());
                     if (!response.ok) throw new Error('Network response was not ok');
                     const html = await response.text();
                     const el = document.getElementById(id);
                     if (el) {
+                        const isActive = el.classList.contains('active');
                         el.outerHTML = html;
+                        const newEl = document.getElementById(id);
+                        if (newEl) {
+                            if (isActive) newEl.classList.add('active');
+                            newEl.addEventListener('click', e => {
+                                if (e.target === newEl && typeof closeModal === 'function') {
+                                    closeModal(id);
+                                }
+                            });
+                        }
                     }
                 } catch (e) {
                     console.error('Failed to load component ' + file, e);
@@ -6000,12 +6010,9 @@ async function torneoProcesarPago() {
             
             await Promise.all(promises);
             console.log('All components loaded successfully');
-            
-            // Dispatch an event to signal that the DOM is fully ready
             document.dispatchEvent(new Event('ComponentsLoaded'));
         }
         
-        // Execute loader
         loadComponents();
     </script>
 </body>
