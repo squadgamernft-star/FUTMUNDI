@@ -1,0 +1,29 @@
+    <div class="modal-overlay" id="modal-duelo-urbano">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🏟️ FutCancha</span>
+                <button class="modal-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
+                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO <span id="futcancha-nivel-bonus" style="color:var(--gold)"></span></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">según jugador NFT</div></div>
+                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">según jugador NFT</div></div>
+                        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
+                    </div>
+                </div>
+                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
+                    <div class="dm-icon">🏆</div>
+                    <h3>Liga Mundial</h3>
+                    <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
+                </div>
+                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
+                    <div class="dm-icon">⚽</div>
+                    <h3>Partido Amistoso</h3>
+                    <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
+                </div>
+                <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina.</div>
+            </div>
+        </div>
+    </div>
