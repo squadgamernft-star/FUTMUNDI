@@ -756,3 +756,409 @@
         .ap-ticket-card.perdida   { border-color:rgba(255,90,111,0.3);background:rgba(255,90,111,0.03); }
         #ap-partidos-lista::-webkit-scrollbar,#ap-tickets-lista::-webkit-scrollbar { width:3px; }
         #ap-partidos-lista::-webkit-scrollbar-thumb,#ap-tickets-lista::-webkit-scrollbar-thumb { background:rgba(45,122,31,0.4);border-radius:4px; }
+
+/* ESPN / BROADCAST TOURNAMENT UI */
+.broadcast-modal {
+    background: #0d131a; 
+    border: 1px solid #1a2530;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    color: #fff;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.broadcast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(180deg, #16222c 0%, #0d131a 100%);
+    border-bottom: 1px solid #1a2530;
+}
+.broadcast-header .modal-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #FFD700;
+    font-size: 1.1em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+.broadcast-close {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.broadcast-close:hover { color: #fff; }
+
+.torneo-hero {
+    position: relative;
+    padding: 20px;
+    text-align: center;
+    background: radial-gradient(circle at top, rgba(20,40,30,0.8) 0%, rgba(10,20,15,0) 70%);
+}
+.torneo-trophy {
+    width: 140px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+    animation: floatTrophy 4s ease-in-out infinite;
+}
+@keyframes floatTrophy {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); filter: drop-shadow(0 18px 25px rgba(0,0,0,0.4)); }
+}
+.torneo-hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3em;
+    font-weight: 800;
+    color: #e0e0e0;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+.torneo-hero-prize {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2em;
+    font-weight: 900;
+    color: #FFD700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.4);
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.torneo-subtitle {
+    font-size: 0.8em;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+.espn-countdown {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(180deg, #2a3540 0%, #151d24 100%);
+    border: 1px solid #3a4550;
+    border-radius: 12px;
+    padding: 12px 15px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.4);
+}
+.espn-cd-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+}
+.espn-cd-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+.espn-cd-lbl {
+    font-size: 0.6em;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+}
+.espn-cd-sep {
+    color: #555;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.torneo-section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85em;
+    color: #4CAF50;
+    text-align: center;
+    letter-spacing: 1px;
+    margin: 20px 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.torneo-section-title::before, .torneo-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(76,175,80,0), rgba(76,175,80,0.5), rgba(76,175,80,0));
+}
+
+.torneo-prizes-espn {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 0 15px;
+}
+.espn-prize-card {
+    border-radius: 12px;
+    padding: 15px 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
+.espn-prize-gold {
+    background: linear-gradient(135deg, #d4af37 0%, #aa8015 100%);
+    border: 1px solid #ffd700;
+}
+.espn-prize-silver {
+    background: linear-gradient(135deg, #e0e0e0 0%, #9e9e9e 100%);
+    border: 1px solid #ffffff;
+}
+.espn-prize-bronze {
+    background: linear-gradient(135deg, #cd7f32 0%, #8c5520 100%);
+    border: 1px solid #e09f5b;
+}
+.espn-medal-icon {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.espn-prize-amt {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3em;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 2px;
+}
+.espn-prize-lbl {
+    font-size: 0.7em;
+    font-weight: 700;
+    color: rgba(0,0,0,0.7);
+    text-transform: uppercase;
+}
+.espn-prize-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 15px;
+}
+.espn-item-card {
+    background: linear-gradient(180deg, #1e2a35 0%, #11181f 100%);
+    border: 1px solid #2a3a4a;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    gap: 12px;
+}
+.espn-item-img {
+    width: 45px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+}
+.espn-item-info {
+    display: flex;
+    flex-direction: column;
+}
+.espn-item-amt {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #fff;
+}
+.espn-item-lbl {
+    font-size: 0.7em;
+    color: #aaa;
+}
+
+/* FUTCANCHA & FUTSALA UI */
+.fc-hero {
+    width: 100%;
+    height: 180px;
+    position: relative;
+    border-bottom: 1px solid #4CAF50;
+}
+.fc-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.fc-hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(0deg, #0d131a 0%, transparent 100%);
+}
+.fc-wld-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 15px;
+}
+.fc-wld-card {
+    border-radius: 10px;
+    padding: 12px 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.fc-wld-card.win {
+    background: linear-gradient(180deg, #1b4d2e 0%, #0d2617 100%);
+    border: 1px solid #2e8b57;
+}
+.fc-wld-card.draw {
+    background: linear-gradient(180deg, #665219 0%, #33290c 100%);
+    border: 1px solid #b38f2d;
+}
+.fc-wld-card.loss {
+    background: linear-gradient(180deg, #4d1b1b 0%, #260d0d 100%);
+    border: 1px solid #8b2e2e;
+}
+.fc-wld-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85em;
+    color: #fff;
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+.fc-wld-val {
+    font-size: 0.9em;
+    color: #00d4ff;
+    font-weight: 700;
+}
+
+.fc-mode-card {
+    margin: 0 15px 15px;
+    border-radius: 12px;
+    border: 1px solid #4CAF50;
+    background: linear-gradient(180deg, #162a1e 0%, #0d1a12 100%);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+}
+.fc-mode-card:active {
+    transform: scale(0.98);
+}
+.fc-mode-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(76,175,80,0.3);
+}
+.fc-mode-info {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.fc-mode-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #4CAF50;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.fc-mode-desc {
+    font-size: 0.75em;
+    color: #aaa;
+    margin-top: 4px;
+}
+.fc-mode-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    position: absolute;
+    right: 15px;
+    bottom: 55px;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.6));
+}
+
+.fs-warning {
+    margin: 15px;
+    background: linear-gradient(90deg, rgba(255,165,0,0.1), rgba(255,165,0,0.2), rgba(255,165,0,0.1));
+    border: 1px solid rgba(255,165,0,0.5);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    color: #FFA500;
+    font-size: 0.75em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.fs-pitch-card {
+    display: flex;
+    background: linear-gradient(90deg, #1a2530 0%, #11181f 100%);
+    border: 1px solid #2a3a4a;
+    border-radius: 12px;
+    margin: 0 15px 12px;
+    padding: 10px;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+.fs-pitch-card:active {
+    transform: scale(0.98);
+}
+.fs-pitch-img {
+    width: 100px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.fs-pitch-info {
+    flex: 1;
+}
+.fs-pitch-name {
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+    font-size: 1em;
+    margin-bottom: 4px;
+}
+.fs-pitch-desc {
+    font-size: 0.7em;
+    color: #888;
+    margin-bottom: 6px;
+}
+.fs-pitch-tags {
+    display: flex;
+    gap: 6px;
+    font-size: 0.65em;
+}
+.fs-tag-dif {
+    background: rgba(255,215,0,0.15);
+    color: #FFD700;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,215,0,0.3);
+}
+.fs-tag-cost {
+    background: rgba(255,68,68,0.15);
+    color: #ff4444;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,68,68,0.3);
+}
+.fs-tag-rew {
+    background: rgba(0,212,255,0.15);
+    color: #00d4ff;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,212,255,0.3);
+}

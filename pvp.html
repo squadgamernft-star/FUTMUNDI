@@ -1,29 +1,54 @@
-    <div class="modal-overlay" id="modal-duelo-urbano">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏟️ FutCancha</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
+<div class="modal-overlay broadcast-modal" id="modal-duelo-urbano">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%;">
+        <div class="broadcast-header" style="border-bottom:1px solid #4CAF50;">
+            <span class="modal-title" style="color:#4CAF50;">🏟️ FUTCANCHA</span>
+            <button class="broadcast-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
+        </div>
+        
+        <div class="fc-hero">
+            <img src="./assets/estadio_principal.png" alt="Estadio">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div class="torneo-section-title" style="margin-top:10px; margin-bottom:5px;">💎 GANANCIAS POR PARTIDO</div>
+        
+        <div class="fc-wld-row">
+            <div class="fc-wld-card win">
+                <div style="font-size:1.5em; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">🏆</div>
+                <div class="fc-wld-title">Victoria</div>
+                <div class="fc-wld-val" id="pvp-win-gems">0 💎</div>
             </div>
-            <div class="modal-body">
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO <span id="futcancha-nivel-bonus" style="color:var(--gold)"></span></div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
-                    </div>
-                </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
-                    <div class="dm-icon">🏆</div>
-                    <h3>Liga Mundial</h3>
-                    <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
-                </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
-                    <div class="dm-icon">⚽</div>
-                    <h3>Partido Amistoso</h3>
-                    <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
-                </div>
-                <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina.</div>
+            <div class="fc-wld-card draw">
+                <div style="font-size:1.5em; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">🤝</div>
+                <div class="fc-wld-title">Empate</div>
+                <div class="fc-wld-val" id="pvp-draw-gems" style="color:#FFD700">0 💎</div>
+            </div>
+            <div class="fc-wld-card loss">
+                <div style="font-size:1.5em; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">❌</div>
+                <div class="fc-wld-title">Derrota</div>
+                <div class="fc-wld-val" style="color:#ff4444">0 💎</div>
             </div>
         </div>
+
+        <div class="fc-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
+            <img src="./assets/estadio_liga.png" class="fc-mode-img" alt="Liga Mundial">
+            <div class="fc-mode-info">
+                <div style="display:flex; flex-direction:column;">
+                    <div class="fc-mode-name">LIGA MUNDIAL</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fc-mode-card" style="border-color:#FFD700; background:linear-gradient(180deg, #2a220a 0%, #151105 100%);" onclick="abrirSeleccionJugadorPVP('amistoso')">
+            <img src="./assets/estadio_principal.png" style="opacity:0.3;" class="fc-mode-img" alt="Amistoso">
+            <img src="./assets/balon_retro.png" class="fc-mode-icon" alt="Balon Retro">
+            <div class="fc-mode-info">
+                <div style="display:flex; flex-direction:column;">
+                    <div class="fc-mode-name" style="color:#FFD700;">PARTIDO AMISTOSO</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height:20px;"></div>
     </div>
+</div>
