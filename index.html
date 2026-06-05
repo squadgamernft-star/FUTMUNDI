@@ -4690,8 +4690,30 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         } catch(e){ return null; }
     }
     try{
-        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
-        window.tonConnectUI=tonConnectUI;
+        // ===== TonConnect Manifest (FUTMUNDI) =====
+        // Se genera en runtime como Blob URL usando el origen real donde corre
+        // la app. Así Tonkeeper, Tonhub, MyTonWallet, Bitget, OpenMask y
+        // Telegram Wallet aceptan la conexión sin "manifest url mismatch".
+        const _origin = (typeof location !== 'undefined' && location.origin)
+            ? location.origin
+            : 'https://futmundi.app';
+        let _futmundiManifestUrl = _origin + '/tonconnect-manifest.json';
+        try {
+            const _manifest = {
+                url: _origin,
+                name: 'FUTMUNDI',
+                iconUrl: _origin + '/image/logo.png',
+                termsOfUseUrl: _origin + '/terms',
+                privacyPolicyUrl: _origin + '/privacy'
+            };
+            const _blob = new Blob([JSON.stringify(_manifest)], { type: 'application/json' });
+            _futmundiManifestUrl = URL.createObjectURL(_blob);
+        } catch(_e){ /* fallback al URL público */ }
+        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: _futmundiManifestUrl,
+            buttonRootId: 'ton-connect-button'
+        });
+        window.tonConnectUI = tonConnectUI;
         // Pide a la wallet que firme el payload al conectar (tonProof)
         try {
             tonConnectUI.setConnectRequestParameters({
