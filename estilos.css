@@ -602,22 +602,22 @@
             box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
         }
         .tg-bottom-nav .tg-nav-btn {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(45,122,31,0.35);
-            border-radius: 12px;
+            background: transparent;
+            border: none;
             padding: 8px 4px 6px;
-            color: #cfd; font-size: 0.66em; font-weight: 700;
+            color: #fff; font-size: 0.7em; font-weight: 700;
             font-family: 'Fredoka','Rajdhani',sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 3px; cursor: pointer; transition: all 0.18s; text-align: center;
+            gap: 4px; cursor: pointer; transition: all 0.2s; text-align: center;
             line-height: 1.05;
         }
-        .tg-bottom-nav .tg-nav-btn:active { transform: scale(0.94); background: rgba(45,122,31,0.25); color: #fff; }
-        .tg-bottom-nav .tg-nav-btn .tg-nav-emoji { font-size: 1.45em; line-height: 1; }
-        .tg-bottom-nav .tg-nav-btn.accent-cyan   { border-color: rgba(0,212,255,0.45); color: var(--cyan); }
-        .tg-bottom-nav .tg-nav-btn.accent-gold   { border-color: rgba(255,215,0,0.45); color: var(--gold); }
-        .tg-bottom-nav .tg-nav-btn.accent-orange { border-color: rgba(255,159,28,0.45); color: var(--orange); }
-        .tg-bottom-nav .tg-nav-btn.accent-purple { border-color: rgba(181,108,255,0.45); color: var(--purple); }
+        .tg-bottom-nav .tg-nav-btn:active { transform: scale(0.94); color: var(--green); }
+        .tg-bottom-nav .tg-nav-btn .tg-nav-emoji { font-size: 1.8em; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: all 0.2s; }
+        .tg-bottom-nav .tg-nav-btn:hover .tg-nav-emoji { transform: scale(1.15); filter: drop-shadow(0 6px 12px rgba(0,255,136,0.5)); }
+        .tg-bottom-nav .tg-nav-btn.accent-cyan   { color: var(--cyan); }
+        .tg-bottom-nav .tg-nav-btn.accent-gold   { color: var(--gold); }
+        .tg-bottom-nav .tg-nav-btn.accent-orange { color: var(--orange); }
+        .tg-bottom-nav .tg-nav-btn.accent-purple { color: var(--purple); }
 
         .tg-side-col {
             display: none;
