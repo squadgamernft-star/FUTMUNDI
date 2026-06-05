@@ -1830,18 +1830,19 @@
         const jettonWalletContract = new TonWeb.token.ft.JettonWallet(tonweb.provider, { address: userJettonWallet });
         const body = await jettonWalletContract.createTransferBody({
             queryId: 0,
-            jettonAmount: new TonWeb.boc.BN(Math.round(amount * 1e6)),
+            jettonAmount: new TonWeb.utils.BN(Math.round(amount * 1e6)),
             toAddress: new TonWeb.utils.Address(flow.address),
             responseAddress: new TonWeb.utils.Address(userWallet),
             forwardAmount: TonWeb.utils.toNano('0.001'), 
             forwardPayload: new Uint8Array([])
         });
         const payloadBase64 = TonWeb.utils.bytesToBase64(await body.toBoc(false));
+        const finalJettonAddress = new TonWeb.utils.Address(userJettonWallet).toString(true, true, true);
 
         return {
             validUntil: Math.floor(Date.now()/1000)+300,
             messages: [{
-                address: userJettonWallet,
+                address: finalJettonAddress,
                 amount: TonWeb.utils.toNano('0.05').toString(),
                 payload: payloadBase64
             }]
