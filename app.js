@@ -2300,8 +2300,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     const _REF_MAP_KEY = 'fm_refmap_'; // (legacy local, ya no es la fuente de verdad)
 
     // ── Cliente Supabase ──────────────────────────────────────────────────
-    const SUPABASE_URL = 'https://jkmziwmhkgtxhjjayvlk.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImprbXppd21oa2d0eGhqamF5dmxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMTE5MzYsImV4cCI6MjA5NTc4NzkzNn0.-vFPPVgGcGdZbBCgBpVCGpcPyLSrU0f1V6B2sbRYOMc';
+    const SUPABASE_URL = 'https://sviccwxtulzikmieenzp.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_sHZhCkTlr09gsAS8iDOVEw_hOFYwx7r';
     let _sb = null;
     function _supa(){
         if(_sb) return _sb;
