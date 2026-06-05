@@ -349,8 +349,9 @@
     function _isLikelyTonWalletAddress(addr){
         const s = String(addr||'').trim();
         if(!s || s === 'guest' || s.startsWith('fm_') || s.startsWith('dev_')) return false;
-        if(/^0:[0-9a-fA-F]{64}$/.test(s)) return true;
-        if(/^(EQ|UQ)[A-Za-z0-9_-]{40,70}$/.test(s)) return true;
+        // Aceptamos cualquier cadena larga (TonConnect) o formato crudo
+        if(s.length > 30) return true;
+        if(s.startsWith('0:') || s.startsWith('-1:')) return true;
         return false;
     }
 
@@ -3067,6 +3068,46 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     }
 
     // ── NORMALIZAR PARTIDO (múltiples formatos de API) ───────
+    function apCalcularCuotas(localStr, visitaStr) {
+        const _STRENGTH = {
+            'argentina': 95, 'francia': 94, 'brasil': 93, 'inglaterra': 90, 'españa': 89, 'portugal': 88, 'alemania': 87, 
+            'holanda': 86, 'italia': 85, 'belgica': 84, 'croacia': 83, 'uruguay': 82, 'colombia': 81, 'marruecos': 80,
+            'suiza': 78, 'dinamarca': 77, 'senegal': 76, 'japon': 75, 'ecuador': 74, 'usa': 73, 'eeuu': 73, 'mexico': 72, 'chile': 71,
+            'peru': 70, 'paraguay': 69, 'venezuela': 68, 'bolivia': 60, 'qatar': 55, 'arabia': 55, 'costa rica': 65
+        };
+
+        const getS = t => {
+            const n = String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            for(let key in _STRENGTH) { if(n.includes(key)) return _STRENGTH[key]; }
+            // Fuerza aleatoria determinista si el equipo no está en la lista (basado en el nombre)
+            let hash = 0;
+            for(let i=0; i<n.length; i++) hash = ((hash << 5) - hash) + n.charCodeAt(i);
+            return 65 + (Math.abs(hash) % 16); // Entre 65 y 80
+        };
+
+        const sL = getS(localStr);
+        const sV = getS(visitaStr);
+        const diff = sL - sV;
+
+        let probL = 0.37 + (diff * 0.012);
+        let probV = 0.37 - (diff * 0.012);
+        let probE = 0.26 - (Math.abs(diff) * 0.004);
+
+        probL = Math.max(0.05, Math.min(0.9, probL));
+        probV = Math.max(0.05, Math.min(0.9, probV));
+        probE = Math.max(0.05, Math.min(0.4, probE));
+
+        const total = probL + probV + probE;
+        probL /= total; probV /= total; probE /= total;
+
+        const margen = 0.93; // 7% house edge (beneficio del juego)
+        return {
+            local: +(margen / probL).toFixed(2),
+            empate: +(margen / probE).toFixed(2),
+            visita: +(margen / probV).toFixed(2)
+        };
+    }
+
     function apNormalizarPartido(raw, idx) {
         // Si ya es formato demo, devolverlo tal cual
         if (raw._id) return raw;
@@ -3079,17 +3120,14 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const goalsH= raw.scores?.home || raw.goals?.home || raw.score?.home || '';
         const goalsA= raw.scores?.away || raw.goals?.away || raw.score?.away || '';
         const marcador = (goalsH !== '' && goalsA !== '') ? `${goalsH}-${goalsA}` : null;
+        
         return {
             _id: raw.id || raw.fixture?.id || ('p'+idx),
             local: home, visita: away,
             hora:  time,
             estado: isLive ? 'live' : 'proximo',
             marcador,
-            cuotas: {
-                local:  +(1.5 + Math.random()*1.5).toFixed(2),
-                empate: +(2.8 + Math.random()*1.2).toFixed(2),
-                visita: +(1.6 + Math.random()*2.0).toFixed(2),
-            }
+            cuotas: apCalcularCuotas(home, away)
         };
     }
 
@@ -3300,6 +3338,64 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }).join('');
     }
 
+    // ── VERIFICACIÓN AUTOMÁTICA DE TICKETS ───────────────────
+    async function apVerificarTicketsGanadores() {
+        const tickets = apDB_getTickets();
+        const pendientes = tickets.filter(t => t.estado === 'pagada' || t.estado === 'pendiente');
+        if (!pendientes.length) return;
+
+        let huboCambios = false;
+        let gemasGanadas = 0;
+
+        for (const t of pendientes) {
+            try {
+                // Evitamos fechas indefinidas si el ticket es viejo
+                const d = (t.fechaISO || new Date().toISOString()).slice(0,10);
+                const res = await fetch(`https://${RAPIDAPI_HOST}/football-get-all-fixtures-by-date?date=${d}`, {
+                    headers: { 'x-rapidapi-key': RAPIDAPI_KEY, 'x-rapidapi-host': RAPIDAPI_HOST }
+                });
+                const data = await res.json();
+                const items = data?.response?.fixtures || data?.response?.matches || data?.response || [];
+                
+                const partido = items.find(p => (p.id || p.fixture?.id) == t.partidoId);
+                if (!partido) continue;
+
+                const status = (partido.status || partido.fixture?.status?.short || '').toUpperCase();
+                if (status === 'FT' || status === 'AET' || status === 'PEN' || status === 'FINISHED') {
+                    const goalsH = partido.scores?.home ?? partido.goals?.home ?? partido.score?.fulltime?.home ?? partido.score?.home ?? 0;
+                    const goalsA = partido.scores?.away ?? partido.goals?.away ?? partido.score?.fulltime?.away ?? partido.score?.away ?? 0;
+                    
+                    let resultadoReal = 'empate';
+                    if (goalsH > goalsA) resultadoReal = 'local';
+                    if (goalsH < goalsA) resultadoReal = 'visita';
+
+                    if (t.pronostico === resultadoReal) {
+                        t.estado = 'ganada';
+                        const premioGemas = parseFloat((t.gananciaUsdt * 32).toFixed(2));
+                        gemasGanadas += premioGemas;
+                        huboCambios = true;
+                    } else {
+                        t.estado = 'perdida';
+                        huboCambios = true;
+                    }
+                }
+            } catch (e) { console.error('Error verificando ticket', e); }
+        }
+
+        if (huboCambios) {
+            apDB_saveTickets(tickets);
+            apRenderTickets();
+            if (gemasGanadas > 0) {
+                gemas += gemasGanadas;
+                if(typeof saveState === 'function') saveState();
+                if(typeof actualizarUI === 'function') actualizarUI();
+                setTimeout(() => {
+                    mostrarMensaje(`🎉 ¡Acertaste apuestas! +${gemasGanadas.toFixed(1)} 💎 añadidas a tu saldo.`, '#42f58d');
+                }, 1000);
+            }
+        }
+    }
+
     // ── HOOK: cuando se abre el modal ────────────────────────
     const _apOrigOpen = openModal;
     openModal = function(id) {
@@ -3308,6 +3404,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             apTabSwitch('partidos');
             apCargarPartidos();
             apuestaCheckFecha(); // verificar si ya se habilitaron las apuestas
+            apVerificarTicketsGanadores(); // Verificar tickets ganadores
         }
         if (id === 'modal-torneo') {
             updateTorneoCountdown();
@@ -3421,12 +3518,19 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
                 return;
             }
             const rawWallet = String(data.wallet || '').trim();
-            const internalPfx = data.pfx || (_isLikelyTonWalletAddress(rawWallet) ? ('fm_'+rawWallet) : '');
-            // La billetera interna mostrada solo al admin = el pfx sin el prefijo 'fm_'.
-            // Si el pfx contiene una dirección TON real, también la tratamos como TON vinculada
-            // para no confundirla con un ID interno generado por la web.
+            const internalPfx = data.pfx || '';
+            
+            // La billetera interna mostrada solo al admin
             const internalWallet = internalPfx ? internalPfx.replace(/^fm_/, '') : '';
-            const tonWallet = _isLikelyTonWalletAddress(rawWallet) ? rawWallet : (_isLikelyTonWalletAddress(internalWallet) ? internalWallet : '');
+            
+            // Si data.wallet tiene ALGO guardado (que no sea "null"), lo mostramos siempre.
+            // Así evitamos que la validación estricta oculte billeteras reales.
+            let tonWallet = '';
+            if (rawWallet && rawWallet !== 'null' && rawWallet !== 'undefined' && rawWallet !== 'guest') {
+                tonWallet = rawWallet;
+            } else if (_isLikelyTonWalletAddress(internalWallet)) {
+                tonWallet = internalWallet;
+            }
 
             if(!tonWallet && !internalWallet){
                 out.innerHTML = '<div style="color:var(--orange);font-size:0.82em;padding:8px;">⚠️ Jugador encontrado pero sin wallet ni id interno registrado.</div>';

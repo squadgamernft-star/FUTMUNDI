@@ -52,10 +52,6 @@
         </div>
         <div class="top-bar-row2">
             <button class="lang-toggle-btn" style="background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border-color:rgba(168,85,247,0.5);color:#fff;" onclick="openModal('modal-referidos');buildReferidosUI();" data-i18n="referidos_btn">👥 Referidos</button>
-            <div id="wallet-addr-badge" style="display:none;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:4px 12px;font-size:0.72em;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;box-shadow:0 0 6px var(--green)"></span>
-                <span id="wallet-addr-text">—</span>
-            </div>
             <div id="ton-connect-button"></div>
         </div>
     </div>
@@ -294,176 +290,8 @@
     <div id="modal-retiro" class="modal-overlay dynamic-component"></div>
 
     <!-- REFERIDOS -->
-    <div class="modal-overlay" id="modal-referidos">
-        <div class="modal" style="max-width:580px;">
-            <div class="modal-header">
-                <span class="modal-title" data-i18n="ref_title">👥 Programa de Referidos</span>
-                <button class="modal-close" onclick="closeModal('modal-referidos')">✕</button>
-            </div>
-            <div class="modal-body">
-
-                <!-- Banner comisión -->
-                <div style="background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(0,212,255,0.12));border:1px solid rgba(168,85,247,0.45);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
-                    <div style="font-size:2.2em;flex-shrink:0;">💜</div>
-                    <div>
-                        <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--purple);letter-spacing:2px;margin-bottom:4px;" data-i18n="ref_commission">💰 GANA 5% DE COMISIÓN</div>
-                        <div style="color:#ccc;font-size:0.84em;line-height:1.5;" data-i18n="ref_explain">Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!</div>
-                    </div>
-                </div>
-
-                <!-- Tablero de estadísticas -->
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
-                    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
-                        <div style="font-size:0.62em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;" data-i18n="ref_total_label">REFERIDOS</div>
-                        <div style="color:var(--green);font-size:1.7em;font-weight:700;font-family:'Orbitron',sans-serif;line-height:1;" id="ref-total">0</div>
-                        <div style="font-size:0.62em;color:#555;margin-top:4px;">personas</div>
-                    </div>
-                    <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
-                        <div style="font-size:0.62em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;" data-i18n="ref_earned_label">GANADO</div>
-                        <div style="color:var(--gold);font-size:1.7em;font-weight:700;font-family:'Orbitron',sans-serif;line-height:1;" id="ref-earned">0</div>
-                        <div style="font-size:0.62em;color:#555;margin-top:4px;">💎 gemas</div>
-                    </div>
-                    <div style="background:rgba(168,85,247,0.07);border:1px solid rgba(168,85,247,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
-                        <div style="font-size:0.62em;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;">COMISIÓN</div>
-                        <div style="color:var(--purple);font-size:1.7em;font-weight:700;font-family:'Orbitron',sans-serif;line-height:1;">5%</div>
-                        <div style="font-size:0.62em;color:#555;margin-top:4px;">por retiro</div>
-                    </div>
-                </div>
-
-                <!-- Cómo funciona -->
-                <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:0.8em;color:#aaa;line-height:1.9;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;">⚙️ CÓMO FUNCIONA</div>
-                    <div>1️⃣ Comparte tu link de invitación con amigos</div>
-                    <div>2️⃣ Cuando ingresen por tu link quedan registrados</div>
-                    <div>3️⃣ Cada vez que retiren gemas, recibes el <strong style="color:var(--gold)">5%</strong> automáticamente</div>
-                    <div>4️⃣ Acumulas gemas reclamables aquí sin límite</div>
-                </div>
-
-                <!-- Reclamar -->
-                <div style="background:rgba(168,85,247,0.07);border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
-                    <div style="font-size:0.68em;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">💎 DISPONIBLE PARA RECLAMAR</div>
-                    <div style="color:var(--purple);font-size:2em;font-weight:700;font-family:'Orbitron',sans-serif;margin-bottom:4px;line-height:1;" id="ref-claimable">0.00</div>
-                    <div style="font-size:0.7em;color:#666;margin-bottom:12px;">gemas acumuladas de comisiones</div>
-                    <button id="btn-claim-ref" onclick="claimRefGems()"
-                        style="width:100%;padding:12px;background:linear-gradient(135deg,rgba(168,85,247,0.28),rgba(0,212,255,0.2));border:1px solid var(--purple);border-radius:9px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">
-                        💎 Reclamar Gemas
-                    </button>
-                </div>
-
-                <!-- Link de invitación -->
-                <div style="font-family:'Orbitron',sans-serif;font-size:0.65em;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase;" data-i18n="ref_link_label">🔗 Tu enlace de invitación</div>
-
-                <!-- Link único de invitación (Telegram bot - funciona globalmente) -->
-                <div style="background:rgba(0,136,212,0.08);border:1px solid rgba(0,136,212,0.3);border-radius:10px;padding:10px 12px;margin-bottom:12px;">
-                    <div style="font-size:0.6em;color:#29b6f6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">🔗 TU LINK DE INVITACIÓN</div>
-                    <div style="display:flex;gap:7px;align-items:center;">
-                        <input class="withdraw-input" type="text" id="ref-link" readonly
-                            style="flex:1;margin:0;font-size:0.72em;letter-spacing:0.3px;background:rgba(0,0,0,0.3);border-color:rgba(0,136,212,0.25);">
-                        <button onclick="copiarRefLink('ref-link','btn-copy-tg')" id="btn-copy-tg"
-                            style="background:#29b6f6;color:#000;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.75em;cursor:pointer;font-family:'Fredoka',sans-serif;white-space:nowrap;min-width:60px;transition:all 0.2s;">
-                            📋 Copiar</button>
-                    </div>
-                    <div style="font-size:0.6em;color:#444;margin-top:5px;">Funciona en cualquier país donde Telegram esté disponible</div>
-                </div>
-
-                <!-- Botones de compartir directo -->
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:14px;">
-                    <button onclick="compartirRefTelegram()"
-                        style="background:rgba(0,136,212,0.15);border:1px solid rgba(0,136,212,0.4);border-radius:9px;color:#29b6f6;font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <span style="font-size:1.5em;">✈️</span>Telegram
-                    </button>
-                    <button onclick="compartirRefWhatsApp()"
-                        style="background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.35);border-radius:9px;color:#25d366;font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <span style="font-size:1.5em;">💬</span>WhatsApp
-                    </button>
-                    <button onclick="compartirRefNativo()"
-                        style="background:rgba(255,159,28,0.12);border:1px solid rgba(255,159,28,0.35);border-radius:9px;color:var(--orange);font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <span style="font-size:1.5em;">📤</span>Compartir
-                    </button>
-                    <button onclick="toggleQRReferido()"
-                        style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.35);border-radius:9px;color:var(--purple);font-size:0.68em;font-weight:700;padding:9px 4px;cursor:pointer;font-family:'Fredoka',sans-serif;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <span style="font-size:1.5em;">📷</span>QR Code
-                    </button>
-                </div>
-
-                <!-- QR Container -->
-                <div id="ref-qr-container" style="display:none;text-align:center;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.25);border-radius:12px;padding:16px;margin-bottom:14px;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.62em;color:var(--purple);letter-spacing:2px;margin-bottom:10px;">📷 ESCANEA PARA UNIRTE A FUTMUNDI</div>
-                    <canvas id="ref-qr-canvas" style="border-radius:8px;max-width:180px;background:#fff;padding:8px;display:block;margin:0 auto;"></canvas>
-                    <div style="font-size:0.65em;color:#555;margin-top:8px;">Muéstrale este QR a tus amigos — funciona en cualquier país</div>
-                </div>
-
-
-                <!-- ADMIN: Enviar Regalo NFT (solo wallet autorizada) -->
-                <!-- ══ ADMIN NFT GIFT PANEL ══ -->
-                <div id="admin-gift-panel" class="admin-gift-panel-wrap">
-                    <div class="admin-gift-header">
-                        <span class="ag-crown">👑</span>
-                        <h4>🎁 GIFTING NFT — ADMIN</h4>
-                        <span class="ag-badge">ADMIN ONLY</span>
-                    </div>
-                    <div class="admin-gift-body">
-                        <!-- Step 1: Search referrer -->
-                        <div style="font-family:'Orbitron',sans-serif;font-size:0.65em;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">① Buscar Wallet del Referido</div>
-                        <div class="admin-search-row">
-                            <input id="admin-gift-code" type="text" placeholder="CÓDIGO DE REFERIDO (ej: FM4X9B)" autocomplete="off" spellcheck="false" class="admin-search-input">
-                            <button onclick="adminBuscarWalletReferido()" class="admin-search-btn">🔍 Buscar</button>
-                        </div>
-                        <div id="admin-gift-result" class="admin-gift-result-wrap" style="display:none;"></div>
-
-                        <!-- Step 2: Choose NFT item to gift (shown after wallet found) -->
-                        <div id="admin-nft-select-section" class="admin-nft-select-section" style="display:none;">
-                            <div style="height:1px;background:rgba(255,215,0,0.15);margin:14px 0;"></div>
-                            <div class="admin-nft-select-label">
-                                ② Selecciona el NFT a Regalar
-                                <span style="color:#888;font-size:0.85em;">· Click para elegir</span>
-                            </div>
-                            <div class="admin-nft-grid" id="admin-nft-grid">
-                                <!-- Populated by adminRenderNFTInventory() -->
-                            </div>
-
-                            <!-- Selected item preview -->
-                            <div class="admin-gift-preview" id="admin-gift-preview">
-                                <img id="admin-gift-preview-img" src="" alt="">
-                                <div class="admin-gift-preview-info">
-                                    <div class="admin-gift-preview-name" id="admin-gift-preview-name">—</div>
-                                    <div class="admin-gift-preview-attrs" id="admin-gift-preview-attrs"></div>
-                                </div>
-                            </div>
-
-                            <!-- Recipient info banner -->
-                            <div id="admin-gift-recipient-banner" style="display:none;margin-top:10px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 12px;font-size:0.72em;color:#aaa;">
-                                <span style="color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:0.85em;letter-spacing:1px;">👤 DESTINATARIO</span><br>
-                                <span id="admin-gift-recipient-wallet" style="font-family:'Orbitron',sans-serif;font-size:0.92em;color:#bbb;word-break:break-all;"></span>
-                            </div>
-
-                            <!-- Gift button -->
-                            <button class="admin-gift-btn" id="admin-do-gift-btn" onclick="adminEjecutarGiftNFT()" disabled>
-                                🎁 <span>Transferir NFT Internamente</span>
-                            </button>
-                            <div class="admin-gift-log" id="admin-gift-log"></div>
-
-                            <!-- Rules info -->
-                            <div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:10px;font-size:0.7em;color:#666;line-height:1.7;">
-                                ✅ Transferencia <strong style="color:#aaa">100% interna</strong> — sin gas, sin blockchain.<br>
-                                🔒 El item conserva OVR, rareza, durabilidad y parámetros originales.<br>
-                                ⚽ Elegible para PvP y Torneos. Requiere <strong style="color:var(--gold)">$10 USDT</strong> de inscripción para Torneo.<br>
-                                🏋️ Durabilidad se reduce en juego. Reparar en <strong style="color:var(--cyan)">Área de Entrenamiento</strong>.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ══ END ADMIN NFT GIFT PANEL ══ -->
-                <!-- Lista de referidos -->
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;" data-i18n="ref_list_title">📋 MIS REFERIDOS</div>
-                    <div id="ref-count-badge" style="font-size:0.72em;color:#888;font-family:'Orbitron',sans-serif;"></div>
-                </div>
-                <div id="ref-list" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;"></div>
-
-            </div>
-        </div>
-    </div>
+    <!-- Component: modal-referidos -->
+    <div id="modal-referidos" class="modal-overlay dynamic-component"></div>
 
     <!-- FUTCANCHA PVP -->
     <!-- Component: modal-duelo-urbano -->
@@ -712,13 +540,13 @@
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
         <button class="tg-side-btn accent-purple" onclick="openModal('modal-logros')"          title="Logros">🏅</button>
         <button class="tg-side-btn"               onclick="openModal('modal-nivel')"           title="Nivel">⬆️</button>
-        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')" id="btn-side-apuesta" title="Apuesta Mundial">🎲</button>
+        
     </div>
     <div class="tg-side-col right">
         <button class="tg-side-btn"               onclick="openModal('modal-torneo')"          title="Torneo">🏆</button>
         <button class="tg-side-btn accent-gold"   onclick="openModal('modal-deposito')"        title="Depósito">💎</button>
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">💸</button>
-        <button class="tg-side-btn accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();" title="Referidos">👥</button>
+        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')" id="btn-side-apuesta" title="Apuesta Mundial">🎲</button>
     </div>
 
     <!-- Dynamic Component Loader -->
