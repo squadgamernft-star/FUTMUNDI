@@ -888,38 +888,8 @@
     <!-- ══════════ MODALES ══════════ -->
 
     <!-- MARKETPLACE -->
-    <div class="modal-overlay" id="modal-marketplace">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏪 Marketplace</span>
-                <button class="modal-close" onclick="closeModal('modal-marketplace')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;">Gemas: <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:var(--green)">
-                    ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT = +4 balones de estamina.
-                </div>
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
-                </div>
-                <div id="marketplace-futbolistas" class="tab-panel active">
-                    <div class="market-grid" id="car-market-grid"></div>
-                </div>
-                <div id="marketplace-uniformes" class="tab-panel">
-                    <div class="market-grid" id="uniformes-market-grid"></div>
-                </div>
-                <div id="marketplace-tenis" class="tab-panel">
-                    <div class="market-grid" id="tenis-market-grid"></div>
-                </div>
-                <div id="marketplace-protectores" class="tab-panel">
-                    <div class="market-grid" id="entrenador-market-grid"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Markeplace.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-marketplace" data-external="Markeplace.html"></div>
 
     <!-- RECOMPENSAS POR GOLES -->
     <div class="modal-overlay" id="modal-recompensa-pts">
@@ -1037,102 +1007,8 @@
     </div>
 
     <!-- ══════════ MODAL APUESTAS ══════════ -->
-    <div class="modal-overlay" id="modal-apuesta">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🎲 Apuestas Mundial</span>
-                <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
-            </div>
-            <div class="modal-body">
-
-                <!-- Info USDT + saldo -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-                    <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 12px;">
-                        <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💵 Pago en</div>
-                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--cyan);font-size:1em;margin-top:3px;">USDT</div>
-                    </div>
-                    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:10px;padding:10px 12px;">
-                        <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💰 Ganancia</div>
-                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--green);font-size:1em;margin-top:3px;">x Cuota USDT</div>
-                    </div>
-                </div>
-
-                <!-- Tabs -->
-                <div class="tab-bar" style="margin-bottom:14px;">
-                    <button class="tab-btn active" id="tab-btn-partidos"  onclick="apTabSwitch('partidos')">⚽ Partidos</button>
-                    <button class="tab-btn"         id="tab-btn-mistickets" onclick="apTabSwitch('mistickets')">🎫 Mis Tickets</button>
-                </div>
-
-                <!-- ── TAB PARTIDOS ── -->
-                <div id="ap-tab-partidos">
-                    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
-                        <div style="flex:1;font-size:0.78em;color:#888;">Partidos del Mundial en vivo y próximos</div>
-                        <button onclick="apCargarPartidos()" id="ap-refresh-btn"
-                            style="padding:7px 12px;background:rgba(45,122,31,0.2);border:1px solid rgba(45,122,31,0.5);border-radius:8px;color:var(--green);font-size:0.75em;font-family:'Orbitron',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
-                            🔄 Actualizar
-                        </button>
-                    </div>
-                    <div id="ap-status" style="text-align:center;color:#888;font-size:0.82em;padding:10px 0;min-height:24px;"></div>
-                    <div id="ap-partidos-lista" style="display:grid;gap:10px;max-height:320px;overflow-y:auto;padding-right:2px;"></div>
-                </div>
-
-                <!-- ── TAB MIS TICKETS ── -->
-                <div id="ap-tab-mistickets" style="display:none;">
-                    <div id="ap-tickets-lista" style="display:grid;gap:10px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
-                </div>
-
-                <!-- ── PANEL DE CONFIRMACIÓN DE APUESTA (slide-in desde abajo) ── -->
-                <div id="ap-panel-confirmar" style="display:none;margin-top:14px;border:1px solid rgba(255,216,77,0.4);border-radius:16px;background:linear-gradient(145deg,rgba(20,15,0,0.95),rgba(10,19,10,0.95));padding:16px;animation:apPanelIn 0.28s ease;">
-
-                    <!-- Partido seleccionado -->
-                    <div id="ap-panel-partido" style="background:rgba(0,0,0,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:0.85em;"></div>
-
-                    <!-- Selección: ¿quién gana? -->
-                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">¿Cuál es tu pronóstico?</div>
-                    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;margin-bottom:14px;" id="ap-sel-resultado">
-                        <button class="ap-pick-btn" id="ap-pick-local"   onclick="apElegirResultado('local')">— Local</button>
-                        <button class="ap-pick-btn ap-pick-empate"       id="ap-pick-empate"  onclick="apElegirResultado('empate')">🤝 Empate</button>
-                        <button class="ap-pick-btn" id="ap-pick-visita"  onclick="apElegirResultado('visita')">Visita —</button>
-                    </div>
-
-                    <!-- Monto USDT -->
-                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Monto a apostar (USDT)</div>
-                    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(1)">$1</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(5)">$5</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(10)">$10</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(25)">$25</button>
-                        <input id="ap-monto-input" type="number" min="1" step="0.5" placeholder="$" oninput="apActualizarGanancia()"
-                            style="flex:1;min-width:55px;padding:6px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,216,77,0.35);border-radius:8px;color:#fff;font-family:'Orbitron',sans-serif;font-size:0.82em;outline:none;text-align:center;">
-                    </div>
-
-                    <!-- Resumen -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
-                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">CUOTA</div>
-                            <div id="ap-cuota-display" style="font-family:'Orbitron',sans-serif;color:var(--gold);font-weight:700;font-size:1.1em;">—</div>
-                        </div>
-                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
-                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">GANANCIA POTENCIAL</div>
-                            <div id="ap-ganancia-display" style="font-family:'Orbitron',sans-serif;color:var(--green);font-weight:700;font-size:1.1em;">$0.00</div>
-                        </div>
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                        <button onclick="apCancelarPanel()"
-                            style="padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
-                            ✕ Cancelar
-                        </button>
-                        <button onclick="apConfirmarApuesta()"
-                            style="padding:11px;background:linear-gradient(135deg,rgba(255,216,77,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
-                            💳 Apostar con USDT
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    <!-- MODAL APUESTAS: contenido eliminado para aligerar lag (botón de navegación se conserva) -->
+    <div class="modal-overlay" id="modal-apuesta"></div>
 
     <style>
         @keyframes apPanelIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
@@ -1174,45 +1050,8 @@
 
 
     <!-- RETIRO -->
-    <div class="modal-overlay" id="modal-retiro">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">💸 Retiro de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-retiro')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
-                    <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
-                    <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
-                </div>
-                <label class="withdraw-label">Dirección Wallet (USDT)</label>
-                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
-                <label class="withdraw-label">
-                    Cantidad de gemas 💎
-                    <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
-                </label>
-                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 160 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
-                <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
-                <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
-                    💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
-                </div>
-                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 160 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6% + 1 USDT (van a la billetera del contrato)</div>
-
-                <!-- CAPTCHA -->
-                <label class="withdraw-label">🛡️ Verificación anti-bot</label>
-                <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
-                    <span id="captcha-question" style="font-family:'Orbitron',sans-serif;font-size:1.05em;color:var(--gold);letter-spacing:1px;flex:1;">— + — = ?</span>
-                    <button type="button" onclick="generarCaptcha()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85em;">🔄</button>
-                </div>
-                <input class="withdraw-input" type="number" id="captcha-answer" placeholder="Tu respuesta">
-
-                <div style="background:rgba(255,140,0,0.1);border:1px solid var(--orange);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:0.88em;color:#ffd9a8;">
-                    ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
-                </div>
-                <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Retiros.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-retiro" data-external="Retiros.html"></div>
 
     <!-- REFERIDOS -->
     <div class="modal-overlay" id="modal-referidos">
@@ -1387,126 +1226,18 @@
     </div>
 
     <!-- FUTCANCHA PVP -->
-    <div class="modal-overlay" id="modal-duelo-urbano">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏟️ FutCancha</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO <span id="futcancha-nivel-bonus" style="color:var(--gold)"></span></div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
-                    </div>
-                </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
-                    <div class="dm-icon">🏆</div>
-                    <h3>Liga Mundial</h3>
-                    <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
-                </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
-                    <div class="dm-icon">⚽</div>
-                    <h3>Partido Amistoso</h3>
-                    <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
-                </div>
-                <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina.</div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Pvp.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-duelo-urbano" data-external="Pvp.html"></div>
 
     <!-- ENTRENAMIENTO -->
-    <div class="modal-overlay" id="modal-mantenimiento">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏋️ Entrenamiento</span>
-                <button class="modal-close" onclick="closeModal('modal-mantenimiento')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:16px;">El entrenamiento restaura la durabilidad al 100% y mejora progresivamente el rendimiento del NFT. La estamina (⚽ balones) NO se recarga aquí — se recarga automáticamente cada 24h a las 07:00 UTC.</p>
-                <div id="mant-list"></div>
-                <div class="info-box" style="margin-top:4px;">💡 Bonus por entrenamiento: 1ª vez +5% · 2ª +10% · 3ª +15% · 4ª +17% · 5ª +19% · luego +2% por sesión hasta 80% (se reinicia).</div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Entrenamiento.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-mantenimiento" data-external="Entrenamiento.html"></div>
 
     <!-- PLANTILLA / SQUAD -->
-    <div class="modal-overlay" id="modal-garage">
-        <div class="modal" style="max-width:900px;">
-            <div class="modal-header">
-                <span class="modal-title">👕 Mi Plantilla</span>
-                <button class="modal-close" onclick="closeModal('modal-garage')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🏋️ Entrenadores</button>
-                </div>
-                <div id="garage-vehiculos" class="tab-panel active">
-                    <div class="squad-layout">
-                        <div class="squad-slots-section">
-                            <h3>📋 Plantilla — 20 Slots NFT</h3>
-                            <div class="squad-slots" id="garage-grid-vehicles"></div>
-                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
-                        </div>
-                        <div class="equipment-panel">
-                            <h3>⚙️ Equipamiento</h3>
-                            <div class="equipment-preview" id="equip-preview">
-                                <div class="equipment-player-placeholder">🧑</div>
-                            </div>
-                            <p style="font-size:0.72em;color:#555;text-align:center;margin-bottom:10px;" id="equip-player-name">Selecciona un jugador</p>
-                            <div class="equipment-slots">
-                                <div class="equip-slot" id="equip-slot-uniforme" onclick="openEquipModal('uniforme')"><div class="equip-slot-icon">👕</div><div class="equip-slot-label">Uniforme</div><div class="equip-slot-name" id="equip-uniforme-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-tenis" onclick="openEquipModal('tenis')"><div class="equip-slot-icon">👟</div><div class="equip-slot-label">Tenis</div><div class="equip-slot-name" id="equip-tenis-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🏋️</div><div class="equip-slot-label">Entrenadores</div><div class="equip-slot-name" id="equip-protector-name">— Vacío —</div></div>
-                            </div>
-                            <div class="equip-bonus" id="equip-bonus-panel">
-                                <div class="equip-bonus-title">⚡ Bonificaciones Activas</div>
-                                <div class="equip-bonus-row"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
-                                <div class="equip-bonus-row"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">—</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="garage-cascos" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👕 Tus Uniformes NFT comprados. Selecciona un futbolista en la pestaña <strong style="color:var(--green)">Futbolistas</strong> y luego asígnale uno desde su panel de Equipamiento.</p>
-                    <div class="market-grid" id="garage-grid-uniformes"></div>
-                </div>
-                <div id="garage-guantes" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👟 Tus Zapatillas NFT compradas. Asígnalas a tu futbolista para subir velocidad.</p>
-                    <div class="market-grid" id="garage-grid-tenis"></div>
-                </div>
-                <div id="garage-botas" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">🏋️ Tus Entrenadores NFT comprados. Asigna uno a tu futbolista para activar su bonus.</p>
-                    <div class="market-grid" id="garage-grid-entrenadores"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Futbolista.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-garage" data-external="Futbolista.html"></div>
 
     <!-- MODAL: Selector de equipamiento para asignar a NFT -->
-    <div class="modal-overlay" id="modal-equip-picker">
-        <div class="modal" style="max-width:600px">
-            <div class="modal-header">
-                <span class="modal-title" id="equip-picker-title">⚙️ Asignar Equipamiento</span>
-                <button class="modal-close" onclick="closeEquipPicker()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;" id="equip-picker-subtitle">Elige uno de tu inventario</p>
-                <div id="equip-picker-content"></div>
-                <div class="equip-picker-actions">
-                    <button class="epa-clear" onclick="clearEquipSlot()">🗑️ Quitar</button>
-                    <button class="epa-close" onclick="closeEquipPicker()">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- RANKING -->
     <div class="modal-overlay" id="modal-ranking">
@@ -1533,133 +1264,18 @@
     </div>
 
     <!-- DEPOSITO -->
-    <div class="modal-overlay" id="modal-deposito">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">💎 Depósito de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
-                    💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
-                </div>
-                <div class="gem-tiers">
-                    <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Deposito.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-deposito" data-external="Deposito.html"></div>
 
     <!-- PAGO QR — CONTRATO INTELIGENTE -->
-    <div class="modal-overlay" id="modal-pago-qr">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title" id="pago-qr-title">💳 Pago al Contrato Inteligente</span>
-                <button class="modal-close" onclick="closeModal('modal-pago-qr')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p id="pago-qr-desc" style="color:#aaa;font-size:0.86em;margin-bottom:10px;"></p>
-                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
-                    <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
-                    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
-                    <div style="font-size:0.74em;color:#888;margin-top:2px;">≈ <span id="pago-qr-ton">0.0000</span> TON · Red TON (Jetton USDT)</div>
-                </div>
-                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
-                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
-                </div>
-                <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
-                <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-                    <code id="pago-qr-address" style="flex:1;color:var(--cyan);font-size:0.78em;word-break:break-all;font-family:'Orbitron',monospace;"></code>
-                    <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
-                </div>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
-                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
-                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
-                </div>
-                <div style="display:flex;gap:10px;">
-                    <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
-                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- FUTSALA PVE -->
-    <div class="modal-overlay" id="modal-duelo-callejero">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏃 Futsala</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
-            </div>
-            <div class="modal-body" id="futsala-body"></div>
-        </div>
-    </div>
+    <!-- Sección externa: Pve.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-duelo-callejero" data-external="Pve.html"></div>
 
     <!-- TORNEO -->
-    <div class="modal-overlay" id="modal-torneo">
-        <div class="modal" style="max-width:580px;">
-            <div class="modal-header">
-                <span class="modal-title">🏆 Torneo Semanal</span>
-                <button class="modal-close" onclick="closeModal('modal-torneo')">✕</button>
-            </div>
-            <div class="modal-body">
-                <!-- Tabs del torneo -->
-                <div class="tab-bar" style="margin-bottom:14px;">
-                    <button class="tab-btn active" id="tor-tab-btn-info"     onclick="torneoTabSwitch('info')">🏆 Torneo</button>
-                    <button class="tab-btn"         id="tor-tab-btn-registro" onclick="torneoTabSwitch('registro')">📋 Registro</button>
-                    <button class="tab-btn"         id="tor-tab-btn-inscritos" onclick="torneoTabSwitch('inscritos')">👥 Inscritos</button>
-                </div>
-
-                <!-- TAB INFO -->
-                <div id="tor-tab-info">
-                    <div class="tournament-banner">
-                        <h3>🌍 GRAN COPA FUTMUNDI</h3>
-                        <div class="t-prize">🏆 5,000 Gemas en Premios</div>
-                        <div style="color:#888;margin-top:6px;font-size:0.82em;">Torneo semanal · Inicio: Lunes 00:00 UTC · Fin: Viernes 00:00 UTC</div>
-                        <div class="torneo-countdown" id="torneo-countdown">
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-days">0</span><span class="torneo-countdown-lbl">Días</span></div>
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-hours">00</span><span class="torneo-countdown-lbl">Horas</span></div>
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-mins">00</span><span class="torneo-countdown-lbl">Min</span></div>
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-secs">00</span><span class="torneo-countdown-lbl">Seg</span></div>
-                        </div>
-                        <div id="torneo-status-label" style="font-size:0.82em;margin-top:4px;color:var(--green)">⏳ Cargando...</div>
-                    </div>
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;text-align:center;">🏅 DISTRIBUCIÓN DE PREMIOS</div>
-                    <div class="torneo-prizes-grid">
-                        <div class="torneo-prize-card p1"><div class="torneo-prize-pos" style="color:var(--gold)">🥇 1er Lugar</div><div class="torneo-prize-gems">2,600 💎</div><div class="torneo-prize-extras">👕 Uniforme exclusivo<br>👟 Zapatillas Pro<br>🎓 Coach Legendario</div></div>
-                        <div class="torneo-prize-card p2"><div class="torneo-prize-pos" style="color:#c0c0c0">🥈 2do Lugar</div><div class="torneo-prize-gems">1,500 💎</div><div class="torneo-prize-extras">🐾 Mascota Especial<br>👟 Zapatillas</div></div>
-                        <div class="torneo-prize-card p3"><div class="torneo-prize-pos" style="color:#cd7f32">🥉 3er Lugar</div><div class="torneo-prize-gems">500 💎</div><div class="torneo-prize-extras">🎖️ Insignia de Bronce</div></div>
-                        <div class="torneo-prize-card p4"><div class="torneo-prize-pos" style="color:#aaa">4to Lugar</div><div class="torneo-prize-gems">400 💎</div><div class="torneo-prize-extras">🎫 Pase siguiente torneo</div></div>
-                    </div>
-                    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin:14px 0;font-size:0.82em;color:#aaa;">
-                        📊 Al finalizar el torneo los puntos son verificados automáticamente. Los premios se acreditan en 24h.
-                    </div>
-                    <button onclick="torneoTabSwitch('registro')" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(255,215,0,0.18),rgba(255,140,0,0.14));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">
-                        📋 IR A REGISTRO — $10 USDT
-                    </button>
-                </div>
-
-                <!-- TAB REGISTRO -->
-                <div id="tor-tab-registro" style="display:none;">
-                    <div id="tor-registro-content"><!-- generado por JS --></div>
-                </div>
-
-                <!-- TAB INSCRITOS -->
-                <div id="tor-tab-inscritos" style="display:none;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:12px;text-align:center;">👥 WALLETS REGISTRADAS</div>
-                    <div id="tor-inscritos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
-                    <div style="margin-top:12px;padding:10px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:10px;font-size:0.78em;color:#888;text-align:center;" id="tor-inscritos-count">
-                        Cargando participantes…
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección externa: Torneo.html (cargada bajo demanda) -->
+    <div class="modal-overlay external-section" id="modal-torneo" data-external="Torneo.html"></div>
 
     <!-- PLAYER DETAIL MODAL -->
     <div class="car-detail-overlay" id="modal-car-detail">
@@ -1758,28 +1374,6 @@
     </div>
 
     <!-- SELECTOR DE JUGADOR -->
-    <div class="modal-overlay" id="modal-select-player">
-        <div class="modal" style="max-width:500px">
-            <div class="modal-header">
-                <span class="modal-title">⚽ Elige tu Jugador</span>
-                <button class="modal-close" onclick="closeModal('modal-select-player')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.84em;margin-bottom:12px;" id="select-player-desc">Selecciona el jugador con quien quieres jugar.</p>
-                <div class="player-select-grid" id="player-select-grid"></div>
-                <div style="display:flex;gap:8px;margin-top:4px">
-                    <select id="match-difficulty" style="flex:1;padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(45,122,31,0.4);border-radius:10px;color:#fff;font-size:0.9em;font-family:'Rajdhani',sans-serif;outline:none">
-                        <option value="barrial">🏟️ Cancha Barrial (Fácil)</option>
-                        <option value="municipal">🏟️ Estadio Municipal (Medio)</option>
-                        <option value="copa">🏆 Copa del Mundo (Difícil)</option>
-                        <option value="gala">🌃 Noche de Gala (Experto)</option>
-                    </select>
-                    <button class="primary-btn" style="width:auto;padding:10px 20px;font-size:0.82em" onclick="confirmarJugadorYJugar()">▶ Jugar</button>
-                </div>
-                <div id="select-player-error" style="color:var(--red);font-size:0.84em;margin-top:8px;text-align:center"></div>
-            </div>
-        </div>
-    </div>
 
     <script>
     // ── CONFIG ─────────────────────────────────────────────────────────────
@@ -6260,6 +5854,205 @@ async function torneoProcesarPago() {
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">💸</button>
         <button class="tg-side-btn accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();" title="Referidos">👥</button>
     </div>
+
+
+<style>
+/* ── Loader visual para secciones externas ── */
+#ext-loader{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(10,12,24,0.85),rgba(0,0,0,0.95));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .25s ease}
+#ext-loader.show{display:flex;opacity:1}
+#ext-loader .ext-box{display:flex;flex-direction:column;align-items:center;gap:18px;padding:28px 34px;border-radius:18px;background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(0,212,255,0.08));border:1px solid rgba(168,85,247,0.35);box-shadow:0 10px 40px rgba(0,212,255,0.25),inset 0 0 30px rgba(168,85,247,0.08)}
+#ext-loader .ext-spin{width:54px;height:54px;border-radius:50%;border:3px solid rgba(255,255,255,0.08);border-top-color:#00d4ff;border-right-color:#a855f7;animation:extSpin .9s linear infinite}
+#ext-loader .ext-text{font-family:'Rajdhani','Segoe UI',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;font-size:0.95em;color:#fff;text-shadow:0 0 12px rgba(0,212,255,0.6)}
+#ext-loader .ext-bar{width:160px;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;position:relative}
+#ext-loader .ext-bar::after{content:"";position:absolute;left:-40%;top:0;bottom:0;width:40%;background:linear-gradient(90deg,transparent,#00d4ff,#a855f7,transparent);animation:extBar 1.1s linear infinite}
+@keyframes extSpin{to{transform:rotate(360deg)}}
+@keyframes extBar{to{left:120%}}
+</style>
+
+<div id="ext-loader" role="status" aria-live="polite" aria-hidden="true">
+  <div class="ext-box">
+    <div class="ext-spin"></div>
+    <div class="ext-text" id="ext-loader-text">Cargando…</div>
+    <div class="ext-bar"></div>
+  </div>
+</div>
+
+<script>
+// ── EXTERNAL SECTION LOADER (aligera el index, conserva conectividad) ───
+(function(){
+  const PENDING = Object.create(null);   // file -> Promise (dedupe)
+  const LOADED  = Object.create(null);   // file -> true
+  const STYLES  = new Set();             // evita estilos duplicados
+  const SS_KEY  = f => 'ext_html::'+f;
+
+  const loaderEl = document.getElementById('ext-loader');
+  const loaderTx = document.getElementById('ext-loader-text');
+  let loaderRC = 0;
+  function showLoader(label){
+    loaderRC++;
+    if (loaderTx) loaderTx.textContent = label || 'Cargando…';
+    if (loaderEl){ loaderEl.classList.add('show'); loaderEl.setAttribute('aria-hidden','false'); }
+  }
+  function hideLoader(){
+    loaderRC = Math.max(0, loaderRC-1);
+    if (loaderRC===0 && loaderEl){ loaderEl.classList.remove('show'); loaderEl.setAttribute('aria-hidden','true'); }
+  }
+
+  async function fetchHTML(file){
+    // 1) sessionStorage cache (sobrevive recargas suaves)
+    try{
+      const ss = sessionStorage.getItem(SS_KEY(file));
+      if (ss) return ss;
+    }catch(_){}
+    const res = await fetch(file, { cache:'force-cache', credentials:'same-origin' });
+    if (!res.ok) throw new Error('HTTP '+res.status+' '+file);
+    const html = await res.text();
+    try{ sessionStorage.setItem(SS_KEY(file), html); }catch(_){}
+    return html;
+  }
+
+  function injectStyles(tmp, file){
+    tmp.querySelectorAll('style,link[rel="stylesheet"]').forEach(node=>{
+      const key = node.tagName==='LINK' ? ('L::'+node.href) : ('S::'+file+'::'+node.textContent.length);
+      if (STYLES.has(key)) return;
+      STYLES.add(key);
+      document.head.appendChild(node.cloneNode(true));
+    });
+  }
+
+  function runScripts(tmp){
+    // Ejecuta <script> embebidos en el archivo externo (recrear nodos)
+    tmp.querySelectorAll('script').forEach(src=>{
+      const s = document.createElement('script');
+      for (const a of src.attributes) s.setAttribute(a.name, a.value);
+      s.text = src.textContent || '';
+      document.body.appendChild(s);
+    });
+  }
+
+  async function loadExternal(file, targetId){
+    if (LOADED[file]) return true;
+    if (PENDING[file]) return PENDING[file];
+
+    PENDING[file] = (async()=>{
+      const html = await fetchHTML(file);
+      const tmp  = document.createElement('div');
+      tmp.innerHTML = html;
+
+      injectStyles(tmp, file);
+
+      // Modal principal: reemplaza el placeholder
+      const placeholder = targetId ? document.getElementById(targetId) : null;
+      const realMain    = targetId ? tmp.querySelector('#'+CSS.escape(targetId)) : null;
+      if (placeholder && realMain){
+        placeholder.replaceWith(realMain);
+      }
+
+      // Modales secundarios incluidos en el mismo archivo
+      tmp.querySelectorAll('.modal-overlay').forEach(m=>{
+        if (m.id && m.id !== targetId && !document.getElementById(m.id)){
+          document.body.appendChild(m);
+        }
+      });
+
+      // Cualquier otro nodo top-level que el archivo exponga (templates, etc.)
+      tmp.querySelectorAll('template,[data-ext-mount]').forEach(n=>{
+        if (n.id && document.getElementById(n.id)) return;
+        document.body.appendChild(n);
+      });
+
+      // Cierre por click en overlay (los modales nuevos necesitan el handler)
+      document.querySelectorAll('.modal-overlay:not([data-ext-bound])').forEach(ov=>{
+        ov.setAttribute('data-ext-bound','1');
+        ov.addEventListener('click', e=>{
+          if (e.target===ov && typeof window.closeModal==='function') window.closeModal(ov.id);
+        });
+      });
+
+      // Scripts del archivo (al final, ya con el DOM montado)
+      runScripts(tmp);
+
+      LOADED[file] = true;
+      return true;
+    })().catch(err=>{
+      delete PENDING[file];
+      console.error('[ext-loader]', err);
+      throw err;
+    });
+
+    return PENDING[file];
+  }
+
+  // ── Wrap de openModal: precarga sin romper conectividad ────────────────
+  const _origOpen = window.openModal;
+  window.openModal = async function(id){
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('external-section') && el.dataset.external && !LOADED[el.dataset.external]){
+      showLoader('Cargando '+id.replace('modal-','')+'…');
+      try { await loadExternal(el.dataset.external, id); }
+      catch(_){ hideLoader(); return null; }
+      hideLoader();
+    }
+    return _origOpen ? _origOpen.apply(this, arguments) : null;
+  };
+
+  // Expuesto por si otros scripts quieren precargar manualmente
+  window.preloadExternal = loadExternal;
+
+  // ── Precarga inteligente ──────────────────────────────────────────────
+  function collectExternals(){
+    const map = new Map();
+    document.querySelectorAll('.external-section[data-external]').forEach(el=>{
+      map.set(el.dataset.external, el.id);
+    });
+    return map;
+  }
+
+  // Hover/touchstart en botones que abren modales → prefetch
+  function bindPrefetch(){
+    const map = collectExternals();
+    const idToFile = {};
+    map.forEach((id,file)=>{ idToFile[id]=file; });
+    document.querySelectorAll('[onclick*="openModal("]').forEach(btn=>{
+      if (btn.__extPrefetch) return;
+      const m = /openModal\(['"]([^'"]+)['"]/.exec(btn.getAttribute('onclick')||'');
+      if (!m) return;
+      const file = idToFile[m[1]];
+      if (!file) return;
+      btn.__extPrefetch = true;
+      const pre = ()=>{ if (!LOADED[file] && !PENDING[file]) loadExternal(file, m[1]).catch(()=>{}); };
+      btn.addEventListener('pointerenter', pre, {passive:true, once:true});
+      btn.addEventListener('touchstart',   pre, {passive:true, once:true});
+      btn.addEventListener('focus',        pre, {passive:true, once:true});
+    });
+  }
+
+  // Precarga diferida del resto cuando el navegador está ocioso
+  function idlePreloadAll(){
+    const files = Array.from(collectExternals().keys());
+    let i = 0;
+    const step = (deadline)=>{
+      while (i<files.length && (!deadline || deadline.timeRemaining()>15)){
+        const f = files[i++];
+        const id = [...collectExternals().entries()].find(([k])=>k===f)?.[1];
+        if (!LOADED[f] && !PENDING[f]) loadExternal(f, id).catch(()=>{});
+      }
+      if (i<files.length){
+        (window.requestIdleCallback||window.setTimeout)(step, {timeout:2000});
+      }
+    };
+    (window.requestIdleCallback||(cb=>setTimeout(cb,1500)))(step, {timeout:3000});
+  }
+
+  if (document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', ()=>{ bindPrefetch(); idlePreloadAll(); });
+  } else {
+    bindPrefetch(); idlePreloadAll();
+  }
+  // Re-bind cuando se inyectan nuevos botones (mutaciones del DOM)
+  new MutationObserver(()=>bindPrefetch()).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 
 </body>
 </html>
