@@ -10,6 +10,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tonweb@0.0.66/dist/tonweb.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -1797,12 +1798,54 @@
         if(address !== expected){throw new Error(`Dirección no autorizada para ${PAYMENT_TYPES[safeType]}`);}
         return {tipo:safeType,address:expected};
     }
-    function buildContractTx(tipo,usdt){
+    async function buildContractTx(tipo,usdt){
         const flow = assertSecureContractFlow(tipo,getContractWallet());
         const amount = Number(usdt);
         if(!Number.isFinite(amount) || amount<=0){throw new Error('Monto inválido');}
-        const ton = (amount/5).toFixed(4);
-        return {validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:flow.address,amount:String(Math.round(parseFloat(ton)*1e9))}]};
+        
+        const userWallet = currentWalletAddr();
+        if(!userWallet) throw new Error('Conecta tu wallet primero');
+
+        const USDT_MASTER = "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs";
+        let userJettonWallet = null;
+        try {
+            const res = await fetch(`https://tonapi.io/v2/accounts/${userWallet}/jettons/${USDT_MASTER}`);
+            if(!res.ok) throw new Error('API error');
+            const data = await res.json();
+            if(data && data.wallet_address && data.wallet_address.address) {
+                userJettonWallet = data.wallet_address.address;
+                if(Number(data.balance) < amount * 1e6) {
+                    throw new Error(`Saldo USDT insuficiente. Necesitas al menos ${amount} USDT.`);
+                }
+            } else {
+                throw new Error('Jetton wallet no encontrada');
+            }
+        } catch(e) {
+            console.error(e);
+            throw new Error(e.message || 'Error al verificar saldo USDT. Asegúrate de tener Tether en tu wallet TON.');
+        }
+
+        if(typeof TonWeb === 'undefined') throw new Error('Librería TonWeb no cargada');
+        const tonweb = new TonWeb();
+        const jettonWalletContract = new TonWeb.token.ft.JettonWallet(tonweb.provider, { address: userJettonWallet });
+        const body = await jettonWalletContract.createTransferBody({
+            queryId: 0,
+            jettonAmount: new TonWeb.boc.BN(Math.round(amount * 1e6)),
+            toAddress: new TonWeb.utils.Address(flow.address),
+            responseAddress: new TonWeb.utils.Address(userWallet),
+            forwardAmount: TonWeb.utils.toNano('0.001'), 
+            forwardPayload: new Uint8Array([])
+        });
+        const payloadBase64 = TonWeb.utils.bytesToBase64(await body.toBoc(false));
+
+        return {
+            validUntil: Math.floor(Date.now()/1000)+300,
+            messages: [{
+                address: userJettonWallet,
+                amount: TonWeb.utils.toNano('0.05').toString(),
+                payload: payloadBase64
+            }]
+        };
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
@@ -2444,8 +2487,8 @@
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
-                const tx=buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
+                    const tx=await buildContractTx('torneo',COSTO_TORNEO_USDT);
                     await tonConnectUI.sendTransaction(tx);
                     mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
                     return true;
@@ -3957,8 +4000,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
-                const tx=buildContractTx('entrenamiento',costo);
                 try{
+                    const tx=await buildContractTx('entrenamiento',costo);
                     await tonConnectUI.sendTransaction(tx);
                     repararDurabilidad(idx,copy);
                     const res=applyTrainingBonus(idx,copy);
@@ -4014,8 +4057,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
-                const tx=buildContractTx('deposito',usdtAmount);
                 try{
+                    const tx=await buildContractTx('deposito',usdtAmount);
                     await tonConnectUI.sendTransaction(tx);
                     gemas+=cantidad;
                     actualizarUI();
@@ -4570,16 +4613,15 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const amount = Number(usdt);
         if(!Number.isFinite(amount) || amount<=0){mostrarMensaje('❌ Monto de pago inválido','#ff4444');return;}
         _pagoQRPendiente = {tipo:flow.tipo,usdt:amount,address:flow.address,onConfirmar};
-        const ton = (usdt/5).toFixed(4);
         $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
         $id('pago-qr-desc').textContent  = descripcion || '';
         $id('pago-qr-amount').textContent = amount.toFixed(2);
-        $id('pago-qr-ton').textContent    = ton;
+        $id('pago-qr-ton').textContent    = "+ 0.05 TON (Tarifa de Red Gas)";
         $id('pago-qr-address').textContent = flow.address;
-        // QR payload: deep-link TON estándar (compatible con todas las wallets TON)
-        const nano = Math.round(parseFloat(ton)*1e9);
+        
+        const USDT_MASTER = "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs";
         const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
-        const qrPayload = `ton://transfer/${flow.address}?amount=${nano}&text=${memo}`;
+        const qrPayload = `ton://transfer/${flow.address}?jetton=${USDT_MASTER}&amount=${Math.round(amount*1e6)}&text=${memo}`;
         const canvas = $id('pago-qr-canvas');
         if(window.QRCode && canvas){
             QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
@@ -4982,8 +5024,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar: async () => {
                 if (!isWalletConnected()) { mostrarMensaje('⚠️ Conecta tu wallet TON primero', '#ffaa00'); openWalletModal(); return false; }
                 mostrarMensaje(`⏳ Procesando $${monto.toFixed(2)} USDT…`, '#00d4ff');
-                const tx = buildContractTx('apuesta', monto);
                 try {
+                    const tx = await buildContractTx('apuesta', monto);
                     await tonConnectUI.sendTransaction(tx);
                     // ✅ Pago confirmado → guardar ticket en DB
                     ticket.estado    = 'pagada';
@@ -5060,6 +5102,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 </script>
 
 <!-- ══════════ APUESTAS: BLOQUEO HASTA 11/06/2026 + TORNEO WALLET REGISTRY ══════════ -->
+<script src="https://unpkg.com/@ton/ton@13.11.0/dist/ton.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════
 //  APUESTAS MUNDIAL — BLOQUEO HASTA 11 JUNIO 2026
@@ -6167,7 +6210,7 @@ async function torneoProcesarPago() {
                     if (typeof mostrarMensaje === 'function') mostrarMensaje(`⏳ Procesando $${TORNEO_COSTO_USDT} USDT…`, '#00d4ff');
                     try {
                         if (typeof buildContractTx === 'function' && typeof tonConnectUI !== 'undefined') {
-                            const tx = buildContractTx('torneo', TORNEO_COSTO_USDT);
+                            const tx = await buildContractTx('torneo', TORNEO_COSTO_USDT);
                             await tonConnectUI.sendTransaction(tx);
                         }
                         // ── Register with tournament_fee_paid = true + selected NFT ──
