@@ -1691,9 +1691,9 @@
     // ── CONFIG ─────────────────────────────────────────────────────────────
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
     // ── WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) ─────
-    const CONTRACT_WALLET = Object.freeze("EQDOiZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
+    const CONTRACT_WALLET = Object.freeze("EQD0iZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
     const WALLET = CONTRACT_WALLET;
-    const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO'});
+    const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO',apuesta:'APUESTA'});
     function isValidTonAddress(addr){return typeof addr==='string' && /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(addr.trim());}
     function getContractWallet(){return CONTRACT_WALLET;}
     function assertSecureContractFlow(tipo,address){
@@ -4732,7 +4732,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar: async () => {
                 if (!isWalletConnected()) { mostrarMensaje('⚠️ Conecta tu wallet TON primero', '#ffaa00'); openWalletModal(); return false; }
                 mostrarMensaje(`⏳ Procesando $${monto.toFixed(2)} USDT…`, '#00d4ff');
-                const tx = buildContractTx('apuesta', monto);
+                const tx = await buildContractTx('apuesta', monto);
                 try {
                     await tonConnectUI.sendTransaction(tx);
                     // ✅ Pago confirmado → guardar ticket en DB
@@ -5095,7 +5095,7 @@ async function torneoProcesarPago() {
                     if (typeof mostrarMensaje === 'function') mostrarMensaje(`⏳ Procesando $${TORNEO_COSTO_USDT} USDT…`, '#00d4ff');
                     try {
                         if (typeof buildContractTx === 'function' && typeof tonConnectUI !== 'undefined') {
-                            const tx = buildContractTx('torneo', TORNEO_COSTO_USDT);
+                            const tx = await buildContractTx('torneo', TORNEO_COSTO_USDT);
                             await tonConnectUI.sendTransaction(tx);
                         }
                         torneoRegistrar(walletAddr, alias || null);
