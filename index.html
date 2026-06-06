@@ -73,61 +73,65 @@
             <!-- LEFT SIDE BUTTONS -->
             <div class="side-button-column side-left">
                 <button class="side-premium-btn" onclick="openModal('modal-torneo')">
-                    <span style="font-size:1.5em;">🏆</span> <span data-i18n="menu_torneo">Torneo</span>
+                    <span style="font-size:1.5em;line-height:1;margin-bottom:2px;">🏆</span> <span data-i18n="menu_torneo">Torneo</span>
                 </button>
                 <button class="side-premium-btn" onclick="openModal('modal-recompensa-pts')">
-                    <span style="font-size:1.5em;">⚽</span> <span data-i18n="menu_recompensas">Goles</span>
+                    <span style="font-size:1.5em;line-height:1;margin-bottom:2px;">⚽</span> <span data-i18n="menu_recompensas">Goles</span>
                 </button>
                 <button class="side-premium-btn" onclick="openModal('modal-logros')">
-                    <span style="font-size:1.5em;">🏅</span> <span data-i18n="menu_logros">Logros</span>
+                    <span style="font-size:1.5em;line-height:1;margin-bottom:2px;">🏅</span> <span data-i18n="menu_logros">Logros</span>
                 </button>
+            </div>
+
+            <!-- CENTER WRAPPER (Podium + Actions) -->
+            <div class="podium-center-wrapper">
+                <!-- CENTER PODIUM -->
+                <div class="podium-center-container">
+                    <img src="./assets/podio_principal.png" alt="Podium FUTMUNDI" class="podium-hero-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                </div>
+
+                <!-- FUEL BADGE -->
+                <div class="premium-fuel-badge" style="margin-top: -5px; margin-bottom: 15px; padding: 6px 15px;">
+                    <span class="premium-fuel-icon">⚽</span>
+                    <span class="premium-fuel-num" id="fuel-count-display">0</span>
+                    <span class="premium-fuel-label" data-i18n="balones">balones</span>
+                    <span id="fuel-count-display-m" style="display:none;"></span>
+                </div>
+
+                <!-- GAME BUTTONS -->
+                <div class="premium-game-actions" style="max-width: 100%; gap: 8px;">
+                    <button class="premium-action-btn btn-pvp bcast-metal-plate" onclick="openModal('modal-duelo-urbano')" style="padding: 10px;">
+                        <span class="btn-icon" style="font-size:1.5em;">🏟️</span>
+                        <div class="btn-text">
+                            <strong style="font-size:0.9em;">FUTCANCHA</strong>
+                            <span style="font-size:0.65em;">PvP en Vivo</span>
+                        </div>
+                    </button>
+                    <button class="premium-action-btn btn-pve bcast-metal-plate" onclick="openModal('modal-duelo-callejero')" style="padding: 10px;">
+                        <span class="btn-icon" style="font-size:1.5em;">🏃</span>
+                        <div class="btn-text">
+                            <strong style="font-size:0.9em;">FUTSALA</strong>
+                            <span style="font-size:0.65em;">Modo Libre</span>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <!-- RIGHT SIDE BUTTONS -->
             <div class="side-button-column side-right">
                 <button class="side-premium-btn" onclick="openModal('modal-deposito')">
-                    <span style="font-size:1.5em;">💎</span> <span data-i18n="menu_deposito">Depósito</span>
+                    <span style="font-size:1.5em;line-height:1;margin-bottom:2px;">💎</span> <span data-i18n="menu_deposito">Depósito</span>
                 </button>
                 <button class="side-premium-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();">
-                    <span style="font-size:1.5em;">💸</span> <span data-i18n="menu_retiro">Retiro</span>
+                    <span style="font-size:1.5em;line-height:1;margin-bottom:2px;">💸</span> <span data-i18n="menu_retiro">Retiro</span>
                 </button>
                 <button class="side-premium-btn" onclick="openModal('modal-apuesta')">
-                    <span style="font-size:1.5em;">🎲</span> <span data-i18n="menu_apuesta">Apuesta</span>
+                    <span style="font-size:1.5em;line-height:1;margin-bottom:2px;">🎲</span> <span data-i18n="menu_apuesta">Apuesta</span>
                 </button>
             </div>
 
-            <!-- CENTER PODIUM -->
-            <div class="podium-center-container">
-                <img src="./assets/podio_principal.png" alt="Podium FUTMUNDI" class="podium-hero-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
-            </div>
-
-            <!-- FUEL BADGE -->
-            <div class="premium-fuel-badge" style="margin-top: -10px;">
-                <span class="premium-fuel-icon">⚽</span>
-                <span class="premium-fuel-num" id="fuel-count-display">0</span>
-                <span class="premium-fuel-label" data-i18n="balones">balones</span>
-                <span id="fuel-count-display-m" style="display:none;"></span>
-            </div>
-
-            <!-- GAME BUTTONS -->
-            <div class="premium-game-actions" style="max-width: 400px; margin-top: 10px;">
-                <button class="premium-action-btn btn-pvp" onclick="openModal('modal-duelo-urbano')">
-                    <span class="btn-icon">🏟️</span>
-                    <div class="btn-text">
-                        <strong>FUTCANCHA</strong>
-                        <span>PvP en Vivo</span>
-                    </div>
-                </button>
-                <button class="premium-action-btn btn-pve" onclick="openModal('modal-duelo-callejero')">
-                    <span class="btn-icon">🏃</span>
-                    <div class="btn-text">
-                        <strong>FUTSALA</strong>
-                        <span>Modo Libre</span>
-                    </div>
-                </button>
-            </div>
-
-            <!-- BOTTOM NAVIGATION BAR -->
+        </div>
+        <!-- BOTTOM NAVIGATION BAR -->
             <div class="premium-bottom-nav">
                 <button class="nav-item-btn" onclick="openModal('modal-marketplace')">
                     <img src="./assets/marketplace.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">

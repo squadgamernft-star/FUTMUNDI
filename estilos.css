@@ -1355,17 +1355,28 @@
 
 /* ══ PERFECT HYBRID LAYOUT ══ */
 .perfect-hybrid-layout {
+    display: grid;
+    grid-template-columns: 75px 1fr 75px;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: 80px;
+    gap: 5px;
+}
+
+.podium-center-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
-    position: relative;
-    padding-bottom: 80px; /* Space for bottom nav */
 }
 
 .podium-center-container {
     width: 100%;
-    max-width: 320px;
+    max-width: 250px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -1374,8 +1385,6 @@
 }
 
 .side-button-column {
-    position: absolute;
-    top: 10%;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -1383,11 +1392,11 @@
 }
 
 .side-left {
-    left: 10px;
+    align-items: flex-start;
 }
 
 .side-right {
-    right: 10px;
+    align-items: flex-end;
 }
 
 .side-premium-btn {
