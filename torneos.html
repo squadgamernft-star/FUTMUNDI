@@ -1,4 +1,5 @@
-<div class="modal bcast-volumetric-bg" style="background:#0a120c; border:1px solid rgba(0,255,136,0.2); box-shadow:0 10px 40px rgba(0,0,0,0.8); padding:0; height:100%; max-width:700px; border-radius:16px; overflow:hidden;">
+<div class="modal-overlay broadcast-modal" id="modal-torneo">
+    <div class="modal bcast-volumetric-bg" style="background:#0a120c; border:1px solid rgba(0,255,136,0.2); box-shadow:0 10px 40px rgba(0,0,0,0.8); padding:0; height:100%; max-width:700px; border-radius:16px; overflow:hidden;">
         <div class="broadcast-header" style="border-bottom:1px solid rgba(255,215,0,0.3); background:rgba(0,0,0,0.4); justify-content:space-between;">
             <span class="modal-title" style="color:#FFD700; font-family:'Bebas Neue', sans-serif; letter-spacing:1px;">🏆 FUTMUNDI</span>
             <button class="broadcast-close" onclick="closeModal('modal-torneo')">✕</button>
@@ -77,18 +78,17 @@
         </div>
 
         <!-- TAB REGISTRO -->
-            <div id="tor-tab-registro" style="display:none;">
-                <div id="tor-registro-content"><!-- generado por JS --></div>
-            </div>
+        <div id="tor-tab-registro" style="display:none;">
+            <div id="tor-registro-content"><!-- generado por JS --></div>
+        </div>
 
-            <!-- TAB INSCRITOS -->
-            <div id="tor-tab-inscritos" style="display:none;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <div style="font-size:0.8em;color:#888;">Jugadores verificados</div>
-                    <div id="tor-inscritos-count" style="font-size:0.8em;color:var(--cyan);font-weight:700;">0</div>
-                </div>
-                <div id="tor-inscritos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:4px;"></div>
+        <!-- TAB INSCRITOS -->
+        <div id="tor-tab-inscritos" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div style="font-size:0.8em;color:#888;">Jugadores verificados</div>
+                <div id="tor-inscritos-count" style="font-size:0.8em;color:var(--cyan);font-weight:700;">0</div>
             </div>
+            <div id="tor-inscritos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:4px;"></div>
         </div>
     </div>
 </div>

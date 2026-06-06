@@ -689,7 +689,7 @@
         if(id==='modal-logros')buildSkillLogros();
         if(id==='modal-duelo-callejero')buildFutsalaBody();
         if(id==='modal-nivel')actualizarUI();
-        if(id==='modal-torneo')updateTorneoCountdown();
+        if(id==='modal-torneo'){updateTorneoCountdown(); if(typeof torneoActualizarContadorUsuariosNFT==='function') torneoActualizarContadorUsuariosNFT();}
     }
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';if(!document.querySelector('.modal-overlay.active'))document.body.classList.remove('modal-open');}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
@@ -4231,6 +4231,64 @@ setInterval(() => {
 const TORNEO_REGISTRO_KEY = 'futmundi_torneo_registros_v2';
 const TORNEO_COSTO_USDT   = 10;
 
+// ── TORNEO: CONTADOR DE USUARIOS CON NFT Y SYNC DESDE SUPABASE ──────────
+window.torneoNFTUsersCount = 0;
+
+async function torneoActualizarContadorUsuariosNFT() {
+    try {
+        const sb = (typeof _supa === 'function') ? _supa() : null;
+        if (!sb) return;
+
+        // 1. Sincronizar participantes registrados desde Supabase
+        const { data: listData, error: listError } = await sb
+            .from('tournament_registrations')
+            .select('*');
+        if (!listError && listData) {
+            const synced = listData.map(r => ({
+                wallet: r.wallet,
+                alias: r.alias || 'Jugador',
+                fecha: r.registered_at || new Date().toISOString(),
+                pagado: r.tournament_fee_paid,
+                tournament_fee_paid: r.tournament_fee_paid,
+                fee_amount_usdt: r.fee_amount_usdt,
+                nft_idx: r.nft_idx,
+                nft_copy: r.nft_copy
+            }));
+            torneoSaveRegistros(synced);
+        }
+
+        // 2. Contar usuarios con NFT de la tabla referrals_map (usuarios totales con NFT)
+        const { count, error } = await sb
+            .from('referrals_map')
+            .select('*', { count: 'exact', head: true });
+        if (!error && count !== null) {
+            window.torneoNFTUsersCount = count;
+            const counterEl = document.getElementById('tor-nft-users-counter');
+            if (counterEl) {
+                counterEl.textContent = `${window.torneoNFTUsersCount} / 100`;
+            }
+            const btnPago = document.getElementById('tor-btn-pago');
+            if (btnPago) {
+                if (window.torneoNFTUsersCount >= 100) {
+                    btnPago.disabled = false;
+                    btnPago.style.opacity = '1';
+                    btnPago.style.cursor = 'pointer';
+                    btnPago.innerHTML = '💳 Pagar e Inscribirse';
+                } else {
+                    btnPago.disabled = true;
+                    btnPago.style.opacity = '0.5';
+                    btnPago.style.cursor = 'not-allowed';
+                    btnPago.innerHTML = `🔒 Habilitado con 100 usuarios con NFT (${window.torneoNFTUsersCount}/100)`;
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('[torneo] Error updating tournament sync:', e);
+    }
+}
+window.torneoActualizarContadorUsuariosNFT = torneoActualizarContadorUsuariosNFT;
+
+
 function torneoGetRegistros() {
     try { return JSON.parse(localStorage.getItem(TORNEO_REGISTRO_KEY) || '[]'); } catch(e){ return []; }
 }
@@ -4288,6 +4346,12 @@ function torneoTabSwitch(tab) {
     });
     if (tab === 'registro')  torneoRenderRegistro();
     if (tab === 'inscritos') torneoRenderInscritos();
+
+    if (typeof torneoActualizarContadorUsuariosNFT === 'function') {
+        torneoActualizarContadorUsuariosNFT();
+    }
+}
+}
 }
 
 function torneoRenderRegistro() {
@@ -4375,6 +4439,16 @@ function torneoRenderRegistro() {
             <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;word-break:break-all;color:#bbb;">${walletAddr}</div>
         </div>
 
+        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.8em;color:#aaa;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div style="margin-bottom:4px;color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.78em;letter-spacing:1px;">👥 USUARIOS CON NFT</div>
+                <div style="font-size:0.72em;color:#aaa;">Se requieren 100 usuarios para habilitar el pago</div>
+            </div>
+            <div style="font-family:'Orbitron',sans-serif;font-weight:900;color:var(--gold);font-size:1.3em;" id="tor-nft-users-counter">
+                ${window.torneoNFTUsersCount || 0} / 100
+            </div>
+        </div>
+
         <div style="background:rgba(255,140,0,0.08);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.8em;color:#ffd9a8;line-height:1.6;">
             💡 Al confirmar, se procesará el pago de <strong style="color:var(--gold)">$${TORNEO_COSTO_USDT} USDT</strong> desde tu wallet TON al contrato inteligente FUTMUNDI. Tu wallet quedará registrada en el torneo.
         </div>
@@ -4384,9 +4458,10 @@ function torneoRenderRegistro() {
                 style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
                 ← Volver
             </button>
-            <button onclick="torneoProcesarPago()"
+            <button id="tor-btn-pago" onclick="torneoProcesarPago()"
+                ${(window.torneoNFTUsersCount || 0) < 100 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}
                 style="padding:12px;background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
-                💳 Pagar e Inscribirse
+                ${(window.torneoNFTUsersCount || 0) >= 100 ? '💳 Pagar e Inscribirse' : `🔒 Habilitado con 100 usuarios con NFT (${window.torneoNFTUsersCount || 0}/100)`}
             </button>
         </div>`;
 
