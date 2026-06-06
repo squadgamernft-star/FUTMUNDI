@@ -254,13 +254,25 @@
         </div>
     </div>
 
-    <!-- ══════════ MODAL APUESTAS ══════════ -->
-    <!-- Component: modal-apuesta -->
+    <!-- MARKETPLACE -->
+    <div id="modal-marketplace" class="modal-overlay dynamic-component"></div>
+
+    <!-- RECOMPENSA POR GOLES -->
+    <div class="modal-overlay broadcast-modal" id="modal-recompensa-pts">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
+            <span class="modal-title" style="color:#FFD700;">⚽ RECOMPENSAS POR GOLES</span>
+            <button class="broadcast-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
+        </div>
+        <div style="padding: 15px;">
+            <div id="reward-pts-container"></div>
+        </div>
+    </div>
+</div>
+
+    <!-- MODAL APUESTAS -->
     <div id="modal-apuesta" class="modal-overlay dynamic-component"></div>
 
-
-
-    <!-- RETIRO -->
     <!-- Component: modal-retiro -->
     <div id="modal-retiro" class="modal-overlay dynamic-component"></div>
 
