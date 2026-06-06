@@ -16,15 +16,15 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --cyan: #FFFFFF; --green: #00B16A; --orange: #E5002A;
-            --red: #cc0000; --gold: #ffd84d; --purple: #0A58CA;
-            --grass: #1C1F26; --grass2: #2B2F3A;
-            --surface: rgba(255,255,255,0.08);
-            --border: rgba(255,255,255,0.15);
+            --cyan: #42f58d; --green: #00B16A; --orange: #FFD700;
+            --red: #ff5a6f; --gold: #ffd84d; --purple: #FFD700;
+            --grass: #0a130a; --grass2: #0e200e;
+            --surface: rgba(45,122,31,0.08);
+            --border: rgba(255,215,0,0.25);
         }
-        body { font-family: 'Inter', sans-serif; background: #0F1115; color: #FFFFFF; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
-        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: linear-gradient(135deg, #0F1115 0%, #1A1D24 100%); }
-        .flags-bg::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 24px 24px; }
+        body { font-family: 'Inter', sans-serif; background: #061006; color: #FFFFFF; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        .flags-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: linear-gradient(135deg, #0a130a 0%, #061006 100%); }
+        .flags-bg::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(45, 122, 31, 0.05) 1px, transparent 1px); background-size: 24px 24px; }
         .flag-float { display: none; }
         @keyframes floatFlag { 0% { transform: translateY(105vh) rotate(-5deg) scale(0.85); opacity: 0; } 8% { opacity: 0.22; } 50% { transform: translateY(0vh) rotate(5deg) scale(1.0); opacity: 0.22; } 92% { opacity: 0.22; } 100% { transform: translateY(-105vh) rotate(-5deg) scale(1.1); opacity: 0; } }
         .ball-float { position: absolute; font-size: 1.4em; opacity: 0; animation: floatBall ease-in-out infinite; will-change: transform, opacity; }
@@ -68,10 +68,9 @@
         .central-hero::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 16px; background: linear-gradient(45deg, var(--green), transparent, var(--gold), transparent, var(--green)); z-index: -1; animation: borderGlow 3s linear infinite; opacity: 0.6; }
         @keyframes borderGlow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
         .menu-column { display: flex; flex-direction: column; gap: 22px; min-width: 200px; }
-        .word-btn { background: transparent; color: #ccc; border: none; padding: 10px 12px; font-size: 1.05em; font-weight: 600; font-family: 'Rajdhani', sans-serif; cursor: pointer; position: relative; text-align: center; transition: all 0.3s ease; text-transform: capitalize; letter-spacing: 1px; outline: none; }
-        .word-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); transition: width 0.35s ease, opacity 0.35s ease; opacity: 0; }
-        .word-btn:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.7), 0 0 22px rgba(0,255,136,0.5); transform: translateY(-2px); }
-        .word-btn:hover::after { width: 80%; opacity: 1; }
+        .word-btn { background: rgba(255,255,255,0.03); color: #e0e0e0; border: none; border-radius: 12px; padding: 12px 18px; font-size: 1.05em; font-weight: 600; font-family: 'Rajdhani', sans-serif; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: flex-start; gap: 10px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-transform: capitalize; letter-spacing: 1.5px; outline: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 8px; width: 100%; box-sizing: border-box; }
+        .word-btn:hover { background: rgba(255,255,255,0.08); color: #fff; box-shadow: 0 8px 25px rgba(0,255,136,0.15); transform: translateY(-3px) scale(1.02); text-shadow: 0 0 10px rgba(255,255,255,0.4); }
+        .icon-only-btn { width: 55px; height: 55px; padding: 0; justify-content: center; font-size: 1.6em; border-radius: 16px; margin-bottom: 15px; margin-left: auto; margin-right: auto; }
         .primary-btn { background: linear-gradient(135deg, rgba(45,122,31,0.18), rgba(0,200,80,0.12)); border: 1px solid rgba(45,122,31,0.7); color: var(--green); padding: 14px 28px; border-radius: 10px; font-weight: 700; font-size: 1em; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; width: 100%; position: relative; overflow: hidden; z-index: 3; }
         .primary-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transform: skewX(-20deg); transition: 0.5s; }
         .primary-btn:hover::before { left: 150%; }
@@ -97,12 +96,9 @@
         /* Badge de balones: chip debajo de la imagen */
         .mobile-fuel-badge {
             display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(0,0,0,0.82); border: 1px solid rgba(0,255,136,0.45);
-            border-radius: 20px; padding: 5px 14px 5px 10px;
-            backdrop-filter: blur(6px);
             white-space: nowrap;
             margin: 10px auto 0;
-            box-shadow: 0 0 14px rgba(0,255,136,0.18);
+            padding: 5px;
         }
         .mobile-fuel-badge-icon { font-size: 1em; filter: drop-shadow(0 0 5px rgba(0,255,136,0.8)); animation: ballGlow 2s ease-in-out infinite; }
         .mobile-fuel-badge-num { font-family: 'Orbitron', sans-serif; font-size: 0.95em; font-weight: 900; color: var(--green); text-shadow: 0 0 8px rgba(0,255,136,0.7); }
@@ -147,9 +143,9 @@
         .mobile-menu-btn.btn-accent-orange { border-color: rgba(255,159,28,0.22); color: var(--orange); }
         .mobile-menu-btn.btn-accent-purple { border-color: rgba(181,108,255,0.22); color: var(--purple); }
 
-        .fuel-section { width: 100%; }
-        .fuel-label { font-size: 0.72em; color: #888; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-        .fuel-simple-display { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.25); border-radius: 4px; padding: 12px 20px; }
+        .fuel-section { width: 100%; margin-bottom: -10px; }
+        .fuel-label { display: none; }
+        .fuel-simple-display { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 20px; }
         .fuel-ball-icon { font-size: 1.8em; filter: drop-shadow(0 0 8px rgba(0,255,136,0.6)); animation: ballGlow 2s ease-in-out infinite; }
         @keyframes ballGlow { 0%,100% { filter: drop-shadow(0 0 6px rgba(0,255,136,0.4)) } 50% { filter: drop-shadow(0 0 14px rgba(0,255,136,0.9)) } }
         .fuel-count { font-family: 'Orbitron', sans-serif; font-size: 2em; font-weight: 900; color: var(--green); text-shadow: 0 0 15px rgba(0,255,136,0.6); }
@@ -157,15 +153,15 @@
 
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal { background: #1C1F26; border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .modal-header { padding: 18px 22px 14px; border-bottom: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #0F1115; border-radius: 6px 6px 0 0; z-index: 2; }
-        .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5em; color: #FFFFFF; letter-spacing: 1px; text-transform: uppercase; }
+        .modal { background: #061006; backdrop-filter: blur(12px); border: 1px solid rgba(0,177,106,0.3); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 40px rgba(0,177,106,0.15), inset 0 0 20px rgba(255,215,0,0.05); }
+        .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid rgba(0,177,106,0.3); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: linear-gradient(180deg, #0a180a 0%, #050c05 100%); border-radius: 16px 16px 0 0; z-index: 2; }
+        .modal-title { font-family: 'Orbitron', sans-serif; font-size: 1.15em; color: var(--gold); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 12px rgba(255,215,0,0.4); }
         .modal-close { background: none; border: none; color: #888; font-size: 1.6em; cursor: pointer; transition: color 0.2s, transform 0.2s; line-height: 1; }
         .modal-close:hover { color: var(--red); transform: rotate(90deg); }
         .modal-body { padding: 20px; }
         .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 4px; flex-wrap: wrap; }
         .tab-btn { flex: 1; min-width: 60px; padding: 8px 6px; border: none; background: transparent; color: #888; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.82em; letter-spacing: 0.5px; cursor: pointer; border-radius: 7px; transition: all 0.25s; text-transform: uppercase; }
-        .tab-btn.active { background: rgba(45,122,31,0.2); color: var(--green); }
+        .tab-btn.active { background: linear-gradient(180deg, rgba(0,177,106,0.2) 0%, transparent 100%); border-bottom: 2px solid var(--green); color: var(--gold); text-shadow: 0 0 8px rgba(255,215,0,0.5); }
         .tab-btn:hover:not(.active) { color: #ccc; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
@@ -179,6 +175,17 @@
         .car-card-name { font-family: 'Orbitron', sans-serif; font-size: 0.6em; font-weight: 700; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
         .car-card-country { font-size: 0.85em; color: #aaa; margin: 2px 0; }
         .car-card-price { display: flex; align-items: center; gap: 5px; font-size: 0.95em; font-weight: 700; color: var(--gold); margin: 5px 0 4px; }
+
+        /* Game Modes Image Buttons */
+        .game-modes-container { display: flex; justify-content: center; gap: 15px; margin-top: 20px; width: 100%; }
+        .pvp-img-btn, .pve-img-btn { flex: 1; background: #0d1a0d; border-radius: 12px; padding: 10px; cursor: pointer; text-align: center; transition: all 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .pve-img-btn { background: #1a1100; }
+        .pvp-img-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0,255,136,0.2); }
+        .pve-img-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,140,0,0.2); }
+        .pvp-img-btn img, .pve-img-btn img { width: 100%; border-radius: 8px; display: block; margin: 0 auto; object-fit: contain; }
+        .pvp-img-text { color: var(--green); font-family: 'Orbitron', sans-serif; font-size: 0.85em; font-weight: 800; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,136,0.6); }
+        .pve-img-text { color: var(--orange); font-family: 'Orbitron', sans-serif; font-size: 0.85em; font-weight: 800; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,140,0,0.6); }
+
         .nft-qty-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
         .nft-qty-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid rgba(45,122,31,0.4); background: rgba(45,122,31,0.1); color: var(--green); font-size: 1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; line-height: 1; padding: 0; }
         .nft-qty-btn:hover { background: rgba(45,122,31,0.3); }
@@ -372,8 +379,8 @@
 
         .player-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px; }
         .player-select-card { background: var(--surface); border: 2px solid rgba(45,122,31,0.25); border-radius: 4px; overflow: hidden; cursor: pointer; transition: all 0.3s; text-align: center; }
-        .player-select-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 0 16px rgba(0,255,136,0.2); }
-        .player-select-card.selected { border-color: var(--cyan); box-shadow: 0 0 16px rgba(0,212,255,0.3); }
+        .player-select-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .player-select-card.selected { border-color: var(--green); box-shadow: 0 0 25px rgba(0,177,106,0.4); }
         .player-select-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
         .player-select-info { padding: 8px; }
         .player-select-info h5 { font-family: 'Orbitron', sans-serif; font-size: 0.55em; color: #fff; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -573,8 +580,8 @@
         .car-card { border-radius: 6px !important; box-shadow: 0 6px 18px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06); }
         .car-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 28px rgba(0,255,136,0.18), inset 0 1px 0 rgba(255,255,255,0.1); }
         .car-card-img-wrap { border-radius: 4px 14px 4px 4px; }
-        .modal { border-radius: 26px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 80px rgba(106,214,255,0.1); }
-        .modal-header { border-radius: 26px 26px 0 0 !important; }
+        
+        
         .primary-btn, .buy-car-btn, .word-btn { border-radius: 4px !important; }
         .squad-slot { border-radius: 4px !important; }
         .equip-slot { border-radius: 4px !important; transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease; }
@@ -736,7 +743,86 @@
             .mobile-play-row .mobile-play-btn:active .mpb-icon-img { transform: scale(0.94); }
         }
 
-    </style>
+    
+/* BROADCAST / PREMIUM GREEN-GOLD UI */
+.broadcast-modal .modal { background: #061006; border: 1px solid #1a2a1a; box-shadow: 0 0 50px rgba(0, 177, 106, 0.2); color: #fff; overflow-y: auto; overflow-x: hidden; border-radius: 16px; margin-top:20px; height: calc(100% - 40px); }
+.broadcast-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; background: linear-gradient(180deg, #0a180a 0%, #050c05 100%); border-bottom: 1px solid rgba(0,177,106,0.3); border-radius: 16px 16px 0 0; }
+.broadcast-header .modal-title { font-family: 'Orbitron', sans-serif; color: #FFD700; font-size: 1.15em; font-weight: 700; letter-spacing: 1px; text-shadow: 0 0 12px rgba(255, 215, 0, 0.4); }
+.broadcast-header.fc-header .modal-title { color: #00B16A; text-shadow: 0 0 12px rgba(0, 177, 106, 0.4); }
+.broadcast-close { background: transparent; border: none; color: #888; font-size: 1.5em; cursor: pointer; transition: color 0.2s; }
+.broadcast-close:hover { color: #ff5a6f; }
+
+.torneo-hero { position: relative; padding: 25px 20px 20px; text-align: center; background: radial-gradient(circle at top, rgba(0,177,106,0.15) 0%, transparent 70%); }
+.torneo-trophy { width: 140px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)); animation: floatTrophy 4s ease-in-out infinite; }
+@keyframes floatTrophy { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); filter: drop-shadow(0 18px 25px rgba(0,0,0,0.4)); } }
+.torneo-hero-title { font-family: 'Orbitron', sans-serif; font-size: 1.35em; font-weight: 800; color: #fff; letter-spacing: 1px; margin-top: 12px; }
+.torneo-hero-prize { font-family: 'Orbitron', sans-serif; font-size: 2.4em; font-weight: 900; color: #FFD700; text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 25px rgba(255,215,0,0.5); margin: 5px 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.torneo-hero-prize img { width: 32px; height: 32px; }
+.torneo-subtitle { font-size: 0.8em; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 18px; }
+.espn-countdown { display: flex; justify-content: center; gap: 8px; background: linear-gradient(180deg, #162416 0%, #0a130a 100%); border: 1px solid rgba(0,177,106,0.2); border-radius: 12px; padding: 12px 15px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 15px rgba(0,0,0,0.4); }
+.espn-cd-box { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+.espn-cd-num { font-family: 'Orbitron', sans-serif; font-size: 1.45em; font-weight: 700; color: #FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+.espn-cd-lbl { font-size: 0.6em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.espn-cd-sep { color: #555; font-size: 1.4em; font-weight: 700; margin-top: 2px; }
+.torneo-section-title { font-family: 'Orbitron', sans-serif; font-size: 0.85em; color: #00B16A; text-align: center; letter-spacing: 1px; margin: 25px 0 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.torneo-section-title::before, .torneo-section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,177,106,0), rgba(0,177,106,0.5), rgba(0,177,106,0)); }
+.torneo-prizes-espn { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 0 15px; }
+.espn-prize-card { border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.espn-prize-gold { background: linear-gradient(135deg, #d4af37 0%, #aa8015 100%); border: 1px solid #ffd700; color: #111; }
+.espn-prize-silver { background: linear-gradient(135deg, #e0e0e0 0%, #9e9e9e 100%); border: 1px solid #ffffff; color: #111; }
+.espn-prize-bronze { background: linear-gradient(135deg, #cd7f32 0%, #8c5520 100%); border: 1px solid #e09f5b; color: #111; }
+.espn-medal-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3em; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.4); }
+.espn-prize-amt { font-family: 'Orbitron', sans-serif; font-size: 1.35em; font-weight: 800; margin-bottom: 2px; }
+.espn-prize-lbl { font-size: 0.7em; font-weight: 700; opacity: 0.8; text-transform: uppercase; }
+.espn-prize-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+.espn-item-card { background: linear-gradient(180deg, #112211 0%, #0a130a 100%); border: 1px solid rgba(0,177,106,0.3); border-radius: 12px; display: flex; align-items: center; padding: 12px 15px; gap: 15px; }
+.espn-item-img { width: 45px; height: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); font-size: 2.2em; }
+.espn-item-info { display: flex; flex-direction: column; }
+.espn-item-amt { font-family: 'Orbitron', sans-serif; font-size: 1.25em; font-weight: 700; color: #FFD700; }
+.espn-item-lbl { font-size: 0.75em; color: #aaa; text-transform: uppercase; }
+
+/* FUTCANCHA & FUTSALA UI */
+.fc-hero { width: 100%; height: 200px; position: relative; border-bottom: 1px solid rgba(0,177,106,0.4); border-radius: 16px 16px 0 0; overflow: hidden; }
+.fc-hero img { width: 100%; height: 100%; object-fit: cover; }
+.fc-hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(0deg, #061006 0%, transparent 100%); }
+.fc-wld-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
+.fc-wld-card { border-radius: 12px; padding: 12px 5px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.fc-wld-card.win { background: linear-gradient(180deg, rgba(0,177,106,0.2) 0%, rgba(0,177,106,0.05) 100%); border: 1px solid rgba(0,177,106,0.5); }
+.fc-wld-card.draw { background: linear-gradient(180deg, rgba(255,215,0,0.15) 0%, rgba(255,215,0,0.05) 100%); border: 1px solid rgba(255,215,0,0.4); }
+.fc-wld-card.loss { background: linear-gradient(180deg, rgba(255,90,111,0.15) 0%, rgba(255,90,111,0.05) 100%); border: 1px solid rgba(255,90,111,0.4); }
+.fc-wld-title { font-family: 'Orbitron', sans-serif; font-size: 0.85em; color: #fff; margin-top: 8px; margin-bottom: 3px; }
+.fc-wld-val { font-size: 0.95em; color: #00d4ff; font-weight: 700; display: flex; align-items: center; gap: 4px;}
+.fc-mode-card { margin: 0 15px 15px; border-radius: 12px; border: 1px solid rgba(0,177,106,0.4); background: linear-gradient(180deg, #0a180a 0%, #061006 100%); overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s, border-color 0.2s; }
+.fc-mode-card:hover { border-color: #00B16A; box-shadow: 0 4px 20px rgba(0,177,106,0.2); }
+.fc-mode-card:active { transform: scale(0.98); }
+.fc-mode-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid rgba(0,177,106,0.2); }
+.fc-mode-info { padding: 18px 15px; display: flex; justify-content: space-between; align-items: center; }
+.fc-mode-name { font-family: 'Orbitron', sans-serif; font-size: 1.15em; font-weight: 700; color: #00B16A; text-transform: uppercase; letter-spacing: 1px; }
+.fc-mode-icon { width: 90px; height: 90px; object-fit: contain; position: absolute; right: 15px; bottom: 65px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)); }
+.fs-warning { margin: 15px; background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.15), rgba(255,215,0,0.1)); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 12px; text-align: center; color: #FFD700; font-size: 0.75em; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.fs-pitch-card { display: flex; background: linear-gradient(90deg, #0a130a 0%, #050c05 100%); border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; margin: 0 15px 12px; padding: 12px; gap: 15px; align-items: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s, border-color 0.2s; }
+.fs-pitch-card:hover { border-color: rgba(255,215,0,0.5); }
+.fs-pitch-card:active { transform: scale(0.98); }
+.fs-pitch-img { width: 110px; height: 75px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
+.fs-pitch-info { flex: 1; }
+.fs-pitch-name { font-family: 'Orbitron', sans-serif; color: #FFD700; font-size: 1.05em; margin-bottom: 5px; }
+.fs-pitch-desc { font-size: 0.75em; color: #aaa; margin-bottom: 8px; }
+.fs-pitch-tags { display: flex; gap: 8px; font-size: 0.7em; }
+.fs-tag-dif { background: rgba(255,215,0,0.15); color: #FFD700; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(255,215,0,0.3); }
+.fs-tag-cost { background: rgba(0,177,106,0.15); color: #00B16A; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,177,106,0.3); }
+.fs-tag-rew { background: rgba(0,212,255,0.15); color: #00d4ff; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,212,255,0.3); }
+
+/* Bottom Nav Styles overrides to match perfectly */
+.mobile-menu-btn.active {
+    background: linear-gradient(180deg, rgba(0,177,106,0.15) 0%, transparent 100%);
+    border-color: #00B16A;
+    color: #FFD700;
+    box-shadow: 0 -2px 10px rgba(0,177,106,0.2);
+}
+.mobile-menu-btn.active .btn-emoji {
+    filter: drop-shadow(0 0 5px rgba(255,215,0,0.6));
+}
+</style>
 </head>
 <body>
 
@@ -775,11 +861,8 @@
         </div>
         <div class="top-bar-row2">
             <button class="lang-toggle-btn" style="background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border-color:rgba(168,85,247,0.5);color:#fff;" onclick="openModal('modal-referidos');buildReferidosUI();" data-i18n="referidos_btn">👥 Referidos</button>
-            <div id="wallet-addr-badge" style="display:none;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:4px 12px;font-size:0.72em;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                <span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;box-shadow:0 0 6px var(--green)"></span>
-                <span id="wallet-addr-text">—</span>
-            </div>
-            <div id="ton-connect-button"></div>
+            <button id="custom-wallet-btn" onclick="if(typeof window.tonConnectUI !== 'undefined') { if(window.tonConnectUI.connected) window.tonConnectUI.disconnect(); else window.tonConnectUI.openModal(); }" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,100,255,0.2));border:1px solid var(--cyan);border-radius:20px;padding:6px 14px;font-size:0.75em;color:var(--cyan);font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.3s;box-shadow:0 0 10px rgba(0,212,255,0.2);">🔗 Conectar</button>
+            <div id="ton-connect-button" style="display:none !important;"></div>
         </div>
     </div>
 
@@ -796,14 +879,14 @@
 
         <!-- ── DESKTOP layout (>640px): imagen central flanqueada por menús ── -->
         <div class="layout-grid">
-            <div class="menu-column">
-                <button class="word-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">👕 Futbolistas</button>
-                <button class="word-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">🏪 Marketplace</button>
-                <button class="word-btn" onclick="openModal('modal-recompensa-pts')" data-i18n="menu_recompensas">⚽ Recompensas</button>
-                <button class="word-btn" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria">🎁 Recompensa Diaria</button>
-                <button class="word-btn" onclick="openModal('modal-logros')" data-i18n="menu_logros">🏅 Logros</button>
-                <button class="word-btn" onclick="openModal('modal-nivel')" data-i18n="menu_nivel">⬆️ Nivel</button>
-                <a class="word-btn" href="page/apuestas.html" data-i18n="menu_apuesta" id="btn-menu-apuesta" style="text-decoration:none;display:inline-block;">🎲 Apuesta</a>
+            <div class="menu-column" style="align-items: center;">
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-garage')" title="Futbolistas">👕</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-marketplace')" title="Marketplace">🏪</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-recompensa-pts')" title="Recompensas">⚽</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-recompensa')" title="Bono Diario">🎁</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-logros')" title="Logros">🏅</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-nivel')" title="Nivel">⬆️</button>
+                <a class="word-btn icon-only-btn" href="page/apuestas.html" id="btn-menu-apuesta" title="Apuestas" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">🎲</a>
             </div>
 
             <div class="car-container">
@@ -814,23 +897,29 @@
                     <div class="central-hero-badge">⚽ FUTMUNDI NFT ⚽</div>
                 </div>
                 <div class="fuel-section">
-                    <div class="fuel-label" data-i18n="balones_estamina">⚽ Balones de Estamina</div>
                     <div class="fuel-simple-display">
                         <span class="fuel-ball-icon">⚽</span>
                         <span class="fuel-count" id="fuel-count-display">0</span>
-                        <span class="fuel-count-label" data-i18n="balones">balones</span>
                     </div>
                 </div>
-                <button class="primary-btn" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
+                <div class="game-modes-container">
+                    <div class="pve-img-btn" onclick="openModal('modal-duelo-callejero')">
+                        <img src="file:///C:/Users/Mi%20Pc/.gemini/antigravity-ide/brain/46f1169c-0fdf-4937-a040-0502d8686dd8/futsal_pve_button_1780780280674.png" alt="Cancha Futsal">
+                        <div class="pve-img-text">FUTSALA</div>
+                    </div>
+                    <div class="pvp-img-btn" onclick="openModal('modal-duelo-urbano')">
+                        <img src="file:///C:/Users/Mi%20Pc/.gemini/antigravity-ide/brain/46f1169c-0fdf-4937-a040-0502d8686dd8/stadium_button_1780780043753.png" alt="Estadio">
+                        <div class="pvp-img-text">LIGA MUNDIAL</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="menu-column">
-                <button class="word-btn" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
-                <button class="word-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo">🏆 Torneo</button>
-                <button class="word-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">📊 Ranking</button>
-                <button class="word-btn" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">🏋️ Entrenamiento</button>
-                <button class="word-btn" onclick="openModal('modal-deposito')" data-i18n="menu_deposito">💎 Depósito</button>
-                <button class="word-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro">💸 Retiro</button>
+            <div class="menu-column" style="align-items: center;">
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-torneo')" title="Torneo">🏆</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-ranking')" title="Ranking">📊</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-mantenimiento')" title="Entrenamiento">🏋️</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-deposito')" title="Depósito">💎</button>
+                <button class="word-btn icon-only-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">💸</button>
             </div>
         </div>
 
@@ -850,7 +939,6 @@
                 <div class="mobile-fuel-badge">
                     <span class="mobile-fuel-badge-icon">⚽</span>
                     <span class="mobile-fuel-badge-num" id="fuel-count-display-m">0</span>
-                    <span class="mobile-fuel-badge-label" data-i18n="balones">balones</span>
                 </div>
             </div>
 
@@ -1252,35 +1340,73 @@
     </div>
 
     <!-- FUTCANCHA PVP -->
-    <div class="modal-overlay" id="modal-duelo-urbano">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏟️ FutCancha</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
+    <div class="modal-overlay broadcast-modal" id="modal-duelo-urbano">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
+        <div class="broadcast-header fc-header">
+            <span class="modal-title" style="color:#00B16A;">🏟️ FUTCANCHA</span>
+            <button class="broadcast-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
+        </div>
+        <div class="fc-hero">
+            <div style="width:100%; height:100%; background:url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+            <div class="fc-hero-overlay"></div>
+        </div>
+        <div class="torneo-section-title" style="margin-top:15px; margin-bottom:5px;">💎 GANANCIAS POR PARTIDO</div>
+        <div class="fc-wld-row">
+            <div class="fc-wld-card win">
+                <div style="font-size:1.6em; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">🏆</div>
+                <div class="fc-wld-title">Victoria</div>
+                <div class="fc-wld-val" id="pvp-win-gems">0 <span style="font-size:0.8em">💎</span></div>
             </div>
-            <div class="modal-body">
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO <span id="futcancha-nivel-bonus" style="color:var(--gold)"></span></div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
-                    </div>
+            <div class="fc-wld-card draw">
+                <div style="font-size:1.6em; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">🤝</div>
+                <div class="fc-wld-title">Empate</div>
+                <div class="fc-wld-val" id="pvp-draw-gems" style="color:#FFD700">0 <span style="font-size:0.8em">💎</span></div>
+            </div>
+            <div class="fc-wld-card loss">
+                <div style="font-size:1.6em; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">❌</div>
+                <div class="fc-wld-title">Derrota</div>
+                <div class="fc-wld-val" style="color:#ff5a6f">0 <span style="font-size:0.8em">💎</span></div>
+            </div>
+        </div>
+        <div class="fc-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
+            <div style="width:100%; height:160px; background:url('https://images.unsplash.com/photo-1518605368461-1ee06b299e52?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover; border-bottom:1px solid rgba(0,177,106,0.2);"></div>
+            <div class="fc-mode-info">
+                <div style="display:flex; flex-direction:column;">
+                    <div class="fc-mode-name">LIGA MUNDIAL</div>
                 </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
-                    <div class="dm-icon">🏆</div>
-                    <h3>Liga Mundial</h3>
-                    <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
+            </div>
+        </div>
+        <div class="fc-mode-card" style="border-color:rgba(255,215,0,0.4); background:linear-gradient(180deg, #181505 0%, #0c0a02 100%);" onclick="abrirSeleccionJugadorPVP('amistoso')">
+            <div style="width:100%; height:160px; opacity:0.4; background:url('https://images.unsplash.com/photo-1518605368461-1ee06b299e52?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover; border-bottom:1px solid rgba(255,215,0,0.2);"></div>
+            <div style="position:absolute; right:20px; bottom:65px; font-size:5em; filter:drop-shadow(0 8px 15px rgba(0,0,0,0.8));">⚽</div>
+            <div class="fc-mode-info">
+                <div style="display:flex; flex-direction:column;">
+                    <div class="fc-mode-name" style="color:#FFD700;">PARTIDO AMISTOSO</div>
                 </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
-                    <div class="dm-icon">⚽</div>
-                    <h3>Partido Amistoso</h3>
-                    <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
-                </div>
-                <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina.</div>
+            </div>
+        </div>
+        
+        <!-- Bottom bar matching the image -->
+        <div class="mobile-menu-grid" style="padding:15px; padding-bottom:20px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-urbano')">
+                <div class="btn-emoji">🏪</div>
+                <div class="btn-label">Market</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-urbano')">
+                <div class="btn-emoji">👕</div>
+                <div class="btn-label">Futbolista</div>
+            </div>
+            <div class="mobile-menu-btn active">
+                <div class="btn-emoji">🏆</div>
+                <div class="btn-label">Ranking</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-urbano')">
+                <div class="btn-emoji">🏋️</div>
+                <div class="btn-label">Entrena.</div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- ENTRENAMIENTO -->
     <div class="modal-overlay" id="modal-mantenimiento">
@@ -1432,7 +1558,7 @@
                 <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
                     <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
                     <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
-                    <div style="font-size:0.74em;color:#888;margin-top:2px;">≈ <span id="pago-qr-ton">0.0000</span> TON · Red TON (Jetton USDT)</div>
+                    <div style="font-size:0.74em;color:#888;margin-top:2px;">Red TON (Jetton USDT)</div>
                 </div>
                 <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
                     <canvas id="pago-qr-canvas" style="display:block;"></canvas>
@@ -1455,76 +1581,154 @@
     </div>
 
     <!-- FUTSALA PVE -->
-    <div class="modal-overlay" id="modal-duelo-callejero">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏃 Futsala</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
+    <div class="modal-overlay broadcast-modal" id="modal-duelo-callejero">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
+        <div class="broadcast-header fs-header">
+            <span class="modal-title" style="color:#FFD700;">🏃 FUTSALA</span>
+            <button class="broadcast-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
+        </div>
+        <div class="fc-hero pve-hero">
+            <div style="width:100%; height:100%; background:url('https://images.unsplash.com/photo-1551280857-2b9bae120c51?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+            <div class="fc-hero-overlay"></div>
+        </div>
+        <div class="fs-warning">
+            ⚠️ Cada partida consume 1 balón · Forma física -0.8%
+        </div>
+        <div style="font-size:0.8em; color:#aaa; margin:15px; margin-bottom:10px;">Elige una cancha y compite:</div>
+        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorPVE('barrial')">
+            <div style="width:110px; height:75px; border-radius:8px; background:url('https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80') center/cover; border:1px solid rgba(255,255,255,0.1);"></div>
+            <div class="fs-pitch-info">
+                <div class="fs-pitch-name">Cancha Barrial</div>
+                <div class="fs-pitch-desc">Partidos rápidos.</div>
+                <div class="fs-pitch-tags">
+                    <span class="fs-tag-dif">⭐ Fácil</span>
+                    <span class="fs-tag-cost">-2 NFT</span>
+                    <span class="fs-tag-rew">+2 pts</span>
+                </div>
             </div>
-            <div class="modal-body" id="futsala-body"></div>
+        </div>
+        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorPVE('arena')">
+            <div style="width:110px; height:75px; border-radius:8px; background:url('https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80') center/cover; border:1px solid rgba(255,255,255,0.1);"></div>
+            <div class="fs-pitch-info">
+                <div class="fs-pitch-name">Cancha Arena</div>
+                <div class="fs-pitch-desc">Indoor arena.</div>
+                <div class="fs-pitch-tags">
+                    <span class="fs-tag-dif">⭐ Fácil</span>
+                    <span class="fs-tag-rew">+2 pts</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom bar matching the image -->
+        <div class="mobile-menu-grid" style="padding:15px; padding-bottom:20px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:auto;">
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
+                <div class="btn-emoji">🏪</div>
+                <div class="btn-label">Market</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
+                <div class="btn-emoji">👕</div>
+                <div class="btn-label">Futbolista</div>
+            </div>
+            <div class="mobile-menu-btn active">
+                <div class="btn-emoji">🏆</div>
+                <div class="btn-label">Ranking</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
+                <div class="btn-emoji">🏋️</div>
+                <div class="btn-label">Entrena.</div>
+            </div>
         </div>
     </div>
+</div>
 
     <!-- TORNEO -->
-    <div class="modal-overlay" id="modal-torneo">
-        <div class="modal" style="max-width:580px;">
-            <div class="modal-header">
-                <span class="modal-title">🏆 Torneo Semanal</span>
-                <button class="modal-close" onclick="closeModal('modal-torneo')">✕</button>
+    <div class="modal-overlay broadcast-modal" id="modal-torneo">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
+        <div class="broadcast-header">
+            <span class="modal-title">🏆 FUTMUNDI</span>
+            <button class="broadcast-close" onclick="closeModal('modal-torneo')">✕</button>
+        </div>
+        <div class="torneo-hero">
+            <div style="font-size: 5em; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)); animation: floatTrophy 4s ease-in-out infinite;">🏆</div>
+            <div class="torneo-hero-title">GRAN COPA FUTMUNDI</div>
+            <div class="torneo-hero-prize">5,000 <span style="font-size:0.6em; color:#00d4ff;">💎</span></div>
+            <div class="torneo-subtitle">Torneo Semanal · Inicio: 00:00 UTC</div>
+            <div class="espn-countdown">
+                <div class="espn-cd-box"><div class="espn-cd-num" id="tc-days">4</div><div class="espn-cd-lbl">DÍAS</div></div>
+                <div class="espn-cd-sep">:</div>
+                <div class="espn-cd-box"><div class="espn-cd-num" id="tc-hours">10</div><div class="espn-cd-lbl">HORAS</div></div>
+                <div class="espn-cd-sep">:</div>
+                <div class="espn-cd-box"><div class="espn-cd-num" id="tc-mins">59</div><div class="espn-cd-lbl">MIN</div></div>
+                <div class="espn-cd-sep">:</div>
+                <div class="espn-cd-box"><div class="espn-cd-num" id="tc-secs">54</div><div class="espn-cd-lbl">SEG</div></div>
             </div>
-            <div class="modal-body">
-                <!-- Tabs del torneo -->
-                <div class="tab-bar" style="margin-bottom:14px;">
-                    <button class="tab-btn active" id="tor-tab-btn-info"     onclick="torneoTabSwitch('info')">🏆 Torneo</button>
-                    <button class="tab-btn"         id="tor-tab-btn-registro" onclick="torneoTabSwitch('registro')">📋 Registro</button>
-                    <button class="tab-btn"         id="tor-tab-btn-inscritos" onclick="torneoTabSwitch('inscritos')">👥 Inscritos</button>
+            <div style="font-size:0.75em; color:#888; margin-top:12px;">⏳ Próximo torneo: Lunes 00:00 UTC</div>
+        </div>
+        <div class="torneo-section-title">🏅 DISTRIBUCIÓN DE PREMIOS</div>
+        <div class="torneo-prizes-espn">
+            <div class="espn-prize-card espn-prize-gold">
+                <div class="espn-medal-icon">🥇</div>
+                <div class="espn-prize-amt">2,600</div>
+                <div class="espn-prize-lbl">Gemas</div>
+            </div>
+            <div class="espn-prize-card espn-prize-silver">
+                <div class="espn-medal-icon">🥈</div>
+                <div class="espn-prize-amt">1,500</div>
+                <div class="espn-prize-lbl">Gemas</div>
+            </div>
+            <div class="espn-prize-card espn-prize-bronze">
+                <div class="espn-medal-icon">🥉</div>
+                <div class="espn-prize-amt">500</div>
+                <div class="espn-prize-lbl">Gemas</div>
+            </div>
+        </div>
+        <div class="espn-prize-row-2">
+            <div class="espn-item-card">
+                <div class="espn-item-img">👕</div>
+                <div class="espn-item-info">
+                    <div class="espn-item-amt">3,00</div>
+                    <div class="espn-item-lbl">Kit</div>
                 </div>
-
-                <!-- TAB INFO -->
-                <div id="tor-tab-info">
-                    <div class="tournament-banner">
-                        <h3>🌍 GRAN COPA FUTMUNDI</h3>
-                        <div class="t-prize">🏆 5,000 Gemas en Premios</div>
-                        <div style="color:#888;margin-top:6px;font-size:0.82em;">Torneo semanal · Inicio: Lunes 00:00 UTC · Fin: Viernes 00:00 UTC</div>
-                        <div class="torneo-countdown" id="torneo-countdown">
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-days">0</span><span class="torneo-countdown-lbl">Días</span></div>
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-hours">00</span><span class="torneo-countdown-lbl">Horas</span></div>
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-mins">00</span><span class="torneo-countdown-lbl">Min</span></div>
-                            <div class="torneo-countdown-unit"><span class="torneo-countdown-num" id="tc-secs">00</span><span class="torneo-countdown-lbl">Seg</span></div>
-                        </div>
-                        <div id="torneo-status-label" style="font-size:0.82em;margin-top:4px;color:var(--green)">⏳ Cargando...</div>
-                    </div>
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;text-align:center;">🏅 DISTRIBUCIÓN DE PREMIOS</div>
-                    <div class="torneo-prizes-grid">
-                        <div class="torneo-prize-card p1"><div class="torneo-prize-pos" style="color:var(--gold)">🥇 1er Lugar</div><div class="torneo-prize-gems">2,600 💎</div><div class="torneo-prize-extras">👕 Uniforme exclusivo<br>👟 Zapatillas Pro<br>🎓 Coach Legendario</div></div>
-                        <div class="torneo-prize-card p2"><div class="torneo-prize-pos" style="color:#c0c0c0">🥈 2do Lugar</div><div class="torneo-prize-gems">1,500 💎</div><div class="torneo-prize-extras">🐾 Mascota Especial<br>👟 Zapatillas</div></div>
-                        <div class="torneo-prize-card p3"><div class="torneo-prize-pos" style="color:#cd7f32">🥉 3er Lugar</div><div class="torneo-prize-gems">500 💎</div><div class="torneo-prize-extras">🎖️ Insignia de Bronce</div></div>
-                        <div class="torneo-prize-card p4"><div class="torneo-prize-pos" style="color:#aaa">4to Lugar</div><div class="torneo-prize-gems">400 💎</div><div class="torneo-prize-extras">🎫 Pase siguiente torneo</div></div>
-                    </div>
-                    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin:14px 0;font-size:0.82em;color:#aaa;">
-                        📊 Al finalizar el torneo los puntos son verificados automáticamente. Los premios se acreditan en 24h.
-                    </div>
-                    <button onclick="torneoTabSwitch('registro')" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(255,215,0,0.18),rgba(255,140,0,0.14));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;">
-                        📋 IR A REGISTRO — $10 USDT
-                    </button>
-                </div>
-
-                <!-- TAB REGISTRO -->
-                <div id="tor-tab-registro" style="display:none;">
-                    <div id="tor-registro-content"><!-- generado por JS --></div>
-                </div>
-
-                <!-- TAB INSCRITOS -->
-                <div id="tor-tab-inscritos" style="display:none;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--cyan);letter-spacing:2px;margin-bottom:12px;text-align:center;">👥 WALLETS REGISTRADAS</div>
-                    <div id="tor-inscritos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
-                    <div style="margin-top:12px;padding:10px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:10px;font-size:0.78em;color:#888;text-align:center;" id="tor-inscritos-count">
-                        Cargando participantes…
-                    </div>
+            </div>
+            <div class="espn-item-card">
+                <div class="espn-item-img">👟</div>
+                <div class="espn-item-info">
+                    <div class="espn-item-amt">500</div>
+                    <div class="espn-item-lbl">Gemas</div>
                 </div>
             </div>
         </div>
+        
+        
+        <!-- Contenedor del Ranking (Oculto por defecto o visible al cambiar tab) -->
+        <div id="torneo-ranking-container" style="display:none; padding:15px; max-height:400px; overflow-y:auto; margin-bottom:20px;">
+            <div style="text-align:center;font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1.2em;margin-bottom:15px;">RANKING GLOBAL FUTMUNDI</div>
+            <div id="torneo-ranking-list" style="display:flex;flex-direction:column;gap:10px;">
+                <div style="text-align:center;color:#888;font-size:0.8em;">Cargando posiciones...</div>
+            </div>
+        </div>
+
+        <div style="text-align:center; padding:15px; margin-top:-10px;">
+            <button id="btn-play-torneo" onclick="openTorneoGameplay()" style="display:none; width:100%; padding:14px; background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2)); border:1px solid var(--green); border-radius:12px; color:var(--green); font-family:'Orbitron',sans-serif; font-weight:700; font-size:1.1em; text-transform:uppercase; cursor:pointer; text-shadow:0 0 8px rgba(0,255,136,0.4); box-shadow:0 0 20px rgba(0,255,136,0.15);">⚽ JUGAR PARTIDO DE TORNEO</button>
+        </div>
+
+        <!-- Bottom bar matching the image -->
+        <div class="mobile-menu-grid" style="padding:15px; padding-bottom:20px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+            <div class="mobile-menu-btn" onclick="document.querySelector('.torneo-hero').style.display='block'; document.querySelector('.torneo-prizes-espn').style.display='flex'; document.querySelector('.espn-prize-row-2').style.display='flex'; document.getElementById('torneo-ranking-container').style.display='none'; document.getElementById('tor-registro-content').style.display='block'; document.querySelectorAll('#modal-torneo .mobile-menu-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');">
+                <div class="btn-emoji">🏆</div>
+                <div class="btn-label">Premios</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="document.querySelector('.torneo-hero').style.display='none'; document.querySelector('.torneo-prizes-espn').style.display='none'; document.querySelector('.espn-prize-row-2').style.display='none'; document.getElementById('torneo-ranking-container').style.display='block'; document.getElementById('tor-registro-content').style.display='none'; renderTorneoLeaderboard(); document.querySelectorAll('#modal-torneo .mobile-menu-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');">
+                <div class="btn-emoji">📊</div>
+                <div class="btn-label">Ranking</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-torneo')">
+                <div class="btn-emoji">🏠</div>
+                <div class="btn-label">Volver</div>
+            </div>
+        </div>
     </div>
+</div>
 
     <!-- PLAYER DETAIL MODAL -->
     <div class="car-detail-overlay" id="modal-car-detail">
@@ -1744,16 +1948,23 @@
     const TORNEO_STATS_ENDPOINT = "/api/futmundi/stats";
 
     async function fetchTorneoStats(){
-        try{
-            const r = await fetch(TORNEO_STATS_ENDPOINT, {cache:'no-store'});
-            if(!r.ok) throw new Error('HTTP '+r.status);
-            const d = await r.json();
+        try {
+            const sb = (typeof _supa === 'function') ? _supa() : null;
+            if(!sb) return { walletUsers: 0, usersWithNFT: 0 };
+            
+            // Usamos Supabase para contar los registrados en torneo
+            const { count, error } = await sb
+                .from('tournament_registrations')
+                .select('*', { count: 'exact', head: true });
+                
+            if (error) throw error;
+            
             return {
-                walletUsers: Number(d.walletUsers||0),
-                usersWithNFT: Number(d.usersWithNFT||0)
+                walletUsers: count || 0,
+                usersWithNFT: count || 0
             };
         }catch(e){
-            console.warn('[torneo] stats no disponibles:', e);
+            console.warn('[torneo] stats no disponibles en Supabase:', e);
             return null;
         }
     }
@@ -1997,7 +2208,7 @@
 
     function _shortTonWallet(addr){
         const s = String(addr||'').trim();
-        return s ? (s.slice(0,5)+'...'+s.slice(-5)) : '—';
+        return s ? 'Usuario' : '—';
     }
 
     function _walletAddr(){
@@ -2246,18 +2457,23 @@
             if(typeof _sincronizarRegalosNube === 'function') _sincronizarRegalosNube();
             if(typeof _verificarApuestasNube === 'function') _verificarApuestasNube();
         }
-        // Mostrar badge con dirección abreviada en top bar
-        const badge=$id('wallet-addr-badge');
-        const addrText=$id('wallet-addr-text');
+        // Actualizar botón personalizado de billetera
+        const btn = document.getElementById('custom-wallet-btn');
         const tonAddr = _isLikelyTonWalletAddress(newAddr) ? newAddr : '';
-        if(tonAddr){
-            const short=_shortTonWallet(tonAddr);
-            if(addrText)addrText.textContent='TON '+short;
-            if(badge)badge.style.display='flex';
-            mostrarMensaje('✅ TON Wallet vinculada: '+short,'#00ff88');
-        } else {
-            if(badge)badge.style.display='none';
-            mostrarMensaje(newAddr ? '🔒 ID interno oculto' : '🔌 Wallet desconectada','#888');
+        if(btn){
+            if(tonAddr){
+                btn.innerHTML = '✅ Conectado';
+                btn.style.background = 'linear-gradient(135deg, rgba(0,255,136,0.3), rgba(0,255,136,0.1))';
+                btn.style.borderColor = 'var(--green)';
+                btn.style.color = 'var(--green)';
+                btn.style.boxShadow = '0 0 12px rgba(0,255,136,0.4)';
+            } else {
+                btn.innerHTML = '🔗 Conectar';
+                btn.style.background = 'linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,100,255,0.2))';
+                btn.style.borderColor = 'var(--cyan)';
+                btn.style.color = 'var(--cyan)';
+                btn.style.boxShadow = '0 0 10px rgba(0,212,255,0.2)';
+            }
         }
     }
 
@@ -3947,8 +4163,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     const _REF_MAP_KEY = 'fm_refmap_'; // (legacy local, ya no es la fuente de verdad)
 
     // ── Cliente Supabase ──────────────────────────────────────────────────
-    const SUPABASE_URL = 'https://jkmziwmhkgtxhjjayvlk.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImprbXppd21oa2d0eGhqamF5dmxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMTE5MzYsImV4cCI6MjA5NTc4NzkzNn0.-vFPPVgGcGdZbBCgBpVCGpcPyLSrU0f1V6B2sbRYOMc';
+    const SUPABASE_URL = 'https://sviccwxtulzikmieenzp.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_sHZhCkTlr09gsAS8iDOVEw_hOFYwx7r';
     let _sb = null;
     function _supa(){
         if(_sb) return _sb;
@@ -4476,16 +4692,17 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const amount = Number(usdt);
         if(!Number.isFinite(amount) || amount<=0){mostrarMensaje('❌ Monto de pago inválido','#ff4444');return;}
         _pagoQRPendiente = {tipo:flow.tipo,usdt:amount,address:flow.address,onConfirmar};
-        const ton = (usdt/5).toFixed(4);
         $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
         $id('pago-qr-desc').textContent  = descripcion || '';
         $id('pago-qr-amount').textContent = amount.toFixed(2);
-        $id('pago-qr-ton').textContent    = ton;
+        const elTon = $id('pago-qr-ton');
+        if(elTon) elTon.textContent = amount.toFixed(2);
         $id('pago-qr-address').textContent = flow.address;
-        // QR payload: deep-link TON estándar (compatible con todas las wallets TON)
-        const nano = Math.round(parseFloat(ton)*1e9);
+        // QR payload: deep-link para USDT (Jetton) en TON
+        const nanoUsdt = Math.round(amount * 1e6);
+        const usdtMaster = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
         const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
-        const qrPayload = `ton://transfer/${flow.address}?amount=${nano}&text=${memo}`;
+        const qrPayload = `ton://transfer/${flow.address}?amount=${nanoUsdt}&jetton=${usdtMaster}&text=${memo}`;
         const canvas = $id('pago-qr-canvas');
         if(window.QRCode && canvas){
             QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
@@ -5766,6 +5983,7 @@ async function torneoProcesarPago() {
                                     nft_copy:            nftCopy,
                                     tournament_fee_paid: true,
                                     fee_amount_usdt:     TORNEO_COSTO_USDT,
+                                    points:              0,
                                     registered_at:       new Date().toISOString()
                                 }, { onConflict: 'wallet' });
                             }
