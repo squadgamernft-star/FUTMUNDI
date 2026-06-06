@@ -4030,6 +4030,19 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
             target.tournament_fee_paid = false;
             _saveAdminInventory(inv);
 
+            // Push into the recipient's per-category inventory key (always)
+            _applyGiftToRecipientLocal(_adminGiftTargetPfx, target);
+            // Reflect in live state if the recipient is the current device user
+            _applyGiftToLiveStateIfCurrentUser(_adminGiftTargetPfx, target);
+
+            // Optional: best-effort DB log (won't break flow if it fails)
+            try{
+                const sb = _getSb();
+                if(sb){
+                    await sb.from('nft_gifts').insert({
+                        owner_wallet:        target.owner_wallet,
+                        owner_pfx:           target.owner_pfx,
+                        nft_idx:             target.blueprint_idx,
                         nft_id:              target.blueprint_id,
                         nft_name:            target.name,
                         nft_img:             target.img,
