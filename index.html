@@ -976,199 +976,149 @@
     <!-- ══════════ MODALES ══════════ -->
 
     <!-- MARKETPLACE -->
-    <div class="modal-overlay" id="modal-marketplace">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏪 Marketplace</span>
-                <button class="modal-close" onclick="closeModal('modal-marketplace')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;">Gemas: <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:var(--green)">
-                    ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT = +4 balones de estamina.
-                </div>
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
-                </div>
-                <div id="marketplace-futbolistas" class="tab-panel active">
-                    <div class="market-grid" id="car-market-grid"></div>
-                </div>
-                <div id="marketplace-uniformes" class="tab-panel">
-                    <div class="market-grid" id="uniformes-market-grid"></div>
-                </div>
-                <div id="marketplace-tenis" class="tab-panel">
-                    <div class="market-grid" id="tenis-market-grid"></div>
-                </div>
-                <div id="marketplace-protectores" class="tab-panel">
-                    <div class="market-grid" id="entrenador-market-grid"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- RECOMPENSAS POR GOLES -->
-    <div class="modal-overlay" id="modal-recompensa-pts">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">⚽ Recompensas por Goles</span>
-                <button class="modal-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;">
-                    <div style="font-size:0.84em;color:var(--cyan);margin-bottom:6px;">🥅 Sistema de Recompensas por Goles</div>
-                    <div style="font-size:0.78em;color:#aaa;line-height:1.7">
-                        Cada <strong style="color:var(--gold)">100 goles</strong> acumulados = <strong style="color:var(--green)">1 gema → escala hasta 10 💎</strong><br>
-                        Al llegar a 1000 goles (10💎) el ciclo se reinicia desde 1 gema.<br>
-                        <span style="color:#666">Ej: 100g=1💎 · 200g=2💎 · 400g=4💎 · 1000g=10💎 → 1100g=1💎 (nuevo ciclo)</span>
-                    </div>
-                </div>
-                <div style="margin-bottom:12px">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                        <span style="color:#888;font-size:0.84em">⚽ Goles totales</span>
-                        <strong id="goals-display" style="color:var(--green);font-family:'Orbitron',sans-serif">0</strong>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                        <span style="color:#888;font-size:0.84em">🔄 Ciclo actual</span>
-                        <strong id="cycle-display" style="color:var(--gold);font-family:'Orbitron',sans-serif">1</strong>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                        <span style="color:#888;font-size:0.84em">🏆 Goles en ciclo</span>
-                        <strong id="goals-in-cycle-display" style="color:var(--cyan);font-family:'Orbitron',sans-serif">0 / 1000</strong>
-                    </div>
-                </div>
-                <div id="goals-rewards-list"></div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- RECOMPENSA DIARIA -->
-    <div class="modal-overlay" id="modal-recompensa">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🎁 Recompensa Diaria</span>
-                <button class="modal-close" onclick="closeModal('modal-recompensa')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;margin-bottom:4px;font-size:0.88em;">💎 Días impares: gemas &nbsp;|&nbsp; 📘 Días pares: puntos de experiencia</p>
-                <p style="color:#555;margin-bottom:12px;font-size:0.8em;" id="daily-timer-display">⏱ —</p>
-                <div class="info-box" style="margin-bottom:12px;background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.3);color:var(--cyan)">
-                    ⏰ Los balones se recargan todos los días a las <strong>07:00 UTC</strong>
-                </div>
-                <div class="reward-grid" id="reward-days-grid"></div>
-                <button class="claim-reward-btn" id="btn-claim-reward" onclick="claimReward()">✅ Reclamar Recompensa</button>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- LOGROS — SISTEMA DE HABILIDADES -->
-    <div class="modal-overlay" id="modal-logros">
-        <div class="modal" style="max-width:860px;">
-            <div class="modal-header">
-                <span class="modal-title">🏅 Logros de Habilidad</span>
-                <button class="modal-close" onclick="closeModal('modal-logros')">✕</button>
-            </div>
-            <div class="modal-body">
-                <!-- Regla de recompensas -->
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.82em;color:#aaa;line-height:1.8">
-                    ⚽ <strong style="color:var(--cyan)">Regla de recompensas:</strong>
-                    Cada <strong style="color:var(--gold)">100 repeticiones</strong> de cada habilidad = <strong style="color:var(--green)">+1 💎</strong> (máximo <strong style="color:var(--gold)">5 💎 a partir de 500</strong>) · Cada logro reclamado = <strong style="color:var(--cyan)">+100 pts</strong>
-                </div>
-                <!-- Totales globales -->
-                <div class="logro-skill-totals" id="logros-totales-bar">
-                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-acciones">0</div><div class="logro-total-label">Total acciones</div></div>
-                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-gems">0</div><div class="logro-total-label">💎 ganadas</div></div>
-                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-pts">0</div><div class="logro-total-label">Pts logros</div></div>
-                    <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');openModal('modal-duelo-callejero')" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
-                </div>
-                <!-- Grid de habilidades -->
-                <div class="logros-skill-grid" id="logros-skill-grid"></div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- NIVEL -->
-    <div class="modal-overlay" id="modal-nivel">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">⬆️ Nivel</span>
-                <button class="modal-close" onclick="closeModal('modal-nivel')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="text-align:center;margin-bottom:18px;">
-                    <div style="font-family:'Bebas Neue',sans-serif;font-size:4em;color:var(--green);" id="modal-nivel-num">1</div>
-                    <div style="color:#888;font-size:0.86em;margin-top:4px;">Nivel actual</div>
-                    <div style="color:var(--cyan);font-size:0.82em;margin-top:4px;" id="modal-nivel-nfts">NFTs: 0</div>
-                </div>
-                <div class="nivel-bar-wrap">
-                    <div class="nivel-bar-label" id="nivel-xp-label"><span>XP: 0</span><span>Siguiente: 100 XP</span></div>
-                    <div class="nivel-bar-bg"><div class="nivel-bar-fill" id="nivel-bar-fill" style="width:0%"></div></div>
-                </div>
-                <div class="nivel-bonus-box">
-                    <h4>⚡ Bonificaciones por Nivel</h4>
-                    <div class="nivel-bonus-row"><span>💎 Gemas extra/partido</span><span class="nivel-bonus-val" id="nb-gems-bonus">+0.0 💎</span></div>
-                    <div class="nivel-bonus-row"><span>🏆 Puntos extra torneo</span><span class="nivel-bonus-val" id="nb-pts-bonus">+0 pts</span></div>
-                    <div class="nivel-bonus-row"><span>⚽ Probabilidad victoria</span><span class="nivel-bonus-val" id="nb-win-bonus">base</span></div>
-                    <div style="font-size:0.72em;color:#555;margin-top:8px;">+0.1 gema por nivel · Nivel sube con NFTs (1 NFT = Niv 1, 3 NFT = Niv 2, 5 = Niv 3...)</div>
-                </div>
-                <div class="nivel-perks" id="nivel-perks-list">
-                    <div class="nivel-perk"><span>✅</span><span>Nivel 1 — Acceso a Futsala (PVE)</span></div>
-                    <div class="nivel-perk"><span>✅</span><span>Nivel 2 — Desbloquea FutCancha (PVP)</span></div>
-                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 3 — Torneos disponibles</span></div>
-                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 5 — Mercado exclusivo</span></div>
-                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 10 — Liga Profesional</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 
 
     <!-- RETIRO -->
-    <div class="modal-overlay" id="modal-retiro">
-        <div class="modal">
+    
+
+    <!-- REFERIDOS -->
+    
+
+    <!-- FUTCANCHA PVP -->
+    
+
+    <!-- ENTRENAMIENTO -->
+    
+
+    <!-- PLANTILLA / SQUAD -->
+    
+
+    <!-- MODAL: Selector de equipamiento para asignar a NFT -->
+    <div class="modal-overlay" id="modal-equip-picker">
+        <div class="modal" style="max-width:600px">
             <div class="modal-header">
-                <span class="modal-title">💸 Retiro de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-retiro')">✕</button>
+                <span class="modal-title" id="equip-picker-title">⚙️ Asignar Equipamiento</span>
+                <button class="modal-close" onclick="closeEquipPicker()">✕</button>
             </div>
             <div class="modal-body">
-                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
-                    <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
-                    <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
+                <p style="color:#888;font-size:0.86em;margin-bottom:6px;" id="equip-picker-subtitle">Elige uno de tu inventario</p>
+                <div id="equip-picker-content"></div>
+                <div class="equip-picker-actions">
+                    <button class="epa-clear" onclick="clearEquipSlot()">🗑️ Quitar</button>
+                    <button class="epa-close" onclick="closeEquipPicker()">Cerrar</button>
                 </div>
-                <label class="withdraw-label">Dirección Wallet (USDT)</label>
-                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
-                <label class="withdraw-label">
-                    Cantidad de gemas 💎
-                    <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
-                </label>
-                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 160 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
-                <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
-                <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
-                    💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
-                </div>
-                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 160 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6% + 1 USDT (van a la billetera del contrato)</div>
-
-                <!-- CAPTCHA -->
-                <label class="withdraw-label">🛡️ Verificación anti-bot</label>
-                <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
-                    <span id="captcha-question" style="font-family:'Orbitron',sans-serif;font-size:1.05em;color:var(--gold);letter-spacing:1px;flex:1;">— + — = ?</span>
-                    <button type="button" onclick="generarCaptcha()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85em;">🔄</button>
-                </div>
-                <input class="withdraw-input" type="number" id="captcha-answer" placeholder="Tu respuesta">
-
-                <div style="background:rgba(255,140,0,0.1);border:1px solid var(--orange);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:0.88em;color:#ffd9a8;">
-                    ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
-                </div>
-                <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
             </div>
         </div>
     </div>
 
-    <!-- REFERIDOS -->
-    <div class="modal-overlay" id="modal-referidos">
+    <!-- RANKING -->
+    
+
+    <!-- DEPOSITO -->
+    
+
+    <!-- PAGO QR — CONTRATO INTELIGENTE -->
+    
+
+    <!-- FUTSALA PVE -->
+    
+
+    <!-- TORNEO -->
+    
+
+    <!-- PLAYER DETAIL MODAL -->
+    
+
+    <!-- VIDEO MATCH OVERLAY — JUEGO INTERACTIVO -->
+    <div class="video-overlay" id="video-overlay" style="padding:0;overflow:hidden">
+        <div class="match-flag-sky" aria-hidden="true">
+            <span style="left:5%;animation-duration:13s;animation-delay:-1s">🇧🇷</span><span style="left:15%;animation-duration:15s;animation-delay:-7s">🇦🇷</span><span style="left:25%;animation-duration:12s;animation-delay:-4s">🇪🇸</span><span style="left:36%;animation-duration:16s;animation-delay:-10s">🇨🇴</span><span style="left:48%;animation-duration:14s;animation-delay:-2s">🇫🇷</span><span style="left:60%;animation-duration:17s;animation-delay:-8s">🇵🇹</span><span style="left:72%;animation-duration:13s;animation-delay:-5s">🇨🇱</span><span style="left:84%;animation-duration:15s;animation-delay:-11s">🇳🇴</span><span style="left:93%;animation-duration:12s;animation-delay:-3s">🇬🇧</span>
+        </div>
+        <!-- INTRO SCREEN -->
+        <div id="match-intro-screen" style="position:absolute;inset:0;background:#060f06;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0">
+            <div id="intro-mode-label" style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--cyan);letter-spacing:3px;margin-bottom:8px;text-align:center"></div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:0;width:100%;max-width:500px;padding:0 12px">
+                <!-- TEAM A -->
+                <div id="intro-team-a" style="flex:1;text-align:center;opacity:0;transform:translateX(-60px);transition:all 0.6s cubic-bezier(.175,.885,.32,1.275)">
+                    <div id="intro-a-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--green);box-shadow:0 0 24px rgba(0,255,136,0.5)">⚽</div>
+                    <div id="intro-a-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
+                    <div id="intro-a-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--cyan);margin-top:2px"></div>
+                    <div id="intro-a-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
+                </div>
+                <!-- VS -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 14px;flex-shrink:0">
+                    <div id="intro-vs" style="font-family:'Bebas Neue',sans-serif;font-size:2.8em;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.6);opacity:0;transform:scale(0.4);transition:all 0.5s 0.4s cubic-bezier(.175,.885,.32,1.275)">VS</div>
+                    <div id="intro-countdown" style="font-family:'Orbitron',sans-serif;font-size:4em;font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,0.8);display:none"></div>
+                </div>
+                <!-- TEAM B -->
+                <div id="intro-team-b" style="flex:1;text-align:center;opacity:0;transform:translateX(60px);transition:all 0.6s 0.2s cubic-bezier(.175,.885,.32,1.275)">
+                    <div id="intro-b-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--red);box-shadow:0 0 24px rgba(255,68,68,0.5)">🤖</div>
+                    <div id="intro-b-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
+                    <div id="intro-b-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--red);margin-top:2px"></div>
+                    <div id="intro-b-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
+                </div>
+            </div>
+            <div id="intro-cancha-label" style="margin-top:16px;padding:5px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:0.76em;color:#888;letter-spacing:2px;text-align:center"></div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="match-game-screen" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:flex-start;background:#060f06">
+            <!-- HUD -->
+            <div id="game-hud" style="width:100%;padding:6px 10px;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:5;flex-shrink:0">
+                <div style="font-size:0.7em;color:#888;font-family:'Orbitron',sans-serif" id="hud-time">90'</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5em;color:#fff;letter-spacing:4px;text-shadow:0 0 10px rgba(0,255,136,0.4)" id="hud-score">0 — 0</div>
+                <div style="font-size:0.68em;color:var(--gold);font-family:'Orbitron',sans-serif" id="hud-shots">🎯 0</div>
+            </div>
+            <!-- CANVAS -->
+            <canvas id="match-canvas" style="width:100%;max-width:640px;flex:1;display:block;background:#1a4a1a;touch-action:none;position:relative;z-index:1;box-shadow:0 12px 40px rgba(0,0,0,0.35)"></canvas>
+            <!-- CONTROLES MÓVILES -->
+            <div id="mobile-controls" style="width:100%;max-width:640px;padding:8px 12px;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0">
+                <!-- D-PAD IZQUIERDO -->
+                <div style="position:relative;width:108px;height:108px;flex-shrink:0">
+                    <button class="dpad-btn" id="dpad-up"    style="top:0;left:50%;transform:translateX(-50%)">▲</button>
+                    <button class="dpad-btn" id="dpad-left"  style="top:50%;left:0;transform:translateY(-50%)">◀</button>
+                    <button class="dpad-btn" id="dpad-right" style="top:50%;right:0;transform:translateY(-50%)">▶</button>
+                    <button class="dpad-btn" id="dpad-down"  style="bottom:0;left:50%;transform:translateX(-50%)">▼</button>
+                </div>
+                <!-- INFO CENTRAL -->
+                <div style="text-align:center;flex:1">
+                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">CONTROL DEL BALÓN</div>
+                    <div style="font-size:0.55em;color:#444;margin-top:2px">Flechas guían · SPACE dispara</div>
+                    <div id="game-hint" style="font-size:0.72em;color:var(--green);margin-top:4px;font-weight:700;min-height:16px"></div>
+                </div>
+                <!-- BOTÓN TIRO -->
+                <button id="shoot-btn" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,200,80,0.15));border:3px solid var(--green);color:var(--green);font-size:1.6em;cursor:pointer;font-weight:900;box-shadow:0 0 20px rgba(0,255,136,0.3);flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform 0.1s,box-shadow 0.1s" ontouchstart="this.style.transform='scale(0.9)';this.style.boxShadow='0 0 8px rgba(0,255,136,0.2)'" ontouchend="this.style.transform='';this.style.boxShadow='0 0 20px rgba(0,255,136,0.3)'">⚽</button>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="match-result-screen" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.97);z-index:20;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
+            <div id="video-result-box" style="width:100%;max-width:500px"></div>
+            <button class="video-close-btn" id="video-close-btn" style="margin-top:14px" onclick="cerrarVideoPartida()">✅ Ver Resultado</button>
+        </div>
+    </div>
+
+    <!-- SELECTOR DE JUGADOR -->
+    
+
+    
+    
+<!-- modal-referidos -->
+<div class="modal-overlay" id="modal-referidos">
         <div class="modal" style="max-width:580px;">
             <div class="modal-header">
                 <span class="modal-title" data-i18n="ref_title">👥 Programa de Referidos</span>
@@ -1339,8 +1289,276 @@
         </div>
     </div>
 
-    <!-- FUTCANCHA PVP -->
-    <div class="modal-overlay broadcast-modal" id="modal-duelo-urbano">
+<!-- modal-garage -->
+<div class="modal-overlay" id="modal-garage">
+        <div class="modal" style="max-width:900px;">
+            <div class="modal-header">
+                <span class="modal-title">👕 Mi Plantilla</span>
+                <button class="modal-close" onclick="closeModal('modal-garage')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-bar">
+                    <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 Futbolistas</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
+                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🏋️ Entrenadores</button>
+                </div>
+                <div id="garage-vehiculos" class="tab-panel active">
+                    <div class="squad-layout">
+                        <div class="squad-slots-section">
+                            <h3>📋 Plantilla — 20 Slots NFT</h3>
+                            <div class="squad-slots" id="garage-grid-vehicles"></div>
+                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
+                        </div>
+                        <div class="equipment-panel">
+                            <h3>⚙️ Equipamiento</h3>
+                            <div class="equipment-preview" id="equip-preview">
+                                <div class="equipment-player-placeholder">🧑</div>
+                            </div>
+                            <p style="font-size:0.72em;color:#555;text-align:center;margin-bottom:10px;" id="equip-player-name">Selecciona un jugador</p>
+                            <div class="equipment-slots">
+                                <div class="equip-slot" id="equip-slot-uniforme" onclick="openEquipModal('uniforme')"><div class="equip-slot-icon">👕</div><div class="equip-slot-label">Uniforme</div><div class="equip-slot-name" id="equip-uniforme-name">— Vacío —</div></div>
+                                <div class="equip-slot" id="equip-slot-tenis" onclick="openEquipModal('tenis')"><div class="equip-slot-icon">👟</div><div class="equip-slot-label">Tenis</div><div class="equip-slot-name" id="equip-tenis-name">— Vacío —</div></div>
+                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🏋️</div><div class="equip-slot-label">Entrenadores</div><div class="equip-slot-name" id="equip-protector-name">— Vacío —</div></div>
+                            </div>
+                            <div class="equip-bonus" id="equip-bonus-panel">
+                                <div class="equip-bonus-title">⚡ Bonificaciones Activas</div>
+                                <div class="equip-bonus-row"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
+                                <div class="equip-bonus-row"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
+                                <div class="equip-bonus-row"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
+                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">—</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="garage-cascos" class="tab-panel">
+                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👕 Tus Uniformes NFT comprados. Selecciona un futbolista en la pestaña <strong style="color:var(--green)">Futbolistas</strong> y luego asígnale uno desde su panel de Equipamiento.</p>
+                    <div class="market-grid" id="garage-grid-uniformes"></div>
+                </div>
+                <div id="garage-guantes" class="tab-panel">
+                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👟 Tus Zapatillas NFT compradas. Asígnalas a tu futbolista para subir velocidad.</p>
+                    <div class="market-grid" id="garage-grid-tenis"></div>
+                </div>
+                <div id="garage-botas" class="tab-panel">
+                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">🏋️ Tus Entrenadores NFT comprados. Asigna uno a tu futbolista para activar su bonus.</p>
+                    <div class="market-grid" id="garage-grid-entrenadores"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-marketplace -->
+<div class="modal-overlay" id="modal-marketplace">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🏪 Marketplace</span>
+                <button class="modal-close" onclick="closeModal('modal-marketplace')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#888;font-size:0.86em;margin-bottom:6px;">Gemas: <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
+                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:var(--green)">
+                    ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT = +4 balones de estamina.
+                </div>
+                <div class="tab-bar">
+                    <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
+                    <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
+                    <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
+                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
+                </div>
+                <div id="marketplace-futbolistas" class="tab-panel active">
+                    <div class="market-grid" id="car-market-grid"></div>
+                </div>
+                <div id="marketplace-uniformes" class="tab-panel">
+                    <div class="market-grid" id="uniformes-market-grid"></div>
+                </div>
+                <div id="marketplace-tenis" class="tab-panel">
+                    <div class="market-grid" id="tenis-market-grid"></div>
+                </div>
+                <div id="marketplace-protectores" class="tab-panel">
+                    <div class="market-grid" id="entrenador-market-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-recompensa-pts -->
+<div class="modal-overlay" id="modal-recompensa-pts">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">⚽ Recompensas por Goles</span>
+                <button class="modal-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;">
+                    <div style="font-size:0.84em;color:var(--cyan);margin-bottom:6px;">🥅 Sistema de Recompensas por Goles</div>
+                    <div style="font-size:0.78em;color:#aaa;line-height:1.7">
+                        Cada <strong style="color:var(--gold)">100 goles</strong> acumulados = <strong style="color:var(--green)">1 gema → escala hasta 10 💎</strong><br>
+                        Al llegar a 1000 goles (10💎) el ciclo se reinicia desde 1 gema.<br>
+                        <span style="color:#666">Ej: 100g=1💎 · 200g=2💎 · 400g=4💎 · 1000g=10💎 → 1100g=1💎 (nuevo ciclo)</span>
+                    </div>
+                </div>
+                <div style="margin-bottom:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <span style="color:#888;font-size:0.84em">⚽ Goles totales</span>
+                        <strong id="goals-display" style="color:var(--green);font-family:'Orbitron',sans-serif">0</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <span style="color:#888;font-size:0.84em">🔄 Ciclo actual</span>
+                        <strong id="cycle-display" style="color:var(--gold);font-family:'Orbitron',sans-serif">1</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <span style="color:#888;font-size:0.84em">🏆 Goles en ciclo</span>
+                        <strong id="goals-in-cycle-display" style="color:var(--cyan);font-family:'Orbitron',sans-serif">0 / 1000</strong>
+                    </div>
+                </div>
+                <div id="goals-rewards-list"></div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-recompensa -->
+<div class="modal-overlay" id="modal-recompensa">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🎁 Recompensa Diaria</span>
+                <button class="modal-close" onclick="closeModal('modal-recompensa')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#888;margin-bottom:4px;font-size:0.88em;">💎 Días impares: gemas &nbsp;|&nbsp; 📘 Días pares: puntos de experiencia</p>
+                <p style="color:#555;margin-bottom:12px;font-size:0.8em;" id="daily-timer-display">⏱ —</p>
+                <div class="info-box" style="margin-bottom:12px;background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.3);color:var(--cyan)">
+                    ⏰ Los balones se recargan todos los días a las <strong>07:00 UTC</strong>
+                </div>
+                <div class="reward-grid" id="reward-days-grid"></div>
+                <button class="claim-reward-btn" id="btn-claim-reward" onclick="claimReward()">✅ Reclamar Recompensa</button>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-logros -->
+<div class="modal-overlay" id="modal-logros">
+        <div class="modal" style="max-width:860px;">
+            <div class="modal-header">
+                <span class="modal-title">🏅 Logros de Habilidad</span>
+                <button class="modal-close" onclick="closeModal('modal-logros')">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Regla de recompensas -->
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.82em;color:#aaa;line-height:1.8">
+                    ⚽ <strong style="color:var(--cyan)">Regla de recompensas:</strong>
+                    Cada <strong style="color:var(--gold)">100 repeticiones</strong> de cada habilidad = <strong style="color:var(--green)">+1 💎</strong> (máximo <strong style="color:var(--gold)">5 💎 a partir de 500</strong>) · Cada logro reclamado = <strong style="color:var(--cyan)">+100 pts</strong>
+                </div>
+                <!-- Totales globales -->
+                <div class="logro-skill-totals" id="logros-totales-bar">
+                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-acciones">0</div><div class="logro-total-label">Total acciones</div></div>
+                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-gems">0</div><div class="logro-total-label">💎 ganadas</div></div>
+                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-pts">0</div><div class="logro-total-label">Pts logros</div></div>
+                    <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');openModal('modal-duelo-callejero')" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
+                </div>
+                <!-- Grid de habilidades -->
+                <div class="logros-skill-grid" id="logros-skill-grid"></div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-nivel -->
+<div class="modal-overlay" id="modal-nivel">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">⬆️ Nivel</span>
+                <button class="modal-close" onclick="closeModal('modal-nivel')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center;margin-bottom:18px;">
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:4em;color:var(--green);" id="modal-nivel-num">1</div>
+                    <div style="color:#888;font-size:0.86em;margin-top:4px;">Nivel actual</div>
+                    <div style="color:var(--cyan);font-size:0.82em;margin-top:4px;" id="modal-nivel-nfts">NFTs: 0</div>
+                </div>
+                <div class="nivel-bar-wrap">
+                    <div class="nivel-bar-label" id="nivel-xp-label"><span>XP: 0</span><span>Siguiente: 100 XP</span></div>
+                    <div class="nivel-bar-bg"><div class="nivel-bar-fill" id="nivel-bar-fill" style="width:0%"></div></div>
+                </div>
+                <div class="nivel-bonus-box">
+                    <h4>⚡ Bonificaciones por Nivel</h4>
+                    <div class="nivel-bonus-row"><span>💎 Gemas extra/partido</span><span class="nivel-bonus-val" id="nb-gems-bonus">+0.0 💎</span></div>
+                    <div class="nivel-bonus-row"><span>🏆 Puntos extra torneo</span><span class="nivel-bonus-val" id="nb-pts-bonus">+0 pts</span></div>
+                    <div class="nivel-bonus-row"><span>⚽ Probabilidad victoria</span><span class="nivel-bonus-val" id="nb-win-bonus">base</span></div>
+                    <div style="font-size:0.72em;color:#555;margin-top:8px;">+0.1 gema por nivel · Nivel sube con NFTs (1 NFT = Niv 1, 3 NFT = Niv 2, 5 = Niv 3...)</div>
+                </div>
+                <div class="nivel-perks" id="nivel-perks-list">
+                    <div class="nivel-perk"><span>✅</span><span>Nivel 1 — Acceso a Futsala (PVE)</span></div>
+                    <div class="nivel-perk"><span>✅</span><span>Nivel 2 — Desbloquea FutCancha (PVP)</span></div>
+                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 3 — Torneos disponibles</span></div>
+                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 5 — Mercado exclusivo</span></div>
+                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 10 — Liga Profesional</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-duelo-callejero -->
+<div class="modal-overlay broadcast-modal" id="modal-duelo-callejero">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
+        <div class="broadcast-header fs-header">
+            <span class="modal-title" style="color:#FFD700;">🏃 FUTSALA</span>
+            <button class="broadcast-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
+        </div>
+        <div class="fc-hero pve-hero">
+            <div style="width:100%; height:100%; background:url('https://images.unsplash.com/photo-1551280857-2b9bae120c51?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+            <div class="fc-hero-overlay"></div>
+        </div>
+        <div class="fs-warning">
+            ⚠️ Cada partida consume 1 balón · Forma física -0.8%
+        </div>
+        <div style="font-size:0.8em; color:#aaa; margin:15px; margin-bottom:10px;">Elige una cancha y compite:</div>
+        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorPVE('barrial')">
+            <div style="width:110px; height:75px; border-radius:8px; background:url('https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80') center/cover; border:1px solid rgba(255,255,255,0.1);"></div>
+            <div class="fs-pitch-info">
+                <div class="fs-pitch-name">Cancha Barrial</div>
+                <div class="fs-pitch-desc">Partidos rápidos.</div>
+                <div class="fs-pitch-tags">
+                    <span class="fs-tag-dif">⭐ Fácil</span>
+                    <span class="fs-tag-cost">-2 NFT</span>
+                    <span class="fs-tag-rew">+2 pts</span>
+                </div>
+            </div>
+        </div>
+        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorPVE('arena')">
+            <div style="width:110px; height:75px; border-radius:8px; background:url('https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80') center/cover; border:1px solid rgba(255,255,255,0.1);"></div>
+            <div class="fs-pitch-info">
+                <div class="fs-pitch-name">Cancha Arena</div>
+                <div class="fs-pitch-desc">Indoor arena.</div>
+                <div class="fs-pitch-tags">
+                    <span class="fs-tag-dif">⭐ Fácil</span>
+                    <span class="fs-tag-rew">+2 pts</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom bar matching the image -->
+        <div class="mobile-menu-grid" style="padding:15px; padding-bottom:20px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:auto;">
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
+                <div class="btn-emoji">🏪</div>
+                <div class="btn-label">Market</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
+                <div class="btn-emoji">👕</div>
+                <div class="btn-label">Futbolista</div>
+            </div>
+            <div class="mobile-menu-btn active">
+                <div class="btn-emoji">🏆</div>
+                <div class="btn-label">Ranking</div>
+            </div>
+            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
+                <div class="btn-emoji">🏋️</div>
+                <div class="btn-label">Entrena.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal-duelo-urbano -->
+<div class="modal-overlay broadcast-modal" id="modal-duelo-urbano">
     <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
         <div class="broadcast-header fc-header">
             <span class="modal-title" style="color:#00B16A;">🏟️ FUTCANCHA</span>
@@ -1408,241 +1626,8 @@
     </div>
 </div>
 
-    <!-- ENTRENAMIENTO -->
-    <div class="modal-overlay" id="modal-mantenimiento">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏋️ Entrenamiento</span>
-                <button class="modal-close" onclick="closeModal('modal-mantenimiento')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:16px;">El entrenamiento restaura la durabilidad al 100% y mejora progresivamente el rendimiento del NFT. La estamina (⚽ balones) NO se recarga aquí — se recarga automáticamente cada 24h a las 07:00 UTC.</p>
-                <div id="mant-list"></div>
-                <div class="info-box" style="margin-top:4px;">💡 Bonus por entrenamiento: 1ª vez +5% · 2ª +10% · 3ª +15% · 4ª +17% · 5ª +19% · luego +2% por sesión hasta 80% (se reinicia).</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PLANTILLA / SQUAD -->
-    <div class="modal-overlay" id="modal-garage">
-        <div class="modal" style="max-width:900px;">
-            <div class="modal-header">
-                <span class="modal-title">👕 Mi Plantilla</span>
-                <button class="modal-close" onclick="closeModal('modal-garage')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🏋️ Entrenadores</button>
-                </div>
-                <div id="garage-vehiculos" class="tab-panel active">
-                    <div class="squad-layout">
-                        <div class="squad-slots-section">
-                            <h3>📋 Plantilla — 20 Slots NFT</h3>
-                            <div class="squad-slots" id="garage-grid-vehicles"></div>
-                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
-                        </div>
-                        <div class="equipment-panel">
-                            <h3>⚙️ Equipamiento</h3>
-                            <div class="equipment-preview" id="equip-preview">
-                                <div class="equipment-player-placeholder">🧑</div>
-                            </div>
-                            <p style="font-size:0.72em;color:#555;text-align:center;margin-bottom:10px;" id="equip-player-name">Selecciona un jugador</p>
-                            <div class="equipment-slots">
-                                <div class="equip-slot" id="equip-slot-uniforme" onclick="openEquipModal('uniforme')"><div class="equip-slot-icon">👕</div><div class="equip-slot-label">Uniforme</div><div class="equip-slot-name" id="equip-uniforme-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-tenis" onclick="openEquipModal('tenis')"><div class="equip-slot-icon">👟</div><div class="equip-slot-label">Tenis</div><div class="equip-slot-name" id="equip-tenis-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🏋️</div><div class="equip-slot-label">Entrenadores</div><div class="equip-slot-name" id="equip-protector-name">— Vacío —</div></div>
-                            </div>
-                            <div class="equip-bonus" id="equip-bonus-panel">
-                                <div class="equip-bonus-title">⚡ Bonificaciones Activas</div>
-                                <div class="equip-bonus-row"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
-                                <div class="equip-bonus-row"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">—</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="garage-cascos" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👕 Tus Uniformes NFT comprados. Selecciona un futbolista en la pestaña <strong style="color:var(--green)">Futbolistas</strong> y luego asígnale uno desde su panel de Equipamiento.</p>
-                    <div class="market-grid" id="garage-grid-uniformes"></div>
-                </div>
-                <div id="garage-guantes" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👟 Tus Zapatillas NFT compradas. Asígnalas a tu futbolista para subir velocidad.</p>
-                    <div class="market-grid" id="garage-grid-tenis"></div>
-                </div>
-                <div id="garage-botas" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">🏋️ Tus Entrenadores NFT comprados. Asigna uno a tu futbolista para activar su bonus.</p>
-                    <div class="market-grid" id="garage-grid-entrenadores"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: Selector de equipamiento para asignar a NFT -->
-    <div class="modal-overlay" id="modal-equip-picker">
-        <div class="modal" style="max-width:600px">
-            <div class="modal-header">
-                <span class="modal-title" id="equip-picker-title">⚙️ Asignar Equipamiento</span>
-                <button class="modal-close" onclick="closeEquipPicker()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;" id="equip-picker-subtitle">Elige uno de tu inventario</p>
-                <div id="equip-picker-content"></div>
-                <div class="equip-picker-actions">
-                    <button class="epa-clear" onclick="clearEquipSlot()">🗑️ Quitar</button>
-                    <button class="epa-close" onclick="closeEquipPicker()">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RANKING -->
-    <div class="modal-overlay" id="modal-ranking">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏆 Ranking Global</span>
-                <button class="modal-close" onclick="closeModal('modal-ranking')">✕</button>
-            </div>
-            <div class="modal-body">
-                <ul class="rank-list">
-                    <li class="rank-item"><span class="rank-pos">🥇</span><span class="rank-name">🇧🇷 Neymarfan_BR</span><span class="rank-score">48,320 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos">🥈</span><span class="rank-name">🇦🇷 Messi10_AR</span><span class="rank-score">41,100 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos">🥉</span><span class="rank-name">🇫🇷 KylianK_FR</span><span class="rank-score">39,750 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos" style="color:#aaa">4</span><span class="rank-name">🇩🇪 FutbolKing_DE</span><span class="rank-score">35,200 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos" style="color:#aaa">5</span><span class="rank-name">🇪🇸 LaRoja_Pro</span><span class="rank-score">31,800 pts</span></li>
-                    <li class="rank-item" style="border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.04)">
-                        <span class="rank-pos" style="color:#aaa">—</span>
-                        <span class="rank-name" style="color:var(--green)">🙋 Tú</span>
-                        <span class="rank-score" id="my-rank-score">0 pts</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- DEPOSITO -->
-    <div class="modal-overlay" id="modal-deposito">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">💎 Depósito de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
-                    💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
-                </div>
-                <div class="gem-tiers">
-                    <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGO QR — CONTRATO INTELIGENTE -->
-    <div class="modal-overlay" id="modal-pago-qr">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title" id="pago-qr-title">💳 Pago al Contrato Inteligente</span>
-                <button class="modal-close" onclick="closeModal('modal-pago-qr')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p id="pago-qr-desc" style="color:#aaa;font-size:0.86em;margin-bottom:10px;"></p>
-                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
-                    <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
-                    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
-                    <div style="font-size:0.74em;color:#888;margin-top:2px;">Red TON (Jetton USDT)</div>
-                </div>
-                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
-                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
-                </div>
-                <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
-                <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-                    <code id="pago-qr-address" style="flex:1;color:var(--cyan);font-size:0.78em;word-break:break-all;font-family:'Orbitron',monospace;"></code>
-                    <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
-                </div>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
-                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
-                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
-                </div>
-                <div style="display:flex;gap:10px;">
-                    <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
-                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FUTSALA PVE -->
-    <div class="modal-overlay broadcast-modal" id="modal-duelo-callejero">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
-        <div class="broadcast-header fs-header">
-            <span class="modal-title" style="color:#FFD700;">🏃 FUTSALA</span>
-            <button class="broadcast-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
-        </div>
-        <div class="fc-hero pve-hero">
-            <div style="width:100%; height:100%; background:url('https://images.unsplash.com/photo-1551280857-2b9bae120c51?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
-            <div class="fc-hero-overlay"></div>
-        </div>
-        <div class="fs-warning">
-            ⚠️ Cada partida consume 1 balón · Forma física -0.8%
-        </div>
-        <div style="font-size:0.8em; color:#aaa; margin:15px; margin-bottom:10px;">Elige una cancha y compite:</div>
-        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorPVE('barrial')">
-            <div style="width:110px; height:75px; border-radius:8px; background:url('https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80') center/cover; border:1px solid rgba(255,255,255,0.1);"></div>
-            <div class="fs-pitch-info">
-                <div class="fs-pitch-name">Cancha Barrial</div>
-                <div class="fs-pitch-desc">Partidos rápidos.</div>
-                <div class="fs-pitch-tags">
-                    <span class="fs-tag-dif">⭐ Fácil</span>
-                    <span class="fs-tag-cost">-2 NFT</span>
-                    <span class="fs-tag-rew">+2 pts</span>
-                </div>
-            </div>
-        </div>
-        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorPVE('arena')">
-            <div style="width:110px; height:75px; border-radius:8px; background:url('https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80') center/cover; border:1px solid rgba(255,255,255,0.1);"></div>
-            <div class="fs-pitch-info">
-                <div class="fs-pitch-name">Cancha Arena</div>
-                <div class="fs-pitch-desc">Indoor arena.</div>
-                <div class="fs-pitch-tags">
-                    <span class="fs-tag-dif">⭐ Fácil</span>
-                    <span class="fs-tag-rew">+2 pts</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Bottom bar matching the image -->
-        <div class="mobile-menu-grid" style="padding:15px; padding-bottom:20px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:auto;">
-            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
-                <div class="btn-emoji">🏪</div>
-                <div class="btn-label">Market</div>
-            </div>
-            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
-                <div class="btn-emoji">👕</div>
-                <div class="btn-label">Futbolista</div>
-            </div>
-            <div class="mobile-menu-btn active">
-                <div class="btn-emoji">🏆</div>
-                <div class="btn-label">Ranking</div>
-            </div>
-            <div class="mobile-menu-btn" onclick="closeModal('modal-duelo-callejero')">
-                <div class="btn-emoji">🏋️</div>
-                <div class="btn-label">Entrena.</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <!-- TORNEO -->
-    <div class="modal-overlay broadcast-modal" id="modal-torneo">
+<!-- modal-torneo -->
+<div class="modal-overlay broadcast-modal" id="modal-torneo">
     <div class="modal" style="background:transparent; box-shadow:none; padding:0;">
         <div class="broadcast-header">
             <span class="modal-title">🏆 FUTMUNDI</span>
@@ -1730,8 +1715,169 @@
     </div>
 </div>
 
-    <!-- PLAYER DETAIL MODAL -->
-    <div class="car-detail-overlay" id="modal-car-detail">
+<!-- modal-ranking -->
+<div class="modal-overlay" id="modal-ranking">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🏆 Ranking Global</span>
+                <button class="modal-close" onclick="closeModal('modal-ranking')">✕</button>
+            </div>
+            <div class="modal-body">
+                <ul class="rank-list">
+                    <li class="rank-item"><span class="rank-pos">🥇</span><span class="rank-name">🇧🇷 Neymarfan_BR</span><span class="rank-score">48,320 pts</span></li>
+                    <li class="rank-item"><span class="rank-pos">🥈</span><span class="rank-name">🇦🇷 Messi10_AR</span><span class="rank-score">41,100 pts</span></li>
+                    <li class="rank-item"><span class="rank-pos">🥉</span><span class="rank-name">🇫🇷 KylianK_FR</span><span class="rank-score">39,750 pts</span></li>
+                    <li class="rank-item"><span class="rank-pos" style="color:#aaa">4</span><span class="rank-name">🇩🇪 FutbolKing_DE</span><span class="rank-score">35,200 pts</span></li>
+                    <li class="rank-item"><span class="rank-pos" style="color:#aaa">5</span><span class="rank-name">🇪🇸 LaRoja_Pro</span><span class="rank-score">31,800 pts</span></li>
+                    <li class="rank-item" style="border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.04)">
+                        <span class="rank-pos" style="color:#aaa">—</span>
+                        <span class="rank-name" style="color:var(--green)">🙋 Tú</span>
+                        <span class="rank-score" id="my-rank-score">0 pts</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-mantenimiento -->
+<div class="modal-overlay" id="modal-mantenimiento">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🏋️ Entrenamiento</span>
+                <button class="modal-close" onclick="closeModal('modal-mantenimiento')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#888;font-size:0.86em;margin-bottom:16px;">El entrenamiento restaura la durabilidad al 100% y mejora progresivamente el rendimiento del NFT. La estamina (⚽ balones) NO se recarga aquí — se recarga automáticamente cada 24h a las 07:00 UTC.</p>
+                <div id="mant-list"></div>
+                <div class="info-box" style="margin-top:4px;">💡 Bonus por entrenamiento: 1ª vez +5% · 2ª +10% · 3ª +15% · 4ª +17% · 5ª +19% · luego +2% por sesión hasta 80% (se reinicia).</div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-deposito -->
+<div class="modal-overlay" id="modal-deposito">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">💎 Depósito de Gemas</span>
+                <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
+                    💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
+                </div>
+                <div class="gem-tiers">
+                    <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
+                    <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-retiro -->
+<div class="modal-overlay" id="modal-retiro">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">💸 Retiro de Gemas</span>
+                <button class="modal-close" onclick="closeModal('modal-retiro')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
+                    <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
+                    <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
+                </div>
+                <label class="withdraw-label">Dirección Wallet (USDT)</label>
+                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
+                <label class="withdraw-label">
+                    Cantidad de gemas 💎
+                    <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
+                </label>
+                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 160 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
+                <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
+                <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
+                    💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
+                </div>
+                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 160 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6% + 1 USDT (van a la billetera del contrato)</div>
+
+                <!-- CAPTCHA -->
+                <label class="withdraw-label">🛡️ Verificación anti-bot</label>
+                <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+                    <span id="captcha-question" style="font-family:'Orbitron',sans-serif;font-size:1.05em;color:var(--gold);letter-spacing:1px;flex:1;">— + — = ?</span>
+                    <button type="button" onclick="generarCaptcha()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85em;">🔄</button>
+                </div>
+                <input class="withdraw-input" type="number" id="captcha-answer" placeholder="Tu respuesta">
+
+                <div style="background:rgba(255,140,0,0.1);border:1px solid var(--orange);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:0.88em;color:#ffd9a8;">
+                    ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
+                </div>
+                <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-select-player -->
+<div class="modal-overlay" id="modal-select-player">
+        <div class="modal" style="max-width:500px">
+            <div class="modal-header">
+                <span class="modal-title">⚽ Elige tu Jugador</span>
+                <button class="modal-close" onclick="closeModal('modal-select-player')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#888;font-size:0.84em;margin-bottom:12px;" id="select-player-desc">Selecciona el jugador con quien quieres jugar.</p>
+                <div class="player-select-grid" id="player-select-grid"></div>
+                <div style="display:flex;gap:8px;margin-top:4px">
+                    <select id="match-difficulty" style="flex:1;padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(45,122,31,0.4);border-radius:10px;color:#fff;font-size:0.9em;font-family:'Rajdhani',sans-serif;outline:none">
+                        <option value="barrial">🏟️ Cancha Barrial (Fácil)</option>
+                        <option value="municipal">🏟️ Estadio Municipal (Medio)</option>
+                        <option value="copa">🏆 Copa del Mundo (Difícil)</option>
+                        <option value="gala">🌃 Noche de Gala (Experto)</option>
+                    </select>
+                    <button class="primary-btn" style="width:auto;padding:10px 20px;font-size:0.82em" onclick="confirmarJugadorYJugar()">▶ Jugar</button>
+                </div>
+                <div id="select-player-error" style="color:var(--red);font-size:0.84em;margin-top:8px;text-align:center"></div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-pago-qr -->
+<div class="modal-overlay" id="modal-pago-qr">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="pago-qr-title">💳 Pago al Contrato Inteligente</span>
+                <button class="modal-close" onclick="closeModal('modal-pago-qr')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="pago-qr-desc" style="color:#aaa;font-size:0.86em;margin-bottom:10px;"></p>
+                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
+                    <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
+                    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
+                    <div style="font-size:0.74em;color:#888;margin-top:2px;">Red TON (Jetton USDT)</div>
+                </div>
+                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
+                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
+                </div>
+                <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
+                <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                    <code id="pago-qr-address" style="flex:1;color:var(--cyan);font-size:0.78em;word-break:break-all;font-family:'Orbitron',monospace;"></code>
+                    <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
+                </div>
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
+                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
+                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
+                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- modal-car-detail -->
+<div class="car-detail-overlay" id="modal-car-detail">
         <div class="car-detail-modal">
             <div class="car-detail-img-wrap">
                 <img class="car-detail-img" id="car-detail-img" src="" alt="">
@@ -1757,100 +1903,7 @@
         </div>
     </div>
 
-    <!-- VIDEO MATCH OVERLAY — JUEGO INTERACTIVO -->
-    <div class="video-overlay" id="video-overlay" style="padding:0;overflow:hidden">
-        <div class="match-flag-sky" aria-hidden="true">
-            <span style="left:5%;animation-duration:13s;animation-delay:-1s">🇧🇷</span><span style="left:15%;animation-duration:15s;animation-delay:-7s">🇦🇷</span><span style="left:25%;animation-duration:12s;animation-delay:-4s">🇪🇸</span><span style="left:36%;animation-duration:16s;animation-delay:-10s">🇨🇴</span><span style="left:48%;animation-duration:14s;animation-delay:-2s">🇫🇷</span><span style="left:60%;animation-duration:17s;animation-delay:-8s">🇵🇹</span><span style="left:72%;animation-duration:13s;animation-delay:-5s">🇨🇱</span><span style="left:84%;animation-duration:15s;animation-delay:-11s">🇳🇴</span><span style="left:93%;animation-duration:12s;animation-delay:-3s">🇬🇧</span>
-        </div>
-        <!-- INTRO SCREEN -->
-        <div id="match-intro-screen" style="position:absolute;inset:0;background:#060f06;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0">
-            <div id="intro-mode-label" style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--cyan);letter-spacing:3px;margin-bottom:8px;text-align:center"></div>
-            <div style="display:flex;align-items:center;justify-content:center;gap:0;width:100%;max-width:500px;padding:0 12px">
-                <!-- TEAM A -->
-                <div id="intro-team-a" style="flex:1;text-align:center;opacity:0;transform:translateX(-60px);transition:all 0.6s cubic-bezier(.175,.885,.32,1.275)">
-                    <div id="intro-a-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--green);box-shadow:0 0 24px rgba(0,255,136,0.5)">⚽</div>
-                    <div id="intro-a-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
-                    <div id="intro-a-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--cyan);margin-top:2px"></div>
-                    <div id="intro-a-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
-                </div>
-                <!-- VS -->
-                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 14px;flex-shrink:0">
-                    <div id="intro-vs" style="font-family:'Bebas Neue',sans-serif;font-size:2.8em;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.6);opacity:0;transform:scale(0.4);transition:all 0.5s 0.4s cubic-bezier(.175,.885,.32,1.275)">VS</div>
-                    <div id="intro-countdown" style="font-family:'Orbitron',sans-serif;font-size:4em;font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,0.8);display:none"></div>
-                </div>
-                <!-- TEAM B -->
-                <div id="intro-team-b" style="flex:1;text-align:center;opacity:0;transform:translateX(60px);transition:all 0.6s 0.2s cubic-bezier(.175,.885,.32,1.275)">
-                    <div id="intro-b-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--red);box-shadow:0 0 24px rgba(255,68,68,0.5)">🤖</div>
-                    <div id="intro-b-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
-                    <div id="intro-b-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--red);margin-top:2px"></div>
-                    <div id="intro-b-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
-                </div>
-            </div>
-            <div id="intro-cancha-label" style="margin-top:16px;padding:5px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:0.76em;color:#888;letter-spacing:2px;text-align:center"></div>
-        </div>
-
-        <!-- GAME SCREEN -->
-        <div id="match-game-screen" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:flex-start;background:#060f06">
-            <!-- HUD -->
-            <div id="game-hud" style="width:100%;padding:6px 10px;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:5;flex-shrink:0">
-                <div style="font-size:0.7em;color:#888;font-family:'Orbitron',sans-serif" id="hud-time">90'</div>
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5em;color:#fff;letter-spacing:4px;text-shadow:0 0 10px rgba(0,255,136,0.4)" id="hud-score">0 — 0</div>
-                <div style="font-size:0.68em;color:var(--gold);font-family:'Orbitron',sans-serif" id="hud-shots">🎯 0</div>
-            </div>
-            <!-- CANVAS -->
-            <canvas id="match-canvas" style="width:100%;max-width:640px;flex:1;display:block;background:#1a4a1a;touch-action:none;position:relative;z-index:1;box-shadow:0 12px 40px rgba(0,0,0,0.35)"></canvas>
-            <!-- CONTROLES MÓVILES -->
-            <div id="mobile-controls" style="width:100%;max-width:640px;padding:8px 12px;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0">
-                <!-- D-PAD IZQUIERDO -->
-                <div style="position:relative;width:108px;height:108px;flex-shrink:0">
-                    <button class="dpad-btn" id="dpad-up"    style="top:0;left:50%;transform:translateX(-50%)">▲</button>
-                    <button class="dpad-btn" id="dpad-left"  style="top:50%;left:0;transform:translateY(-50%)">◀</button>
-                    <button class="dpad-btn" id="dpad-right" style="top:50%;right:0;transform:translateY(-50%)">▶</button>
-                    <button class="dpad-btn" id="dpad-down"  style="bottom:0;left:50%;transform:translateX(-50%)">▼</button>
-                </div>
-                <!-- INFO CENTRAL -->
-                <div style="text-align:center;flex:1">
-                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">CONTROL DEL BALÓN</div>
-                    <div style="font-size:0.55em;color:#444;margin-top:2px">Flechas guían · SPACE dispara</div>
-                    <div id="game-hint" style="font-size:0.72em;color:var(--green);margin-top:4px;font-weight:700;min-height:16px"></div>
-                </div>
-                <!-- BOTÓN TIRO -->
-                <button id="shoot-btn" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,200,80,0.15));border:3px solid var(--green);color:var(--green);font-size:1.6em;cursor:pointer;font-weight:900;box-shadow:0 0 20px rgba(0,255,136,0.3);flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform 0.1s,box-shadow 0.1s" ontouchstart="this.style.transform='scale(0.9)';this.style.boxShadow='0 0 8px rgba(0,255,136,0.2)'" ontouchend="this.style.transform='';this.style.boxShadow='0 0 20px rgba(0,255,136,0.3)'">⚽</button>
-            </div>
-        </div>
-
-        <!-- RESULT SCREEN -->
-        <div id="match-result-screen" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.97);z-index:20;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
-            <div id="video-result-box" style="width:100%;max-width:500px"></div>
-            <button class="video-close-btn" id="video-close-btn" style="margin-top:14px" onclick="cerrarVideoPartida()">✅ Ver Resultado</button>
-        </div>
-    </div>
-
-    <!-- SELECTOR DE JUGADOR -->
-    <div class="modal-overlay" id="modal-select-player">
-        <div class="modal" style="max-width:500px">
-            <div class="modal-header">
-                <span class="modal-title">⚽ Elige tu Jugador</span>
-                <button class="modal-close" onclick="closeModal('modal-select-player')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.84em;margin-bottom:12px;" id="select-player-desc">Selecciona el jugador con quien quieres jugar.</p>
-                <div class="player-select-grid" id="player-select-grid"></div>
-                <div style="display:flex;gap:8px;margin-top:4px">
-                    <select id="match-difficulty" style="flex:1;padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(45,122,31,0.4);border-radius:10px;color:#fff;font-size:0.9em;font-family:'Rajdhani',sans-serif;outline:none">
-                        <option value="barrial">🏟️ Cancha Barrial (Fácil)</option>
-                        <option value="municipal">🏟️ Estadio Municipal (Medio)</option>
-                        <option value="copa">🏆 Copa del Mundo (Difícil)</option>
-                        <option value="gala">🌃 Noche de Gala (Experto)</option>
-                    </select>
-                    <button class="primary-btn" style="width:auto;padding:10px 20px;font-size:0.82em" onclick="confirmarJugadorYJugar()">▶ Jugar</button>
-                </div>
-                <div id="select-player-error" style="color:var(--red);font-size:0.84em;margin-top:8px;text-align:center"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
+<script>
     // ── CONFIG ─────────────────────────────────────────────────────────────
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
     // ── WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) ─────
