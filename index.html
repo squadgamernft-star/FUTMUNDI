@@ -67,31 +67,58 @@
             <div class="title-sub" data-i18n="tagline">El juego de fútbol NFT más épico del mundo</div>
         </div>
 
-        <!-- ── UNIFIED PREMIUM LAYOUT ── -->
-        <div class="premium-main-layout">
-            <!-- PODIUM HERO -->
-            <div class="podium-hero-container">
+        <!-- ── PERFECT HYBRID LAYOUT ── -->
+        <div class="perfect-hybrid-layout">
+            
+            <!-- LEFT SIDE BUTTONS -->
+            <div class="side-button-column side-left">
+                <button class="side-premium-btn" onclick="openModal('modal-torneo')">
+                    <span style="font-size:1.5em;">🏆</span> <span data-i18n="menu_torneo">Torneo</span>
+                </button>
+                <button class="side-premium-btn" onclick="openModal('modal-recompensa-pts')">
+                    <span style="font-size:1.5em;">⚽</span> <span data-i18n="menu_recompensas">Goles</span>
+                </button>
+                <button class="side-premium-btn" onclick="openModal('modal-logros')">
+                    <span style="font-size:1.5em;">🏅</span> <span data-i18n="menu_logros">Logros</span>
+                </button>
+            </div>
+
+            <!-- RIGHT SIDE BUTTONS -->
+            <div class="side-button-column side-right">
+                <button class="side-premium-btn" onclick="openModal('modal-deposito')">
+                    <span style="font-size:1.5em;">💎</span> <span data-i18n="menu_deposito">Depósito</span>
+                </button>
+                <button class="side-premium-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();">
+                    <span style="font-size:1.5em;">💸</span> <span data-i18n="menu_retiro">Retiro</span>
+                </button>
+                <button class="side-premium-btn" onclick="openModal('modal-apuesta')">
+                    <span style="font-size:1.5em;">🎲</span> <span data-i18n="menu_apuesta">Apuesta</span>
+                </button>
+            </div>
+
+            <!-- CENTER PODIUM -->
+            <div class="podium-center-container">
                 <img src="./assets/podio_principal.png" alt="Podium FUTMUNDI" class="podium-hero-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
             </div>
-            
+
             <!-- FUEL BADGE -->
-            <div class="premium-fuel-badge">
+            <div class="premium-fuel-badge" style="margin-top: -10px;">
                 <span class="premium-fuel-icon">⚽</span>
                 <span class="premium-fuel-num" id="fuel-count-display">0</span>
                 <span class="premium-fuel-label" data-i18n="balones">balones</span>
-                <span id="fuel-count-display-m" style="display:none;"></span> <!-- JS fallback -->
+                <span id="fuel-count-display-m" style="display:none;"></span>
             </div>
 
-            <!-- MAIN GAME BUTTONS (PvP & PvE) -->
-            <div class="premium-game-actions">
-                <button class="premium-action-btn btn-pvp" onclick="openModal('modal-duelo-urbano')" title="FutCancha" aria-label="FutCancha">
+            <!-- GAME BUTTONS -->
+            <div class="premium-game-actions" style="max-width: 400px; margin-top: 10px;">
+                <button class="premium-action-btn btn-pvp" onclick="openModal('modal-duelo-urbano')">
                     <span class="btn-icon">🏟️</span>
                     <div class="btn-text">
                         <strong>FUTCANCHA</strong>
                         <span>PvP en Vivo</span>
                     </div>
                 </button>
-                <button class="premium-action-btn btn-pve" onclick="openModal('modal-duelo-callejero')" title="Futsala" aria-label="Futsala">
+                <button class="premium-action-btn btn-pve" onclick="openModal('modal-duelo-callejero')">
                     <span class="btn-icon">🏃</span>
                     <div class="btn-text">
                         <strong>FUTSALA</strong>
@@ -100,21 +127,24 @@
                 </button>
             </div>
 
-            <!-- ESPN TABS (Menu) -->
-            <div class="premium-menu-grid espn-tabs">
-                <button class="tab-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">🏪 Market</button>
-                <button class="tab-btn" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">👕 Futbolista</button>
-                <button class="tab-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">📊 Ranking</button>
-                <button class="tab-btn" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">🏋️ Entrena.</button>
-                
-                <button class="tab-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo">🏆 Torneo</button>
-                <button class="tab-btn" onclick="openModal('modal-recompensa')" data-i18n="menu_recompensa_diaria">🎁 Diaria</button>
-                <button class="tab-btn" onclick="openModal('modal-recompensa-pts')" data-i18n="menu_recompensas">⚽ Goles</button>
-                <button class="tab-btn" onclick="openModal('modal-logros')" data-i18n="menu_logros">🏅 Logros</button>
-                
-                <button class="tab-btn" onclick="openModal('modal-deposito')" data-i18n="menu_deposito">💎 Depósito</button>
-                <button class="tab-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" data-i18n="menu_retiro">💸 Retiro</button>
-                <button class="tab-btn" onclick="openModal('modal-apuesta')" data-i18n="menu_apuesta" id="btn-menu-apuesta">🎲 Apuesta <span id="apuesta-lock-badge" style="font-size:0.7em;color:var(--orange);vertical-align:middle;display:none;">🔒</span></button>
+            <!-- BOTTOM NAVIGATION BAR -->
+            <div class="premium-bottom-nav">
+                <button class="nav-item-btn" onclick="openModal('modal-marketplace')">
+                    <img src="./assets/marketplace.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                    <span data-i18n="menu_marketplace">Market</span>
+                </button>
+                <button class="nav-item-btn" onclick="openModal('modal-garage')">
+                    <img src="./assets/kit_futbol.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                    <span data-i18n="menu_futbolistas">Futbolista</span>
+                </button>
+                <button class="nav-item-btn" onclick="openModal('modal-ranking')">
+                    <img src="./assets/trofeo_torneo.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                    <span data-i18n="menu_ranking">Ranking</span>
+                </button>
+                <button class="nav-item-btn" onclick="openModal('modal-mantenimiento')">
+                    <img src="./assets/entrenamiento.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                    <span data-i18n="menu_entrenamiento">Entrena.</span>
+                </button>
             </div>
         </div>
     </div>
