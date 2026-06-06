@@ -1584,3 +1584,144 @@
     border-radius: 10px;
     color: white;
 }
+
+/* ========================================================
+   TACTILE DIGITAL BOARD GAME AESTHETICS (MOCKUPS)
+   ======================================================== */
+
+body, html {
+    background: #0d1710 !important;
+    background-image: radial-gradient(circle at 50% 50%, rgba(20,50,30,0.8) 0%, #0d1710 100%) !important;
+}
+
+/* Glass Cube Buttons for Side Navigation */
+.glass-cube-btn {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(145deg, rgba(30,50,40,0.9), rgba(15,25,20,0.95));
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4em;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.1), 0 5px 15px rgba(0,0,0,0.5);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-decoration: none;
+}
+.glass-cube-btn:active { transform: scale(0.92); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.glass-cube-btn img { width: 24px; height: 24px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); }
+
+/* Perfect Layout Grid */
+.tactical-grid-layout {
+    display: grid;
+    grid-template-columns: 55px 1fr 55px;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto 100px auto;
+    padding: 0 10px;
+}
+
+.tactical-side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10;
+}
+
+.tactical-center-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.tactical-podium-img {
+    width: 100%;
+    max-width: 260px;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
+    animation: floatPodium 4s ease-in-out infinite;
+}
+
+/* Tournament Timer */
+.tactical-timer-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.tactical-timer-box {
+    background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: inset 0 2px 3px rgba(255,255,255,0.2), 0 5px 15px rgba(0,0,0,0.6);
+    min-width: 55px;
+}
+
+.tactical-timer-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.6em;
+    color: #FFD700;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.tactical-timer-lbl {
+    font-size: 0.55em;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* Tournament Prize Grid */
+.torneo-prize-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.square-plate {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5px;
+    box-shadow: inset 0 2px 10px rgba(255,255,255,0.4), 0 8px 15px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+.plate-gold { background: linear-gradient(135deg, #ffd700 0%, #ffae00 100%); color: #000; border-color: #fff; }
+.plate-silver { background: linear-gradient(135deg, #e8e8e8 0%, #a0a0a0 100%); color: #000; border-color: #fff; }
+.plate-bronze { background: linear-gradient(135deg, #ffa07a 0%, #cd7f32 100%); color: #4a1f00; border-color: #ffdcb5; }
+
+.plate-icon { font-size: 2.2em; margin-bottom: 5px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); line-height: 1; }
+.plate-amt { font-family: 'Share Tech Mono', monospace; font-size: 1.4em; font-weight: bold; line-height: 1; }
+.plate-lbl { font-size: 0.65em; font-weight: 700; text-transform: uppercase; opacity: 0.8; margin-top: 2px; }
+
+/* Dark Item Cards */
+.dark-item-card {
+    background: linear-gradient(180deg, #1f2520 0%, #111512 100%);
+    border: 1px solid rgba(0,255,136,0.2);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.05), 0 4px 10px rgba(0,0,0,0.5);
+}
+.dark-item-card img { height: 40px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }

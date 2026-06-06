@@ -1,83 +1,82 @@
-<div class="modal-overlay broadcast-modal" id="modal-torneo">
-    <div class="modal bcast-volumetric-bg" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:700px;">
-        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
-            <span class="modal-title" style="color:#FFD700;">🏆 GRAN COPA FUTMUNDI</span>
+<div class="modal bcast-volumetric-bg" style="background:#0a120c; border:1px solid rgba(0,255,136,0.2); box-shadow:0 10px 40px rgba(0,0,0,0.8); padding:0; height:100%; max-width:700px; border-radius:16px; overflow:hidden;">
+        <div class="broadcast-header" style="border-bottom:1px solid rgba(255,215,0,0.3); background:rgba(0,0,0,0.4); justify-content:space-between;">
+            <span class="modal-title" style="color:#FFD700; font-family:'Bebas Neue', sans-serif; letter-spacing:1px;">🏆 FUTMUNDI</span>
             <button class="broadcast-close" onclick="closeModal('modal-torneo')">✕</button>
         </div>
         
-        <div class="torneo-hero" style="border-bottom:1px solid #FFD700;">
-            <img src="./assets/trofeo_torneo.png" alt="Trofeo" class="torneo-trophy">
-            <div class="torneo-hero-title">GRAN COPA FUTMUNDI</div>
-            <div class="torneo-hero-prize">5,000 <span style="font-size:0.6em; color:#00d4ff; margin-left:8px;">💎</span></div>
-            <div class="torneo-subtitle">Torneo Semanal · Inicio: 00:00 UTC</div>
-            
-            <div class="tactical-timer" id="torneo-countdown-display" style="margin: 15px auto; display: block; width: fit-content; text-align: center;">
-                <div style="font-size:0.4em; color:#fff; text-transform:uppercase; letter-spacing:2px; margin-bottom:4px;">Inicia en</div>
-                <span id="tc-days">4</span>D <span id="tc-hours">10</span>H <span id="tc-mins">59</span>M <span id="tc-secs">54</span>S
+        <div style="padding: 20px;">
+            <!-- Cabecera Torneo (Trophy + Title) -->
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                <img src="./assets/trofeo_torneo.png" alt="Trofeo" style="width:90px; filter:drop-shadow(0 5px 15px rgba(0,0,0,0.8));">
+                <div>
+                    <div style="font-family:'Bebas Neue', sans-serif; font-size:1.8em; color:#fff; line-height:1; letter-spacing:1px; text-shadow:0 2px 5px rgba(0,0,0,0.8);">GRAN COPA FUTMUNDI</div>
+                    <div style="font-family:'Bebas Neue', sans-serif; font-size:2.8em; color:#FFD700; line-height:1; letter-spacing:1px; text-shadow:0 2px 5px rgba(0,0,0,0.8);">5,000 <span style="font-size:0.6em; color:#00d4ff;">💎</span></div>
+                    <div style="font-size:0.65em; color:#aaa; letter-spacing:1px; text-transform:uppercase; margin-top:5px;">Torneo Semanal · Inicio: 00:00 UTC</div>
+                </div>
             </div>
-            <div style="font-size:0.7em; color:#888; margin-top:8px;">⏳ Próximo torneo: Lunes 00:00 UTC</div>
+            
+            <!-- Timer -->
+            <div class="tactical-timer-container">
+                <div class="tactical-timer-box"><div class="tactical-timer-num" id="tc-days">4</div><div class="tactical-timer-lbl">Días</div></div>
+                <div class="tactical-timer-box"><div class="tactical-timer-num" id="tc-hours">10</div><div class="tactical-timer-lbl">Horas</div></div>
+                <div class="tactical-timer-box"><div class="tactical-timer-num" id="tc-mins">59</div><div class="tactical-timer-lbl">Min</div></div>
+                <div class="tactical-timer-box"><div class="tactical-timer-num" id="tc-secs">54</div><div class="tactical-timer-lbl">Seg</div></div>
+            </div>
+            <div style="text-align:center; font-size:0.65em; color:#777; margin-top:-5px; margin-bottom:15px;">⏳ Próximo torneo: Lunes 00:00 UTC</div>
+
+            <!-- Divider -->
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                <div style="height:1px; flex:1; background:linear-gradient(90deg, transparent, rgba(0,212,255,0.5));"></div>
+                <div style="color:#00d4ff; font-size:0.7em; font-weight:bold; letter-spacing:1px; text-transform:uppercase;">🏅 Distribución de Premios</div>
+                <div style="height:1px; flex:1; background:linear-gradient(-90deg, transparent, rgba(0,212,255,0.5));"></div>
+            </div>
+
+            <!-- Square Prizes -->
+            <div class="torneo-prize-grid">
+                <div class="square-plate plate-gold">
+                    <div class="plate-icon">🥇</div>
+                    <div class="plate-amt">2,600</div>
+                    <div class="plate-lbl">Gemas</div>
+                </div>
+                <div class="square-plate plate-silver">
+                    <div class="plate-icon">🥈</div>
+                    <div class="plate-amt">1,500</div>
+                    <div class="plate-lbl">Gemas</div>
+                </div>
+                <div class="square-plate plate-bronze">
+                    <div class="plate-icon">🥉</div>
+                    <div class="plate-amt">500</div>
+                    <div class="plate-lbl">Gemas</div>
+                </div>
+            </div>
+
+            <!-- Extra items -->
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <div class="dark-item-card" style="flex:1;">
+                    <img src="./assets/kit_futbol.png" alt="Kit">
+                    <div style="text-align:right;">
+                        <div style="font-family:'Share Tech Mono', monospace; font-size:1.2em; color:#fff; font-weight:bold;">3,00</div>
+                        <div style="font-size:0.6em; color:#aaa; text-transform:uppercase;">Kit</div>
+                    </div>
+                </div>
+                <div class="dark-item-card" style="flex:1;">
+                    <img src="./assets/botas_pro.png" alt="Botas">
+                    <div style="text-align:right;">
+                        <div style="font-family:'Share Tech Mono', monospace; font-size:1.2em; color:#FFD700; font-weight:bold;">500</div>
+                        <div style="font-size:0.6em; color:#aaa; text-transform:uppercase;">Gemas</div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="torneoTabSwitch('registro')" style="width:100%;padding:14px;background:linear-gradient(135deg,#005c2a 0%, #00b352 100%);border:1px solid #00ff75;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 15px rgba(0,179,82,0.4);">
+                IR AL REGISTRO ($10 USDT)
+            </button>
+            
+            <!-- Hidden tabs for internal JS logic so we don't break existing scripts -->
+            <div id="tor-tab-info" style="display:none;"></div>
         </div>
 
-        <div style="padding: 15px;">
-            <div class="tab-bar espn-tabs">
-                <button class="tab-btn active" id="tor-tab-btn-info" onclick="torneoTabSwitch('info')">ℹ️ Info</button>
-                <button class="tab-btn" id="tor-tab-btn-registro" onclick="torneoTabSwitch('registro')">🎟️ Registro</button>
-                <button class="tab-btn" id="tor-tab-btn-inscritos" onclick="torneoTabSwitch('inscritos')">👥 Inscritos</button>
-            </div>
-
-            <!-- TAB INFO -->
-            <div id="tor-tab-info">
-                <div class="torneo-section-title">🏅 DISTRIBUCIÓN DE PREMIOS</div>
-                
-                <div class="torneo-prizes-espn" style="display:flex;flex-direction:column;gap:12px;">
-                    <div class="bcast-metal-plate bcast-gold-plate" style="padding:15px;display:flex;align-items:center;gap:15px;">
-                        <img src="./assets/trofeo_torneo.png" style="width:50px;height:auto;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));">
-                        <div style="flex:1;">
-                            <div style="font-size:0.9em;font-weight:900;text-transform:uppercase;letter-spacing:1px;opacity:0.9;">Campeón Absoluto</div>
-                            <div class="tactical-font" style="font-size:2.2em;font-weight:900;letter-spacing:0px;">2,600 <span style="font-size:0.6em;">GEMAS</span></div>
-                        </div>
-                    </div>
-                    <div class="bcast-metal-plate bcast-silver-plate" style="padding:12px;display:flex;align-items:center;gap:15px;">
-                        <div style="font-size:2em;line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));">🥈</div>
-                        <div style="flex:1;">
-                            <div style="font-size:0.8em;font-weight:700;text-transform:uppercase;opacity:0.8;">Subcampeón</div>
-                            <div class="tactical-font" style="font-size:1.8em;font-weight:900;">1,500 <span style="font-size:0.6em;">GEMAS</span></div>
-                        </div>
-                    </div>
-                    <div class="bcast-metal-plate bcast-bronze-plate" style="padding:12px;display:flex;align-items:center;gap:15px;">
-                        <div style="font-size:2em;line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));">🥉</div>
-                        <div style="flex:1;">
-                            <div style="font-size:0.8em;font-weight:700;text-transform:uppercase;opacity:0.8;">Tercer Lugar</div>
-                            <div class="tactical-font" style="font-size:1.8em;font-weight:900;">500 <span style="font-size:0.6em;">GEMAS</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="espn-prize-row-2">
-                    <div class="espn-item-card">
-                        <img src="./assets/kit_futbol.png" alt="Kit" class="espn-item-img">
-                        <div class="espn-item-info">
-                            <div class="espn-item-amt">3,00</div>
-                            <div class="espn-item-lbl">Kit</div>
-                        </div>
-                    </div>
-                    <div class="espn-item-card">
-                        <img src="./assets/botas_pro.png" alt="Botas" class="espn-item-img">
-                        <div class="espn-item-info">
-                            <div class="espn-item-amt">500</div>
-                            <div class="espn-item-lbl">Gemas</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="padding:15px; padding-bottom:30px;">
-                    <button onclick="torneoTabSwitch('registro')" style="width:100%;padding:14px;background:linear-gradient(135deg,#005c2a 0%, #00b352 100%);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 15px rgba(0,179,82,0.4);">
-                        IR AL REGISTRO ($10 USDT)
-                    </button>
-                </div>
-            </div>
-
-            <!-- TAB REGISTRO -->
+        <!-- TAB REGISTRO -->
             <div id="tor-tab-registro" style="display:none;">
                 <div id="tor-registro-content"><!-- generado por JS --></div>
             </div>
