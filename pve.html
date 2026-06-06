@@ -1,12 +1,12 @@
 <div class="modal-overlay broadcast-modal" id="modal-duelo-callejero">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%;">
+    <div class="modal bcast-volumetric-bg" style="background:transparent; box-shadow:none; padding:0; height:100%;">
         <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
             <span class="modal-title" style="color:#FFD700;">🏃 FUTSALA</span>
             <button class="broadcast-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
         </div>
         
         <div class="fc-hero" style="border-bottom:1px solid #FFD700;">
-            <img src="./assets/cancha_isometrica.png" alt="Cancha Isometrica">
+            <img src="./assets/cancha_isometrica.png" alt="Cancha Isometrica" class="bcast-render-3d">
             <div class="fc-hero-overlay"></div>
         </div>
 
@@ -16,27 +16,27 @@
 
         <div style="font-size:0.8em; color:#aaa; margin:15px; margin-bottom:10px;">Elige una cancha y compite:</div>
 
-        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorFutsala('Cancha Barrial')">
+        <div class="fs-pitch-card bcast-metal-plate" onclick="abrirSeleccionJugadorFutsala('Cancha Barrial')">
             <img src="./assets/cancha_barrial.png" class="fs-pitch-img" alt="Cancha Barrial">
             <div class="fs-pitch-info">
                 <div class="fs-pitch-name">Cancha Barrial</div>
                 <div class="fs-pitch-desc">Partidos rápidos.</div>
                 <div class="fs-pitch-tags">
-                    <span class="fs-tag-dif">⭐ Fácil</span>
-                    <span class="fs-tag-cost">-2 NFT</span>
-                    <span class="fs-tag-rew">+2 pts</span>
+                    <span class="fs-tag-dif tactical-font bcast-text-gold" style="font-weight:900;">⭐ Fácil</span>
+                    <span class="fs-tag-cost tactical-font">-2 NFT</span>
+                    <span class="fs-tag-rew tactical-font" style="color:#00ff75;font-weight:900;">+2 pts</span>
                 </div>
             </div>
         </div>
 
-        <div class="fs-pitch-card" onclick="abrirSeleccionJugadorFutsala('Estadio Municipal')">
+        <div class="fs-pitch-card bcast-metal-plate" onclick="abrirSeleccionJugadorFutsala('Estadio Municipal')">
             <img src="./assets/cancha_arena.png" class="fs-pitch-img" alt="Cancha Arena">
             <div class="fs-pitch-info">
                 <div class="fs-pitch-name">Estadio Municipal</div>
                 <div class="fs-pitch-desc">Indoor arena.</div>
                 <div class="fs-pitch-tags">
-                    <span class="fs-tag-dif">⭐ Fácil</span>
-                    <span class="fs-tag-rew">+2 pts</span>
+                    <span class="fs-tag-dif tactical-font bcast-text-gold" style="font-weight:900;">⭐ Fácil</span>
+                    <span class="fs-tag-rew tactical-font" style="color:#00ff75;font-weight:900;">+2 pts</span>
                 </div>
             </div>
         </div>

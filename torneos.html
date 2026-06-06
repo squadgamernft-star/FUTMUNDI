@@ -1,5 +1,5 @@
 <div class="modal-overlay broadcast-modal" id="modal-torneo">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:700px;">
+    <div class="modal bcast-volumetric-bg" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:700px;">
         <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
             <span class="modal-title" style="color:#FFD700;">🏆 GRAN COPA FUTMUNDI</span>
             <button class="broadcast-close" onclick="closeModal('modal-torneo')">✕</button>
@@ -11,8 +11,10 @@
             <div class="torneo-hero-prize">5,000 <span style="font-size:0.6em; color:#00d4ff; margin-left:8px;">💎</span></div>
             <div class="torneo-subtitle">Torneo Semanal · Inicio: 00:00 UTC</div>
             
-            <div class="espn-countdown">
-                <div class="espn-cd-box"><div class="espn-cd-num" id="tc-days">4</div><div class="espn-cd-lbl">DÍAS</div></div>
+            <div class="tactical-timer" id="torneo-countdown-display" style="margin: 15px auto; display: block; width: fit-content; text-align: center;">
+                <div style="font-size:0.4em; color:#fff; text-transform:uppercase; letter-spacing:2px; margin-bottom:4px;">Inicia en</div>
+                <span id="tc-days">4</span>D <span id="tc-hours">10</span>H <span id="tc-mins">59</span>M <span id="tc-secs">54</span>S
+            </div>
                 <div class="espn-cd-sep">:</div>
                 <div class="espn-cd-box"><div class="espn-cd-num" id="tc-hours">10</div><div class="espn-cd-lbl">HORAS</div></div>
                 <div class="espn-cd-sep">:</div>
@@ -34,12 +36,29 @@
             <div id="tor-tab-info">
                 <div class="torneo-section-title">🏅 DISTRIBUCIÓN DE PREMIOS</div>
                 
-                <div class="torneo-prizes-espn">
-                    <div class="espn-prize-card espn-prize-gold">
-                        <div class="espn-medal-icon">🥇</div>
-                        <div class="espn-prize-amt">2,600</div>
-                        <div class="espn-prize-lbl">Gemas</div>
+                <div class="torneo-prizes-espn" style="display:flex;flex-direction:column;gap:12px;">
+                    <div class="bcast-metal-plate bcast-gold-plate" style="padding:15px;display:flex;align-items:center;gap:15px;">
+                        <img src="./assets/trofeo_torneo.png" style="width:50px;height:auto;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));">
+                        <div style="flex:1;">
+                            <div style="font-size:0.9em;font-weight:900;text-transform:uppercase;letter-spacing:1px;opacity:0.9;">Campeón Absoluto</div>
+                            <div class="tactical-font" style="font-size:2.2em;font-weight:900;letter-spacing:0px;">2,600 <span style="font-size:0.6em;">GEMAS</span></div>
+                        </div>
                     </div>
+                    <div class="bcast-metal-plate bcast-silver-plate" style="padding:12px;display:flex;align-items:center;gap:15px;">
+                        <div style="font-size:2em;line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));">🥈</div>
+                        <div style="flex:1;">
+                            <div style="font-size:0.8em;font-weight:700;text-transform:uppercase;opacity:0.8;">Subcampeón</div>
+                            <div class="tactical-font" style="font-size:1.8em;font-weight:900;">1,500 <span style="font-size:0.6em;">GEMAS</span></div>
+                        </div>
+                    </div>
+                    <div class="bcast-metal-plate bcast-bronze-plate" style="padding:12px;display:flex;align-items:center;gap:15px;">
+                        <div style="font-size:2em;line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));">🥉</div>
+                        <div style="flex:1;">
+                            <div style="font-size:0.8em;font-weight:700;text-transform:uppercase;opacity:0.8;">Tercer Lugar</div>
+                            <div class="tactical-font" style="font-size:1.8em;font-weight:900;">500 <span style="font-size:0.6em;">GEMAS</span></div>
+                        </div>
+                    </div>
+                </div>
                     <div class="espn-prize-card espn-prize-silver">
                         <div class="espn-medal-icon">🥈</div>
                         <div class="espn-prize-amt">1,500</div>
