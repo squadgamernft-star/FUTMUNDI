@@ -497,40 +497,9 @@
     </div>
 
 
-<!-- ══════════ APUESTAS: BLOQUEO HASTA 11/06/2026 + TORNEO WALLET REGISTRY ══════════ -->
+<!-- ══════════ SCRIPTS ══════════ -->
 <script src="https://unpkg.com/@ton/ton@13.11.0/dist/ton.js"></script>
     <script src="app.js?v=2"></script>
-
-    <!-- ══════════ TELEGRAM MINI APP: NAV INFERIOR ══════════ -->
-    <nav class="tg-bottom-nav" aria-label="Navegación principal">
-        <button class="tg-nav-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">
-            <span class="tg-nav-emoji">🏪</span><span>Market</span>
-        </button>
-        <button class="tg-nav-btn accent-cyan" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">
-            <span class="tg-nav-emoji">👕</span><span>Futbolista</span>
-        </button>
-        <button class="tg-nav-btn accent-gold" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">
-            <span class="tg-nav-emoji">📊</span><span>Ranking</span>
-        </button>
-        <button class="tg-nav-btn accent-orange" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">
-            <span class="tg-nav-emoji">🏋️</span><span>Entrena.</span>
-        </button>
-    </nav>
-
-    <!-- ══════════ COLUMNAS LATERALES FLOTANTES ══════════ -->
-    <div class="tg-side-col left">
-        <button class="tg-side-btn accent-gold"   onclick="openModal('modal-recompensa-pts')"  title="Recompensas">⚽</button>
-        <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
-        <button class="tg-side-btn accent-purple" onclick="openModal('modal-logros')"          title="Logros">🏅</button>
-        <button class="tg-side-btn"               onclick="openModal('modal-nivel')"           title="Nivel">⬆️</button>
-        
-    </div>
-    <div class="tg-side-col right">
-        <button class="tg-side-btn"               onclick="openModal('modal-torneo')"          title="Torneo">🏆</button>
-        <button class="tg-side-btn accent-gold"   onclick="openModal('modal-deposito')"        title="Depósito">💎</button>
-        <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">💸</button>
-        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')" id="btn-side-apuesta" title="Apuesta Mundial">🎲</button>
-    </div>
 
     <!-- Dynamic Component Loader -->
     <script>
@@ -580,7 +549,7 @@
         
         document.addEventListener('ComponentsLoaded', function(){
             setInterval(() => {
-                const targetDate = new Date('2026-06-11T00:00:00-05:00').getTime(); // Asumiendo zona horaria UTC-5 o similar, pero dejemos el local
+                const targetDate = new Date('2026-06-11T00:00:00-05:00').getTime();
                 const el = document.getElementById('apuesta-countdown');
                 if(!el) return;
                 const now = new Date().getTime();
@@ -598,3 +567,4 @@
     </script>
 </body>
 </html>
+
