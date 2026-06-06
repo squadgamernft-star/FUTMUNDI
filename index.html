@@ -57,67 +57,95 @@
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <div class="title-container" style="margin-top: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.8);">
-            <h1 style="font-size:2.8em; font-family:'Bebas Neue', sans-serif; letter-spacing:2px; color:#e0e0e0;">
-                FUTMUNDI
-            </h1>
-            <div class="title-sub" data-i18n="tagline" style="color:#888; font-size:0.7em; letter-spacing:1px;">EL JUEGO DE FÚTBOL NFT MÁS ÉPICO DEL MUNDO</div>
+    <div class="main-content fm-main-screen">
+
+        <!-- TITLE -->
+        <div class="fm-title-block">
+            <h1 class="fm-title">FUTMUNDI</h1>
+            <p class="fm-subtitle" data-i18n="tagline">EL JUEGO DE FÚTBOL NFT MÁS ÉPICO DEL MUNDO</p>
         </div>
 
-        <!-- ── TACTILE BOARD GRID LAYOUT ── -->
-        <div class="tactical-grid-layout">
-            
-            <!-- LEFT SIDE BUTTONS (Glass Cubes) -->
-            <div class="tactical-side-col">
-                <div class="glass-cube-btn" onclick="openModal('modal-torneo')">🏆</div>
-                <div class="glass-cube-btn" onclick="openModal('modal-recompensa')">🎁</div>
-                <div class="glass-cube-btn" onclick="openModal('modal-logros')">🏅</div>
-                <div class="glass-cube-btn" onclick="openModal('modal-entrenamiento')">⬆️</div>
+        <!-- MAIN LAYOUT: Side buttons + Podium + Side buttons -->
+        <div class="fm-main-layout">
+
+            <!-- LEFT SIDE BUTTONS -->
+            <div class="fm-side-col">
+                <button class="fm-side-btn" onclick="openModal('modal-torneo')" title="Torneo">
+                    <span class="fm-side-icon">🏆</span>
+                    <span class="fm-side-label">Torneo</span>
+                </button>
+                <button class="fm-side-btn" onclick="openModal('modal-apuesta')" title="Apuestas">
+                    <span class="fm-side-icon">🎲</span>
+                    <span class="fm-side-label">Apuestas</span>
+                </button>
+                <button class="fm-side-btn" onclick="openModal('modal-mantenimiento')" title="Nivel">
+                    <span class="fm-side-icon">⬆️</span>
+                    <span class="fm-side-label">Nivel</span>
+                </button>
+                <button class="fm-side-btn" onclick="openModal('modal-logros')" title="Logros">
+                    <span class="fm-side-icon">🏅</span>
+                    <span class="fm-side-label">Logros</span>
+                </button>
             </div>
 
-            <!-- CENTER PODIUM -->
-            <div class="tactical-center-col">
-                <img src="./assets/podio_principal.png" alt="Podium" class="tactical-podium-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
-                
-                <!-- Optional: PvP / PvE Action Buttons as sleek badges under the podium if needed, 
-                     but based on mockups they are omitted or integrated elsewhere. We will leave them 
-                     out of the overlapping area, or put them inside a clean flex row here -->
-                <div style="display:flex; gap:10px; margin-top:15px; width:100%; justify-content:center;">
-                    <button onclick="openModal('modal-duelo-urbano')" style="background:rgba(0,179,82,0.8); border:1px solid #00ff75; border-radius:8px; color:#fff; padding:8px 12px; font-weight:bold; font-size:0.8em; display:flex; align-items:center; gap:5px; box-shadow:0 4px 10px rgba(0,0,0,0.5);"><span style="font-size:1.2em;">🏟️</span> FUTCANCHA</button>
-                    <button onclick="openModal('modal-duelo-callejero')" style="background:rgba(0,132,255,0.8); border:1px solid #00d4ff; border-radius:8px; color:#fff; padding:8px 12px; font-weight:bold; font-size:0.8em; display:flex; align-items:center; gap:5px; box-shadow:0 4px 10px rgba(0,0,0,0.5);"><span style="font-size:1.2em;">🏃</span> FUTSALA</button>
-                </div>
+            <!-- CENTER: Podium -->
+            <div class="fm-center-col">
+                <img src="./assets/podio_principal.png" alt="Podium FUTMUNDI" class="fm-podium-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
             </div>
 
-            <!-- RIGHT SIDE BUTTONS (Glass Cubes) -->
-            <div class="tactical-side-col">
-                <div class="glass-cube-btn" onclick="openModal('modal-ranking')">👑</div>
-                <div class="glass-cube-btn" onclick="openModal('modal-deposito')">💎</div>
-                <div class="glass-cube-btn" onclick="openModal('modal-retiro')">💸</div>
-                <div class="glass-cube-btn" onclick="openModal('modal-apuesta')">👥</div>
+            <!-- RIGHT SIDE BUTTONS -->
+            <div class="fm-side-col">
+                <button class="fm-side-btn" onclick="openModal('modal-deposito')" title="Depósito">
+                    <span class="fm-side-icon">💎</span>
+                    <span class="fm-side-label">Depósito</span>
+                </button>
+                <button class="fm-side-btn" onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">
+                    <span class="fm-side-icon">💸</span>
+                    <span class="fm-side-label">Retiro</span>
+                </button>
+                <button class="fm-side-btn" onclick="openModal('modal-recompensa-pts')" title="Goles">
+                    <span class="fm-side-icon">⚽</span>
+                    <span class="fm-side-label">Goles</span>
+                </button>
+                <button class="fm-side-btn" onclick="openModal('modal-recompensa')" title="Diaria">
+                    <span class="fm-side-icon">🎁</span>
+                    <span class="fm-side-label">Diaria</span>
+                </button>
             </div>
 
         </div>
+
+        <!-- GAME MODE BUTTONS (under the podium) -->
+        <div class="fm-game-modes">
+            <button class="fm-game-btn fm-game-pvp" onclick="openModal('modal-duelo-urbano')">
+                <span>🏟️</span> FUTCANCHA
+            </button>
+            <button class="fm-game-btn fm-game-pve" onclick="openModal('modal-duelo-callejero')">
+                <span>🏃</span> FUTSALA
+            </button>
+        </div>
+
         <!-- BOTTOM NAVIGATION BAR -->
-            <div class="premium-bottom-nav">
-                <button class="nav-item-btn" onclick="openModal('modal-marketplace')">
-                    <img src="./assets/marketplace.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
-                    <span data-i18n="menu_marketplace">Market</span>
-                </button>
-                <button class="nav-item-btn" onclick="openModal('modal-garage')">
-                    <img src="./assets/kit_futbol.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
-                    <span data-i18n="menu_futbolistas">Futbolista</span>
-                </button>
-                <button class="nav-item-btn" onclick="openModal('modal-ranking')">
-                    <img src="./assets/trofeo_torneo.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
-                    <span data-i18n="menu_ranking">Ranking</span>
-                </button>
-                <button class="nav-item-btn" onclick="openModal('modal-mantenimiento')">
-                    <img src="./assets/entrenamiento.png" class="nav-icon-img" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
-                    <span data-i18n="menu_entrenamiento">Entrena.</span>
-                </button>
-            </div>
+        <div class="fm-bottom-nav">
+            <button class="fm-nav-btn" onclick="openModal('modal-marketplace')">
+                <img src="./assets/marketplace.png" class="fm-nav-icon" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                <span data-i18n="menu_marketplace">Market</span>
+            </button>
+            <button class="fm-nav-btn" onclick="openModal('modal-garage')">
+                <img src="./assets/kit_futbol.png" class="fm-nav-icon" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                <span data-i18n="menu_futbolistas">Futbolista</span>
+            </button>
+            <button class="fm-nav-btn" onclick="openModal('modal-ranking')">
+                <img src="./assets/trofeo_torneo.png" class="fm-nav-icon" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                <span data-i18n="menu_ranking">Ranking</span>
+            </button>
+            <button class="fm-nav-btn" onclick="openModal('modal-mantenimiento')">
+                <img src="./assets/entrenamiento.png" class="fm-nav-icon" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/1000177231.png';">
+                <span data-i18n="menu_entrenamiento">Entrena.</span>
+            </button>
         </div>
+
+    </div>
     </div>
     </div>
 

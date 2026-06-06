@@ -1725,3 +1725,224 @@ body, html {
     box-shadow: inset 0 2px 5px rgba(255,255,255,0.05), 0 4px 10px rgba(0,0,0,0.5);
 }
 .dark-item-card img { height: 40px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+
+/* ═══════════════════════════════════════════════════════════
+   FUTMUNDI MAIN SCREEN — BROADCAST STADIUM DESIGN
+   Final Version · No legacy code
+   ═══════════════════════════════════════════════════════════ */
+
+/* --- STADIUM ATMOSPHERE BACKGROUND --- */
+.fm-main-screen {
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    overflow: hidden;
+}
+
+.fm-main-screen::before {
+    content: '';
+    position: absolute;
+    top: -60%; left: -30%;
+    width: 160%; height: 160%;
+    background:
+        radial-gradient(ellipse at 30% 0%, rgba(80,180,120,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 0%, rgba(80,180,120,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 0%, rgba(200,220,200,0.08) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --- TITLE --- */
+.fm-title-block {
+    text-align: center;
+    padding: 10px 0 0 0;
+    position: relative;
+    z-index: 2;
+}
+
+.fm-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2em;
+    color: #ffffff;
+    letter-spacing: 4px;
+    margin: 0;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.5);
+    font-style: italic;
+    font-weight: 400;
+}
+
+.fm-subtitle {
+    font-size: 0.65em;
+    color: #999;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* --- MAIN 3-COLUMN LAYOUT --- */
+.fm-main-layout {
+    display: grid;
+    grid-template-columns: 58px 1fr 58px;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin: 15px auto 10px auto;
+    padding: 0 8px;
+    position: relative;
+    z-index: 2;
+}
+
+/* --- SIDE COLUMNS --- */
+.fm-side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* --- SIDE BUTTONS (Glass cubes with tiny label) --- */
+.fm-side-btn {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(145deg, rgba(25,45,35,0.85), rgba(10,20,15,0.95));
+    border: 1px solid rgba(100,200,150,0.2);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    cursor: pointer;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 4px 12px rgba(0,0,0,0.5),
+        0 1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    padding: 0;
+}
+
+.fm-side-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+.fm-side-icon {
+    font-size: 1.3em;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+}
+
+.fm-side-label {
+    font-size: 0.5em;
+    color: rgba(200,220,200,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* --- CENTER COLUMN: PODIUM --- */
+.fm-center-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fm-podium-img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.7));
+    animation: fmFloat 5s ease-in-out infinite;
+}
+
+@keyframes fmFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* --- GAME MODE BUTTONS --- */
+.fm-game-modes {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 0 20px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.fm-game-btn {
+    flex: 1;
+    max-width: 160px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.78em;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: transform 0.1s;
+}
+
+.fm-game-btn:active { transform: scale(0.95); }
+
+.fm-game-pvp {
+    background: linear-gradient(135deg, #005c2a, #00b352);
+    border: 1px solid rgba(0,255,117,0.3);
+}
+
+.fm-game-pve {
+    background: linear-gradient(135deg, #003d80, #0084ff);
+    border: 1px solid rgba(0,180,255,0.3);
+}
+
+/* --- BOTTOM NAV BAR --- */
+.fm-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    background: linear-gradient(180deg, rgba(8,15,10,0.95), rgba(5,10,8,1));
+    border-top: 1px solid rgba(100,200,150,0.15);
+    padding: 8px 10px 12px 10px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.fm-nav-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    color: rgba(200,220,200,0.6);
+    font-size: 0.6em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.15s;
+    padding: 0;
+}
+
+.fm-nav-btn:active { color: #fff; }
+
+.fm-nav-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    border-radius: 8px;
+}
