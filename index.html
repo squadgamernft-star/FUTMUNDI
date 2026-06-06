@@ -165,13 +165,20 @@
     <div id="modal-marketplace" class="modal-overlay dynamic-component"></div>
 
     <!-- RECOMPENSAS POR GOLES -->
-    <div class="modal-overlay" id="modal-recompensa-pts">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">⚽ Recompensas por Goles</span>
-                <button class="modal-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
-            </div>
-            <div class="modal-body">
+    <div class="modal-overlay broadcast-modal" id="modal-recompensa-pts">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #a855f7;">
+            <span class="modal-title" style="color:#a855f7;">⚽ RECOMPENSAS POR GOLES</span>
+            <button class="broadcast-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #a855f7; height:160px;">
+            <img src="./assets/referidos.png" alt="modal-recompensa-pts" style="">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            
                 <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;">
                     <div style="font-size:0.84em;color:var(--cyan);margin-bottom:6px;">🥅 Sistema de Recompensas por Goles</div>
                     <div style="font-size:0.78em;color:#aaa;line-height:1.7">
@@ -194,19 +201,27 @@
                         <strong id="goals-in-cycle-display" style="color:var(--cyan);font-family:'Orbitron',sans-serif">0 / 1000</strong>
                     </div>
                 </div>
-                <div id="goals-rewards-list"></div>
-            </div>
+                <div id="goals-rewards-list">
         </div>
+    </div>
+</div>
     </div>
 
     <!-- RECOMPENSA DIARIA -->
-    <div class="modal-overlay" id="modal-recompensa">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🎁 Recompensa Diaria</span>
-                <button class="modal-close" onclick="closeModal('modal-recompensa')">✕</button>
-            </div>
-            <div class="modal-body">
+    <div class="modal-overlay broadcast-modal" id="modal-recompensa">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #a855f7;">
+            <span class="modal-title" style="color:#a855f7;">🎁 RECOMPENSA DIARIA</span>
+            <button class="broadcast-close" onclick="closeModal('modal-recompensa')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #a855f7; height:160px;">
+            <img src="./assets/referidos.png" alt="modal-recompensa" style="">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            
                 <p style="color:#888;margin-bottom:4px;font-size:0.88em;">💎 Días impares: gemas &nbsp;|&nbsp; 📘 Días pares: puntos de experiencia</p>
                 <p style="color:#555;margin-bottom:12px;font-size:0.8em;" id="daily-timer-display">⏱ —</p>
                 <div class="info-box" style="margin-bottom:12px;background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.3);color:var(--cyan)">
@@ -214,18 +229,26 @@
                 </div>
                 <div class="reward-grid" id="reward-days-grid"></div>
                 <button class="claim-reward-btn" id="btn-claim-reward" onclick="claimReward()">✅ Reclamar Recompensa</button>
-            </div>
+            
         </div>
     </div>
+</div>
 
     <!-- LOGROS — SISTEMA DE HABILIDADES -->
-    <div class="modal-overlay" id="modal-logros">
-        <div class="modal" style="max-width:860px;">
-            <div class="modal-header">
-                <span class="modal-title">🏅 Logros de Habilidad</span>
-                <button class="modal-close" onclick="closeModal('modal-logros')">✕</button>
-            </div>
-            <div class="modal-body">
+    <div class="modal-overlay broadcast-modal" id="modal-logros">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
+            <span class="modal-title" style="color:#FFD700;">🏅 LOGROS DE HABILIDAD</span>
+            <button class="broadcast-close" onclick="closeModal('modal-logros')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #FFD700; height:160px;">
+            <img src="./assets/trofeo_torneo.png" alt="modal-logros" style="">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            
                 <!-- Regla de recompensas -->
                 <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.82em;color:#aaa;line-height:1.8">
                     ⚽ <strong style="color:var(--cyan)">Regla de recompensas:</strong>
@@ -239,19 +262,27 @@
                     <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');openModal('modal-duelo-callejero')" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
                 </div>
                 <!-- Grid de habilidades -->
-                <div class="logros-skill-grid" id="logros-skill-grid"></div>
-            </div>
+                <div class="logros-skill-grid" id="logros-skill-grid">
         </div>
+    </div>
+</div>
     </div>
 
     <!-- NIVEL -->
-    <div class="modal-overlay" id="modal-nivel">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">⬆️ Nivel</span>
-                <button class="modal-close" onclick="closeModal('modal-nivel')">✕</button>
-            </div>
-            <div class="modal-body">
+    <div class="modal-overlay broadcast-modal" id="modal-nivel">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #00d4ff;">
+            <span class="modal-title" style="color:#00d4ff;">⬆️ NIVEL</span>
+            <button class="broadcast-close" onclick="closeModal('modal-nivel')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #00d4ff; height:160px;">
+            <img src="./assets/botas_pro.png" alt="modal-nivel" style="">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            
                 <div style="text-align:center;margin-bottom:18px;">
                     <div style="font-family:'Bebas Neue',sans-serif;font-size:4em;color:var(--green);" id="modal-nivel-num">1</div>
                     <div style="color:#888;font-size:0.86em;margin-top:4px;">Nivel actual</div>
@@ -259,8 +290,10 @@
                 </div>
                 <div class="nivel-bar-wrap">
                     <div class="nivel-bar-label" id="nivel-xp-label"><span>XP: 0</span><span>Siguiente: 100 XP</span></div>
-                    <div class="nivel-bar-bg"><div class="nivel-bar-fill" id="nivel-bar-fill" style="width:0%"></div></div>
-                </div>
+                    <div class="nivel-bar-bg"><div class="nivel-bar-fill" id="nivel-bar-fill" style="width:0%">
+        </div>
+    </div>
+</div>
                 <div class="nivel-bonus-box">
                     <h4>⚡ Bonificaciones por Nivel</h4>
                     <div class="nivel-bonus-row"><span>💎 Gemas extra/partido</span><span class="nivel-bonus-val" id="nb-gems-bonus">+0.0 💎</span></div>
@@ -324,13 +357,20 @@
     </div>
 
     <!-- RANKING -->
-    <div class="modal-overlay" id="modal-ranking">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏆 Ranking Global</span>
-                <button class="modal-close" onclick="closeModal('modal-ranking')">✕</button>
-            </div>
-            <div class="modal-body">
+    <div class="modal-overlay broadcast-modal" id="modal-ranking">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
+            <span class="modal-title" style="color:#FFD700;">🏆 RANKING GLOBAL</span>
+            <button class="broadcast-close" onclick="closeModal('modal-ranking')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #FFD700; height:160px;">
+            <img src="./assets/trofeo_torneo.png" alt="modal-ranking" style="">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            
                 <ul class="rank-list">
                     <li class="rank-item"><span class="rank-pos">🥇</span><span class="rank-name">🇧🇷 Neymarfan_BR</span><span class="rank-score">48,320 pts</span></li>
                     <li class="rank-item"><span class="rank-pos">🥈</span><span class="rank-name">🇦🇷 Messi10_AR</span><span class="rank-score">41,100 pts</span></li>
@@ -343,9 +383,10 @@
                         <span class="rank-score" id="my-rank-score">0 pts</span>
                     </li>
                 </ul>
-            </div>
+            
         </div>
     </div>
+</div>
 
     <!-- DEPOSITO -->
     <!-- Component: modal-deposito -->

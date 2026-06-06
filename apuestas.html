@@ -1,10 +1,17 @@
-    <div class="modal-overlay" id="modal-apuesta">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🎲 Apuestas Mundial</span>
-                <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
-            </div>
-            <div class="modal-body">
+<div class="modal-overlay broadcast-modal" id="modal-apuesta">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #ff9800;">
+            <span class="modal-title" style="color:#ff9800;">🎲 APUESTAS MUNDIAL</span>
+            <button class="broadcast-close" onclick="closeModal('modal-apuesta')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #ff9800; height:160px;">
+            <img src="./assets/estadio_principal.png" alt="Apuestas" style="filter: saturate(1.5) contrast(1.2);">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            
 
                 
                 <!-- Countdown -->
@@ -23,83 +30,7 @@
                     </div>
                     <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:10px;padding:10px 12px;">
                         <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💰 Ganancia</div>
-                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--green);font-size:1em;margin-top:3px;">x Cuota USDT</div>
-                    </div>
-                </div>
-
-                <!-- Tabs -->
-                <div class="tab-bar" style="margin-bottom:14px;">
-                    <button class="tab-btn active" id="tab-btn-partidos"  onclick="apTabSwitch('partidos')">⚽ Partidos</button>
-                    <button class="tab-btn"         id="tab-btn-mistickets" onclick="apTabSwitch('mistickets')">🎫 Mis Tickets</button>
-                </div>
-
-                <!-- ── TAB PARTIDOS ── -->
-                <div id="ap-tab-partidos">
-                    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
-                        <div style="flex:1;font-size:0.78em;color:#888;">Partidos del Mundial en vivo y próximos</div>
-                        <button onclick="apCargarPartidos()" id="ap-refresh-btn"
-                            style="padding:7px 12px;background:rgba(45,122,31,0.2);border:1px solid rgba(45,122,31,0.5);border-radius:8px;color:var(--green);font-size:0.75em;font-family:'Orbitron',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
-                            🔄 Actualizar
-                        </button>
-                    </div>
-                    <div id="ap-status" style="text-align:center;color:#888;font-size:0.82em;padding:10px 0;min-height:24px;"></div>
-                    <div id="ap-partidos-lista" style="display:grid;gap:10px;max-height:320px;overflow-y:auto;padding-right:2px;"></div>
-                </div>
-
-                <!-- ── TAB MIS TICKETS ── -->
-                <div id="ap-tab-mistickets" style="display:none;">
-                    <div id="ap-tickets-lista" style="display:grid;gap:10px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
-                </div>
-
-                <!-- ── PANEL DE CONFIRMACIÓN DE APUESTA (slide-in desde abajo) ── -->
-                <div id="ap-panel-confirmar" style="display:none;margin-top:14px;border:1px solid rgba(255,216,77,0.4);border-radius:16px;background:linear-gradient(145deg,rgba(20,15,0,0.95),rgba(10,19,10,0.95));padding:16px;animation:apPanelIn 0.28s ease;">
-
-                    <!-- Partido seleccionado -->
-                    <div id="ap-panel-partido" style="background:rgba(0,0,0,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:0.85em;"></div>
-
-                    <!-- Selección: ¿quién gana? -->
-                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">¿Cuál es tu pronóstico?</div>
-                    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;margin-bottom:14px;" id="ap-sel-resultado">
-                        <button class="ap-pick-btn" id="ap-pick-local"   onclick="apElegirResultado('local')">— Local</button>
-                        <button class="ap-pick-btn ap-pick-empate"       id="ap-pick-empate"  onclick="apElegirResultado('empate')">🤝 Empate</button>
-                        <button class="ap-pick-btn" id="ap-pick-visita"  onclick="apElegirResultado('visita')">Visita —</button>
-                    </div>
-
-                    <!-- Monto USDT -->
-                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Monto a apostar (USDT)</div>
-                    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(1)">$1</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(5)">$5</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(10)">$10</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(25)">$25</button>
-                        <input id="ap-monto-input" type="number" min="1" step="0.5" placeholder="$" oninput="apActualizarGanancia()"
-                            style="flex:1;min-width:55px;padding:6px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,216,77,0.35);border-radius:8px;color:#fff;font-family:'Orbitron',sans-serif;font-size:0.82em;outline:none;text-align:center;">
-                    </div>
-
-                    <!-- Resumen -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
-                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">CUOTA</div>
-                            <div id="ap-cuota-display" style="font-family:'Orbitron',sans-serif;color:var(--gold);font-weight:700;font-size:1.1em;">—</div>
-                        </div>
-                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
-                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">GANANCIA POTENCIAL</div>
-                            <div id="ap-ganancia-display" style="font-family:'Orbitron',sans-serif;color:var(--green);font-weight:700;font-size:1.1em;">$0.00</div>
-                        </div>
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                        <button onclick="apCancelarPanel()"
-                            style="padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
-                            ✕ Cancelar
-                        </button>
-                        <button onclick="apConfirmarApuesta()"
-                            style="padding:11px;background:linear-gradient(135deg,rgba(255,216,77,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
-                            💳 Apostar con USDT
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--green);font-size:1em;margin-top:3px;">x Cuota USDT
         </div>
     </div>
+</div>

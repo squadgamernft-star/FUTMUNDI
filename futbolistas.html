@@ -1,56 +1,63 @@
-    <div class="modal-overlay" id="modal-garage">
-        <div class="modal" style="max-width:900px;">
-            <div class="modal-header">
-                <span class="modal-title">👕 Mi Plantilla</span>
-                <button class="modal-close" onclick="closeModal('modal-garage')">✕</button>
+<div class="modal-overlay broadcast-modal" id="modal-garage">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:900px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
+            <span class="modal-title" style="color:#FFD700;">👕 MI PLANTILLA</span>
+            <button class="broadcast-close" onclick="closeModal('modal-garage')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #FFD700; height:180px;">
+            <img src="./assets/vestuario.png" alt="Vestuario">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            <div class="tab-bar espn-tabs">
+                <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 Futbolistas</button>
+                <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
+                <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
+                <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🏋️ Entrenadores</button>
             </div>
-            <div class="modal-body">
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'garage','vehiculos')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','cascos')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','guantes')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'garage','botas')">🏋️ Entrenadores</button>
-                </div>
-                <div id="garage-vehiculos" class="tab-panel active">
-                    <div class="squad-layout">
-                        <div class="squad-slots-section">
-                            <h3>📋 Plantilla — 20 Slots NFT</h3>
-                            <div class="squad-slots" id="garage-grid-vehicles"></div>
-                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
+            
+            <div id="garage-vehiculos" class="tab-panel active">
+                <div class="squad-layout">
+                    <div class="squad-slots-section">
+                        <h3 class="torneo-section-title" style="margin-top:0;">📋 Plantilla — 20 Slots NFT</h3>
+                        <div class="squad-slots" id="garage-grid-vehicles"></div>
+                        <button style="width:100%;padding:14px;background:linear-gradient(135deg,#005c2a 0%, #00b352 100%);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;margin-top:15px;box-shadow:0 4px 15px rgba(0,179,82,0.4);" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
+                    </div>
+                    <div class="equipment-panel" style="background:linear-gradient(180deg, #16222c 0%, #0d131a 100%); border-color:#1a2530;">
+                        <h3 class="torneo-section-title" style="margin-top:0;">⚙️ Equipamiento</h3>
+                        <div class="equipment-preview" id="equip-preview">
+                            <div class="equipment-player-placeholder">🧑</div>
                         </div>
-                        <div class="equipment-panel">
-                            <h3>⚙️ Equipamiento</h3>
-                            <div class="equipment-preview" id="equip-preview">
-                                <div class="equipment-player-placeholder">🧑</div>
-                            </div>
-                            <p style="font-size:0.72em;color:#555;text-align:center;margin-bottom:10px;" id="equip-player-name">Selecciona un jugador</p>
-                            <div class="equipment-slots">
-                                <div class="equip-slot" id="equip-slot-uniforme" onclick="openEquipModal('uniforme')"><div class="equip-slot-icon">👕</div><div class="equip-slot-label">Uniforme</div><div class="equip-slot-name" id="equip-uniforme-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-tenis" onclick="openEquipModal('tenis')"><div class="equip-slot-icon">👟</div><div class="equip-slot-label">Tenis</div><div class="equip-slot-name" id="equip-tenis-name">— Vacío —</div></div>
-                                <div class="equip-slot" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🏋️</div><div class="equip-slot-label">Entrenadores</div><div class="equip-slot-name" id="equip-protector-name">— Vacío —</div></div>
-                            </div>
-                            <div class="equip-bonus" id="equip-bonus-panel">
-                                <div class="equip-bonus-title">⚡ Bonificaciones Activas</div>
-                                <div class="equip-bonus-row"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
-                                <div class="equip-bonus-row"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
-                                <div class="equip-bonus-row"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">—</span></div>
-                            </div>
+                        <p style="font-size:0.72em;color:#888;text-align:center;margin-bottom:10px;" id="equip-player-name">Selecciona un jugador</p>
+                        <div class="equipment-slots">
+                            <div class="equip-slot" style="background:#111; border-color:#333;" id="equip-slot-uniforme" onclick="openEquipModal('uniforme')"><div class="equip-slot-icon">👕</div><div class="equip-slot-label" style="color:#aaa;">Uniforme</div><div class="equip-slot-name" style="color:#FFD700;" id="equip-uniforme-name">— Vacío —</div></div>
+                            <div class="equip-slot" style="background:#111; border-color:#333;" id="equip-slot-tenis" onclick="openEquipModal('tenis')"><div class="equip-slot-icon">👟</div><div class="equip-slot-label" style="color:#aaa;">Tenis</div><div class="equip-slot-name" style="color:#FFD700;" id="equip-tenis-name">— Vacío —</div></div>
+                            <div class="equip-slot" style="background:#111; border-color:#333;" id="equip-slot-protector" onclick="openEquipModal('protector')"><div class="equip-slot-icon">🏋️</div><div class="equip-slot-label" style="color:#aaa;">Entrenadores</div><div class="equip-slot-name" style="color:#FFD700;" id="equip-protector-name">— Vacío —</div></div>
+                        </div>
+                        <div class="equip-bonus" style="background:#1a2530; border-color:#2a3a4a;" id="equip-bonus-panel">
+                            <div class="equip-bonus-title" style="color:#4CAF50;">⚡ Bonificaciones Activas</div>
+                            <div class="equip-bonus-row" style="color:#ddd;"><span>OVR Total</span><span class="equip-bonus-val" id="eb-ovr">0</span></div>
+                            <div class="equip-bonus-row" style="color:#ddd;"><span>Velocidad</span><span class="equip-bonus-val" id="eb-spd">+0%</span></div>
+                            <div class="equip-bonus-row" style="color:#ddd;"><span>Defensa</span><span class="equip-bonus-val" id="eb-def">+0%</span></div>
+                            <div class="equip-bonus-row" style="color:#ddd;"><span>Gemas/día</span><span class="equip-bonus-val" id="eb-gems">—</span></div>
                         </div>
                     </div>
                 </div>
-                <div id="garage-cascos" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👕 Tus Uniformes NFT comprados. Selecciona un futbolista en la pestaña <strong style="color:var(--green)">Futbolistas</strong> y luego asígnale uno desde su panel de Equipamiento.</p>
-                    <div class="market-grid" id="garage-grid-uniformes"></div>
-                </div>
-                <div id="garage-guantes" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👟 Tus Zapatillas NFT compradas. Asígnalas a tu futbolista para subir velocidad.</p>
-                    <div class="market-grid" id="garage-grid-tenis"></div>
-                </div>
-                <div id="garage-botas" class="tab-panel">
-                    <p style="color:#888;font-size:0.86em;margin-bottom:12px;">🏋️ Tus Entrenadores NFT comprados. Asigna uno a tu futbolista para activar su bonus.</p>
-                    <div class="market-grid" id="garage-grid-entrenadores"></div>
-                </div>
+            </div>
+            <div id="garage-cascos" class="tab-panel">
+                <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👕 Tus Uniformes NFT comprados. Selecciona un futbolista en la pestaña <strong style="color:#4CAF50">Futbolistas</strong> y luego asígnale uno desde su panel de Equipamiento.</p>
+                <div class="market-grid" id="garage-grid-uniformes"></div>
+            </div>
+            <div id="garage-guantes" class="tab-panel">
+                <p style="color:#888;font-size:0.86em;margin-bottom:12px;">👟 Tus Zapatillas NFT compradas. Asígnalas a tu futbolista para subir velocidad.</p>
+                <div class="market-grid" id="garage-grid-tenis"></div>
+            </div>
+            <div id="garage-botas" class="tab-panel">
+                <p style="color:#888;font-size:0.86em;margin-bottom:12px;">🏋️ Tus Entrenadores NFT comprados. Asigna uno a tu futbolista para activar su bonus.</p>
+                <div class="market-grid" id="garage-grid-entrenadores"></div>
             </div>
         </div>
     </div>
+</div>

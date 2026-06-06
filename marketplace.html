@@ -1,32 +1,40 @@
-    <div class="modal-overlay" id="modal-marketplace">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏪 Marketplace</span>
-                <button class="modal-close" onclick="closeModal('modal-marketplace')">✕</button>
+<div class="modal-overlay broadcast-modal" id="modal-marketplace">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%;">
+        <div class="broadcast-header" style="border-bottom:1px solid #00d4ff;">
+            <span class="modal-title" style="color:#00d4ff;">🏪 MARKETPLACE</span>
+            <button class="broadcast-close" onclick="closeModal('modal-marketplace')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #00d4ff; height:160px;">
+            <img src="./assets/marketplace.png" alt="Marketplace">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            <p style="color:#888;font-size:0.86em;margin-bottom:6px;">Gemas: <strong id="market-gemas-display" style="color:#FFD700">0.0 💎</strong></p>
+            <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:#00d4ff">
+                ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT = +4 balones de estamina.
             </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;">Gemas: <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:var(--green)">
-                    ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT = +4 balones de estamina.
-                </div>
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
-                </div>
-                <div id="marketplace-futbolistas" class="tab-panel active">
-                    <div class="market-grid" id="car-market-grid"></div>
-                </div>
-                <div id="marketplace-uniformes" class="tab-panel">
-                    <div class="market-grid" id="uniformes-market-grid"></div>
-                </div>
-                <div id="marketplace-tenis" class="tab-panel">
-                    <div class="market-grid" id="tenis-market-grid"></div>
-                </div>
-                <div id="marketplace-protectores" class="tab-panel">
-                    <div class="market-grid" id="entrenador-market-grid"></div>
-                </div>
+            
+            <div class="tab-bar espn-tabs">
+                <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
+                <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
+                <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
+                <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
+            </div>
+            
+            <div id="marketplace-futbolistas" class="tab-panel active">
+                <div class="market-grid" id="car-market-grid"></div>
+            </div>
+            <div id="marketplace-uniformes" class="tab-panel">
+                <div class="market-grid" id="uniformes-market-grid"></div>
+            </div>
+            <div id="marketplace-tenis" class="tab-panel">
+                <div class="market-grid" id="tenis-market-grid"></div>
+            </div>
+            <div id="marketplace-protectores" class="tab-panel">
+                <div class="market-grid" id="entrenador-market-grid"></div>
             </div>
         </div>
     </div>
+</div>

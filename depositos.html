@@ -1,21 +1,29 @@
-    <div class="modal-overlay" id="modal-deposito">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">💎 Depósito de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
+<div class="modal-overlay broadcast-modal" id="modal-deposito">
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:500px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #00d4ff;">
+            <span class="modal-title" style="color:#00d4ff;">💎 DEPÓSITO DE GEMAS</span>
+            <button class="broadcast-close" onclick="closeModal('modal-deposito')">✕</button>
+        </div>
+        
+        <div class="fc-hero" style="border-bottom:1px solid #00d4ff; height:180px;">
+            <img src="./assets/depositos.png" alt="Depositos">
+            <div class="fc-hero-overlay"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
+            <div class="fs-warning" style="margin:0 0 15px 0; background:rgba(0,212,255,0.1); border-color:rgba(0,212,255,0.3); color:#00d4ff;">
+                💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
             </div>
-            <div class="modal-body">
-                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
-                    💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
-                </div>
-                <div class="gem-tiers">
-                    <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
-                </div>
+            
+            <div class="gem-tiers">
+                <!-- Keep original content for buttons -->
+                <div class="gem-tier" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">💎</span><div class="gem-tier-info"><h4 style="color:#fff;">320 Gemas</h4><p style="color:#aaa;">Pack de inicio</p></div></div><span class="gem-tier-price" style="color:#00d4ff;">$10 USDT</span></div>
+                <div class="gem-tier" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">💎💎</span><div class="gem-tier-info"><h4 style="color:#fff;">1,600 Gemas</h4><p style="color:#aaa;">Pack popular</p></div></div><span class="gem-tier-price" style="color:#00d4ff;">$50 USDT</span></div>
+                <div class="gem-tier" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">💎💎💎</span><div class="gem-tier-info"><h4 style="color:#fff;">3,200 Gemas</h4><p style="color:#aaa;">Pack PRO</p></div></div><span class="gem-tier-price" style="color:#00d4ff;">$100 USDT</span></div>
+                <div class="gem-tier" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">🏅</span><div class="gem-tier-info"><h4 style="color:#fff;">6,400 Gemas</h4><p style="color:#aaa;">Pack Élite</p></div></div><span class="gem-tier-price" style="color:#00d4ff;">$200 USDT</span></div>
+                <div class="gem-tier" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">👑</span><div class="gem-tier-info"><h4 style="color:#fff;">16,000 Gemas</h4><p style="color:#aaa;">Pack Leyenda</p></div></div><span class="gem-tier-price" style="color:#00d4ff;">$500 USDT</span></div>
             </div>
         </div>
     </div>
+</div>
