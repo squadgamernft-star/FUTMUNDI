@@ -10,10 +10,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tonweb@0.0.66/dist/tonweb.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;700;900&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="estilos.css?v=2">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -878,461 +876,37 @@
     </div>
     </div>
 
-    <!-- RECOMPENSA DIARIA -->
-    <div class="modal-overlay broadcast-modal" id="modal-recompensa">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
-        <div class="broadcast-header" style="border-bottom:1px solid #a855f7;">
-            <span class="modal-title" style="color:#a855f7;">🎁 RECOMPENSA DIARIA</span>
-            <button class="broadcast-close" onclick="closeModal('modal-recompensa')">✕</button>
-        </div>
-        
-        <div class="fc-hero" style="border-bottom:1px solid #a855f7; height:160px;">
-            <img src="./assets/referidos.png" alt="modal-recompensa" style="">
-            <div class="fc-hero-overlay"></div>
-        </div>
-
-        <div style="padding: 15px;">
-            
-                <p style="color:#888;margin-bottom:4px;font-size:0.88em;">💎 Días impares: gemas &nbsp;|&nbsp; 📘 Días pares: puntos de experiencia</p>
-                <p style="color:#555;margin-bottom:12px;font-size:0.8em;" id="daily-timer-display">⏱ —</p>
-                <div class="info-box" style="margin-bottom:12px;background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.3);color:var(--cyan)">
-                    ⏰ Los balones se recargan todos los días a las <strong>07:00 UTC</strong>
-                </div>
-                <div class="reward-grid" id="reward-days-grid"></div>
-                <button class="claim-reward-btn" id="btn-claim-reward" onclick="claimReward()">✅ Reclamar Recompensa</button>
-            
-        </div>
-    </div>
-</div>
-
-    <!-- LOGROS — SISTEMA DE HABILIDADES -->
-    <div class="modal-overlay broadcast-modal" id="modal-logros">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
-        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
-            <span class="modal-title" style="color:#FFD700;">🏅 LOGROS DE HABILIDAD</span>
-            <button class="broadcast-close" onclick="closeModal('modal-logros')">✕</button>
-        </div>
-        
-        <div class="fc-hero" style="border-bottom:1px solid #FFD700; height:160px;">
-            <img src="./assets/trofeo_torneo.png" alt="modal-logros" style="">
-            <div class="fc-hero-overlay"></div>
-        </div>
-
-        <div style="padding: 15px;">
-            
-                <!-- Regla de recompensas -->
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.82em;color:#aaa;line-height:1.8">
-                    ⚽ <strong style="color:var(--cyan)">Regla de recompensas:</strong>
-                    Cada <strong style="color:var(--gold)">100 repeticiones</strong> de cada habilidad = <strong style="color:var(--green)">+1 💎</strong> (máximo <strong style="color:var(--gold)">5 💎 a partir de 500</strong>) · Cada logro reclamado = <strong style="color:var(--cyan)">+100 pts</strong>
-                </div>
-                <!-- Totales globales -->
-                <div class="logro-skill-totals" id="logros-totales-bar">
-                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-acciones">0</div><div class="logro-total-label">Total acciones</div></div>
-                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-gems">0</div><div class="logro-total-label">💎 ganadas</div></div>
-                    <div class="logro-total-item"><div class="logro-total-num" id="lt-total-pts">0</div><div class="logro-total-label">Pts logros</div></div>
-                    <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');openModal('modal-duelo-callejero')" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
-                </div>
-                <!-- Grid de habilidades -->
-                <div class="logros-skill-grid" id="logros-skill-grid">
-        </div>
-    </div>
-</div>
-    </div>
-
-    <!-- NIVEL -->
-    <div class="modal-overlay broadcast-modal" id="modal-nivel">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
-        <div class="broadcast-header" style="border-bottom:1px solid #00d4ff;">
-            <span class="modal-title" style="color:#00d4ff;">⬆️ NIVEL</span>
-            <button class="broadcast-close" onclick="closeModal('modal-nivel')">✕</button>
-        </div>
-        
-        <div class="fc-hero" style="border-bottom:1px solid #00d4ff; height:160px;">
-            <img src="./assets/botas_pro.png" alt="modal-nivel" style="">
-            <div class="fc-hero-overlay"></div>
-        </div>
-
-        <div style="padding: 15px;">
-            
-                <div style="text-align:center;margin-bottom:18px;">
-                    <div style="font-family:'Bebas Neue',sans-serif;font-size:4em;color:var(--green);" id="modal-nivel-num">1</div>
-                    <div style="color:#888;font-size:0.86em;margin-top:4px;">Nivel actual</div>
-                    <div style="color:var(--cyan);font-size:0.82em;margin-top:4px;" id="modal-nivel-nfts">NFTs: 0</div>
-                </div>
-                <div class="nivel-bar-wrap">
-                    <div class="nivel-bar-label" id="nivel-xp-label"><span>XP: 0</span><span>Siguiente: 100 XP</span></div>
-                    <div class="nivel-bar-bg"><div class="nivel-bar-fill" id="nivel-bar-fill" style="width:0%">
-        </div>
-    </div>
-</div>
-                <div class="nivel-bonus-box">
-                    <h4>⚡ Bonificaciones por Nivel</h4>
-                    <div class="nivel-bonus-row"><span>💎 Gemas extra/partido</span><span class="nivel-bonus-val" id="nb-gems-bonus">+0.0 💎</span></div>
-                    <div class="nivel-bonus-row"><span>🏆 Puntos extra torneo</span><span class="nivel-bonus-val" id="nb-pts-bonus">+0 pts</span></div>
-                    <div class="nivel-bonus-row"><span>⚽ Probabilidad victoria</span><span class="nivel-bonus-val" id="nb-win-bonus">base</span></div>
-                    <div style="font-size:0.72em;color:#555;margin-top:8px;">+0.1 gema por nivel · Nivel sube con NFTs (1 NFT = Niv 1, 3 NFT = Niv 2, 5 = Niv 3...)</div>
-                </div>
-                <div class="nivel-perks" id="nivel-perks-list">
-                    <div class="nivel-perk"><span>✅</span><span>Nivel 1 — Acceso a Futsala (PVE)</span></div>
-                    <div class="nivel-perk"><span>✅</span><span>Nivel 2 — Desbloquea FutCancha (PVP)</span></div>
-                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 3 — Torneos disponibles</span></div>
-                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 5 — Mercado exclusivo</span></div>
-                    <div class="nivel-perk" style="opacity:0.4"><span>🔒</span><span>Nivel 10 — Liga Profesional</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MARKETPLACE -->
-    <div id="modal-marketplace" class="modal-overlay dynamic-component"></div>
-
-    <!-- RECOMPENSA POR GOLES -->
-    <div class="modal-overlay broadcast-modal" id="modal-recompensa-pts">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
-        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
-            <span class="modal-title" style="color:#FFD700;">⚽ RECOMPENSAS POR GOLES</span>
-            <button class="broadcast-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
-        </div>
-        <div style="padding: 15px;">
-            <div id="reward-pts-container"></div>
-        </div>
-    </div>
-</div>
-
-    <!-- MODAL APUESTAS -->
-    <div id="modal-apuesta" class="modal-overlay dynamic-component"></div>
-
-    <!-- Component: modal-retiro -->
-    <div id="modal-retiro" class="modal-overlay dynamic-component"></div>
-
-    <!-- REFERIDOS -->
-    <!-- Component: modal-referidos -->
-    <div id="modal-referidos" class="modal-overlay dynamic-component"></div>
-
-    <!-- FUTCANCHA PVP -->
-    <!-- Component: modal-duelo-urbano -->
-    <div id="modal-duelo-urbano" class="modal-overlay dynamic-component"></div>
-
-    <!-- ENTRENAMIENTO -->
-    <!-- Component: modal-mantenimiento -->
-    <div id="modal-mantenimiento" class="modal-overlay dynamic-component"></div>
-
-    <!-- PLANTILLA / SQUAD -->
-    <!-- Component: modal-garage -->
-    <div id="modal-garage" class="modal-overlay dynamic-component"></div>
-
-    <!-- MODAL: Selector de equipamiento para asignar a NFT -->
-    <div class="modal-overlay" id="modal-equip-picker">
-        <div class="modal" style="max-width:600px">
-            <div class="modal-header">
-                <span class="modal-title" id="equip-picker-title">⚙️ Asignar Equipamiento</span>
-                <button class="modal-close" onclick="closeEquipPicker()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;" id="equip-picker-subtitle">Elige uno de tu inventario</p>
-                <div id="equip-picker-content"></div>
-                <div class="equip-picker-actions">
-                    <button class="epa-clear" onclick="clearEquipSlot()">🗑️ Quitar</button>
-                    <button class="epa-close" onclick="closeEquipPicker()">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RANKING -->
-    <div class="modal-overlay broadcast-modal" id="modal-ranking">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:600px;">
-        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
-            <span class="modal-title" style="color:#FFD700;">🏆 RANKING GLOBAL</span>
-            <button class="broadcast-close" onclick="closeModal('modal-ranking')">✕</button>
-        </div>
-        
-        <div class="fc-hero" style="border-bottom:1px solid #FFD700; height:160px;">
-            <img src="./assets/trofeo_torneo.png" alt="modal-ranking" style="">
-            <div class="fc-hero-overlay"></div>
-        </div>
-
-        <div style="padding: 15px;">
-            
-                <ul class="rank-list">
-                    <li class="rank-item"><span class="rank-pos">🥇</span><span class="rank-name">🇧🇷 Neymarfan_BR</span><span class="rank-score">48,320 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos">🥈</span><span class="rank-name">🇦🇷 Messi10_AR</span><span class="rank-score">41,100 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos">🥉</span><span class="rank-name">🇫🇷 KylianK_FR</span><span class="rank-score">39,750 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos" style="color:#aaa">4</span><span class="rank-name">🇩🇪 FutbolKing_DE</span><span class="rank-score">35,200 pts</span></li>
-                    <li class="rank-item"><span class="rank-pos" style="color:#aaa">5</span><span class="rank-name">🇪🇸 LaRoja_Pro</span><span class="rank-score">31,800 pts</span></li>
-                    <li class="rank-item" style="border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.04)">
-                        <span class="rank-pos" style="color:#aaa">—</span>
-                        <span class="rank-name" style="color:var(--green)">🙋 Tú</span>
-                        <span class="rank-score" id="my-rank-score">0 pts</span>
-                    </li>
-                </ul>
-            
-        </div>
-    </div>
-</div>
-
-    <!-- DEPOSITO -->
-    <!-- Component: modal-deposito -->
-    <div id="modal-deposito" class="modal-overlay dynamic-component"></div>
-
-    <!-- PAGO QR — CONTRATO INTELIGENTE -->
-    <div class="modal-overlay" id="modal-pago-qr">
+    <!-- RECOMPENSAS POR GOLES -->
+    <div class="modal-overlay" id="modal-recompensa-pts">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title" id="pago-qr-title">💳 Pago al Contrato Inteligente</span>
-                <button class="modal-close" onclick="closeModal('modal-pago-qr')">✕</button>
+                <span class="modal-title">⚽ Recompensas por Goles</span>
+                <button class="modal-close" onclick="closeModal('modal-recompensa-pts')">✕</button>
             </div>
             <div class="modal-body">
-                <p id="pago-qr-desc" style="color:#aaa;font-size:0.86em;margin-bottom:10px;"></p>
-                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
-                    <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
-                    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
-                    <div style="font-size:0.74em;color:#888;margin-top:2px;">≈ <span id="pago-qr-ton">0.0000</span> TON · Red TON (Jetton USDT)</div>
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px;margin-bottom:14px;">
+                    <div style="font-size:0.84em;color:var(--cyan);margin-bottom:6px;">🥅 Sistema de Recompensas por Goles</div>
+                    <div style="font-size:0.78em;color:#aaa;line-height:1.7">
+                        Cada <strong style="color:var(--gold)">100 goles</strong> acumulados = <strong style="color:var(--green)">1 gema → escala hasta 10 💎</strong><br>
+                        Al llegar a 1000 goles (10💎) el ciclo se reinicia desde 1 gema.<br>
+                        <span style="color:#666">Ej: 100g=1💎 · 200g=2💎 · 400g=4💎 · 1000g=10💎 → 1100g=1💎 (nuevo ciclo)</span>
+                    </div>
                 </div>
-                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
-                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
+                <div style="margin-bottom:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <span style="color:#888;font-size:0.84em">⚽ Goles totales</span>
+                        <strong id="goals-display" style="color:var(--green);font-family:'Orbitron',sans-serif">0</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <span style="color:#888;font-size:0.84em">🔄 Ciclo actual</span>
+                        <strong id="cycle-display" style="color:var(--gold);font-family:'Orbitron',sans-serif">1</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <span style="color:#888;font-size:0.84em">🏆 Goles en ciclo</span>
+                        <strong id="goals-in-cycle-display" style="color:var(--cyan);font-family:'Orbitron',sans-serif">0 / 1000</strong>
+                    </div>
                 </div>
-                <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
-                <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-                    <code id="pago-qr-address" style="flex:1;color:var(--cyan);font-size:0.78em;word-break:break-all;font-family:'Orbitron',monospace;"></code>
-                    <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
-                </div>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
-                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
-                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
-                </div>
-                <div style="display:flex;gap:10px;">
-                    <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
-                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FUTSALA PVE -->
-    <!-- Component: modal-duelo-callejero -->
-    <div id="modal-duelo-callejero" class="modal-overlay dynamic-component"></div>
-
-    <!-- TORNEO -->
-    <!-- Component: modal-torneo -->
-    <div id="modal-torneo" class="modal-overlay dynamic-component"></div>
-
-    <!-- PLAYER DETAIL MODAL -->
-    <div class="car-detail-overlay" id="modal-car-detail">
-        <div class="car-detail-modal">
-            <div class="car-detail-img-wrap">
-                <img class="car-detail-img" id="car-detail-img" src="" alt="">
-                <div class="car-detail-img-glow"></div>
-                <div class="player-id-display" id="car-detail-player-id">ID: #000</div>
-                <button class="car-detail-close" onclick="closeCarDetail()">✕</button>
-            </div>
-            <div class="car-detail-body">
-                <div class="car-detail-name" id="car-detail-name"></div>
-                <div style="font-size:1.2em;margin-bottom:6px;" id="car-detail-country-flag"></div>
-                <div class="car-detail-badge">NFT · TON BLOCKCHAIN · FUTMUNDI</div>
-                <div class="car-detail-stats">
-                    <div class="car-stat-card stat-hp"><div class="stat-icon">⚡</div><div class="stat-label">Overall</div><div class="stat-value" id="car-detail-hp">—</div></div>
-                    <div class="car-stat-card stat-dur"><div class="stat-icon">💪</div><div class="stat-label">Forma</div><div class="stat-value" id="car-detail-dur">100%</div></div>
-                    <div class="car-stat-card stat-fuel"><div class="stat-icon">⚽</div><div class="stat-label">Balones</div><div class="stat-value" id="car-detail-fuel">4 / 4</div></div>
-                    <div class="car-stat-card stat-earn"><div class="stat-icon">💎</div><div class="stat-label">Gemas/día</div><div class="stat-value" id="car-detail-earn">—</div></div>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="car-detail-extra-stats"></div>
-                <div class="car-detail-divider"></div>
-                <div id="car-detail-dur-bar" style="margin-bottom:12px"></div>
-                <div id="car-detail-action-btn"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- VIDEO MATCH OVERLAY — JUEGO INTERACTIVO -->
-    <div class="video-overlay" id="video-overlay" style="padding:0;overflow:hidden">
-        <div class="match-flag-sky" aria-hidden="true">
-            <span style="left:5%;animation-duration:13s;animation-delay:-1s">🇧🇷</span><span style="left:15%;animation-duration:15s;animation-delay:-7s">🇦🇷</span><span style="left:25%;animation-duration:12s;animation-delay:-4s">🇪🇸</span><span style="left:36%;animation-duration:16s;animation-delay:-10s">🇨🇴</span><span style="left:48%;animation-duration:14s;animation-delay:-2s">🇫🇷</span><span style="left:60%;animation-duration:17s;animation-delay:-8s">🇵🇹</span><span style="left:72%;animation-duration:13s;animation-delay:-5s">🇨🇱</span><span style="left:84%;animation-duration:15s;animation-delay:-11s">🇳🇴</span><span style="left:93%;animation-duration:12s;animation-delay:-3s">🇬🇧</span>
-        </div>
-        <!-- INTRO SCREEN -->
-        <div id="match-intro-screen" style="position:absolute;inset:0;background:#060f06;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0">
-            <div id="intro-mode-label" style="font-family:'Orbitron',sans-serif;font-size:0.7em;color:var(--cyan);letter-spacing:3px;margin-bottom:8px;text-align:center"></div>
-            <div style="display:flex;align-items:center;justify-content:center;gap:0;width:100%;max-width:500px;padding:0 12px">
-                <!-- TEAM A -->
-                <div id="intro-team-a" style="flex:1;text-align:center;opacity:0;transform:translateX(-60px);transition:all 0.6s cubic-bezier(.175,.885,.32,1.275)">
-                    <div id="intro-a-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--green);box-shadow:0 0 24px rgba(0,255,136,0.5)">⚽</div>
-                    <div id="intro-a-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
-                    <div id="intro-a-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--cyan);margin-top:2px"></div>
-                    <div id="intro-a-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
-                </div>
-                <!-- VS -->
-                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 14px;flex-shrink:0">
-                    <div id="intro-vs" style="font-family:'Bebas Neue',sans-serif;font-size:2.8em;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.6);opacity:0;transform:scale(0.4);transition:all 0.5s 0.4s cubic-bezier(.175,.885,.32,1.275)">VS</div>
-                    <div id="intro-countdown" style="font-family:'Orbitron',sans-serif;font-size:4em;font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,0.8);display:none"></div>
-                </div>
-                <!-- TEAM B -->
-                <div id="intro-team-b" style="flex:1;text-align:center;opacity:0;transform:translateX(60px);transition:all 0.6s 0.2s cubic-bezier(.175,.885,.32,1.275)">
-                    <div id="intro-b-badge" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid var(--red);box-shadow:0 0 24px rgba(255,68,68,0.5)">🤖</div>
-                    <div id="intro-b-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:#fff;letter-spacing:2px"></div>
-                    <div id="intro-b-id" style="font-family:'Orbitron',sans-serif;font-size:0.55em;color:var(--red);margin-top:2px"></div>
-                    <div id="intro-b-ovr" style="font-size:0.8em;color:var(--gold);margin-top:4px;font-weight:700"></div>
-                </div>
-            </div>
-            <div id="intro-cancha-label" style="margin-top:16px;padding:5px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:0.76em;color:#888;letter-spacing:2px;text-align:center"></div>
-        </div>
-
-        <!-- GAME SCREEN -->
-        <div id="match-game-screen" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:flex-start;background:#060f06">
-            <!-- HUD -->
-            <div id="game-hud" style="width:100%;padding:6px 10px;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:5;flex-shrink:0">
-                <div style="font-size:0.7em;color:#888;font-family:'Orbitron',sans-serif" id="hud-time">90'</div>
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5em;color:#fff;letter-spacing:4px;text-shadow:0 0 10px rgba(0,255,136,0.4)" id="hud-score">0 — 0</div>
-                <div style="font-size:0.68em;color:var(--gold);font-family:'Orbitron',sans-serif" id="hud-shots">🎯 0</div>
-            </div>
-            <!-- CANVAS -->
-            <canvas id="match-canvas" style="width:100%;max-width:640px;flex:1;display:block;background:#1a4a1a;touch-action:none;position:relative;z-index:1;box-shadow:0 12px 40px rgba(0,0,0,0.35)"></canvas>
-            <!-- CONTROLES MÓVILES -->
-            <div id="mobile-controls" style="width:100%;max-width:640px;padding:8px 12px;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0">
-                <!-- D-PAD IZQUIERDO -->
-                <div style="position:relative;width:108px;height:108px;flex-shrink:0">
-                    <button class="dpad-btn" id="dpad-up"    style="top:0;left:50%;transform:translateX(-50%)">▲</button>
-                    <button class="dpad-btn" id="dpad-left"  style="top:50%;left:0;transform:translateY(-50%)">◀</button>
-                    <button class="dpad-btn" id="dpad-right" style="top:50%;right:0;transform:translateY(-50%)">▶</button>
-                    <button class="dpad-btn" id="dpad-down"  style="bottom:0;left:50%;transform:translateX(-50%)">▼</button>
-                </div>
-                <!-- INFO CENTRAL -->
-                <div style="text-align:center;flex:1">
-                    <div style="font-size:0.6em;color:#666;font-family:'Orbitron',sans-serif;letter-spacing:1px">CONTROL DEL BALÓN</div>
-                    <div style="font-size:0.55em;color:#444;margin-top:2px">Flechas guían · SPACE dispara</div>
-                    <div id="game-hint" style="font-size:0.72em;color:var(--green);margin-top:4px;font-weight:700;min-height:16px"></div>
-                </div>
-                <!-- BOTÓN TIRO -->
-                <button id="shoot-btn" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(0,200,80,0.15));border:3px solid var(--green);color:var(--green);font-size:1.6em;cursor:pointer;font-weight:900;box-shadow:0 0 20px rgba(0,255,136,0.3);flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform 0.1s,box-shadow 0.1s" ontouchstart="this.style.transform='scale(0.9)';this.style.boxShadow='0 0 8px rgba(0,255,136,0.2)'" ontouchend="this.style.transform='';this.style.boxShadow='0 0 20px rgba(0,255,136,0.3)'">⚽</button>
-            </div>
-        </div>
-
-        <!-- RESULT SCREEN -->
-        <div id="match-result-screen" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.97);z-index:20;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
-            <div id="video-result-box" style="width:100%;max-width:500px"></div>
-            <button class="video-close-btn" id="video-close-btn" style="margin-top:14px" onclick="cerrarVideoPartida()">✅ Ver Resultado</button>
-        </div>
-    </div>
-
-    <!-- SELECTOR DE JUGADOR -->
-    <div class="modal-overlay" id="modal-select-player">
-        <div class="modal" style="max-width:500px">
-            <div class="modal-header">
-                <span class="modal-title">⚽ Elige tu Jugador</span>
-                <button class="modal-close" onclick="closeModal('modal-select-player')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.84em;margin-bottom:12px;" id="select-player-desc">Selecciona el jugador con quien quieres jugar.</p>
-                <div class="player-select-grid" id="player-select-grid"></div>
-                <div style="display:flex;gap:8px;margin-top:4px">
-                    <select id="match-difficulty" style="flex:1;padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(45,122,31,0.4);border-radius:10px;color:#fff;font-size:0.9em;font-family:'Rajdhani',sans-serif;outline:none">
-                        <option value="barrial">🏟️ Cancha Barrial (Fácil)</option>
-                        <option value="municipal">🏟️ Estadio Municipal (Medio)</option>
-                        <option value="copa">🏆 Copa del Mundo (Difícil)</option>
-                        <option value="gala">🌃 Noche de Gala (Experto)</option>
-                    </select>
-                    <button class="primary-btn" style="width:auto;padding:10px 20px;font-size:0.82em" onclick="confirmarJugadorYJugar()">▶ Jugar</button>
-                </div>
-                <div id="select-player-error" style="color:var(--red);font-size:0.84em;margin-top:8px;text-align:center"></div>
-            </div>
-        </div>
-    </div>
-
-
-<!-- ══════════ SCRIPTS ══════════ -->
-<script src="https://unpkg.com/@ton/ton@13.11.0/dist/ton.js"></script>
-    <script src="app.js?v=4"></script>
-
-    <!-- Dynamic Component Loader -->
-    <script>
-        async function loadComponents() {
-            const components = {
-                'modal-marketplace': 'marketplace.html',
-                'modal-duelo-urbano': 'pvp.html',
-                'modal-duelo-callejero': 'pve.html',
-                'modal-mantenimiento': 'entrenamiento.html',
-                'modal-apuesta': 'apuestas.html',
-                'modal-garage': 'futbolistas.html',
-                'modal-torneo': 'torneos.html',
-                'modal-retiro': 'retiros.html',
-                'modal-deposito': 'depositos.html',
-                'modal-referidos': 'referidos.html'
-            };
-            
-            const promises = Object.entries(components).map(async ([id, file]) => {
-                try {
-                    const response = await fetch('./' + file + '?v=' + new Date().getTime());
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    const html = await response.text();
-                    const el = document.getElementById(id);
-                    if (el) {
-                        const isActive = el.classList.contains('active');
-                        el.outerHTML = html;
-                        const newEl = document.getElementById(id);
-                        if (newEl) {
-                            if (isActive) newEl.classList.add('active');
-                            newEl.addEventListener('click', e => {
-                                if (e.target === newEl && typeof closeModal === 'function') {
-                                    closeModal(id);
-                                }
-                            });
-                        }
-                    }
-                } catch (e) {
-                    console.error('Failed to load component ' + file, e);
-                }
-            });
-            
-            await Promise.all(promises);
-            console.log('All components loaded successfully');
-            document.dispatchEvent(new Event('ComponentsLoaded'));
-        }
-        
-        
-        document.addEventListener('ComponentsLoaded', function(){
-            setInterval(() => {
-                const targetDate = new Date('2026-06-11T00:00:00-05:00').getTime();
-                const el = document.getElementById('apuesta-countdown');
-                if(!el) return;
-                const now = new Date().getTime();
-                const diff = targetDate - now;
-                if(diff <= 0) { el.textContent = '¡EN VIVO!'; return; }
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((diff % (1000 * 60)) / 1000);
-                el.textContent = String(d).padStart(2,'0')+' : '+String(h).padStart(2,'0')+' : '+String(m).padStart(2,'0')+' : '+String(s).padStart(2,'0');
-            }, 1000);
-        });
-
-    <div class="modal-overlay" id="modal-marketplace">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏪 Marketplace</span>
-                <button class="modal-close" onclick="closeModal('modal-marketplace')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:6px;">Gemas: <strong id="market-gemas-display" style="color:var(--gold)">0.0 💎</strong></p>
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:0.78em;color:var(--green)">
-                    ✅ Puedes comprar hasta <strong>20 NFT de cada jugador</strong>. Cada NFT = +4 balones de estamina.
-                </div>
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab(event,'marketplace','futbolistas')">🧑 Futbolistas</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','uniformes')">👕 Uniformes</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','tenis')">👟 Tenis</button>
-                    <button class="tab-btn" onclick="switchTab(event,'marketplace','protectores')">🏋️ Entrenadores</button>
-                </div>
-                <div id="marketplace-futbolistas" class="tab-panel active">
-                    <div class="market-grid" id="car-market-grid"></div>
-                </div>
-                <div id="marketplace-uniformes" class="tab-panel">
-                    <div class="market-grid" id="uniformes-market-grid"></div>
-                </div>
-                <div id="marketplace-tenis" class="tab-panel">
-                    <div class="market-grid" id="tenis-market-grid"></div>
-                </div>
-                <div id="marketplace-protectores" class="tab-panel">
-                    <div class="market-grid" id="entrenador-market-grid"></div>
-                </div>
+                <div id="goals-rewards-list"></div>
             </div>
         </div>
     </div>
@@ -1409,7 +983,7 @@
                     <div class="logro-total-item"><div class="logro-total-num" id="lt-total-acciones">0</div><div class="logro-total-label">Total acciones</div></div>
                     <div class="logro-total-item"><div class="logro-total-num" id="lt-total-gems">0</div><div class="logro-total-label">💎 ganadas</div></div>
                     <div class="logro-total-item"><div class="logro-total-num" id="lt-total-pts">0</div><div class="logro-total-label">Pts logros</div></div>
-                    <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');openModal('modal-duelo-callejero')" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
+                    <div class="logro-total-item" style="margin-left:auto"><button onclick="closeModal('modal-logros');window.location.href='page/pve.html'" style="padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.82em;cursor:pointer">⚽ Jugar para subir stats</button></div>
                 </div>
                 <!-- Grid de habilidades -->
                 <div class="logros-skill-grid" id="logros-skill-grid"></div>
@@ -1452,183 +1026,8 @@
         </div>
     </div>
 
-    <!-- ══════════ MODAL APUESTAS ══════════ -->
-    <div class="modal-overlay" id="modal-apuesta">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🎲 Apuestas Mundial</span>
-                <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
-            </div>
-            <div class="modal-body">
-
-                <!-- Info USDT + saldo -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-                    <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 12px;">
-                        <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💵 Pago en</div>
-                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--cyan);font-size:1em;margin-top:3px;">USDT</div>
-                    </div>
-                    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:10px;padding:10px 12px;">
-                        <div style="font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:1px;">💰 Ganancia</div>
-                        <div style="font-family:'Orbitron',sans-serif;font-weight:700;color:var(--green);font-size:1em;margin-top:3px;">x Cuota USDT</div>
-                    </div>
-                </div>
-
-                <!-- Tabs -->
-                <div class="tab-bar" style="margin-bottom:14px;">
-                    <button class="tab-btn active" id="tab-btn-partidos"  onclick="apTabSwitch('partidos')">⚽ Partidos</button>
-                    <button class="tab-btn"         id="tab-btn-mistickets" onclick="apTabSwitch('mistickets')">🎫 Mis Tickets</button>
-                </div>
-
-                <!-- ── TAB PARTIDOS ── -->
-                <div id="ap-tab-partidos">
-                    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
-                        <div style="flex:1;font-size:0.78em;color:#888;">Partidos del Mundial en vivo y próximos</div>
-                        <button onclick="apCargarPartidos()" id="ap-refresh-btn"
-                            style="padding:7px 12px;background:rgba(45,122,31,0.2);border:1px solid rgba(45,122,31,0.5);border-radius:8px;color:var(--green);font-size:0.75em;font-family:'Orbitron',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
-                            🔄 Actualizar
-                        </button>
-                    </div>
-                    <div id="ap-status" style="text-align:center;color:#888;font-size:0.82em;padding:10px 0;min-height:24px;"></div>
-                    <div id="ap-partidos-lista" style="display:grid;gap:10px;max-height:320px;overflow-y:auto;padding-right:2px;"></div>
-                </div>
-
-                <!-- ── TAB MIS TICKETS ── -->
-                <div id="ap-tab-mistickets" style="display:none;">
-                    <div id="ap-tickets-lista" style="display:grid;gap:10px;max-height:400px;overflow-y:auto;padding-right:2px;"></div>
-                </div>
-
-                <!-- ── PANEL DE CONFIRMACIÓN DE APUESTA (slide-in desde abajo) ── -->
-                <div id="ap-panel-confirmar" style="display:none;margin-top:14px;border:1px solid rgba(255,216,77,0.4);border-radius:16px;background:linear-gradient(145deg,rgba(20,15,0,0.95),rgba(10,19,10,0.95));padding:16px;animation:apPanelIn 0.28s ease;">
-
-                    <!-- Partido seleccionado -->
-                    <div id="ap-panel-partido" style="background:rgba(0,0,0,0.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:0.85em;"></div>
-
-                    <!-- Selección: ¿quién gana? -->
-                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">¿Cuál es tu pronóstico?</div>
-                    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;margin-bottom:14px;" id="ap-sel-resultado">
-                        <button class="ap-pick-btn" id="ap-pick-local"   onclick="apElegirResultado('local')">— Local</button>
-                        <button class="ap-pick-btn ap-pick-empate"       id="ap-pick-empate"  onclick="apElegirResultado('empate')">🤝 Empate</button>
-                        <button class="ap-pick-btn" id="ap-pick-visita"  onclick="apElegirResultado('visita')">Visita —</button>
-                    </div>
-
-                    <!-- Monto USDT -->
-                    <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Monto a apostar (USDT)</div>
-                    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(1)">$1</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(5)">$5</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(10)">$10</button>
-                        <button class="apuesta-monto-btn" onclick="apSetMonto(25)">$25</button>
-                        <input id="ap-monto-input" type="number" min="1" step="0.5" placeholder="$" oninput="apActualizarGanancia()"
-                            style="flex:1;min-width:55px;padding:6px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,216,77,0.35);border-radius:8px;color:#fff;font-family:'Orbitron',sans-serif;font-size:0.82em;outline:none;text-align:center;">
-                    </div>
-
-                    <!-- Resumen -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
-                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">CUOTA</div>
-                            <div id="ap-cuota-display" style="font-family:'Orbitron',sans-serif;color:var(--gold);font-weight:700;font-size:1.1em;">—</div>
-                        </div>
-                        <div style="background:rgba(0,0,0,0.35);border-radius:8px;padding:8px 10px;text-align:center;">
-                            <div style="font-size:0.65em;color:#888;margin-bottom:3px;">GANANCIA POTENCIAL</div>
-                            <div id="ap-ganancia-display" style="font-family:'Orbitron',sans-serif;color:var(--green);font-weight:700;font-size:1.1em;">$0.00</div>
-                        </div>
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                        <button onclick="apCancelarPanel()"
-                            style="padding:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
-                            ✕ Cancelar
-                        </button>
-                        <button onclick="apConfirmarApuesta()"
-                            style="padding:11px;background:linear-gradient(135deg,rgba(255,216,77,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
-                            💳 Apostar con USDT
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <style>
-        @keyframes apPanelIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-        .ap-partido-card {
-            background:rgba(255,255,255,0.03);border:1px solid rgba(45,122,31,0.2);
-            border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;
-        }
-        .ap-partido-card:hover,.ap-partido-card:active { border-color:rgba(255,216,77,0.5);background:rgba(255,216,77,0.05); }
-        .ap-partido-card.selected { border-color:var(--gold);background:rgba(255,216,77,0.08); }
-        .ap-partido-live { display:inline-flex;align-items:center;gap:4px;background:rgba(255,68,68,0.15);border:1px solid rgba(255,68,68,0.4);border-radius:20px;padding:2px 8px;font-size:0.65em;color:#ff6b6b;font-weight:700;letter-spacing:1px; }
-        .ap-partido-live::before { content:'';width:6px;height:6px;border-radius:50%;background:#ff4444;animation:livePulse 1s infinite; }
-        @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .ap-pick-btn {
-            padding:9px 4px;border-radius:10px;font-size:0.78em;font-weight:700;
-            font-family:'Fredoka','Rajdhani',sans-serif;cursor:pointer;text-align:center;
-            background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);
-            color:#bbb;transition:all 0.18s;line-height:1.2;
-        }
-        .ap-pick-empate { font-size:0.72em; }
-        .ap-pick-btn:hover { border-color:rgba(255,216,77,0.5);color:#fff; }
-        .ap-pick-btn.active { border-color:var(--gold)!important;color:var(--gold)!important;background:rgba(255,216,77,0.12)!important; }
-        .apuesta-monto-btn {
-            padding:6px 11px;border-radius:8px;background:rgba(255,255,255,0.05);
-            border:1px solid rgba(255,216,77,0.25);color:var(--gold);
-            font-family:'Orbitron',sans-serif;font-size:0.78em;font-weight:700;
-            cursor:pointer;transition:all 0.18s;
-        }
-        .apuesta-monto-btn:hover { background:rgba(255,216,77,0.15);border-color:var(--gold); }
-        .ap-ticket-card {
-            padding:13px 14px;border-radius:12px;border:1px solid;
-            background:rgba(255,255,255,0.025);
-        }
-        .ap-ticket-card.pendiente { border-color:rgba(255,216,77,0.35); }
-        .ap-ticket-card.ganada    { border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.04); }
-        .ap-ticket-card.perdida   { border-color:rgba(255,90,111,0.3);background:rgba(255,90,111,0.03); }
-        #ap-partidos-lista::-webkit-scrollbar,#ap-tickets-lista::-webkit-scrollbar { width:3px; }
-        #ap-partidos-lista::-webkit-scrollbar-thumb,#ap-tickets-lista::-webkit-scrollbar-thumb { background:rgba(45,122,31,0.4);border-radius:4px; }
-    </style>
 
 
-    <!-- RETIRO -->
-    <div class="modal-overlay" id="modal-retiro">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">💸 Retiro de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-retiro')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
-                    <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
-                    <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
-                </div>
-                <label class="withdraw-label">Dirección Wallet (USDT)</label>
-                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
-                <label class="withdraw-label">
-                    Cantidad de gemas 💎
-                    <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
-                </label>
-                <input class="withdraw-input" type="number" id="retiro-cantidad" placeholder="Mínimo 160 — Máximo 3000 gemas" oninput="actualizarConversionRetiro()">
-                <div class="withdraw-warning" id="retiro-warning">🚫 No puedes retirar más gemas de las que tienes disponibles.</div>
-                <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.9em;">
-                    💵 Recibirás aprox: <strong id="retiro-usdt-display" style="color:var(--cyan);">0.00 USDT</strong>
-                </div>
-                <div class="info-box" style="margin-bottom:14px;">⚠️ Mínimo: 160 💎 &nbsp;·&nbsp; Máximo: 3000 💎/día &nbsp;·&nbsp; 32 💎 = 1 USDT &nbsp;·&nbsp; Descuento: 6% + 1 USDT (van a la billetera del contrato)</div>
-
-                <!-- CAPTCHA -->
-                <label class="withdraw-label">🛡️ Verificación anti-bot</label>
-                <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
-                    <span id="captcha-question" style="font-family:'Orbitron',sans-serif;font-size:1.05em;color:var(--gold);letter-spacing:1px;flex:1;">— + — = ?</span>
-                    <button type="button" onclick="generarCaptcha()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.85em;">🔄</button>
-                </div>
-                <input class="withdraw-input" type="number" id="captcha-answer" placeholder="Tu respuesta">
-
-                <div style="background:rgba(255,140,0,0.1);border:1px solid var(--orange);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:0.88em;color:#ffd9a8;">
-                    ⏱️ <strong>Aviso:</strong> Tu retiro será acreditado y depositado en un lapso de <strong>24 a 48 horas</strong>.
-                </div>
-                <button class="withdraw-btn" onclick="retirar()">🚀 Solicitar Retiro</button>
-            </div>
-        </div>
-    </div>
 
     <!-- REFERIDOS -->
     <div class="modal-overlay" id="modal-referidos">
@@ -1802,51 +1201,6 @@
         </div>
     </div>
 
-    <!-- FUTCANCHA PVP -->
-    <div class="modal-overlay" id="modal-duelo-urbano">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏟️ FutCancha</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-urbano')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS POR PARTIDO <span id="futcancha-nivel-bonus" style="color:var(--gold)"></span></div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                        <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-win-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px" id="pvp-draw-gems">según jugador NFT</div></div>
-                        <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
-                    </div>
-                </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('liga')">
-                    <div class="dm-icon">🏆</div>
-                    <h3>Liga Mundial</h3>
-                    <p>Enfrenta a jugadores del mismo nivel. Selecciona tu futbolista NFT y a jugar.</p>
-                </div>
-                <div class="duel-mode-card" onclick="abrirSeleccionJugadorPVP('amistoso')">
-                    <div class="dm-icon">⚽</div>
-                    <h3>Partido Amistoso</h3>
-                    <p>Sin penalización. Practica contra oponentes de tu nivel.</p>
-                </div>
-                <div class="info-box" style="margin-top:8px">⚠️ Cada partida consume 1 balón de estamina.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ENTRENAMIENTO -->
-    <div class="modal-overlay" id="modal-mantenimiento">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏋️ Entrenamiento</span>
-                <button class="modal-close" onclick="closeModal('modal-mantenimiento')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;font-size:0.86em;margin-bottom:16px;">El entrenamiento restaura la durabilidad al 100% y mejora progresivamente el rendimiento del NFT. La estamina (⚽ balones) NO se recarga aquí — se recarga automáticamente cada 24h a las 07:00 UTC.</p>
-                <div id="mant-list"></div>
-                <div class="info-box" style="margin-top:4px;">💡 Bonus por entrenamiento: 1ª vez +5% · 2ª +10% · 3ª +15% · 4ª +17% · 5ª +19% · luego +2% por sesión hasta 80% (se reinicia).</div>
-            </div>
-        </div>
-    </div>
 
     <!-- PLANTILLA / SQUAD -->
     <div class="modal-overlay" id="modal-garage">
@@ -1867,7 +1221,7 @@
                         <div class="squad-slots-section">
                             <h3>📋 Plantilla — 20 Slots NFT</h3>
                             <div class="squad-slots" id="garage-grid-vehicles"></div>
-                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="closeModal('modal-garage');openModal('modal-marketplace')">🏪 Ir al Marketplace</button>
+                            <button class="primary-btn" style="margin-top:14px;font-size:0.78em" onclick="window.location.href='page/marketplace.html'">🏪 Ir al Marketplace</button>
                         </div>
                         <div class="equipment-panel">
                             <h3>⚙️ Equipamiento</h3>
@@ -1948,28 +1302,6 @@
         </div>
     </div>
 
-    <!-- DEPOSITO -->
-    <div class="modal-overlay" id="modal-deposito">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">💎 Depósito de Gemas</span>
-                <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT para fichar futbolistas en el marketplace.</p>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
-                    💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
-                </div>
-                <div class="gem-tiers">
-                    <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(1600,50)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎</span><div class="gem-tier-info"><h4>1,600 Gemas</h4><p>Pack popular</p></div></div><span class="gem-tier-price">$50 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(3200,100)"><div class="gem-tier-left"><span class="gem-tier-icon">💎💎💎</span><div class="gem-tier-info"><h4>3,200 Gemas</h4><p>Pack PRO</p></div></div><span class="gem-tier-price">$100 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(6400,200)"><div class="gem-tier-left"><span class="gem-tier-icon">🏅</span><div class="gem-tier-info"><h4>6,400 Gemas</h4><p>Pack Élite</p></div></div><span class="gem-tier-price">$200 USDT</span></div>
-                    <div class="gem-tier" onclick="comprarGemas(16000,500)"><div class="gem-tier-left"><span class="gem-tier-icon">👑</span><div class="gem-tier-info"><h4>16,000 Gemas</h4><p>Pack Leyenda</p></div></div><span class="gem-tier-price">$500 USDT</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- PAGO QR — CONTRATO INTELIGENTE -->
     <div class="modal-overlay" id="modal-pago-qr">
@@ -2006,15 +1338,6 @@
     </div>
 
     <!-- FUTSALA PVE -->
-    <div class="modal-overlay" id="modal-duelo-callejero">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">🏃 Futsala</span>
-                <button class="modal-close" onclick="closeModal('modal-duelo-callejero')">✕</button>
-            </div>
-            <div class="modal-body" id="futsala-body"></div>
-        </div>
-    </div>
 
     <!-- TORNEO -->
     <div class="modal-overlay" id="modal-torneo">
@@ -2201,7 +1524,7 @@
     // ── CONFIG ─────────────────────────────────────────────────────────────
     const GITHUB_IMG = "https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/image/";
     // ── WALLET DEL CONTRATO INTELIGENTE (recibe TODOS los pagos USDT) ─────
-    const CONTRACT_WALLET = Object.freeze("EQD0iZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
+    const CONTRACT_WALLET = Object.freeze("EQDOiZjKNaeb8d6EJ7STxHI6wHZiv5mvB_ovgCJCuZMO1dQb");
     const WALLET = CONTRACT_WALLET;
     const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO'});
     function isValidTonAddress(addr){return typeof addr==='string' && /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(addr.trim());}
@@ -2213,83 +1536,16 @@
         if(address !== expected){throw new Error(`Dirección no autorizada para ${PAYMENT_TYPES[safeType]}`);}
         return {tipo:safeType,address:expected};
     }
-    async function buildContractTx(tipo,usdt){
+    function buildContractTx(tipo,usdt){
         const flow = assertSecureContractFlow(tipo,getContractWallet());
         const amount = Number(usdt);
         if(!Number.isFinite(amount) || amount<=0){throw new Error('Monto inválido');}
-        
-        const userWallet = currentWalletAddr();
-        if(!userWallet) throw new Error('Conecta tu wallet primero');
-
-        const USDT_MASTER = "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs";
-        let userJettonWallet = null;
-        try {
-            const res = await fetch(`https://tonapi.io/v2/accounts/${userWallet}/jettons/${USDT_MASTER}`);
-            if(!res.ok) throw new Error('API error');
-            const data = await res.json();
-            if(data && data.wallet_address && data.wallet_address.address) {
-                userJettonWallet = data.wallet_address.address;
-                if(Number(data.balance) < amount * 1e6) {
-                    throw new Error(`Saldo USDT insuficiente. Necesitas al menos ${amount} USDT.`);
-                }
-            } else {
-                throw new Error('Jetton wallet no encontrada');
-            }
-        } catch(e) {
-            console.error(e);
-            throw new Error(e.message || 'Error al verificar saldo USDT. Asegúrate de tener Tether en tu wallet TON.');
-        }
-
-        if(typeof TonWeb === 'undefined') throw new Error('Librería TonWeb no cargada');
-        const tonweb = new TonWeb();
-        const jettonWalletContract = new TonWeb.token.ft.JettonWallet(tonweb.provider, { address: userJettonWallet });
-        const body = await jettonWalletContract.createTransferBody({
-            queryId: 0,
-            jettonAmount: new TonWeb.utils.BN(Math.round(amount * 1e6)),
-            toAddress: new TonWeb.utils.Address(flow.address),
-            responseAddress: new TonWeb.utils.Address(userWallet),
-            forwardAmount: TonWeb.utils.toNano('0.001'), 
-            forwardPayload: new Uint8Array([])
-        });
-        const payloadBase64 = TonWeb.utils.bytesToBase64(await body.toBoc(false));
-        const finalJettonAddress = new TonWeb.utils.Address(userJettonWallet).toString(true, true, true);
-
-        return {
-            validUntil: Math.floor(Date.now()/1000)+300,
-            messages: [{
-                address: finalJettonAddress,
-                amount: TonWeb.utils.toNano('0.05').toString(),
-                payload: payloadBase64
-            }]
-        };
+        const ton = (amount/5).toFixed(4);
+        return {validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:flow.address,amount:String(Math.round(parseFloat(ton)*1e9))}]};
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
     }
-
-    // ── TABLA OFICIAL DE COSTOS DE ENTRENAMIENTO (USDT) POR NFT ───────────
-    // Mapeo: precio del NFT en gemas → costo de mantenimiento/entrenamiento en USDT
-    const COSTO_ENTRENAMIENTO_USDT = {
-        320:    1.00,
-        1600:   5.00,
-        3300:   10.30,
-        6900:   21.50,
-        9900:   30.90,
-        12000:  37.50,
-        18000:  56.25,
-        75000:  234.30,
-        150000: 468.70,
-        255000: 796.80,
-        420000: 1312.50,
-        680000: 2125.00,
-        999999: 3125.00,
-    };
-    function getCostoMantenimiento(precio){
-        if(COSTO_ENTRENAMIENTO_USDT[precio]!=null) return COSTO_ENTRENAMIENTO_USDT[precio];
-        // Fallback proporcional si aparece un precio no listado
-        return Math.max(1, +(precio/320).toFixed(2));
-    }
-
     // ── COSTO DE INSCRIPCIÓN AL TORNEO (USDT) ─────────────────────────────
     const COSTO_TORNEO_USDT = 10.00;
     const MAX_PER_PLAYER = 20;
@@ -2437,10 +1693,9 @@
     let carrosComprados=[];
     let durabilidades={}, ballonesPorJugador={};
     let _currentMatchMode='pve', _currentMatchCancha='', _currentMatchPlayer=null;
-    let _matchResultPending=null, _pvpModeSelected='liga';
+    let _matchResultPending=null;
     let _selectedSquadSlot=null;
     let _equipamiento={};
-    let _marketQty={};
     // Estado de habilidades: { skill_id: count }
     let skillCounts = {};
 
@@ -2793,10 +2048,10 @@
         loadState();
         checkDailyBallRecharge();
         actualizarUI();
-        buildMarket();
-        buildUniforms();
+        /* buildMarket moved to page/marketplace.html */
+        /* buildUniforms moved */
         buildSkillLogros();
-        buildFutsalaBody();
+        /* buildFutsalaBody moved to page/pve.html */
         // Detectar y registrar código de referido (solo si hay wallet conectada)
         if(newAddr) { _detectarReferido(); _resolverPendientesDeReferidos(); }
         // Mostrar badge con dirección abreviada en top bar
@@ -2880,15 +2135,13 @@
     function openModal(id){
         const el=$id(id);if(!el)return;
         el.classList.add('active');document.body.style.overflow='hidden';document.body.classList.add('modal-open');
-        if(id==='modal-marketplace'){actualizarUI();buildMarket();buildUniforms();buildItemsMarket();}
+        
         if(id==='modal-recompensa')checkRewardStatus();
         if(id==='modal-recompensa-pts'){actualizarUI();buildRewardPts();}
         if(id==='modal-garage')buildGarage();
-        if(id==='modal-mantenimiento')buildMantenimiento();
         if(id==='modal-logros')buildSkillLogros();
-        if(id==='modal-duelo-callejero')buildFutsalaBody();
         if(id==='modal-nivel')actualizarUI();
-        if(id==='modal-torneo'){updateTorneoCountdown(); if(typeof torneoActualizarContadorUsuariosNFT==='function') torneoActualizarContadorUsuariosNFT();}
+        if(id==='modal-torneo')updateTorneoCountdown();
     }
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';if(!document.querySelector('.modal-overlay.active'))document.body.classList.remove('modal-open');}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
@@ -2903,8 +2156,8 @@
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
+                const tx=buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
-                    const tx=await buildContractTx('torneo',COSTO_TORNEO_USDT);
                     await tonConnectUI.sendTransaction(tx);
                     mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
                     return true;
@@ -2940,145 +2193,11 @@
         const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%2300ff88'/><stop offset='1' stop-color='%230a1a0a'/></linearGradient></defs><rect width='200' height='200' fill='url(%23g)'/><text x='100' y='120' font-size='90' text-anchor='middle' font-family='sans-serif'>${item.flag||'🎁'}</text></svg>`;
         return 'data:image/svg+xml;utf8,' + svg;
     }
-    function renderItemGrid(gridId, list, kind){
-        const el = document.getElementById(gridId); if(!el) return;
-        el.innerHTML = list.map((it,i)=>{
-            const owned = getItemQty(kind, i);
-            return `
-            <div class="car-card">
-                <div class="car-card-img-wrap">
-                    <img class="car-card-img" src="${itemImgUrl(it.img)}" alt="${it.nombre}" onerror="this.onerror=null;this.src=&quot;${itemFallback(it)}&quot;" style="object-fit:cover">
-                    <div style="position:absolute;top:6px;right:6px;background:rgba(0,255,136,0.9);border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">+${it.bonus}%</div>
-                    ${owned>0?`<div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:6px;padding:2px 7px;font-size:0.6em;color:var(--gold);font-weight:800">✅ ×${owned}</div>`:''}
-                </div>
-                <div class="car-card-info">
-                    <div class="car-card-name">${it.nombre}</div>
-                    <div class="car-card-country">${it.flag||''} ${it.pais||(it.anio?('Año '+it.anio):'')}</div>
-                    <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">⚡ Bonus +${it.bonus}% rendimiento</div>
-                    <div class="car-card-price">💎 ${it.precio.toLocaleString()}</div>
-                    <button class="buy-car-btn" onclick="comprarItem('${kind}',${i})">⚽ Comprar</button>
-                </div>
-            </div>`;
-        }).join('');
-    }
-    function buildItemsMarket(){
-        renderItemGrid('tenis-market-grid', ZAPATILLAS, 'tenis');
-        renderItemGrid('entrenador-market-grid', ENTRENADORES, 'entrenador');
-    }
-    function comprarItem(kind, idx){
-        const list = getItemList(kind);
-        const it = list[idx]; if(!it) return;
-        if(gemas < it.precio){ mostrarMensaje(`❌ Faltan ${(it.precio-gemas).toFixed(1)} 💎`,'#ff4444'); return; }
-        gemas -= it.precio;
-        if(!_itemsComprados[kind]) _itemsComprados[kind] = {};
-        _itemsComprados[kind][idx] = (_itemsComprados[kind][idx] || 0) + 1;
-        if(typeof saveState==='function') saveState();
-        actualizarUI();
-        buildItemsMarket();
-        if(typeof buildGarageInventory==='function') buildGarageInventory();
-        const md=document.getElementById('market-gemas-display'); if(md) md.textContent=gemas.toFixed(1)+' 💎';
-        const tipo = kind==='tenis'?'👟 Zapatillas':'🏋️ Entrenador';
-        mostrarMensaje(`✅ ${tipo} "${it.nombre}" añadido a tu inventario! Asígnalo desde Mi Plantilla`,'#00ff88');
-    }
 
     // ── MARKETPLACE ───────────────────────────────────────────────────────
-    function buildMarket(){
-        const md=$id('market-gemas-display');if(md)md.textContent=gemas.toFixed(1)+' 💎';
-        $id('car-market-grid').innerHTML=PLAYERS.map((c,i)=>{
-            const owned=getPlayerQty(i);const imgSrc=playerImgSrc(i);const hasRealImg=!!c.img;
-            const isFree=isFreeNFT(i);
-            const walletAddr=currentWalletAddr();
-            const walletClaimed=isFree && hasWalletClaimedFreeNFT(i, walletAddr);
-            // Free NFT: máximo 1 por wallet; el resto: hasta MAX_PER_PLAYER
-            const maxAllowed = isFree ? 1 : MAX_PER_PLAYER;
-            const remaining = maxAllowed - owned;
-            if(!_marketQty[i])_marketQty[i]=1;
-            // Bloque de info: free vs normal
-            const infoBlock = isFree
-                ? `<div class="car-card-country">${c.flag} ${c.pais}</div>
-                   <div style="font-size:0.68em;color:var(--gold);margin:4px 0 3px;font-weight:700">🎁 Generará ${c.freeGemasTotal} 💎</div>
-                   <div class="car-card-price" style="color:var(--green)">GRATIS</div>`
-                : `<div class="car-card-country">${c.flag} ${c.pais} · ⚡ OVR ${c.hp}</div>
-                   <div style="font-size:0.68em;color:var(--green);margin-bottom:3px;font-weight:700">📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</div>
-                   <div class="car-card-price">💎 ${c.precio.toLocaleString()}</div>`;
-            // Bloque de acción
-            let actionBlock;
-            if(isFree){
-                if(owned>0 || walletClaimed){
-                    actionBlock = `<button class="buy-car-btn" disabled>✅ Ya reclamado (1/wallet)</button>`;
-                } else if(!walletAddr){
-                    actionBlock = `<button class="buy-car-btn" disabled style="opacity:0.6">🔒 Conecta tu wallet</button>`;
-                } else {
-                    actionBlock = `<button class="buy-car-btn" onclick="reclamarFreeNFT(${i})" style="background:linear-gradient(135deg,rgba(66,245,141,0.25),rgba(255,216,77,0.18));border-color:var(--green);color:var(--green)">🎁 Reclamar Gratis</button>`;
-                }
-            } else if(remaining>0){
-                actionBlock = `<div class="nft-qty-row">
-                    <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},-1)">−</button>
-                    <span class="nft-qty-num" id="mkt-qty-${i}">${_marketQty[i]||1}</span>
-                    <button class="nft-qty-btn" onclick="cambiarQtyMarket(${i},1)">+</button>
-                    <span class="nft-qty-max">(máx ${remaining})</span>
-                </div>
-                <div style="font-size:0.68em;color:var(--gold);margin-bottom:6px">Total: 💎 <span id="mkt-total-${i}">${((c.precio)*(_marketQty[i]||1)).toLocaleString()}</span></div>
-                <button class="buy-car-btn" id="buy-btn-${i}" onclick="comprarCarro(${i})">⚽ Fichar ×<span id="mkt-qty-label-${i}">${_marketQty[i]||1}</span></button>`;
-            } else {
-                actionBlock = `<button class="buy-car-btn" disabled>✅ Máximo (${MAX_PER_PLAYER})</button>`;
-            }
-            return `<div class="car-card" id="card-${i}">
-<div class="car-card-img-wrap" onclick="openCarDetail(${i},false)">
-    <img class="car-card-img" src="${imgSrc}" alt="${c.nombre}" onerror="this.onerror=null;this.src='${playerImgFallback(c).replace(/'/g,"\\'")}'" style="object-fit:cover">
-    ${hasRealImg?`<div style="position:absolute;top:6px;right:6px;background:${isFree?'rgba(255,216,77,0.95)':'rgba(0,255,136,0.9)'};border-radius:4px;padding:2px 6px;font-size:0.55em;color:#000;font-weight:800;letter-spacing:1px">${isFree?'FREE NFT':'NFT'}</div>`:''}
-    ${owned>0?`<div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.8);border:1px solid var(--gold);border-radius:4px;padding:2px 6px;font-size:0.55em;color:var(--gold);font-weight:800;font-family:'Orbitron',sans-serif">${owned}/${maxAllowed}</div>`:''}
-</div>
-<div class="car-card-info">
-    <div class="car-card-name">${c.nombre}</div>
-    ${infoBlock}
-    ${actionBlock}
-</div>
-</div>`;}).join('');
-    }
-    function cambiarQtyMarket(idx,delta){if(isFreeNFT(idx))return;const owned=getPlayerQty(idx);const remaining=MAX_PER_PLAYER-owned;if(!_marketQty[idx])_marketQty[idx]=1;_marketQty[idx]=Math.max(1,Math.min(remaining,_marketQty[idx]+delta));const q=_marketQty[idx];const el=$id(`mkt-qty-${idx}`);if(el)el.textContent=q;const tl=$id(`mkt-total-${idx}`);if(tl)tl.textContent=(PLAYERS[idx].precio*q).toLocaleString();const ll=$id(`mkt-qty-label-${idx}`);if(ll)ll.textContent=q;}
 
     // Reclamar NFT FREE (Alexis Sánchez) — 1 por wallet, persistente
-    function reclamarFreeNFT(idx){
-        const c = PLAYERS[idx];
-        if(!isFreeNFT(idx)){ return; }
-        const walletAddr = currentWalletAddr();
-        if(!walletAddr){
-            mostrarMensaje('⚠️ Conecta tu wallet para reclamar el NFT free','#ffaa00');
-            if(typeof openWalletModal==='function') openWalletModal();
-            return;
-        }
-        if(hasWalletClaimedFreeNFT(idx, walletAddr) || getPlayerQty(idx)>0){
-            mostrarMensaje('❌ Esta wallet ya reclamó este NFT free','#ff4444');
-            return;
-        }
-        const entry=getPlayerEntry(idx);
-        if(entry){entry.qty+=1;}else{carrosComprados.push({idx,qty:1});}
-        hp+=c.hp; puntaje+=10;
-        durabilidades[slotKey(idx,0)]=100;
-        ballonesPorJugador[slotKey(idx,0)]=freshBalonesArr(idx);
-        markWalletClaimedFreeNFT(idx, walletAddr);
-        nivel=calcularNivel();
-        if(typeof saveState==='function') saveState();
-        actualizarUI();buildMarket();
-        mostrarMensaje(`🎁 ¡${c.nombre} reclamado GRATIS! Generará ${c.freeGemasTotal} 💎`,'#42f58d');
-    }
 
-    function comprarCarro(idx){
-        if(isFreeNFT(idx)){ reclamarFreeNFT(idx); return; }
-        const c=PLAYERS[idx];const qty=_marketQty[idx]||1;const owned=getPlayerQty(idx);const remaining=MAX_PER_PLAYER-owned;
-        if(qty>remaining){mostrarMensaje(`⚠️ Solo puedes comprar ${remaining} más de este jugador`,'#ffaa00');return;}
-        const totalCost=c.precio*qty;
-        if(gemas<totalCost){mostrarMensaje(`❌ Faltan ${(totalCost-gemas).toFixed(1)} 💎`,'#ff4444');return;}
-        gemas-=totalCost;
-        const entry=getPlayerEntry(idx);const startCopy=owned;
-        if(entry){entry.qty+=qty;}else{carrosComprados.push({idx,qty});}
-        hp+=c.hp*qty;puntaje+=Math.round(c.precio/10)*qty;
-        for(let copy=startCopy;copy<startCopy+qty;copy++){durabilidades[slotKey(idx,copy)]=100;ballonesPorJugador[slotKey(idx,copy)]=freshBalonesArr(idx);}
-        nivel=calcularNivel();
-        actualizarUI();buildMarket();
-        mostrarMensaje(`✅ ${qty}× ${c.nombre} fichado! Nivel → ${nivel} · +${qty*4} balones · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día`,'#00ff88');
-    }
 
     // ── UNIFORMES MARKETPLACE ─────────────────────────────────────────────
     const UNIFORMES = [
@@ -3123,51 +2242,9 @@
         },
     ];
 
-    let _uniformesQty = {};
     let _uniformesComprados = {};
 
-    function buildUniforms() {
-        const grid = $id('uniformes-market-grid');
-        if (!grid) return;
-        grid.innerHTML = UNIFORMES.map(u => {
-            const owned = _uniformesComprados[u.id] || 0;
-            if (!_uniformesQty[u.id]) _uniformesQty[u.id] = 1;
-            return `<div class="car-card" style="border-color:${u.tierBorder};background:${u.tierBg};">
-<div class="car-card-img-wrap">
-    <img class="car-card-img" src="${u.img}" alt="${u.nombre}"
-         onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';"
-         style="object-fit:cover;aspect-ratio:3/4;">
-    <div style="display:none;width:100%;aspect-ratio:3/4;align-items:center;justify-content:center;font-size:3.5em;background:#0a130a;">${u.emoji}</div>
-    <div style="position:absolute;top:6px;left:6px;background:${u.tierBg};border:1px solid ${u.tierBorder};border-radius:4px;padding:2px 8px;font-size:0.55em;color:${u.tierColor};font-weight:800;letter-spacing:1.5px;font-family:'Orbitron',sans-serif">${u.tier}</div>
-    ${owned > 0 ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);border:1px solid var(--gold);border-radius:4px;padding:2px 6px;font-size:0.55em;color:var(--gold);font-weight:800;font-family:'Orbitron',sans-serif">✅ ×${owned}</div>` : ''}
-</div>
-<div class="car-card-info">
-    <div class="car-card-name" style="color:${u.tierColor}">${u.nombre}</div>
-    ${u.fisico ? `<div style="font-size:0.74em;color:var(--green);margin:3px 0;font-weight:700">💪 ${u.fisico.toLocaleString()} pts físico</div>` : `<div style="font-size:0.74em;color:var(--cyan);margin:3px 0;font-weight:700">⭐ ${u.bonus}</div>`}
-    <div class="car-card-price" style="color:${u.tierColor}">💎 ${u.precio.toLocaleString()}</div>
-    <button class="buy-car-btn" onclick="comprarUniforme('${u.id}')"
-        style="border-color:${u.tierBorder};color:${u.tierColor};"
-        ${gemas < u.precio ? 'disabled' : ''}>
-        👕 Comprar
-    </button>
-</div>
-</div>`;
-        }).join('');
-    }
 
-    function comprarUniforme(id) {
-        const u = UNIFORMES.find(x => x.id === id);
-        if (!u) return;
-        if (gemas < u.precio) { mostrarMensaje(`❌ Faltan ${(u.precio - gemas).toFixed(1)} 💎`, '#ff4444'); return; }
-        gemas -= u.precio;
-        _uniformesComprados[id] = (_uniformesComprados[id] || 0) + 1;
-        if (u.fisico) { hp += u.fisico; puntaje += Math.round(u.fisico / 10); }
-        if(typeof saveState==='function') saveState();
-        actualizarUI();
-        buildUniforms();
-        if(typeof buildGarageInventory==='function') buildGarageInventory();
-        mostrarMensaje(`✅ ${u.nombre} añadido a tu inventario! ${u.fisico ? `+${u.fisico.toLocaleString()} pts físico` : u.bonus} · Asígnalo desde Mi Plantilla`, '#00ff88');
-    }
 
     // ── LOGROS DE HABILIDADES ─────────────────────────────────────────────
     function getSkillClaimedKey(skillId, milestone) {
@@ -3300,7 +2377,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
 </div>`;
             }
         }
-        while(slotNum<20){html+=`<div class="squad-slot" onclick="closeModal('modal-garage');openModal('modal-marketplace')"><div class="squad-slot-empty-icon">➕</div><div style="font-size:0.55em;color:#333">Slot ${slotNum+1}</div></div>`;slotNum++;}
+        while(slotNum<20){html+=`<div class="squad-slot" onclick="window.location.href='page/marketplace.html'"><div class="squad-slot-empty-icon">➕</div><div style="font-size:0.55em;color:#333">Slot ${slotNum+1}</div></div>`;slotNum++;}
         $id('garage-grid-vehicles').innerHTML=html;
         updateEquipPanel();
         buildGarageInventory();
@@ -3546,7 +2623,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         }
         $id('car-detail-dur-bar').innerHTML=`<div style="display:flex;justify-content:space-between;font-size:0.78em;color:#888;margin-bottom:5px"><span>💪 Forma Física</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div style="background:rgba(255,255,255,0.07);border-radius:50px;height:8px;overflow:hidden"><div class="dur-bar-fill ${durCls}" style="width:${dur}%"></div></div>`;
         const idHtml=`<div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:0.8em;color:#888">🆔 <strong style="color:var(--cyan);font-family:'Orbitron',sans-serif">${playerId}</strong></div>`;
-        if(fromGarage){$id('car-detail-action-btn').innerHTML=idHtml+`<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-mantenimiento')">🏋️ Ir a Entrenamiento</button>`;}
+        if(fromGarage){$id('car-detail-action-btn').innerHTML=idHtml+`<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();window.location.href='page/entrenamiento.html'">🏋️ Ir a Entrenamiento</button>`;}
         else{
             const owned=getPlayerQty(idx);
             if(_free){
@@ -3560,7 +2637,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
                 $id('car-detail-action-btn').innerHTML=idHtml+btn;
             } else {
                 const remaining=MAX_PER_PLAYER-owned;
-                $id('car-detail-action-btn').innerHTML=idHtml+(remaining>0?`<button class="primary-btn" style="font-size:0.82em" onclick="closeCarDetail();openModal('modal-marketplace')">💎 Ver en Marketplace (${owned}/${MAX_PER_PLAYER})</button>`:`<button class="primary-btn" style="font-size:0.82em;opacity:0.5;cursor:default">✅ Máximo alcanzado</button>`);
+                $id('car-detail-action-btn').innerHTML=idHtml+(remaining>0?`<button class="primary-btn" style="font-size:0.82em" onclick="window.location.href='page/marketplace.html'">💎 Ver en Marketplace (${owned}/${MAX_PER_PLAYER})</button>`:`<button class="primary-btn" style="font-size:0.82em;opacity:0.5;cursor:default">✅ Máximo alcanzado</button>`);
             }
         }
         $id('modal-car-detail').classList.add('active');document.body.style.overflow='hidden';
@@ -3569,7 +2646,6 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
     $id('modal-car-detail').addEventListener('click',e=>{if(e.target===$id('modal-car-detail'))closeCarDetail();});
 
     // ── SELECTOR JUGADOR ──────────────────────────────────────────────────
-    function abrirSeleccionJugadorPVP(modo){_pvpModeSelected=modo;_currentMatchMode='pvp';abrirModalSeleccionJugador('pvp');}
     function abrirSeleccionJugadorFutsala(cancha){_currentMatchCancha=cancha;_currentMatchMode='pve';abrirModalSeleccionJugador('pve');}
     function abrirModalSeleccionJugador(mode){
         if(carrosComprados.length===0){mostrarMensaje('⚠️ ¡Ficha un futbolista primero!','#ffaa00');return;}
@@ -4290,26 +3366,6 @@ ${shotsInfo}${rangeNote}${bonusNote}${goalNote}${skillNote}
         });
     }
 
-    // ── FUTSALA ───────────────────────────────────────────────────────────
-    function buildFutsalaBody(){
-        $id('futsala-body').innerHTML=`
-<div class="futsala-info-box">✅ Modo GRATUITO — Sin gemas &nbsp;·&nbsp; Gemas según tu NFT + pts estadísticas</div>
-<div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
-<div style="font-family:'Orbitron',sans-serif;font-size:0.72em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">💎 GANANCIAS — SEGÚN NFT SELECCIONADO</div>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🏆</div><div style="color:var(--green);font-weight:700;font-size:0.9em">Victoria</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">rango del NFT</div></div>
-    <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">🤝</div><div style="color:var(--gold);font-weight:700;font-size:0.9em">Empate</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">40% del rango</div></div>
-    <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:10px;"><div style="font-size:1.3em">❌</div><div style="color:var(--red);font-weight:700;font-size:0.9em">Derrota</div><div style="color:#aaa;font-size:0.78em;margin-top:3px">0 💎</div></div>
-</div></div>
-<div class="info-box" style="margin-bottom:12px;">⚠️ Cada partida consume 1 balón · Forma física −0.8%</div>
-<p style="color:#888;font-size:0.84em;margin-bottom:12px;">Elige una cancha y compite:</p>
-<div class="map-grid">
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Cancha Barrial')"><div class="map-card-img" style="background:linear-gradient(135deg,#0a1a0a,#1a3a1a)">🏟️</div><div class="map-card-info"><h4>Cancha Barrial</h4><p>Partidos rápidos.</p><span class="map-tag">⭐ Fácil · +2 pts</span></div></div>
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Estadio Municipal')"><div class="map-card-img" style="background:linear-gradient(135deg,#1a1a0a,#3a2a0a)">🏟️</div><div class="map-card-info"><h4>Estadio Municipal</h4><p>Mayor presión táctica.</p><span class="map-tag">⭐⭐ Medio · +2 pts</span></div></div>
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Copa del Mundo')"><div class="map-card-img" style="background:linear-gradient(135deg,#1a0a0a,#3a0a0a)">🏆</div><div class="map-card-info"><h4>Copa del Mundo</h4><p>Alta dificultad.</p><span class="map-tag">⭐⭐⭐ Difícil · +2 pts</span></div></div>
-    <div class="map-card" onclick="abrirSeleccionJugadorFutsala('Noche de Gala')"><div class="map-card-img" style="background:linear-gradient(135deg,#0a0a1a,#0a1a3a)">🌃</div><div class="map-card-info"><h4>Noche de Gala</h4><p>El reto máximo.</p><span class="map-tag">⭐⭐⭐⭐ Experto · +2 pts</span></div></div>
-</div>`;
-    }
 
     // ── RECOMPENSAS POR GOLES ─────────────────────────────────────────────
     function buildRewardPts(){
@@ -4353,137 +3409,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     setInterval(()=>{const modal=$id('modal-recompensa');if(modal&&modal.classList.contains('active'))checkRewardStatus();},1000);
     function claimReward(){const dayKey=getUtcDayKey();if(localStorage.getItem('tg_last_reward_day_key')===dayKey){mostrarMensaje('⚠️ Ya reclamaste la recompensa de hoy','#ffaa00');return;}const diaActual=getDailyCycleDay(),gemsGanadas=getDailyRewardGems(diaActual),xpGanado=getDailyRewardXP(diaActual),isDay30=diaActual===30,isXP=diaActual%2===0&&!isDay30;gemas+=gemsGanadas;puntaje+=xpGanado;let msg=isDay30?`👑 ¡Día 30! +${gemsGanadas} 💎 +${xpGanado} XP`:isXP?`📘 +${xpGanado} puntos de experiencia`:`💎 +${gemsGanadas} gema +${xpGanado} XP`;localStorage.setItem('tg_last_reward_day_key',dayKey);localStorage.setItem('tg_last_reward_ts',String(Date.now()));localStorage.setItem('tg_reward_day',String(diaActual));if(typeof saveState==='function')saveState();actualizarUI();buildRewardDays();const btn=$id('btn-claim-reward');if(btn){btn.disabled=true;btn.textContent='✓ Recompensa de hoy reclamada';}mostrarMensaje(msg,isDay30?'#a855f7':isXP?'#55d7ff':'#00ff88');}
 
-    // ── ENTRENAMIENTO ─────────────────────────────────────────────────────
-    // Bonus de rendimiento progresivo por sesión:
-    // Sesión 1=+5%, 2=+10%, 3=+15%, 4=+17%, 5=+19%, luego +2% por sesión hasta llegar a 80% → se reinicia a 0
-    let trainingData = JSON.parse(localStorage.getItem('tg_training_data')||'{}'); // { slotKey: { sesiones: n, bonus: % } }
-    function saveTraining(){ localStorage.setItem('tg_training_data', JSON.stringify(trainingData)); }
-    function getTrainingInfo(idx,copy=0){
-        const k=slotKey(idx,copy);
-        if(!trainingData[k]) trainingData[k]={sesiones:0,bonus:0};
-        return trainingData[k];
-    }
-    function nextTrainingBonus(currentSesiones,currentBonus){
-        const nextSesion = currentSesiones + 1;
-        if(nextSesion===1) return 5;
-        if(nextSesion===2) return 10;
-        if(nextSesion===3) return 15;
-        if(nextSesion===4) return 17;
-        if(nextSesion===5) return 19;
-        return 2;
-    }
-    function applyTrainingBonus(idx,copy=0){
-        const info = getTrainingInfo(idx,copy);
-        const incremento = nextTrainingBonus(info.sesiones, info.bonus);
-        let nuevoBonus = info.bonus + incremento;
-        let reinicio = false;
-        if(nuevoBonus >= 80){ nuevoBonus = 0; info.sesiones = 0; reinicio = true; }
-        else { info.sesiones += 1; }
-        info.bonus = nuevoBonus;
-        saveTraining();
-        return { incremento, nuevoBonus, reinicio };
-    }
-    function buildMantenimiento(){
-        const lista=$id('mant-list');
-        if(!carrosComprados.length){lista.innerHTML=`<div class="coming-soon-box">No tienes futbolistas. ¡Ficha uno en el Marketplace!</div>`;return;}
-        let html='';
-        carrosComprados.forEach(entry=>{
-            for(let copy=0;copy<entry.qty;copy++){
-                const c=PLAYERS[entry.idx];const dur=getDurabilidad(entry.idx,copy);const dc=colorDurabilidad(dur);
-                const t=getTrainingInfo(entry.idx,copy);
-                const proximoInc = nextTrainingBonus(t.sesiones, t.bonus);
-                const ovrBoosted = Math.round(c.hp * (1 + t.bonus/100));
-                html+=`<div class="mant-item">
-<img src="${playerImgSrc(entry.idx)}" alt="${c.nombre}" style="width:60px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(45,122,31,0.3)" onerror="this.style.display='none'">
-<div class="mant-info"><h4>${c.nombre}${entry.qty>1?' #'+(copy+1):''}</h4><p>⚡ OVR ${c.hp} ${t.bonus>0?`<span style="color:var(--green)">→ ${ovrBoosted} (+${t.bonus}%)</span>`:''} · ${c.pos} · 📈 ${c.gemMin.toLocaleString()}–${c.gemMax.toLocaleString()} 💎/día</p>
-<div class="dur-bar-wrap" style="margin-top:6px"><div class="dur-bar-label"><span>💪 Durabilidad</span><span style="color:${dur>=60?'var(--green)':dur>=30?'var(--gold)':'var(--red)'}">${dur}%</span></div><div class="dur-bar-bg"><div class="dur-bar-fill ${dc}" style="width:${dur}%"></div></div></div>
-<div style="margin-top:6px;font-size:0.74em;color:#888">🏋️ Sesiones: <strong style="color:var(--cyan)">${t.sesiones}</strong> · Próximo bonus: <strong style="color:var(--green)">+${proximoInc}%</strong></div></div>
-<div class="mant-price"><strong>$${getCostoMantenimiento(c.precio).toFixed(2)} USDT</strong><small>Entrenamiento</small><button class="mant-btn" onclick="pagarMantenimiento(${entry.idx},${copy})">🏋️ Entrenar</button></div>
-</div>`;
-            }
-        });
-        lista.innerHTML=html;
-    }
-    async function pagarMantenimiento(idx,copy=0){
-        const c=PLAYERS[idx];
-        const costo=getCostoMantenimiento(c.precio);
-        // Abrir modal QR con la dirección del contrato inteligente
-        abrirPagoQR({
-            tipo:'entrenamiento',
-            titulo:`🏋️ Entrenamiento — ${c.nombre}`,
-            descripcion:`Restaura durabilidad al 100% y aplica bonus de rendimiento progresivo.`,
-            usdt:costo,
-            onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
-                try{
-                    const tx=await buildContractTx('entrenamiento',costo);
-                    await tonConnectUI.sendTransaction(tx);
-                    repararDurabilidad(idx,copy);
-                    const res=applyTrainingBonus(idx,copy);
-                    actualizarUI();
-                    buildMantenimiento();
-                    const msg=res.reinicio
-                        ? `✅ Durabilidad 100% · Bonus alcanzó 80% y se reinició a 0%`
-                        : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
-                    mostrarMensaje(msg,'#00ff88');
-                    return true;
-                }catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');return false;}
-            }
-        });
-    }
 
-    let _captchaAnswer=0;
-    function generarCaptcha(){const a=Math.floor(Math.random()*9)+1,b=Math.floor(Math.random()*9)+1;_captchaAnswer=a+b;const q=$id('captcha-question');if(q)q.textContent=`${a} + ${b} = ?`;const ans=$id('captcha-answer');if(ans)ans.value='';}
-    function actualizarConversionRetiro(){const cant=parseFloat($id('retiro-cantidad').value)||0;const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const neto=Math.max(0,(bruto-descuento-fijo)).toFixed(2);const d=$id('retiro-usdt-display');if(d)d.textContent=`${neto} USDT`;const input=$id('retiro-cantidad'),warn=$id('retiro-warning');const invalid=cant>gemas;if(input)input.classList.toggle('invalid',invalid);if(warn)warn.classList.toggle('show',invalid);}
-    function actualizarSaldoRetiro(){const a=$id('retiro-saldo-display'),b=$id('retiro-saldo-inline');if(a)a.textContent=gemas.toFixed(1)+' 💎';if(b)b.textContent=gemas.toFixed(1);actualizarConversionRetiro();}
-
-    function retirar(){
-        const cant=parseFloat($id('retiro-cantidad').value)||0;
-        const addr=($id('retiro-address').value||'').trim();
-        if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
-        if(cant<160){mostrarMensaje(t('msg_min'),'#ff4444');return;}
-        if(cant>3000){mostrarMensaje('❌ Máximo 3000 💎 por día','#ff4444');return;}
-        if(cant>gemas){actualizarConversionRetiro();mostrarMensaje('🚫 No puedes hacer ese retiro: monto mayor a tu saldo disponible','#ff4444');return;}
-        const userAns=parseInt($id('captcha-answer').value);
-        if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
-        const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const usdt=Math.max(0,(bruto-descuento-fijo)).toFixed(2);
-        const feesToContract=(descuento+fijo).toFixed(2);
-        const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr,feesToContract);
-        if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
-        const refOwnerPfx = localStorage.getItem(_pfx()+'_my_referrer_pfx');
-        if(refOwnerPfx){
-            _addRefCommission(refOwnerPfx, cant);
-        }
-        localStorage.setItem(_pfx()+'_last_withdrawal_order',JSON.stringify(withdrawalOrder));
-        gemas-=cant;
-        actualizarUI();
-        mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
-        closeModal('modal-retiro');
-        generarCaptcha();
-    }
-
-    async function comprarGemas(cantidad,usdtAmount){
-        closeModal('modal-deposito');
-        abrirPagoQR({
-            tipo:'deposito',
-            titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
-            descripcion:`Depósito de gemas. El pago se envía directamente al mismo contrato inteligente usado en torneo y entrenamiento.`,
-            usdt:usdtAmount,
-            onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
-                try{
-                    const tx=await buildContractTx('deposito',usdtAmount);
-                    await tonConnectUI.sendTransaction(tx);
-                    gemas+=cantidad;
-                    actualizarUI();
-                    mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');
-                    return true;
-                }catch(e){mostrarMensaje('❌ Depósito cancelado','#ff4444');return false;}
-            }
-        });
-    }
 
     // ══════════════════════════════════════════════════════════════════════
     // ── SISTEMA DE REFERIDOS (CLOUD-BACKED, cross-device / cross-country) ─
@@ -5029,15 +3955,16 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const amount = Number(usdt);
         if(!Number.isFinite(amount) || amount<=0){mostrarMensaje('❌ Monto de pago inválido','#ff4444');return;}
         _pagoQRPendiente = {tipo:flow.tipo,usdt:amount,address:flow.address,onConfirmar};
+        const ton = (usdt/5).toFixed(4);
         $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
         $id('pago-qr-desc').textContent  = descripcion || '';
         $id('pago-qr-amount').textContent = amount.toFixed(2);
-        $id('pago-qr-ton').textContent    = "+ 0.05 TON (Tarifa de Red Gas)";
+        $id('pago-qr-ton').textContent    = ton;
         $id('pago-qr-address').textContent = flow.address;
-        
-        const USDT_MASTER = "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs";
+        // QR payload: deep-link TON estándar (compatible con todas las wallets TON)
+        const nano = Math.round(parseFloat(ton)*1e9);
         const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
-        const qrPayload = `ton://transfer/${flow.address}?jetton=${USDT_MASTER}&amount=${Math.round(amount*1e6)}&text=${memo}`;
+        const qrPayload = `ton://transfer/${flow.address}?amount=${nano}&text=${memo}`;
         const canvas = $id('pago-qr-canvas');
         if(window.QRCode && canvas){
             QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
@@ -5099,7 +4026,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         } catch(e){ return null; }
     }
     try{
-        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://raw.githubusercontent.com/squadgamernft-star/FUTMUNDI/main/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
+        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://turbo-garage-two.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
         window.tonConnectUI=tonConnectUI;
         // Pide a la wallet que firme el payload al conectar (tonProof)
         try {
@@ -5141,10 +4068,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     // Al conectar, onWalletChange() carga los datos de esa wallet específica.
     resetStateVars();
     actualizarUI();
-    buildMarket();
-    buildUniforms();
+    /* buildMarket moved to page/marketplace.html */
+    /* buildUniforms moved */
     buildSkillLogros();
-    buildFutsalaBody();
+    /* buildFutsalaBody moved to page/pve.html */
     updateTorneoCountdown();
     // Detectar código de referido en la URL al cargar la página
     try{ _detectarReferido(); _resolverPendientesDeReferidos(); }catch(e){}
@@ -5152,363 +4079,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
 
     // ════════════════════════════════════════════════════════
-    // 🎲 SISTEMA DE APUESTAS MUNDIAL — RapidAPI Football + USDT
-    // ════════════════════════════════════════════════════════
-    const RAPIDAPI_KEY  = '5297cd7741msh18be9a82f0c0005p186a64jsn95c14debaff6';
-    const RAPIDAPI_HOST = 'free-api-live-football-data.p.rapidapi.com';
-    const AP_DB_KEY = () => 'fm_apuestas_' + (typeof walletAddr !== 'undefined' && walletAddr ? walletAddr : 'guest');
-
-    // Estado de apuesta en curso
-    let _apPartidoSeleccionado = null;
-    let _apResultadoElegido    = null;  // 'local'|'empate'|'visita'
-    let _apCuotaActual         = 1.0;
-    let _apPartidosCache       = [];
-
-    // ── BASE DE DATOS LOCAL (localStorage) ──────────────────
-    function apDB_getTickets()  { try { return JSON.parse(localStorage.getItem(AP_DB_KEY())||'[]'); } catch(e){ return []; } }
-    function apDB_saveTickets(t){ localStorage.setItem(AP_DB_KEY(), JSON.stringify(t)); }
-    function apDB_addTicket(tk) {
-        const tickets = apDB_getTickets();
-        tickets.unshift(tk);
-        apDB_saveTickets(tickets.slice(0, 100)); // máx 100 tickets por usuario
-    }
-    function apDB_updateTicket(id, changes) {
-        const tickets = apDB_getTickets();
-        const idx = tickets.findIndex(t => t.id === id);
-        if (idx >= 0) { Object.assign(tickets[idx], changes); apDB_saveTickets(tickets); }
-    }
-
-    // ── TABS ─────────────────────────────────────────────────
-    function apTabSwitch(tab) {
-        ['partidos','mistickets'].forEach(t => {
-            $id('ap-tab-'+t).style.display = t === tab ? 'block' : 'none';
-            const btn = $id('tab-btn-'+t);
-            if(btn){ btn.classList.toggle('active', t === tab); }
-        });
-        if (tab === 'mistickets') apRenderTickets();
-    }
-
-    // ── CARGAR PARTIDOS VÍA API ──────────────────────────────
-    async function apCargarPartidos() {
-        const statusEl = $id('ap-status');
-        const listaEl  = $id('ap-partidos-lista');
-        if(!statusEl || !listaEl) return;
-
-        statusEl.innerHTML = '⏳ Cargando partidos del Mundial…';
-        listaEl.innerHTML  = '';
-        $id('ap-panel-confirmar').style.display = 'none';
-        _apPartidoSeleccionado = null;
-        _apResultadoElegido    = null;
-
-        const btn = $id('ap-refresh-btn');
-        if(btn){ btn.disabled = true; btn.textContent = '⏳'; }
-
-        try {
-            // Endpoint: partidos en vivo primero, luego próximos
-            const endpoints = [
-                'football-current-live',
-                'football-get-all-fixtures-by-date?date=' + new Date().toISOString().slice(0,10)
-            ];
-
-            let partidos = [];
-            for (const ep of endpoints) {
-                try {
-                    const res  = await fetch(`https://${RAPIDAPI_HOST}/${ep}`, {
-                        method: 'GET',
-                        headers: {
-                            'x-rapidapi-key':  RAPIDAPI_KEY,
-                            'x-rapidapi-host': RAPIDAPI_HOST,
-                            'Content-Type':    'application/json'
-                        }
-                    });
-                    const data = await res.json();
-                    // Normalizar respuesta (distintos endpoints tienen distinta estructura)
-                    const items = data?.response?.fixtures || data?.response?.matches
-                                || data?.response?.livescores || data?.response || [];
-                    if (Array.isArray(items) && items.length) {
-                        partidos = partidos.concat(items);
-                    }
-                } catch(e){ /* continuar con siguiente endpoint */ }
-            }
-
-            // Si la API no devuelve nada (límite de plan gratis), mostrar partidos de demo
-            if (!partidos.length) {
-                partidos = apGenerarPartidosDemo();
-            }
-
-            _apPartidosCache = partidos.slice(0, 12);
-            apRenderPartidos(_apPartidosCache);
-            statusEl.innerHTML = `✅ ${_apPartidosCache.length} partidos disponibles`;
-
-        } catch(err) {
-            console.error('apCargarPartidos error:', err);
-            // Fallback: partidos de demo si hay error de red
-            _apPartidosCache = apGenerarPartidosDemo();
-            apRenderPartidos(_apPartidosCache);
-            statusEl.innerHTML = '⚠️ Usando partidos de ejemplo (sin conexión)';
-        } finally {
-            if(btn){ btn.disabled = false; btn.textContent = '🔄 Actualizar'; }
-        }
-    }
-
-    // ── PARTIDOS DE DEMO (cuando la API no retorna datos) ────
-    function apGenerarPartidosDemo() {
-        const hoy = new Date();
-        const fmt  = d => d.toISOString().slice(0,10);
-        const hora  = h => { const d = new Date(hoy); d.setHours(h,0,0,0); return d.toISOString(); };
-        return [
-            { _id:'d1', local:'🇦🇷 Argentina', visita:'🇫🇷 Francia',      hora:hora(14), estado:'live',     marcador:'1-1', cuotas:{local:2.1, empate:3.4, visita:2.8} },
-            { _id:'d2', local:'🇧🇷 Brasil',    visita:'🇩🇪 Alemania',     hora:hora(17), estado:'live',     marcador:'0-0', cuotas:{local:1.9, empate:3.6, visita:3.1} },
-            { _id:'d3', local:'🇪🇸 España',    visita:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra',   hora:hora(20), estado:'proximo', marcador:null,  cuotas:{local:2.0, empate:3.3, visita:2.9} },
-            { _id:'d4', local:'🇵🇹 Portugal',  visita:'🇺🇾 Uruguay',      hora:hora(22), estado:'proximo', marcador:null,  cuotas:{local:1.7, empate:3.8, visita:4.2} },
-            { _id:'d5', local:'🇳🇱 Holanda',   visita:'🇲🇦 Marruecos',    hora:hora(16), estado:'proximo', marcador:null,  cuotas:{local:2.3, empate:3.1, visita:3.0} },
-            { _id:'d6', local:'🇯🇵 Japón',     visita:'🇭🇷 Croacia',      hora:hora(18), estado:'proximo', marcador:null,  cuotas:{local:2.8, empate:3.2, visita:2.4} },
-        ];
-    }
-
-    // ── NORMALIZAR PARTIDO (múltiples formatos de API) ───────
-    function apNormalizarPartido(raw, idx) {
-        // Si ya es formato demo, devolverlo tal cual
-        if (raw._id) return raw;
-        // Formato RapidAPI Free Football Data
-        const home = raw.home?.name || raw.homeTeam?.name || raw.teams?.home?.name || raw.localTeam?.name || 'Local';
-        const away = raw.away?.name || raw.awayTeam?.name || raw.teams?.away?.name || raw.visitorTeam?.name || 'Visita';
-        const time  = raw.time || raw.fixture?.date || raw.date || new Date().toISOString();
-        const status= (raw.status || raw.fixture?.status?.short || '').toLowerCase();
-        const isLive= ['1h','ht','2h','et','bt','p','live','in play'].some(s => status.includes(s));
-        const goalsH= raw.scores?.home || raw.goals?.home || raw.score?.home || '';
-        const goalsA= raw.scores?.away || raw.goals?.away || raw.score?.away || '';
-        const marcador = (goalsH !== '' && goalsA !== '') ? `${goalsH}-${goalsA}` : null;
-        return {
-            _id: raw.id || raw.fixture?.id || ('p'+idx),
-            local: home, visita: away,
-            hora:  time,
-            estado: isLive ? 'live' : 'proximo',
-            marcador,
-            cuotas: {
-                local:  +(1.5 + Math.random()*1.5).toFixed(2),
-                empate: +(2.8 + Math.random()*1.2).toFixed(2),
-                visita: +(1.6 + Math.random()*2.0).toFixed(2),
-            }
-        };
-    }
-
-    // ── RENDERIZAR LISTA DE PARTIDOS ─────────────────────────
-    function apRenderPartidos(rawList) {
-        const el = $id('ap-partidos-lista');
-        if (!el) return;
-        if (!rawList.length) { el.innerHTML = '<div style="text-align:center;padding:24px;color:#666;font-size:0.88em;">No hay partidos disponibles en este momento.</div>'; return; }
-        el.innerHTML = rawList.map((raw, i) => {
-            const p = apNormalizarPartido(raw, i);
-            const esLive = p.estado === 'live';
-            const hora   = new Date(p.hora).toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
-            return `
-            <div class="ap-partido-card" id="appc-${i}" onclick="apSeleccionarPartido(${i})">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                    <div style="display:flex;align-items:center;gap:6px;">
-                        ${esLive ? '<span class="ap-partido-live">EN VIVO</span>' : `<span style="font-size:0.72em;color:#888;">⏰ ${hora}</span>`}
-                        ${p.marcador ? `<span style="font-family:'Orbitron',sans-serif;font-size:0.82em;color:var(--gold);font-weight:700;">${p.marcador}</span>` : ''}
-                    </div>
-                    <span style="font-size:0.65em;color:#555;">ID: ${p._id}</span>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;margin-bottom:10px;">
-                    <div style="font-weight:700;font-size:0.9em;color:#fff;text-align:left;">${p.local}</div>
-                    <div style="font-family:'Orbitron',sans-serif;font-size:0.75em;color:#666;">VS</div>
-                    <div style="font-weight:700;font-size:0.9em;color:#fff;text-align:right;">${p.visita}</div>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
-                    <div style="text-align:center;background:rgba(0,0,0,0.3);border-radius:6px;padding:5px 2px;">
-                        <div style="font-size:0.6em;color:#888;">LOCAL</div>
-                        <div style="font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:0.82em;font-weight:700;">${p.cuotas.local}x</div>
-                    </div>
-                    <div style="text-align:center;background:rgba(0,0,0,0.3);border-radius:6px;padding:5px 2px;">
-                        <div style="font-size:0.6em;color:#888;">EMPATE</div>
-                        <div style="font-family:'Orbitron',sans-serif;color:var(--gold);font-size:0.82em;font-weight:700;">${p.cuotas.empate}x</div>
-                    </div>
-                    <div style="text-align:center;background:rgba(0,0,0,0.3);border-radius:6px;padding:5px 2px;">
-                        <div style="font-size:0.6em;color:#888;">VISITA</div>
-                        <div style="font-family:'Orbitron',sans-serif;color:var(--green);font-size:0.82em;font-weight:700;">${p.cuotas.visita}x</div>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    // ── SELECCIONAR PARTIDO ──────────────────────────────────
-    function apSeleccionarPartido(idx) {
-        document.querySelectorAll('.ap-partido-card').forEach(c => c.classList.remove('selected'));
-        const card = $id('appc-'+idx);
-        if(card) card.classList.add('selected');
-
-        const raw = _apPartidosCache[idx];
-        _apPartidoSeleccionado = apNormalizarPartido(raw, idx);
-        _apResultadoElegido    = null;
-        _apCuotaActual         = 1.0;
-
-        // Rellenar info del partido en el panel
-        const p = _apPartidoSeleccionado;
-        $id('ap-panel-partido').innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                <div style="font-weight:700;color:#fff;font-size:0.9em;">${p.local}</div>
-                <div style="font-size:0.7em;color:#666;font-family:'Orbitron',sans-serif;">VS</div>
-                <div style="font-weight:700;color:#fff;font-size:0.9em;text-align:right;">${p.visita}</div>
-            </div>`;
-
-        // Etiquetas de los botones de elección
-        $id('ap-pick-local').innerHTML  = `${p.local}<br><span style="font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:0.85em;">${p.cuotas.local}x</span>`;
-        $id('ap-pick-empate').innerHTML = `🤝 Empate<br><span style="font-family:'Orbitron',sans-serif;color:var(--gold);font-size:0.85em;">${p.cuotas.empate}x</span>`;
-        $id('ap-pick-visita').innerHTML = `${p.visita}<br><span style="font-family:'Orbitron',sans-serif;color:var(--green);font-size:0.85em;">${p.cuotas.visita}x</span>`;
-
-        ['ap-pick-local','ap-pick-empate','ap-pick-visita'].forEach(id => { const b=$id(id); if(b) b.classList.remove('active'); });
-        $id('ap-monto-input').value  = '';
-        $id('ap-cuota-display').textContent    = '—';
-        $id('ap-ganancia-display').textContent = '$0.00';
-
-        const panel = $id('ap-panel-confirmar');
-        panel.style.display = 'block';
-        panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
-    }
-
-    // ── ELEGIR LOCAL / EMPATE / VISITA ──────────────────────
-    function apElegirResultado(opcion) {
-        if (!_apPartidoSeleccionado) return;
-        _apResultadoElegido = opcion;
-        _apCuotaActual      = _apPartidoSeleccionado.cuotas[opcion];
-        ['local','empate','visita'].forEach(o => {
-            const b = $id('ap-pick-'+o);
-            if(b) b.classList.toggle('active', o === opcion);
-        });
-        $id('ap-cuota-display').textContent = _apCuotaActual + 'x';
-        apActualizarGanancia();
-    }
-
-    // ── MONTO RÁPIDO ─────────────────────────────────────────
-    function apSetMonto(val) {
-        $id('ap-monto-input').value = val;
-        apActualizarGanancia();
-    }
-
-    // ── CALCULAR GANANCIA ────────────────────────────────────
-    function apActualizarGanancia() {
-        const monto = parseFloat($id('ap-monto-input').value) || 0;
-        const gan   = (monto * _apCuotaActual).toFixed(2);
-        $id('ap-ganancia-display').textContent = monto > 0 ? '$' + gan : '$0.00';
-    }
-
-    // ── CANCELAR PANEL ───────────────────────────────────────
-    function apCancelarPanel() {
-        $id('ap-panel-confirmar').style.display = 'none';
-        document.querySelectorAll('.ap-partido-card').forEach(c => c.classList.remove('selected'));
-        _apPartidoSeleccionado = null;
-        _apResultadoElegido    = null;
-    }
-
-    // ── CONFIRMAR APUESTA → PAGO USDT ────────────────────────
-    function apConfirmarApuesta() {
-        if (!_apPartidoSeleccionado) { mostrarMensaje('⚠️ Selecciona un partido primero', '#ffaa00'); return; }
-        if (!_apResultadoElegido)    { mostrarMensaje('⚠️ Elige tu pronóstico (Local / Empate / Visita)', '#ffaa00'); return; }
-        const monto = parseFloat($id('ap-monto-input').value) || 0;
-        if (monto < 1)               { mostrarMensaje('⚠️ Mínimo $1 USDT para apostar', '#ffaa00'); return; }
-
-        const p        = _apPartidoSeleccionado;
-        const ganancia = parseFloat((monto * _apCuotaActual).toFixed(2));
-        const labels   = { local: 'Gana ' + p.local, empate: 'Empate', visita: 'Gana ' + p.visita };
-        const ticketId = 'TK-' + Date.now() + '-' + Math.floor(Math.random()*9999);
-
-        const ticket = {
-            id:         ticketId,
-            partidoId:  p._id,
-            local:      p.local,
-            visita:     p.visita,
-            pronostico: _apResultadoElegido,
-            label:      labels[_apResultadoElegido],
-            cuota:      _apCuotaActual,
-            montoUsdt:  monto,
-            gananciaUsdt: ganancia,
-            estado:     'pendiente',
-            wallet:     (typeof walletAddr !== 'undefined' ? walletAddr : 'guest'),
-            fecha:      new Date().toLocaleString('es',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',year:'numeric'}),
-            fechaISO:   new Date().toISOString(),
-        };
-
-        // Abrir modal de pago QR (mismo flujo que depósito/torneo)
-        abrirPagoQR({
-            tipo: 'apuesta',
-            titulo: `🎲 Apuesta — ${p.local} vs ${p.visita}`,
-            descripcion: `Pronóstico: ${labels[_apResultadoElegido]} · Cuota ${_apCuotaActual}x · Ganancia potencial $${ganancia} USDT`,
-            usdt: monto,
-            onConfirmar: async () => {
-                if (!isWalletConnected()) { mostrarMensaje('⚠️ Conecta tu wallet TON primero', '#ffaa00'); openWalletModal(); return false; }
-                mostrarMensaje(`⏳ Procesando $${monto.toFixed(2)} USDT…`, '#00d4ff');
-                try {
-                    const tx = await buildContractTx('apuesta', monto);
-                    await tonConnectUI.sendTransaction(tx);
-                    // ✅ Pago confirmado → guardar ticket en DB
-                    ticket.estado    = 'pagada';
-                    ticket.txFecha   = new Date().toISOString();
-                    apDB_addTicket(ticket);
-                    mostrarMensaje(`🎫 ¡Ticket #${ticketId} registrado! Monto: $${monto} USDT`, '#42f58d');
-                    apCancelarPanel();
-                    apTabSwitch('mistickets');
-                    return true;
-                } catch(e) {
-                    mostrarMensaje('❌ Pago cancelado o fallido', '#ff4444');
-                    return false;
-                }
-            }
-        });
-    }
-
-    // ── RENDERIZAR MIS TICKETS ───────────────────────────────
-    function apRenderTickets() {
-        const el      = $id('ap-tickets-lista');
-        if (!el) return;
-        const tickets = apDB_getTickets();
-
-        if (!tickets.length) {
-            el.innerHTML = `<div style="text-align:center;padding:32px;color:#666;font-size:0.88em;line-height:1.7;">
-                No tienes tickets registrados aún.<br>
-                <span style="font-size:1.5em;">🎫</span><br>
-                Selecciona un partido y realiza tu primera apuesta en USDT.</div>`;
-            return;
-        }
-
-        const estadoIcon  = { pendiente:'⏳', pagada:'⏳', ganada:'✅', perdida:'❌', anulada:'↩️' };
-        const estadoColor = { pendiente:'#ffd84d', pagada:'#ffd84d', ganada:'#42f58d', perdida:'#ff5a6f', anulada:'#888' };
-
-        el.innerHTML = tickets.map(t => {
-            const ic = estadoIcon[t.estado]  || '⏳';
-            const co = estadoColor[t.estado] || '#888';
-            return `
-            <div class="ap-ticket-card ${t.estado === 'ganada' ? 'ganada' : t.estado === 'perdida' ? 'perdida' : 'pendiente'}">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-                    <div>
-                        <div style="font-size:0.72em;color:#888;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:3px;">${t.id}</div>
-                        <div style="font-weight:700;font-size:0.9em;color:#fff;">${t.local} <span style="color:#666;font-size:0.8em;">vs</span> ${t.visita}</div>
-                        <div style="font-size:0.78em;color:var(--cyan);margin-top:3px;">📌 ${t.label} · Cuota ${t.cuota}x</div>
-                    </div>
-                    <div style="text-align:right;flex-shrink:0;margin-left:8px;">
-                        <div style="font-size:0.82em;color:${co};font-weight:700;">${ic} ${(t.estado||'').toUpperCase()}</div>
-                        <div style="font-size:0.65em;color:#666;margin-top:3px;">${t.fecha}</div>
-                    </div>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(0,0,0,0.25);border-radius:8px;font-size:0.82em;">
-                    <span style="color:#888;">Apostado: <strong style="color:var(--gold);">$${t.montoUsdt} USDT</strong></span>
-                    <span style="color:#888;">Potencial: <strong style="color:var(--green);">$${t.gananciaUsdt} USDT</strong></span>
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    // ── HOOK: cuando se abre el modal ────────────────────────
+    // ── HOOK: cuando se abre el modal (torneo) ──
     const _apOrigOpen = openModal;
     openModal = function(id) {
         _apOrigOpen(id);
-        if (id === 'modal-apuesta') {
-            apTabSwitch('partidos');
-            apCargarPartidos();
-            apuestaCheckFecha(); // verificar si ya se habilitaron las apuestas
-        }
         if (id === 'modal-torneo') {
             updateTorneoCountdown();
             torneoTabSwitch('info');
@@ -5516,9 +4090,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     };
     // ════════════════════════════════════════════════════════
 </script>
+    // ════════════════════════════════════════════════════════
+</script>
 
 <!-- ══════════ APUESTAS: BLOQUEO HASTA 11/06/2026 + TORNEO WALLET REGISTRY ══════════ -->
-<script src="https://unpkg.com/@ton/ton@13.11.0/dist/ton.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════
 //  APUESTAS MUNDIAL — BLOQUEO HASTA 11 JUNIO 2026
@@ -6245,150 +4820,10 @@ const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 20
 
 
 
-function apuestaCheckFecha() {
-    const ahora = new Date();
-    const bloqueado = ahora < FECHA_INICIO_MUNDIAL;
-    const modal = document.getElementById('modal-apuesta');
-    if (!modal) return;
-
-    // Banner de cuenta regresiva
-    let banner = document.getElementById('ap-mundial-banner');
-    if (!banner) {
-        banner = document.createElement('div');
-        banner.id = 'ap-mundial-banner';
-        banner.style.cssText = `
-            background:linear-gradient(135deg,rgba(255,140,0,0.15),rgba(255,68,68,0.1));
-            border:1px solid rgba(255,140,0,0.5);border-radius:14px;padding:16px;
-            text-align:center;margin-bottom:14px;
-        `;
-        const body = modal.querySelector('.modal-body');
-        if (body) body.insertBefore(banner, body.firstChild);
-    }
-
-    if (bloqueado) {
-        const diff = FECHA_INICIO_MUNDIAL - ahora;
-        const totalSec = Math.floor(diff / 1000);
-        const dias  = Math.floor(totalSec / 86400);
-        const horas = Math.floor((totalSec % 86400) / 3600);
-        const mins  = Math.floor((totalSec % 3600) / 60);
-        const segs  = totalSec % 60;
-        const pad = n => String(n).padStart(2,'0');
-        banner.innerHTML = `
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4em;color:var(--orange);letter-spacing:4px;margin-bottom:6px;">
-                ⚽ MUNDIAL CATAR 2026
-            </div>
-            <div style="font-size:0.8em;color:#aaa;margin-bottom:10px;">Las apuestas se habilitan el <strong style="color:var(--gold)">11 de Junio 2026</strong><br>con el inicio oficial de los partidos</div>
-            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;">
-                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${dias}</div>
-                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Días</div>
-                </div>
-                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${pad(horas)}</div>
-                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Horas</div>
-                </div>
-                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${pad(mins)}</div>
-                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Min</div>
-                </div>
-                <div style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,140,0,0.4);border-radius:10px;padding:8px 12px;min-width:54px;text-align:center;">
-                    <div style="font-family:'Orbitron',sans-serif;font-size:1.4em;font-weight:700;color:var(--orange);">${pad(segs)}</div>
-                    <div style="font-size:0.58em;color:#888;text-transform:uppercase;letter-spacing:1px;">Seg</div>
-                </div>
-            </div>
-            <div style="font-size:0.75em;color:#666;">🔒 Las apuestas estarán disponibles cuando comience el Mundial</div>
-        `;
-
-        // Deshabilitar tabs y botones de apuestas
-        const tabPartidos   = document.getElementById('ap-tab-partidos');
-        const tabMistickets = document.getElementById('ap-tab-mistickets');
-        if (tabPartidos) tabPartidos.innerHTML = `
-            <div style="text-align:center;padding:30px 0;">
-                <div style="font-size:2.5em;margin-bottom:10px;">🔒</div>
-                <div style="font-family:'Orbitron',sans-serif;font-size:0.82em;color:#888;letter-spacing:2px;">DISPONIBLE EL 11/06/2026</div>
-                <div style="font-size:0.8em;color:#555;margin-top:8px;">Espera el inicio del Mundial para apostar</div>
-            </div>`;
-    } else {
-        banner.innerHTML = `
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3em;color:var(--green);letter-spacing:3px;margin-bottom:4px;">
-                ✅ ¡MUNDIAL EN CURSO!
-            </div>
-            <div style="font-size:0.82em;color:#aaa;">Las apuestas están <strong style="color:var(--green)">habilitadas</strong>. ¡Buena suerte! 🏆</div>
-        `;
-    }
-}
-
-// Actualizar cuenta regresiva cada segundo cuando el modal esté abierto
-setInterval(() => {
-    const modal = document.getElementById('modal-apuesta');
-    if (modal && modal.classList.contains('active')) {
-        apuestaCheckFecha();
-    }
-}, 1000);
-
-// ═══════════════════════════════════════════════════════════════
 //  TORNEO — SISTEMA DE REGISTRO DE WALLET + PAGO USDT
 // ═══════════════════════════════════════════════════════════════
 const TORNEO_REGISTRO_KEY = 'futmundi_torneo_registros_v2';
 const TORNEO_COSTO_USDT   = 10;
-
-// ── TORNEO: CONTADOR DE USUARIOS CON NFT Y SYNC DESDE SUPABASE ──────────
-window.torneoNFTUsersCount = 0;
-
-async function torneoActualizarContadorUsuariosNFT() {
-    try {
-        const sb = (typeof _supa === 'function') ? _supa() : null;
-        if (!sb) return;
-
-        // 1. Sincronizar participantes registrados desde Supabase
-        const { data: listData, error: listError } = await sb
-            .from('tournament_registrations')
-            .select('*');
-        if (!listError && listData) {
-            const synced = listData.map(r => ({
-                wallet: r.wallet,
-                alias: r.alias || 'Jugador',
-                fecha: r.registered_at || new Date().toISOString(),
-                pagado: r.tournament_fee_paid,
-                tournament_fee_paid: r.tournament_fee_paid,
-                fee_amount_usdt: r.fee_amount_usdt,
-                nft_idx: r.nft_idx,
-                nft_copy: r.nft_copy
-            }));
-            torneoSaveRegistros(synced);
-        }
-
-        // 2. Contar usuarios con NFT de la tabla referrals_map (usuarios totales con NFT)
-        const { count, error } = await sb
-            .from('referrals_map')
-            .select('*', { count: 'exact', head: true });
-        if (!error && count !== null) {
-            window.torneoNFTUsersCount = count;
-            const counterEl = document.getElementById('tor-nft-users-counter');
-            if (counterEl) {
-                counterEl.textContent = `${window.torneoNFTUsersCount} / 100`;
-            }
-            const btnPago = document.getElementById('tor-btn-pago');
-            if (btnPago) {
-                if (window.torneoNFTUsersCount >= 100) {
-                    btnPago.disabled = false;
-                    btnPago.style.opacity = '1';
-                    btnPago.style.cursor = 'pointer';
-                    btnPago.innerHTML = '💳 Pagar e Inscribirse';
-                } else {
-                    btnPago.disabled = true;
-                    btnPago.style.opacity = '0.5';
-                    btnPago.style.cursor = 'not-allowed';
-                    btnPago.innerHTML = `🔒 Habilitado con 100 usuarios con NFT (${window.torneoNFTUsersCount}/100)`;
-                }
-            }
-        }
-    } catch (e) {
-        console.warn('[torneo] Error updating tournament sync:', e);
-    }
-}
-window.torneoActualizarContadorUsuariosNFT = torneoActualizarContadorUsuariosNFT;
-
 
 function torneoGetRegistros() {
     try { return JSON.parse(localStorage.getItem(TORNEO_REGISTRO_KEY) || '[]'); } catch(e){ return []; }
@@ -6447,12 +4882,6 @@ function torneoTabSwitch(tab) {
     });
     if (tab === 'registro')  torneoRenderRegistro();
     if (tab === 'inscritos') torneoRenderInscritos();
-
-    if (typeof torneoActualizarContadorUsuariosNFT === 'function') {
-        torneoActualizarContadorUsuariosNFT();
-    }
-}
-}
 }
 
 function torneoRenderRegistro() {
@@ -6540,16 +4969,6 @@ function torneoRenderRegistro() {
             <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;word-break:break-all;color:#bbb;">${walletAddr}</div>
         </div>
 
-        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.8em;color:#aaa;display:flex;justify-content:space-between;align-items:center;">
-            <div>
-                <div style="margin-bottom:4px;color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.78em;letter-spacing:1px;">👥 USUARIOS CON NFT</div>
-                <div style="font-size:0.72em;color:#aaa;">Se requieren 100 usuarios para habilitar el pago</div>
-            </div>
-            <div style="font-family:'Orbitron',sans-serif;font-weight:900;color:var(--gold);font-size:1.3em;" id="tor-nft-users-counter">
-                ${window.torneoNFTUsersCount || 0} / 100
-            </div>
-        </div>
-
         <div style="background:rgba(255,140,0,0.08);border:1px solid rgba(255,140,0,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.8em;color:#ffd9a8;line-height:1.6;">
             💡 Al confirmar, se procesará el pago de <strong style="color:var(--gold)">$${TORNEO_COSTO_USDT} USDT</strong> desde tu wallet TON al contrato inteligente FUTMUNDI. Tu wallet quedará registrada en el torneo.
         </div>
@@ -6559,10 +4978,9 @@ function torneoRenderRegistro() {
                 style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#888;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;">
                 ← Volver
             </button>
-            <button id="tor-btn-pago" onclick="torneoProcesarPago()"
-                ${(window.torneoNFTUsersCount || 0) < 100 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}
+            <button onclick="torneoProcesarPago()"
                 style="padding:12px;background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.18));border:1px solid var(--gold);border-radius:10px;color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;">
-                ${(window.torneoNFTUsersCount || 0) >= 100 ? '💳 Pagar e Inscribirse' : `🔒 Habilitado con 100 usuarios con NFT (${window.torneoNFTUsersCount || 0}/100)`}
+                💳 Pagar e Inscribirse
             </button>
         </div>`;
 
@@ -6701,7 +5119,7 @@ async function torneoProcesarPago() {
                     if (typeof mostrarMensaje === 'function') mostrarMensaje(`⏳ Procesando $${TORNEO_COSTO_USDT} USDT…`, '#00d4ff');
                     try {
                         if (typeof buildContractTx === 'function' && typeof tonConnectUI !== 'undefined') {
-                            const tx = await buildContractTx('torneo', TORNEO_COSTO_USDT);
+                            const tx = buildContractTx('torneo', TORNEO_COSTO_USDT);
                             await tonConnectUI.sendTransaction(tx);
                         }
                         // ── Register with tournament_fee_paid = true + selected NFT ──
@@ -6745,28 +5163,11 @@ async function torneoProcesarPago() {
         if (btn) { btn.disabled = false; btn.textContent = '💳 Pagar e Inscribirse'; }
     }
 }
-// ════════════════════════════════════════════════════════════════
-// Init: mostrar ícono de candado en botón apuesta si aún no abrió
-(function() {
-    function initApuestaBadge() {
-        const ahora = new Date();
-        const badge = document.getElementById('apuesta-lock-badge');
-        if (badge && ahora < new Date('2026-06-11T00:00:00Z')) {
-            badge.style.display = 'inline';
-        }
-    }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initApuestaBadge);
-    } else {
-        initApuestaBadge();
-    }
-})();
-// ════════════════════════════════════════════════════════════════
 </script>
 
     <!-- ══════════ TELEGRAM MINI APP: NAV INFERIOR ══════════ -->
     <nav class="tg-bottom-nav" aria-label="Navegación principal">
-        <button class="tg-nav-btn" onclick="openModal('modal-marketplace')" data-i18n="menu_marketplace">
+        <button class="tg-nav-btn" onclick="window.location.href='page/marketplace.html'" data-i18n="menu_marketplace">
             <span class="tg-nav-emoji">🏪</span><span>Market</span>
         </button>
         <button class="tg-nav-btn accent-cyan" onclick="openModal('modal-garage')" data-i18n="menu_futbolistas">
@@ -6775,7 +5176,7 @@ async function torneoProcesarPago() {
         <button class="tg-nav-btn accent-gold" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">
             <span class="tg-nav-emoji">📊</span><span>Ranking</span>
         </button>
-        <button class="tg-nav-btn accent-orange" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">
+        <button class="tg-nav-btn accent-orange" onclick="window.location.href='page/entrenamiento.html'" data-i18n="menu_entrenamiento">
             <span class="tg-nav-emoji">🏋️</span><span>Entrena.</span>
         </button>
     </nav>
@@ -6786,12 +5187,12 @@ async function torneoProcesarPago() {
         <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-recompensa')"      title="Recompensa Diaria">🎁</button>
         <button class="tg-side-btn accent-purple" onclick="openModal('modal-logros')"          title="Logros">🏅</button>
         <button class="tg-side-btn"               onclick="openModal('modal-nivel')"           title="Nivel">⬆️</button>
-        <button class="tg-side-btn accent-orange" onclick="openModal('modal-apuesta')" id="btn-side-apuesta" title="Apuesta Mundial">🎲</button>
+        <a class="tg-side-btn accent-orange" href="page/apuestas.html" id="btn-side-apuesta" title="Apuesta Mundial" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">🎲</a>
     </div>
     <div class="tg-side-col right">
         <button class="tg-side-btn"               onclick="openModal('modal-torneo')"          title="Torneo">🏆</button>
-        <button class="tg-side-btn accent-gold"   onclick="openModal('modal-deposito')"        title="Depósito">💎</button>
-        <button class="tg-side-btn accent-cyan"   onclick="openModal('modal-retiro');generarCaptcha();actualizarSaldoRetiro();actualizarConversionRetiro();" title="Retiro">💸</button>
+        <button class="tg-side-btn accent-gold"   onclick="window.location.href='page/depositos.html'"        title="Depósito">💎</button>
+        <button class="tg-side-btn accent-cyan"   onclick="window.location.href='page/retiros.html'" title="Retiro">💸</button>
         <button class="tg-side-btn accent-purple" onclick="openModal('modal-referidos');buildReferidosUI();" title="Referidos">👥</button>
     </div>
 
