@@ -1,11 +1,11 @@
 <div class="modal-overlay broadcast-modal" id="modal-torneo">
-    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%;">
-        <div class="broadcast-header">
-            <span class="modal-title">🏆 FUTMUNDI</span>
+    <div class="modal" style="background:transparent; box-shadow:none; padding:0; height:100%; max-width:700px;">
+        <div class="broadcast-header" style="border-bottom:1px solid #FFD700;">
+            <span class="modal-title" style="color:#FFD700;">🏆 GRAN COPA FUTMUNDI</span>
             <button class="broadcast-close" onclick="closeModal('modal-torneo')">✕</button>
         </div>
         
-        <div class="torneo-hero">
+        <div class="torneo-hero" style="border-bottom:1px solid #FFD700;">
             <img src="./assets/trofeo_torneo.png" alt="Trofeo" class="torneo-trophy">
             <div class="torneo-hero-title">GRAN COPA FUTMUNDI</div>
             <div class="torneo-hero-prize">5,000 <span style="font-size:0.6em; color:#00d4ff; margin-left:8px;">💎</span></div>
@@ -23,47 +23,72 @@
             <div style="font-size:0.7em; color:#888; margin-top:8px;">⏳ Próximo torneo: Lunes 00:00 UTC</div>
         </div>
 
-        <div class="torneo-section-title">🏅 DISTRIBUCIÓN DE PREMIOS</div>
-        
-        <div class="torneo-prizes-espn">
-            <div class="espn-prize-card espn-prize-gold">
-                <div class="espn-medal-icon">🥇</div>
-                <div class="espn-prize-amt">2,600</div>
-                <div class="espn-prize-lbl">Gemas</div>
+        <div style="padding: 15px;">
+            <div class="tab-bar espn-tabs">
+                <button class="tab-btn active" id="tor-tab-btn-info" onclick="torneoTabSwitch('info')">ℹ️ Info</button>
+                <button class="tab-btn" id="tor-tab-btn-registro" onclick="torneoTabSwitch('registro')">🎟️ Registro</button>
+                <button class="tab-btn" id="tor-tab-btn-inscritos" onclick="torneoTabSwitch('inscritos')">👥 Inscritos</button>
             </div>
-            <div class="espn-prize-card espn-prize-silver">
-                <div class="espn-medal-icon">🥈</div>
-                <div class="espn-prize-amt">1,500</div>
-                <div class="espn-prize-lbl">Gemas</div>
-            </div>
-            <div class="espn-prize-card espn-prize-bronze">
-                <div class="espn-medal-icon">🥉</div>
-                <div class="espn-prize-amt">500</div>
-                <div class="espn-prize-lbl">Gemas</div>
-            </div>
-        </div>
 
-        <div class="espn-prize-row-2">
-            <div class="espn-item-card">
-                <img src="./assets/kit_futbol.png" alt="Kit" class="espn-item-img">
-                <div class="espn-item-info">
-                    <div class="espn-item-amt">3,00</div>
-                    <div class="espn-item-lbl">Kit</div>
+            <!-- TAB INFO -->
+            <div id="tor-tab-info">
+                <div class="torneo-section-title">🏅 DISTRIBUCIÓN DE PREMIOS</div>
+                
+                <div class="torneo-prizes-espn">
+                    <div class="espn-prize-card espn-prize-gold">
+                        <div class="espn-medal-icon">🥇</div>
+                        <div class="espn-prize-amt">2,600</div>
+                        <div class="espn-prize-lbl">Gemas</div>
+                    </div>
+                    <div class="espn-prize-card espn-prize-silver">
+                        <div class="espn-medal-icon">🥈</div>
+                        <div class="espn-prize-amt">1,500</div>
+                        <div class="espn-prize-lbl">Gemas</div>
+                    </div>
+                    <div class="espn-prize-card espn-prize-bronze">
+                        <div class="espn-medal-icon">🥉</div>
+                        <div class="espn-prize-amt">500</div>
+                        <div class="espn-prize-lbl">Gemas</div>
+                    </div>
+                </div>
+
+                <div class="espn-prize-row-2">
+                    <div class="espn-item-card">
+                        <img src="./assets/kit_futbol.png" alt="Kit" class="espn-item-img">
+                        <div class="espn-item-info">
+                            <div class="espn-item-amt">3,00</div>
+                            <div class="espn-item-lbl">Kit</div>
+                        </div>
+                    </div>
+                    <div class="espn-item-card">
+                        <img src="./assets/botas_pro.png" alt="Botas" class="espn-item-img">
+                        <div class="espn-item-info">
+                            <div class="espn-item-amt">500</div>
+                            <div class="espn-item-lbl">Gemas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding:15px; padding-bottom:30px;">
+                    <button onclick="torneoTabSwitch('registro')" style="width:100%;padding:14px;background:linear-gradient(135deg,#005c2a 0%, #00b352 100%);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 15px rgba(0,179,82,0.4);">
+                        IR AL REGISTRO ($10 USDT)
+                    </button>
                 </div>
             </div>
-            <div class="espn-item-card">
-                <img src="./assets/botas_pro.png" alt="Botas" class="espn-item-img">
-                <div class="espn-item-info">
-                    <div class="espn-item-amt">500</div>
-                    <div class="espn-item-lbl">Gemas</div>
-                </div>
-            </div>
-        </div>
 
-        <div style="padding:15px; padding-bottom:30px;">
-            <button onclick="torneoProcesarPago()" style="width:100%;padding:14px;background:linear-gradient(135deg,#005c2a 0%, #00b352 100%);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 15px rgba(0,179,82,0.4);">
-                INSCRIBIRSE AHORA — 10 USDT
-            </button>
+            <!-- TAB REGISTRO -->
+            <div id="tor-tab-registro" style="display:none;">
+                <div id="tor-registro-content"><!-- generado por JS --></div>
+            </div>
+
+            <!-- TAB INSCRITOS -->
+            <div id="tor-tab-inscritos" style="display:none;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <div style="font-size:0.8em;color:#888;">Jugadores verificados</div>
+                    <div id="tor-inscritos-count" style="font-size:0.8em;color:var(--cyan);font-weight:700;">0</div>
+                </div>
+                <div id="tor-inscritos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;padding-right:4px;"></div>
+            </div>
         </div>
     </div>
 </div>
