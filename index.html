@@ -1349,9 +1349,9 @@
 
                     <!-- Buscar Referidos por Link de Referidor -->
                     <div style="margin-top:12px;margin-bottom:12px;border-top:1px dashed rgba(255,215,0,0.25);padding-top:12px;margin-bottom:10px;">
-                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">🔍 Buscar Referidos por Link o Wallet de Referidor</label>
+                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">🔍 Buscar Referidos por Enlace Exacto</label>
                         <div style="display:flex;gap:6px;">
-                            <input id="admin-search-ref-input" type="text" placeholder="Pega link de referido o wallet" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
+                            <input id="admin-search-ref-input" type="text" placeholder="Pega el link de referido completo generado por la app" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
                             <button onclick="adminBuscarReferidosPorLink()" style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:8px;color:var(--purple);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">Buscar Referidos</button>
                         </div>
                     </div>
@@ -4460,21 +4460,22 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             return;
         }
 
-        let referrerWallet = value;
-        if (value.includes('startapp=')) {
-            const parts = value.split('startapp=');
-            const code = parts[1]?.split('&')[0];
-            if (code && code.startsWith('ref_')) {
-                referrerWallet = code.slice(4);
-            } else if (code) {
-                referrerWallet = code;
-            }
+        let referrerWallet = null;
+        
+        // Solo aceptar enlaces explícitos generados por la mini app
+        if (value.includes('startapp=ref_')) {
+            referrerWallet = value.split('startapp=ref_')[1].split('&')[0];
+        } else if (value.includes('?ref=')) {
+            referrerWallet = value.split('?ref=')[1].split('&')[0];
         } else if (value.includes('#ref_')) {
             referrerWallet = value.split('#ref_')[1];
+        } else {
+            mostrarMensaje('❌ Debes pegar el enlace completo generado por la app', '#ff4444');
+            return;
         }
 
-        if (!/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(referrerWallet)) {
-            mostrarMensaje('❌ Dirección TON o enlace no válido', '#ff4444');
+        if (!referrerWallet || !/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(referrerWallet)) {
+            mostrarMensaje('❌ El enlace no contiene un código válido', '#ff4444');
             return;
         }
 
