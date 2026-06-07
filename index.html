@@ -1341,6 +1341,19 @@
                         <div style="text-align:center;padding:10px 0;color:#666;">Haz clic en 'Ver Lista' para buscar wallets registradas</div>
                     </div>
 
+                    <!-- Buscar Referidos por Link de Referidor -->
+                    <div style="margin-top:12px;margin-bottom:12px;border-top:1px dashed rgba(255,215,0,0.25);padding-top:12px;margin-bottom:10px;">
+                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">🔍 Buscar Referidos por Link o Wallet de Referidor</label>
+                        <div style="display:flex;gap:6px;">
+                            <input id="admin-search-ref-input" type="text" placeholder="Pega link de referido o wallet" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
+                            <button onclick="adminBuscarReferidosPorLink()" style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:8px;color:var(--purple);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">Buscar Referidos</button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de referidos encontrados -->
+                    <div id="admin-ref-search-results" style="max-height:150px;overflow-y:auto;background:rgba(0,0,0,0.25);border-radius:8px;margin-bottom:10px;font-size:0.75em;color:#aaa;padding:4px;display:none;flex-direction:column;gap:4px;">
+                    </div>
+
                     <button onclick="adminEnviarRegaloNFT()" style="width:100%;padding:10px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(255,215,0,0.15));border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.8em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;">
                         🎁 Enviar Regalo NFT al Usuario
                     </button>
@@ -4346,6 +4359,71 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     window.adminCargarUsuarios = adminCargarUsuarios;
     window.adminEnviarRegaloNFT = adminEnviarRegaloNFT;
+
+    async function adminBuscarReferidosPorLink() {
+        const input = $id('admin-search-ref-input');
+        if (!input) return;
+        let value = input.value.trim();
+        if (!value) {
+            mostrarMensaje('⚠️ Ingresa una wallet o enlace de referido', '#ffaa00');
+            return;
+        }
+
+        let referrerWallet = value;
+        if (value.includes('startapp=')) {
+            const parts = value.split('startapp=');
+            const code = parts[1]?.split('&')[0];
+            if (code && code.startsWith('ref_')) {
+                referrerWallet = code.slice(4);
+            } else if (code) {
+                referrerWallet = code;
+            }
+        } else if (value.includes('#ref_')) {
+            referrerWallet = value.split('#ref_')[1];
+        }
+
+        if (!/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(referrerWallet)) {
+            mostrarMensaje('❌ Dirección TON o enlace no válido', '#ff4444');
+            return;
+        }
+
+        mostrarMensaje('⏳ Buscando referidos de este link...', '#00d4ff');
+        const container = $id('admin-ref-search-results');
+        if (container) {
+            container.style.display = 'flex';
+            container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#888;">⏳ Cargando referidos...</div>';
+        }
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/referidos/lista?wallet=${referrerWallet}`);
+            const data = await res.json();
+            if (data.ok && data.referidos) {
+                if (data.referidos.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#666;">No hay referidos para este enlace</div>';
+                    return;
+                }
+                
+                container.innerHTML = data.referidos.map(ref => {
+                    const shortWallet = ref.wallet.slice(0, 8) + '...' + ref.wallet.slice(-6);
+                    const label = ref.username !== '—' ? `@${ref.username}` : shortWallet;
+                    const statusText = ref.tieneNFT ? '✅ Con NFT' : '❌ Sin NFT';
+                    return `
+                        <div onclick="document.getElementById('admin-target-wallet').value='${ref.wallet}'; mostrarMensaje('Seleccionado: ${label}', '#00ff88');" 
+                             style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-bottom:2px;width:100%;box-sizing:border-box;">
+                            <div style="font-weight:bold;color:#fff;">👤 ${label}</div>
+                            <div style="font-size:0.85em;color:#aaa;">${statusText}</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `<div style="text-align:center;padding:10px 0;color:#ff4444;">❌ Error: ${data.error || 'No se pudieron cargar'}</div>`;
+            }
+        } catch(e) {
+            console.error(e);
+            container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#ff4444;">❌ Error de conexión</div>';
+        }
+    }
+    window.adminBuscarReferidosPorLink = adminBuscarReferidosPorLink;
 
     function copiarRefLink(inputId, btnId){
         inputId = inputId || 'ref-link';
