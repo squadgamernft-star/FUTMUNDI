@@ -4179,7 +4179,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const myWallet = _walletAddr() || _activeWalletAddr || null;
         const ADMIN_WALLETS = [
             'uqb9ufacgm5hvntxhe-mq3xyiyjclezvgnzucffnc5dr-7vg',
-            'eqb9ufacgm5hvntxhe-mq3xyiyjclezvgnzucffnc5dr-7va'
+            'eqb9ufacgm5hvntxhe-mq3xyiyjclezvgnzucffnc5dr-7va',
+            '0:7db8568280ce47567b571defa6ab7c588988dc2c4cef82765409f7cd0b90d1fb'
         ];
         const isAdmin = myWallet && ADMIN_WALLETS.includes(myWallet.toLowerCase());
         const adminPanel = $id('panel-admin-regalos');
