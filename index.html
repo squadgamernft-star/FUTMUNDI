@@ -2303,12 +2303,15 @@
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
-                const tx=await buildContractTx('torneo',COSTO_TORNEO_USDT);
                 try{
+                    const tx=await buildContractTx('torneo',COSTO_TORNEO_USDT);
                     await tonConnectUI.sendTransaction(tx);
                     mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
                     return true;
-                }catch(e){mostrarMensaje('❌ Inscripción cancelada','#ff4444');return false;}
+                }catch(e){
+                    mostrarMensaje('❌ Error de inscripción: ' + (e.message || 'Transacción cancelada'),'#ff4444');
+                    return false;
+                }
             }
         });
     }
@@ -3835,8 +3838,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
-                const tx=await buildContractTx('entrenamiento',costo);
                 try{
+                    const tx=await buildContractTx('entrenamiento',costo);
                     await tonConnectUI.sendTransaction(tx);
                     repararDurabilidad(idx,copy);
                     const res=applyTrainingBonus(idx,copy);
@@ -3848,7 +3851,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                         : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
                     mostrarMensaje(msg,'#00ff88');
                     return true;
-                }catch(e){mostrarMensaje('❌ Transacción cancelada','#ff4444');return false;}
+                }catch(e){
+                    mostrarMensaje('❌ Error de entrenamiento: ' + (e.message || 'Transacción cancelada'),'#ff4444');
+                    return false;
+                }
             }
         });
     }
@@ -3893,15 +3899,18 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar:async()=>{
                 if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
                 mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
-                const tx=await buildContractTx('deposito',usdtAmount);
                 try{
+                    const tx=await buildContractTx('deposito',usdtAmount);
                     await tonConnectUI.sendTransaction(tx);
                     gemas+=cantidad;
                     actualizarUI();
                     syncStateToCloud();
                     mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');
                     return true;
-                }catch(e){mostrarMensaje('❌ Depósito cancelado','#ff4444');return false;}
+                }catch(e){
+                    mostrarMensaje('❌ Error de depósito: ' + (e.message || 'Transacción cancelada'),'#ff4444');
+                    return false;
+                }
             }
         });
     }
@@ -4642,11 +4651,15 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if(!_pagoQRPendiente) return;
         try{assertSecureContractFlow(_pagoQRPendiente.tipo,_pagoQRPendiente.address);}catch(e){mostrarMensaje('❌ Pago bloqueado: contrato no coincide','#ff4444');return;}
         const btn = $id('pago-qr-confirm-btn');
+        if(!btn) return;
         const original = btn.innerHTML;
         btn.disabled = true; btn.innerHTML = '⏳ Procesando...';
         try{
             const ok = await _pagoQRPendiente.onConfirmar();
             if(ok) closeModal('modal-pago-qr');
+        } catch(e) {
+            console.error('[confirmarPagoQR] Error:', e);
+            mostrarMensaje('❌ Error al procesar: ' + (e.message || e), '#ff4444');
         } finally {
             btn.disabled = false; btn.innerHTML = original;
         }
