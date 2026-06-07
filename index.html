@@ -704,6 +704,7 @@
         }
 
     </style>
+<script src="https://unpkg.com/tonweb@0.0.60/dist/tonweb.js"></script>
 </head>
 <body>
 
@@ -1795,21 +1796,46 @@
         if (!myWallet) {
             throw new Error("Conecta tu wallet primero");
         }
-
-        const res = await fetch(`${API_BASE_URL}/api/usdt/build-transfer`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                senderAddress: myWallet,
-                amountUsdt: usdtAmount,
-                tipo: tipo
-            })
-        });
-        const data = await res.json();
-        if (!data.ok) {
-            throw new Error(data.error || "No se pudo preparar la transacción");
+        
+        try {
+            if (!window.TonWeb) {
+                throw new Error("Librería TonWeb no está cargada");
+            }
+            const tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC'));
+            
+            const USDT_MASTER = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
+            const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, { address: USDT_MASTER });
+            
+            const userJettonWallet = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(myWallet));
+            const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, { address: userJettonWallet });
+            
+            const destAddress = assertSecureContractFlow(tipo, getContractWallet()).address;
+            
+            const jettonAmountNano = new TonWeb.utils.BN(Math.floor(usdtAmount * 1000000));
+            
+            const transferBody = await jettonWallet.createTransferBody({
+                jettonAmount: jettonAmountNano,
+                toAddress: new TonWeb.utils.Address(destAddress),
+                forwardAmount: TonWeb.utils.toNano('0.001'),
+                forwardPayload: new TextEncoder().encode(tipo),
+                responseAddress: new TonWeb.utils.Address(myWallet)
+            });
+            
+            const payloadCell = await transferBody.toBoc(false);
+            const payloadBase64 = TonWeb.utils.bytesToBase64(payloadCell);
+            
+            return {
+                validUntil: Math.floor(Date.now() / 1000) + 300,
+                messages: [{
+                    address: userJettonWallet.toString(true, true, true),
+                    amount: TonWeb.utils.toNano('0.05').toString(),
+                    payload: payloadBase64
+                }]
+            };
+        } catch(e) {
+            console.error('Error construyendo TX local:', e);
+            throw new Error('Fallo al conectar con TON Center: ' + e.message);
         }
-        return data.tx;
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
