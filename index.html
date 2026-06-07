@@ -1335,9 +1335,9 @@
                     </div>
 
                     <div style="margin-bottom:10px;">
-                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">Buscar o Ingresar Wallet del Usuario Destino</label>
+                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">Buscar o Ingresar Wallet / Código del Usuario</label>
                         <div style="display:flex;gap:6px;">
-                            <input id="admin-target-wallet" type="text" placeholder="Ingresa wallet TON (EQ... / UQ...)" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
+                            <input id="admin-target-wallet" type="text" placeholder="Wallet (EQ...) o Código corto (FM...)" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
                             <button onclick="adminCargarUsuarios()" style="background:rgba(255,215,0,0.15);border:1px solid var(--gold);border-radius:8px;color:var(--gold);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">🔍 Ver Lista</button>
                         </div>
                     </div>
@@ -4415,12 +4415,33 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const myWallet = _walletAddr() || _activeWalletAddr || null;
         if (!myWallet) return;
         
-        const targetWallet = $id('admin-target-wallet').value.trim();
+        let targetWallet = $id('admin-target-wallet').value.trim();
         const nftIdx = $id('admin-nft-select').value;
         
         if (!targetWallet) {
-            mostrarMensaje('⚠️ Ingresa la wallet destino', '#ffaa00');
+            mostrarMensaje('⚠️ Ingresa la wallet destino o código', '#ffaa00');
             return;
+        }
+
+        mostrarMensaje('⏳ Procesando...', '#00d4ff');
+
+        // Si el admin ingresa un código corto, buscar la wallet en la base de datos
+        if (targetWallet.toUpperCase().startsWith('FM') || targetWallet.toLowerCase().startsWith('cod.')) {
+            try {
+                const code = targetWallet.replace(/cod\./i, '').trim();
+                const res = await fetch(`${API_BASE_URL}/api/admin/buscar-codigo?code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
+                const data = await res.json();
+                if (data.ok && data.wallet) {
+                    targetWallet = data.wallet;
+                    $id('admin-target-wallet').value = targetWallet; // Mostrar la wallet real
+                } else {
+                    mostrarMensaje('❌ ' + (data.error || 'Código no encontrado en BD'), '#ff4444');
+                    return;
+                }
+            } catch(e) {
+                mostrarMensaje('❌ Error buscando código', '#ff4444');
+                return;
+            }
         }
         
         mostrarMensaje('⏳ Enviando regalo NFT...', '#00d4ff');
