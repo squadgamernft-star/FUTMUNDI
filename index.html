@@ -1211,6 +1211,20 @@
                     <button onclick="reclamarNFTRegaloServidor()" style="padding:8px 16px;background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;outline:none;">Reclamar NFT</button>
                 </div>
 
+                <!-- Info de quien te refirió -->
+                <div id="info-quien-me-refirio" style="display:none;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.25);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:0.8em;color:#aaa;text-align:center;">
+                    🙋 Fuiste invitado por: <strong style="color:var(--purple);word-break:break-all;" id="ref-name-invitador">—</strong>
+                </div>
+
+                <!-- Banner manual para establecer referido -->
+                <div id="ref-manual-input-container" style="display:none;background:rgba(255,255,255,0.03);border:1px dashed rgba(168,85,247,0.35);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;">
+                    <div style="font-size:0.8em;color:#ccc;margin-bottom:8px;">🎯 ¿Te invitó un amigo? Ingresa su wallet o link de referido:</div>
+                    <div style="display:flex;gap:6px;">
+                        <input id="ref-manual-referrer" type="text" placeholder="Wallet TON (EQ... / UQ...) o Link de referido" style="flex:1;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(168,85,247,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
+                        <button onclick="registrarReferidoManual()" style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:8px;color:var(--purple);padding:0 12px;font-size:0.78em;font-weight:bold;cursor:pointer;white-space:nowrap;">Establecer</button>
+                    </div>
+                </div>
+
                 <!-- Tablero de estadísticas -->
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
                     <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
@@ -4167,6 +4181,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const adminPanel = $id('panel-admin-regalos');
         if(adminPanel) adminPanel.style.display = isAdmin ? 'block' : 'none';
 
+        const myReferrer = localStorage.getItem(_pfx()+'_my_referrer_code') || null;
+        const infoRef = $id('info-quien-me-refirio');
+        const inputRef = $id('ref-manual-input-container');
+        if (myReferrer) {
+            if (infoRef) {
+                infoRef.style.display = 'block';
+                const nameEl = $id('ref-name-invitador');
+                if (nameEl) nameEl.textContent = myReferrer.slice(0,10)+'...'+myReferrer.slice(-8);
+            }
+            if (inputRef) inputRef.style.display = 'none';
+        } else {
+            if (infoRef) infoRef.style.display = 'none';
+            if (inputRef) inputRef.style.display = 'block';
+        }
+
         // Refresca desde la nube en background (no bloquea)
         try{ _refrescarReferidosDesdeNube(); }catch(e){}
         // Links
@@ -4329,6 +4358,73 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     window.adminCargarUsuarios = adminCargarUsuarios;
     window.adminEnviarRegaloNFT = adminEnviarRegaloNFT;
+
+    async function registrarReferidoManual() {
+        const input = $id('ref-manual-referrer');
+        if (!input) return;
+        let value = input.value.trim();
+        if (!value) {
+            mostrarMensaje('⚠️ Ingresa una wallet o enlace válido', '#ffaa00');
+            return;
+        }
+
+        let walletCode = value;
+        if (value.includes('startapp=')) {
+            const parts = value.split('startapp=');
+            const code = parts[1]?.split('&')[0];
+            if (code && code.startsWith('ref_')) {
+                walletCode = code.slice(4);
+            } else if (code) {
+                walletCode = code;
+            }
+        } else if (value.includes('#ref_')) {
+            walletCode = value.split('#ref_')[1];
+        }
+
+        if (!/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(walletCode)) {
+            mostrarMensaje('❌ Dirección TON o enlace no válido', '#ff4444');
+            return;
+        }
+
+        const myWallet = _walletAddr() || _activeWalletAddr || null;
+        if (!myWallet) {
+            mostrarMensaje('⚠️ Conecta tu wallet TON primero', '#ffaa00');
+            return;
+        }
+        if (myWallet.toLowerCase() === walletCode.toLowerCase()) {
+            mostrarMensaje('❌ No puedes referirte a ti mismo', '#ff4444');
+            return;
+        }
+
+        mostrarMensaje('⏳ Vinculando referido...', '#00d4ff');
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/referidos/registrar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    referidoWallet: myWallet,
+                    referidorWallet: walletCode,
+                    telegramId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || null,
+                    telegramUsername: window.Telegram?.WebApp?.initDataUnsafe?.user?.username || null
+                })
+            });
+            const data = await res.json();
+            if (data.ok) {
+                localStorage.setItem(_pfx()+'_my_referrer_code', walletCode);
+                mostrarMensaje('✅ ¡Referidor guardado con éxito!', '#00ff88');
+                
+                await loadStateFromCloud(myWallet);
+                buildReferidosUI();
+            } else {
+                mostrarMensaje('❌ Error: ' + (data.error || 'No se pudo registrar'), '#ff4444');
+            }
+        } catch(e) {
+            console.error(e);
+            mostrarMensaje('❌ Error de conexión al guardar', '#ff4444');
+        }
+    }
+    window.registrarReferidoManual = registrarReferidoManual;
 
     function copiarRefLink(inputId, btnId){
         inputId = inputId || 'ref-link';
