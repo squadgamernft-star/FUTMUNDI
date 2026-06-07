@@ -2293,18 +2293,20 @@
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';if(!document.querySelector('.modal-overlay.active'))document.body.classList.remove('modal-open');}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
-    function irADepositoTorneo(){
+    async function irADepositoTorneo(){
         closeModal('modal-torneo');
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
+        mostrarMensaje(`⏳ Generando pago de $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
+        let tx;
+        try { tx = await buildContractTx('torneo', COSTO_TORNEO_USDT); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
         abrirPagoQR({
             tipo:'torneo',
             titulo:`🏆 Inscripción Torneo Semanal (USDT/TON)`,
             descripcion:`Inscripción al torneo. El pago se realiza en USDT sobre la red TON y se envía directamente al contrato inteligente de FUTMUNDI.`,
             usdt:COSTO_TORNEO_USDT,
             onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
+                mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    const tx=await buildContractTx('torneo',COSTO_TORNEO_USDT);
                     await tonConnectUI.sendTransaction(tx);
                     mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
                     return true;
@@ -3829,6 +3831,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function pagarMantenimiento(idx,copy=0){
         const c=PLAYERS[idx];
         const costo=getCostoMantenimiento(c.precio);
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return;}
+        mostrarMensaje(`⏳ Generando pago de $${costo.toFixed(2)} USDT...`,'#00d4ff');
+        let tx;
+        try { tx = await buildContractTx('entrenamiento', costo); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
         // Abrir modal QR con la dirección del contrato inteligente
         abrirPagoQR({
             tipo:'entrenamiento',
@@ -3836,10 +3842,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             descripcion:`Restaura durabilidad al 100% y aplica bonus de rendimiento progresivo.`,
             usdt:costo,
             onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
+                mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    const tx=await buildContractTx('entrenamiento',costo);
                     await tonConnectUI.sendTransaction(tx);
                     repararDurabilidad(idx,copy);
                     const res=applyTrainingBonus(idx,copy);
@@ -3891,16 +3895,18 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     async function comprarGemas(cantidad,usdtAmount){
         closeModal('modal-deposito');
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
+        mostrarMensaje(`⏳ Generando pago de $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
+        let tx;
+        try { tx = await buildContractTx('deposito', usdtAmount); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
         abrirPagoQR({
             tipo:'deposito',
             titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
             descripcion:`Depósito de gemas. El pago se envía directamente al mismo contrato inteligente usado en torneo y entrenamiento.`,
             usdt:usdtAmount,
             onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
+                mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    const tx=await buildContractTx('deposito',usdtAmount);
                     await tonConnectUI.sendTransaction(tx);
                     gemas+=cantidad;
                     actualizarUI();
@@ -4693,7 +4699,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         } catch(e){ return null; }
     }
     try{
-        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://futmundi.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
+        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://futmundi.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button',twaReturnUrl:(window.Telegram&&window.Telegram.WebApp)?'https://t.me/futmundi_bot/app':undefined});
         window.tonConnectUI=tonConnectUI;
         // Pide a la wallet que firme el payload al conectar (tonProof)
         try {
