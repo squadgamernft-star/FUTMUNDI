@@ -131,17 +131,12 @@
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .mobile-play-btn:active { transform: scale(0.96); }
-        .mobile-play-btn-green {
-            background: linear-gradient(135deg, rgba(45,122,31,0.25), rgba(0,200,80,0.15));
-            border: 1px solid rgba(45,122,31,0.8); color: var(--green);
-            box-shadow: 0 0 14px rgba(0,255,136,0.12);
+        .mobile-play-btn-green, .mobile-play-btn-cyan {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
-        .mobile-play-btn-green:active { background: rgba(45,122,31,0.4); color: #fff; box-shadow: 0 0 20px rgba(0,255,136,0.3); }
-        .mobile-play-btn-cyan {
-            background: linear-gradient(135deg, rgba(0,140,200,0.18), rgba(0,212,255,0.1));
-            border: 1px solid rgba(0,212,255,0.55); color: var(--cyan);
-        }
-        .mobile-play-btn-cyan:active { background: rgba(0,212,255,0.25); color: #fff; }
+        .mobile-play-btn-green:active, .mobile-play-btn-cyan:active { background: transparent !important; }
 
         /* Grid 3 columnas para acciones secundarias */
         .mobile-menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; width: 100%; }
@@ -686,21 +681,24 @@
             }
             .mobile-play-row .mobile-play-btn {
                 width: 100%;
-                aspect-ratio: 1 / 1;
-                padding: 10px;
-                border-radius: 22px;
+                padding: 0;
                 font-size: 0;
                 display: flex; align-items: center; justify-content: center;
-                position: relative;
-                overflow: hidden;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
             }
             .mobile-play-row .mpb-icon-img {
-                width: 100%; height: 100%;
+                width: auto; 
+                height: auto;
+                max-width: 100%;
+                max-height: 180px;
                 object-fit: contain;
-                filter: drop-shadow(0 6px 14px rgba(0,0,0,0.55));
-                transition: transform 0.25s ease;
+                filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));
+                transition: all 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
             }
-            .mobile-play-row .mobile-play-btn:active .mpb-icon-img { transform: scale(0.94); }
+            .mobile-play-row .mobile-play-btn:active .mpb-icon-img { transform: scale(0.92); filter: brightness(1.15) drop-shadow(0 2px 8px rgba(0,0,0,0.8)); }
+            .mobile-play-row .mobile-play-btn:hover .mpb-icon-img { transform: translateY(-4px) scale(1.05); filter: drop-shadow(0 10px 20px rgba(0,255,136,0.2)); }
         }
         /* Ocultar badge de wallet para todos los usuarios */
         #wallet-addr-badge { display: none !important; }
