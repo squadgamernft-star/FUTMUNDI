@@ -2219,7 +2219,7 @@
                 const tgId = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user)
                     ? window.Telegram.WebApp.initDataUnsafe.user.username || null
                     : null;
-                fetch(API_BASE_URL + '/api/registrar', {
+                fetch(API_BASE_URL + '/api/perfil', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ wallet: newAddr, refCode: refCode, telegramId: tgId })
@@ -4038,7 +4038,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function loadStateFromCloud(newAddr) {
         if (!newAddr) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/usuarios/perfil`, {
+            const res = await fetch(`${API_BASE_URL}/api/perfil`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -4089,16 +4089,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             });
             const data = await res.json();
             if (data.ok) {
-                const cloudNfts = data.nfts || [];
-                if (cloudNfts.length && typeof cloudNfts[0] === 'number') {
-                    carrosComprados = cloudNfts.map(idx => ({ idx, qty: 1 }));
-                } else {
-                    carrosComprados = cloudNfts;
-                }
-                // Actualizar localStorage y UI sin bucle de sync
-                const p=_pfx();
-                localStorage.setItem(p+'_carros',JSON.stringify(carrosComprados));
+                // Agregar NFTs regalados a la colección existente
+                const nftsRecibidos = data.nfts || [];
+                nftsRecibidos.forEach(idx => {
+                    const existing = carrosComprados.find(c => c.idx === idx);
+                    if (existing) {
+                        existing.qty = (existing.qty || 1) + 1;
+                    } else {
+                        carrosComprados.push({ idx: idx, qty: 1 });
+                    }
+                });
+                // Guardar y actualizar UI
+                const p = _pfx();
+                localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
                 actualizarUI();
+                buildMarket();
                 mostrarMensaje(data.mensaje || '✅ ¡Regalo reclamado con éxito!', '#00ff88');
                 const banner = $id('banner-regalo-nft');
                 if (banner) banner.style.display = 'none';
@@ -4235,7 +4240,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if(String(myWallet).toLowerCase() === String(refCode).toLowerCase()) return;
         
         try {
-            const res = await fetch(`${API_BASE_URL}/api/registrar`, {
+            const res = await fetch(`${API_BASE_URL}/api/perfil`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

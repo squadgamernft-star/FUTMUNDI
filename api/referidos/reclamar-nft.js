@@ -1,50 +1,54 @@
 const { supabase } = require('../_utils/supabase');
 
+// Reclama todos los regalos NFT pendientes del admin para esta wallet
 module.exports = async (req, res) => {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ ok: false, error: 'Method not allowed' });
-    }
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.status(200).end();
 
-    if (!supabase) {
-        return res.status(500).json({ ok: false, error: 'Database not configured' });
-    }
+    if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' });
+    if (!supabase) return res.status(500).json({ ok: false, error: 'Database not configured' });
 
-    const { wallet, requiredReferrals } = req.body || {};
+    const { wallet } = req.body || {};
+    if (!wallet) return res.status(400).json({ ok: false, error: 'Falta wallet' });
 
-    if (!wallet) {
-        return res.status(400).json({ ok: false, error: 'Faltan datos' });
-    }
+    const walletLower = wallet.toLowerCase();
 
     try {
-        // Verificar cuántos referidos NO reclamados tiene este usuario
-        const { data, error: fetchError } = await supabase
-            .from('referidos')
-            .select('id')
-            .eq('referrer_wallet', wallet)
+        // Buscar regalos pendientes
+        const { data: regalos, error: fetchErr } = await supabase
+            .from('regalos_nft')
+            .select('id, nft_idx')
+            .eq('target_wallet', walletLower)
             .eq('reclamado', false);
 
-        if (fetchError) throw fetchError;
+        if (fetchErr) throw fetchErr;
 
-        if (data.length < requiredReferrals) {
-            return res.status(400).json({ ok: false, error: `No tienes suficientes referidos (tienes ${data.length}, necesitas ${requiredReferrals})` });
+        if (!regalos || regalos.length === 0) {
+            return res.status(400).json({ ok: false, error: 'No tienes regalos pendientes' });
         }
 
-        // Marcar los primeros N referidos como reclamados
-        const idsToClaim = data.slice(0, requiredReferrals).map(r => r.id);
-        
-        const { error: updateError } = await supabase
-            .from('referidos')
+        // Marcar como reclamados
+        const ids = regalos.map(r => r.id);
+        const { error: updateErr } = await supabase
+            .from('regalos_nft')
             .update({ reclamado: true })
-            .in('id', idsToClaim);
+            .in('id', ids);
 
-        if (updateError) throw updateError;
+        if (updateErr) throw updateErr;
 
-        // Aquí se procedería a la transferencia automática del NFT (mint) vía contrato inteligente
-        // Dado que es un entorno sin claves privadas de billetera maestra, simulamos el éxito.
+        const nfts = regalos.map(r => r.nft_idx);
+        const nombres = nfts.map(idx => `NFT #${idx}`).join(', ');
 
-        return res.status(200).json({ ok: true, message: 'NFT reclamado con éxito (Simulado)' });
-    } catch (error) {
-        console.error('Error claiming NFT:', error);
+        return res.status(200).json({
+            ok: true,
+            nfts,
+            mensaje: `🎁 ¡Recibiste: ${nombres}! Ya aparecen en tu colección.`
+        });
+
+    } catch (e) {
+        console.error('[reclamar-nft]', e.message);
         return res.status(500).json({ ok: false, error: 'Error del servidor' });
     }
 };

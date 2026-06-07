@@ -18,11 +18,9 @@ module.exports = async (req, res) => {
     if (req.method === 'GET') {
         action = req.query.action;
         adminWallet = req.query.adminWallet;
-    } else if (req.method === 'POST') {
+    } else {
         action = req.body && req.body.action;
         adminWallet = req.body && req.body.adminWallet;
-    } else {
-        return res.status(405).json({ ok: false, error: 'Method not allowed' });
     }
 
     if (!action || !adminWallet) return res.status(400).json({ ok: false, error: 'Faltan datos' });
@@ -31,6 +29,7 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // ── Ver lista de usuarios ──────────────────────────────────────────
         if (action === 'usuarios') {
             const { data, error } = await supabase
                 .from('usuarios')
@@ -38,49 +37,69 @@ module.exports = async (req, res) => {
                 .order('last_seen', { ascending: false })
                 .limit(100);
             if (error) throw error;
-            const usuarios = data.map(u => ({
-                wallet: u.wallet_address,
-                code: u.ref_code,
-                username: u.telegram_id ? u.telegram_id : '—',
-                gemas: 0
-            }));
-            return res.status(200).json({ ok: true, usuarios });
+            return res.status(200).json({
+                ok: true,
+                usuarios: data.map(u => ({
+                    wallet: u.wallet_address,
+                    code: u.ref_code,
+                    username: u.telegram_id || '—',
+                    gemas: 0
+                }))
+            });
         }
 
+        // ── Buscar wallet por código FM... ────────────────────────────────
         else if (action === 'buscar-codigo') {
-            const raw = req.query.code || '';
+            const raw = req.query.code || (req.body && req.body.code) || '';
             const code = raw.replace(/cod\./i, '').trim().toUpperCase();
             if (!code) return res.status(400).json({ ok: false, error: 'Falta el codigo' });
 
             const { data, error } = await supabase
                 .from('usuarios')
-                .select('wallet_address, ref_code, telegram_id')
+                .select('wallet_address, ref_code')
                 .eq('ref_code', code)
                 .maybeSingle();
             if (error) throw error;
 
-            if (data) {
-                return res.status(200).json({ ok: true, wallet: data.wallet_address, code: data.ref_code });
-            }
+            if (data) return res.status(200).json({ ok: true, wallet: data.wallet_address });
             return res.status(404).json({ ok: false, error: 'Codigo no encontrado. El usuario debe abrir la app primero.' });
         }
 
+        // ── Regalar NFT → guarda en tabla regalos_nft ────────────────────
         else if (action === 'regalar-nft') {
             const body = req.body || {};
-            const targetWallet = body.targetWallet;
+            const targetWallet = (body.targetWallet || '').toLowerCase();
             const nftIdx = body.nftIdx;
-            if (!targetWallet || nftIdx === undefined) {
-                return res.status(400).json({ ok: false, error: 'Faltan datos' });
+
+            if (!targetWallet || nftIdx === undefined || nftIdx === null) {
+                return res.status(400).json({ ok: false, error: 'Faltan datos (targetWallet / nftIdx)' });
             }
+
+            // Insertar regalo pendiente en Supabase
+            const { error } = await supabase
+                .from('regalos_nft')
+                .insert([{
+                    target_wallet: targetWallet,
+                    nft_idx: parseInt(nftIdx),
+                    admin_wallet: adminWallet.toLowerCase(),
+                    reclamado: false
+                }]);
+
+            if (error) throw error;
+
             const short = targetWallet.slice(0, 8) + '...' + targetWallet.slice(-6);
-            return res.status(200).json({ ok: true, mensaje: 'NFT #' + nftIdx + ' transferido a ' + short });
+            return res.status(200).json({
+                ok: true,
+                mensaje: `✅ Regalo guardado! El NFT #${nftIdx} aparecerá en la app de ${short} la próxima vez que la abra.`
+            });
         }
 
         else {
             return res.status(400).json({ ok: false, error: 'Accion no valida' });
         }
+
     } catch (e) {
         console.error('[admin]', e.message);
-        return res.status(500).json({ ok: false, error: 'Error del servidor' });
+        return res.status(500).json({ ok: false, error: 'Error del servidor: ' + e.message });
     }
 };
