@@ -1,17 +1,5 @@
 const { supabase } = require('./_utils/supabase');
 
-function generateDeterministicCode(wallet) {
-    if (!wallet || wallet === 'guest') return 'guest';
-    let hash = 0;
-    for (let i = 0; i < wallet.length; i++) {
-        const char = wallet.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-    }
-    const base36 = Math.abs(hash).toString(36).toUpperCase();
-    return 'FM' + base36.slice(0, 6).padStart(6, 'X');
-}
-
 const ADMIN_WALLETS = [
     'uqb9ufacgm5hvntxhe-mq3xyiyjclezvgnzucffnc5dr-7vg',
     'eqb9ufacgm5hvntxhe-mq3xyiyjclezvgnzucffnc5dr-7va',
@@ -19,6 +7,11 @@ const ADMIN_WALLETS = [
 ];
 
 module.exports = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.status(200).end();
+
     if (!supabase) return res.status(500).json({ ok: false, error: 'Database not configured' });
 
     let action, adminWallet;
@@ -26,54 +19,68 @@ module.exports = async (req, res) => {
         action = req.query.action;
         adminWallet = req.query.adminWallet;
     } else if (req.method === 'POST') {
-        action = req.body.action;
-        adminWallet = req.body.adminWallet;
+        action = req.body && req.body.action;
+        adminWallet = req.body && req.body.adminWallet;
     } else {
         return res.status(405).json({ ok: false, error: 'Method not allowed' });
     }
 
-    if (!action || !adminWallet) return res.status(400).json({ ok: false, error: 'Faltan datos (action/adminWallet)' });
-    if (!ADMIN_WALLETS.includes(adminWallet.toLowerCase())) return res.status(403).json({ ok: false, error: 'No autorizado' });
+    if (!action || !adminWallet) return res.status(400).json({ ok: false, error: 'Faltan datos' });
+    if (!ADMIN_WALLETS.includes(adminWallet.toLowerCase())) {
+        return res.status(403).json({ ok: false, error: 'No autorizado' });
+    }
 
     try {
         if (action === 'usuarios') {
-            const { data, error } = await supabase.from('torneo_inscripciones').select('wallet_address, puntos').order('puntos', { ascending: false }).limit(50);
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('wallet_address, ref_code, telegram_id, last_seen')
+                .order('last_seen', { ascending: false })
+                .limit(100);
             if (error) throw error;
-            const usuarios = data.map(u => ({ wallet: u.wallet_address, username: '—', gemas: u.puntos }));
+            const usuarios = data.map(u => ({
+                wallet: u.wallet_address,
+                code: u.ref_code,
+                username: u.telegram_id ? u.telegram_id : '—',
+                gemas: 0
+            }));
             return res.status(200).json({ ok: true, usuarios });
-        } 
-        
+        }
+
         else if (action === 'buscar-codigo') {
-            const code = req.query.code;
-            if(!code) return res.status(400).json({ok:false, error:'Falta code'});
-            const cleanCode = code.replace(/cod\./i, '').trim().toUpperCase();
-            
-            const { data, error } = await supabase.from('torneo_inscripciones').select('wallet_address');
+            const raw = req.query.code || '';
+            const code = raw.replace(/cod\./i, '').trim().toUpperCase();
+            if (!code) return res.status(400).json({ ok: false, error: 'Falta el codigo' });
+
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('wallet_address, ref_code, telegram_id')
+                .eq('ref_code', code)
+                .maybeSingle();
             if (error) throw error;
-            for (let row of data) {
-                if (generateDeterministicCode(row.wallet_address) === cleanCode) return res.status(200).json({ ok: true, wallet: row.wallet_address });
+
+            if (data) {
+                return res.status(200).json({ ok: true, wallet: data.wallet_address, code: data.ref_code });
             }
-            
-            const { data: refData, error: refError } = await supabase.from('referidos').select('referrer_wallet, referred_wallet');
-            if (!refError && refData) {
-                for (let row of refData) {
-                    if (generateDeterministicCode(row.referrer_wallet) === cleanCode) return res.status(200).json({ ok: true, wallet: row.referrer_wallet });
-                    if (generateDeterministicCode(row.referred_wallet) === cleanCode) return res.status(200).json({ ok: true, wallet: row.referred_wallet });
-                }
-            }
-            return res.status(404).json({ ok: false, error: 'Código no encontrado en BD' });
+            return res.status(404).json({ ok: false, error: 'Codigo no encontrado. El usuario debe abrir la app primero.' });
         }
-        
+
         else if (action === 'regalar-nft') {
-            const { targetWallet, nftIdx } = req.body;
-            if (!targetWallet || nftIdx === undefined) return res.status(400).json({ ok: false, error: 'Faltan datos' });
-            return res.status(200).json({ ok: true, mensaje: `✅ ¡NFT ID ${nftIdx} transferido exitosamente a ${targetWallet.slice(0, 6)}...!` });
+            const body = req.body || {};
+            const targetWallet = body.targetWallet;
+            const nftIdx = body.nftIdx;
+            if (!targetWallet || nftIdx === undefined) {
+                return res.status(400).json({ ok: false, error: 'Faltan datos' });
+            }
+            const short = targetWallet.slice(0, 8) + '...' + targetWallet.slice(-6);
+            return res.status(200).json({ ok: true, mensaje: 'NFT #' + nftIdx + ' transferido a ' + short });
         }
-        
+
         else {
-            return res.status(400).json({ ok: false, error: 'Acción no válida' });
+            return res.status(400).json({ ok: false, error: 'Accion no valida' });
         }
     } catch (e) {
+        console.error('[admin]', e.message);
         return res.status(500).json({ ok: false, error: 'Error del servidor' });
     }
 };
