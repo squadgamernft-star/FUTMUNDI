@@ -112,12 +112,11 @@
         /* Badge de balones: chip debajo de la imagen */
         .mobile-fuel-badge {
             display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(0,0,0,0.82); border: 1px solid rgba(0,255,136,0.45);
-            border-radius: 20px; padding: 5px 14px 5px 10px;
-            backdrop-filter: blur(6px);
+            background: transparent; border: none;
+            padding: 5px 14px 5px 10px;
             white-space: nowrap;
             margin: 10px auto 0;
-            box-shadow: 0 0 14px rgba(0,255,136,0.18);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
         }
         .mobile-fuel-badge-icon { font-size: 1em; filter: drop-shadow(0 0 5px rgba(0,255,136,0.8)); animation: ballGlow 2s ease-in-out infinite; }
         .mobile-fuel-badge-num { font-family: 'Orbitron', sans-serif; font-size: 0.95em; font-weight: 900; color: var(--green); text-shadow: 0 0 8px rgba(0,255,136,0.7); }
@@ -132,17 +131,12 @@
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .mobile-play-btn:active { transform: scale(0.96); }
-        .mobile-play-btn-green {
-            background: linear-gradient(135deg, rgba(45,122,31,0.25), rgba(0,200,80,0.15));
-            border: 1px solid rgba(45,122,31,0.8); color: var(--green);
-            box-shadow: 0 0 14px rgba(0,255,136,0.12);
+        .mobile-play-btn-green, .mobile-play-btn-cyan {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
-        .mobile-play-btn-green:active { background: rgba(45,122,31,0.4); color: #fff; box-shadow: 0 0 20px rgba(0,255,136,0.3); }
-        .mobile-play-btn-cyan {
-            background: linear-gradient(135deg, rgba(0,140,200,0.18), rgba(0,212,255,0.1));
-            border: 1px solid rgba(0,212,255,0.55); color: var(--cyan);
-        }
-        .mobile-play-btn-cyan:active { background: rgba(0,212,255,0.25); color: #fff; }
+        .mobile-play-btn-green:active, .mobile-play-btn-cyan:active { background: transparent !important; }
 
         /* Grid 3 columnas para acciones secundarias */
         .mobile-menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; width: 100%; }
@@ -584,22 +578,23 @@
             box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
         }
         .tg-bottom-nav .tg-nav-btn {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(45,122,31,0.35);
-            border-radius: 12px;
+            background: transparent;
+            border: none;
             padding: 8px 4px 6px;
             color: #cfd; font-size: 0.66em; font-weight: 700;
             font-family: 'Fredoka','Rajdhani',sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 3px; cursor: pointer; transition: all 0.18s; text-align: center;
+            gap: 3px; cursor: pointer; transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275); text-align: center;
             line-height: 1.05;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
-        .tg-bottom-nav .tg-nav-btn:active { transform: scale(0.94); background: rgba(45,122,31,0.25); color: #fff; }
-        .tg-bottom-nav .tg-nav-btn .tg-nav-emoji { font-size: 1.45em; line-height: 1; }
-        .tg-bottom-nav .tg-nav-btn.accent-cyan   { border-color: rgba(0,212,255,0.45); color: var(--cyan); }
-        .tg-bottom-nav .tg-nav-btn.accent-gold   { border-color: rgba(255,215,0,0.45); color: var(--gold); }
-        .tg-bottom-nav .tg-nav-btn.accent-orange { border-color: rgba(255,159,28,0.45); color: var(--orange); }
-        .tg-bottom-nav .tg-nav-btn.accent-purple { border-color: rgba(181,108,255,0.45); color: var(--purple); }
+        .tg-bottom-nav .tg-nav-btn:active { transform: scale(0.85); color: #fff; }
+        .tg-bottom-nav .tg-nav-btn .tg-nav-emoji { font-size: 1.6em; line-height: 1; transition: transform 0.2s; }
+        .tg-bottom-nav .tg-nav-btn:hover .tg-nav-emoji { transform: translateY(-3px) scale(1.1); filter: drop-shadow(0 0 8px rgba(255,255,255,0.4)); }
+        .tg-bottom-nav .tg-nav-btn.accent-cyan   { color: var(--cyan); }
+        .tg-bottom-nav .tg-nav-btn.accent-gold   { color: var(--gold); }
+        .tg-bottom-nav .tg-nav-btn.accent-orange { color: var(--orange); }
+        .tg-bottom-nav .tg-nav-btn.accent-purple { color: var(--purple); }
 
         .tg-side-col {
             display: none;
@@ -610,19 +605,19 @@
         .tg-side-col.left  { left: 6px; }
         .tg-side-col.right { right: 6px; }
         .tg-side-btn {
-            width: 50px; height: 50px; border-radius: 14px;
-            background: rgba(10,19,10,0.7);
-            border: 1px solid rgba(45,122,31,0.45);
-            color: #fff; font-size: 1.4em;
+            width: 50px; height: 50px;
+            background: transparent;
+            border: none;
+            color: #fff; font-size: 1.8em;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.18s;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 12px rgba(0,255,136,0.08);
+            cursor: pointer; transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
         }
-        .tg-side-btn:active { transform: scale(0.9); background: rgba(45,122,31,0.4); }
-        .tg-side-btn.accent-cyan   { border-color: rgba(0,212,255,0.55); color: var(--cyan); }
-        .tg-side-btn.accent-gold   { border-color: rgba(255,215,0,0.55); color: var(--gold); }
-        .tg-side-btn.accent-purple { border-color: rgba(181,108,255,0.55); color: var(--purple); }
+        .tg-side-btn:hover { transform: translateY(-3px) scale(1.1); filter: drop-shadow(0 0 12px rgba(255,255,255,0.3)); }
+        .tg-side-btn:active { transform: scale(0.85); }
+        .tg-side-btn.accent-cyan   { color: var(--cyan); }
+        .tg-side-btn.accent-gold   { color: var(--gold); }
+        .tg-side-btn.accent-purple { color: var(--purple); }
         .tg-side-btn .tg-side-label { display: none; }
 
         @media (max-width: 640px) {
@@ -686,24 +681,30 @@
             }
             .mobile-play-row .mobile-play-btn {
                 width: 100%;
-                aspect-ratio: 1 / 1;
-                padding: 10px;
-                border-radius: 22px;
+                padding: 0;
                 font-size: 0;
                 display: flex; align-items: center; justify-content: center;
-                position: relative;
-                overflow: hidden;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
             }
             .mobile-play-row .mpb-icon-img {
-                width: 100%; height: 100%;
+                width: auto; 
+                height: auto;
+                max-width: 100%;
+                max-height: 180px;
                 object-fit: contain;
-                filter: drop-shadow(0 6px 14px rgba(0,0,0,0.55));
-                transition: transform 0.25s ease;
+                filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));
+                transition: all 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
             }
-            .mobile-play-row .mobile-play-btn:active .mpb-icon-img { transform: scale(0.94); }
+            .mobile-play-row .mobile-play-btn:active .mpb-icon-img { transform: scale(0.92); filter: brightness(1.15) drop-shadow(0 2px 8px rgba(0,0,0,0.8)); }
+            .mobile-play-row .mobile-play-btn:hover .mpb-icon-img { transform: translateY(-4px) scale(1.05); filter: drop-shadow(0 10px 20px rgba(0,255,136,0.2)); }
         }
+        /* Ocultar badge de wallet para todos los usuarios */
+        #wallet-addr-badge { display: none !important; }
 
     </style>
+<script src="https://unpkg.com/tonweb@0.0.60/dist/tonweb.js"></script>
 </head>
 <body>
 
@@ -1008,7 +1009,6 @@
         <div class="modal">
             <div class="modal-header">
                 <span class="modal-title">🎲 Apuestas Mundial</span>
-                <button id="admin-apuesta-toggle" onclick="toggleAdminApuesta()" style="display:none; padding:4px 8px; background:var(--orange); border:none; border-radius:6px; color:#fff; font-family:'Orbitron',sans-serif; font-size:0.7em; font-weight:bold; cursor:pointer; margin-left:auto; margin-right:15px;">🔓 Desbloquear (Admin)</button>
                 <button class="modal-close" onclick="closeModal('modal-apuesta')">✕</button>
             </div>
             <div class="modal-body">
@@ -1335,10 +1335,11 @@
                     </div>
 
                     <div style="margin-bottom:10px;">
-                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">Buscar o Ingresar Wallet del Usuario Destino</label>
+                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">Buscar o Ingresar Wallet / Código del Usuario</label>
                         <div style="display:flex;gap:6px;">
-                            <input id="admin-target-wallet" type="text" placeholder="Ingresa wallet TON (EQ... / UQ...)" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
-                            <button onclick="adminCargarUsuarios()" style="background:rgba(255,215,0,0.15);border:1px solid var(--gold);border-radius:8px;color:var(--gold);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">🔍 Ver Lista</button>
+                            <input id="admin-target-wallet" type="text" placeholder="Wallet (EQ...) o Código corto (FM...)" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
+                            <button onclick="adminBuscarWalletPorCodigo()" style="background:rgba(0,212,255,0.15);border:1px solid #00d4ff;border-radius:8px;color:#00d4ff;padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">🔍 Buscar Código</button>
+                            <button onclick="adminCargarUsuarios()" style="background:rgba(255,215,0,0.15);border:1px solid var(--gold);border-radius:8px;color:var(--gold);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">Ver Lista</button>
                         </div>
                     </div>
 
@@ -1347,17 +1348,19 @@
                         <div style="text-align:center;padding:10px 0;color:#666;">Haz clic en 'Ver Lista' para buscar wallets registradas</div>
                     </div>
 
-                    <!-- Buscar Referidos por Link de Referidor -->
-                    <div style="margin-top:12px;margin-bottom:12px;border-top:1px dashed rgba(255,215,0,0.25);padding-top:12px;margin-bottom:10px;">
-                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">🔍 Buscar Referidos por Link o Wallet de Referidor</label>
-                        <div style="display:flex;gap:6px;">
-                            <input id="admin-search-ref-input" type="text" placeholder="Pega link de referido o wallet" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
-                            <button onclick="adminBuscarReferidosPorLink()" style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:8px;color:var(--purple);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">Buscar Referidos</button>
+                    <!-- Buscar por Código de Referido -->
+                    <div style="margin-top:12px;border-top:1px dashed rgba(255,215,0,0.25);padding-top:12px;margin-bottom:10px;">
+                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">🔑 Buscar Usuario por Código de Referido</label>
+                        <div style="display:flex;gap:6px;margin-bottom:8px;">
+                            <input id="admin-search-ref-input" type="text" placeholder="Ej: FMUJ9FQ5 o link completo" style="flex:1;padding:8px 10px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.85em;outline:none;" oninput="this.value=this.value.toUpperCase()">
+                            <button onclick="adminBuscarReferidosPorLink()" style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,165,0,0.15));border:1px solid var(--gold);border-radius:8px;color:var(--gold);padding:0 14px;font-size:0.78em;font-weight:bold;cursor:pointer;white-space:nowrap;">🔍 Buscar</button>
                         </div>
-                    </div>
-
-                    <!-- Lista de referidos encontrados -->
-                    <div id="admin-ref-search-results" style="max-height:150px;overflow-y:auto;background:rgba(0,0,0,0.25);border-radius:8px;margin-bottom:10px;font-size:0.75em;color:#aaa;padding:4px;display:none;flex-direction:column;gap:4px;">
+                        <!-- Resultado de la búsqueda -->
+                        <div id="admin-ref-search-results" style="display:none;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 12px;">
+                            <div style="font-size:0.65em;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">✅ Wallet encontrada</div>
+                            <div id="admin-ref-found-wallet" style="font-family:'Orbitron',sans-serif;font-size:0.75em;color:#00ff88;word-break:break-all;margin-bottom:8px;"></div>
+                            <button onclick="adminSeleccionarWalletEncontrada()" style="width:100%;padding:7px;background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:7px;color:var(--green);font-weight:bold;font-size:0.75em;cursor:pointer;">⬆ Usar esta wallet para el regalo NFT</button>
+                        </div>
                     </div>
 
                     <button onclick="adminEnviarRegaloNFT()" style="width:100%;padding:10px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(255,215,0,0.15));border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.8em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;">
@@ -1796,21 +1799,46 @@
         if (!myWallet) {
             throw new Error("Conecta tu wallet primero");
         }
-
-        const res = await fetch(`${API_BASE_URL}/api/usdt/build-transfer`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                senderAddress: myWallet,
-                amountUsdt: usdtAmount,
-                tipo: tipo
-            })
-        });
-        const data = await res.json();
-        if (!data.ok) {
-            throw new Error(data.error || "No se pudo preparar la transacción");
+        
+        try {
+            if (!window.TonWeb) {
+                throw new Error("Librería TonWeb no está cargada");
+            }
+            const tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC'));
+            
+            const USDT_MASTER = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
+            const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, { address: USDT_MASTER });
+            
+            const userJettonWallet = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(myWallet));
+            const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, { address: userJettonWallet });
+            
+            const destAddress = assertSecureContractFlow(tipo, getContractWallet()).address;
+            
+            const jettonAmountNano = new TonWeb.utils.BN(Math.floor(usdtAmount * 1000000));
+            
+            const transferBody = await jettonWallet.createTransferBody({
+                jettonAmount: jettonAmountNano,
+                toAddress: new TonWeb.utils.Address(destAddress),
+                forwardAmount: TonWeb.utils.toNano('0.001'),
+                forwardPayload: new TextEncoder().encode(tipo),
+                responseAddress: new TonWeb.utils.Address(myWallet)
+            });
+            
+            const payloadCell = await transferBody.toBoc(false);
+            const payloadBase64 = TonWeb.utils.bytesToBase64(payloadCell);
+            
+            return {
+                validUntil: Math.floor(Date.now() / 1000) + 300,
+                messages: [{
+                    address: userJettonWallet.toString(true, true, true),
+                    amount: TonWeb.utils.toNano('0.05').toString(),
+                    payload: payloadBase64
+                }]
+            };
+        } catch(e) {
+            console.error('Error construyendo TX local:', e);
+            throw new Error('Fallo al conectar con TON Center: ' + e.message);
         }
-        return data.tx;
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
@@ -2176,15 +2204,28 @@
 
     // Llamado al cambiar de wallet: carga la sesión de la wallet conectada
     function onWalletChange(newAddr){
-        if(newAddr===_activeWalletAddr) return; // misma wallet, nada que hacer
+        if(newAddr===_activeWalletAddr) return;
         _activeWalletAddr = newAddr;
-        // Registrar wallet conectada para estadísticas del torneo (solo local)
         if(newAddr){
             try{
                 const knownWallets = JSON.parse(localStorage.getItem("fm_known_wallets")||"[]");
                 if(!knownWallets.includes(newAddr)){ knownWallets.push(newAddr); localStorage.setItem("fm_known_wallets", JSON.stringify(knownWallets)); }
                 localStorage.setItem("fm_global_wallet_users", String(knownWallets.length));
             }catch(e){}
+
+            // ── REGISTRAR EN SUPABASE (silencioso, en background) ────────────
+            try {
+                const refCode = generateDeterministicCode(newAddr);
+                const tgId = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user)
+                    ? window.Telegram.WebApp.initDataUnsafe.user.username || null
+                    : null;
+                fetch(API_BASE_URL + '/api/perfil', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet: newAddr, refCode: refCode, telegramId: tgId })
+                }).catch(function(){});
+            } catch(e){}
+            // ─────────────────────────────────────────────────────────────────
         }
         resetStateVars();
         loadState();
@@ -2194,13 +2235,11 @@
         buildUniforms();
         buildSkillLogros();
         buildFutsalaBody();
-        // Detectar y registrar código de referido (solo si hay wallet conectada)
         if(newAddr) { 
             _detectarReferido(); 
             _resolverPendientesDeReferidos(); 
             loadStateFromCloud(newAddr);
         }
-        // Mostrar badge con dirección abreviada en top bar
         const badge=$id('wallet-addr-badge');
         const addrText=$id('wallet-addr-text');
         if(newAddr){
@@ -2294,18 +2333,20 @@
     function closeModal(id){const el=$id(id);if(!el)return;el.classList.remove('active');document.body.style.overflow='';if(!document.querySelector('.modal-overlay.active'))document.body.classList.remove('modal-open');}
     document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)closeModal(ov.id);});});
     function switchTab(e,group,panel){const modal=$id(`modal-${group}`);if(!modal)return;modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));e.currentTarget.classList.add('active');const panelEl=$id(`${group}-${panel}`);if(panelEl)panelEl.classList.add('active');}
-    function irADepositoTorneo(){
+    async function irADepositoTorneo(){
         closeModal('modal-torneo');
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
+        mostrarMensaje(`⏳ Generando pago de $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
+        let tx;
+        try { tx = await buildContractTx('torneo', COSTO_TORNEO_USDT); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
         abrirPagoQR({
             tipo:'torneo',
             titulo:`🏆 Inscripción Torneo Semanal (USDT/TON)`,
             descripcion:`Inscripción al torneo. El pago se realiza en USDT sobre la red TON y se envía directamente al contrato inteligente de FUTMUNDI.`,
             usdt:COSTO_TORNEO_USDT,
             onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
+                mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    const tx=await buildContractTx('torneo',COSTO_TORNEO_USDT);
                     await tonConnectUI.sendTransaction(tx);
                     mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
                     return true;
@@ -3830,6 +3871,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function pagarMantenimiento(idx,copy=0){
         const c=PLAYERS[idx];
         const costo=getCostoMantenimiento(c.precio);
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return;}
+        mostrarMensaje(`⏳ Generando pago de $${costo.toFixed(2)} USDT...`,'#00d4ff');
+        let tx;
+        try { tx = await buildContractTx('entrenamiento', costo); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
         // Abrir modal QR con la dirección del contrato inteligente
         abrirPagoQR({
             tipo:'entrenamiento',
@@ -3837,10 +3882,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             descripcion:`Restaura durabilidad al 100% y aplica bonus de rendimiento progresivo.`,
             usdt:costo,
             onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${costo.toFixed(2)} USDT...`,'#00d4ff');
+                mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    const tx=await buildContractTx('entrenamiento',costo);
                     await tonConnectUI.sendTransaction(tx);
                     repararDurabilidad(idx,copy);
                     const res=applyTrainingBonus(idx,copy);
@@ -3892,16 +3935,18 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     async function comprarGemas(cantidad,usdtAmount){
         closeModal('modal-deposito');
+        if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
+        mostrarMensaje(`⏳ Generando pago de $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
+        let tx;
+        try { tx = await buildContractTx('deposito', usdtAmount); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
         abrirPagoQR({
             tipo:'deposito',
             titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
             descripcion:`Depósito de gemas. El pago se envía directamente al mismo contrato inteligente usado en torneo y entrenamiento.`,
             usdt:usdtAmount,
             onConfirmar:async()=>{
-                if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return false;}
-                mostrarMensaje(`⏳ Procesando $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
+                mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    const tx=await buildContractTx('deposito',usdtAmount);
                     await tonConnectUI.sendTransaction(tx);
                     gemas+=cantidad;
                     actualizarUI();
@@ -3993,7 +4038,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function loadStateFromCloud(newAddr) {
         if (!newAddr) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/usuarios/perfil`, {
+            const res = await fetch(`${API_BASE_URL}/api/perfil`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -4044,16 +4089,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             });
             const data = await res.json();
             if (data.ok) {
-                const cloudNfts = data.nfts || [];
-                if (cloudNfts.length && typeof cloudNfts[0] === 'number') {
-                    carrosComprados = cloudNfts.map(idx => ({ idx, qty: 1 }));
-                } else {
-                    carrosComprados = cloudNfts;
-                }
-                // Actualizar localStorage y UI sin bucle de sync
-                const p=_pfx();
-                localStorage.setItem(p+'_carros',JSON.stringify(carrosComprados));
+                // Agregar NFTs regalados a la colección existente
+                const nftsRecibidos = data.nfts || [];
+                nftsRecibidos.forEach(idx => {
+                    const existing = carrosComprados.find(c => c.idx === idx);
+                    if (existing) {
+                        existing.qty = (existing.qty || 1) + 1;
+                    } else {
+                        carrosComprados.push({ idx: idx, qty: 1 });
+                    }
+                });
+                // Guardar y actualizar UI
+                const p = _pfx();
+                localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
                 actualizarUI();
+                buildMarket();
                 mostrarMensaje(data.mensaje || '✅ ¡Regalo reclamado con éxito!', '#00ff88');
                 const banner = $id('banner-regalo-nft');
                 if (banner) banner.style.display = 'none';
@@ -4190,14 +4240,13 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if(String(myWallet).toLowerCase() === String(refCode).toLowerCase()) return;
         
         try {
-            const res = await fetch(`${API_BASE_URL}/api/referidos/registrar`, {
+            const res = await fetch(`${API_BASE_URL}/api/perfil`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    referidoWallet: myWallet,
-                    referidorWallet: refCode,
-                    telegramId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || null,
-                    telegramUsername: window.Telegram?.WebApp?.initDataUnsafe?.user?.username || null
+                    type: 'referido',
+                    referrerWallet: refCode,
+                    newWallet: myWallet
                 })
             });
             const data = await res.json();
@@ -4351,7 +4400,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         resultsEl.innerHTML = '<div style="text-align:center;padding:10px 0;color:#aaa;">⏳ Buscando usuarios...</div>';
         
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/usuarios?adminWallet=${encodeURIComponent(myWallet)}`);
+            const res = await fetch(`${API_BASE_URL}/api/admin?action=usuarios&adminWallet=${encodeURIComponent(myWallet)}`);
             const data = await res.json();
             
             if (data.ok && data.usuarios) {
@@ -4361,14 +4410,18 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 }
                 
                 resultsEl.innerHTML = data.usuarios.map(u => {
-                    const display = u.username !== '—' ? `@${u.username}` : (u.wallet.slice(0, 6) + '...' + u.wallet.slice(-6));
+                    const display = u.username !== '—' ? u.username : (u.wallet.slice(0, 6) + '...' + u.wallet.slice(-6));
+                    const code = u.code || '';
                     return `
-                    <div onclick="document.getElementById('admin-target-wallet').value='${u.wallet}'" 
+                    <div onclick="document.getElementById('admin-target-wallet').value='${u.wallet}'; mostrarMensaje('Wallet seleccionada ✅', '#00ff88');" 
                          style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:6px;padding:6px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.2s;"
                          onmouseover="this.style.background='rgba(255,215,0,0.1)'"
                          onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                        <span>👤 ${display}</span>
-                        <span style="font-family:'Orbitron',sans-serif;font-size:0.85em;color:var(--gold);">${u.gemas.toFixed(0)} 💎</span>
+                        <div>
+                            <span style="color:#fff;font-size:0.9em;">👤 ${display}</span>
+                            <span style="color:#aaa;font-size:0.75em;margin-left:6px;">${code}</span>
+                        </div>
+                        <span style="font-family:'Orbitron',sans-serif;font-size:0.8em;color:var(--gold);">TON 💎</span>
                     </div>`;
                 }).join('');
             } else {
@@ -4380,25 +4433,84 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }
     }
 
+    async function adminBuscarWalletPorCodigo() {
+        const myWallet = _walletAddr() || _activeWalletAddr || null;
+        if (!myWallet) return;
+
+        let targetWallet = $id('admin-target-wallet').value.trim();
+        if (!targetWallet) {
+            mostrarMensaje('⚠️ Ingresa un código (ej. FMUJ9FQ5)', '#ffaa00');
+            return;
+        }
+
+        if (targetWallet.toUpperCase().startsWith('FM') || targetWallet.toLowerCase().startsWith('cod.')) {
+            mostrarMensaje('⏳ Buscando wallet...', '#00d4ff');
+            try {
+                const code = targetWallet.replace(/cod\./i, '').trim();
+                const res = await fetch(`${API_BASE_URL}/api/admin?action=buscar-codigo&code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
+                const data = await res.json();
+                if (data.ok && data.wallet) {
+                    $id('admin-target-wallet').value = data.wallet;
+                    mostrarMensaje('✅ ¡Wallet cargada!', '#00ff88');
+                } else {
+                    mostrarMensaje('❌ ' + (data.error || 'Código no encontrado en BD'), '#ff4444');
+                }
+            } catch(e) {
+                console.error(e);
+                mostrarMensaje('❌ Error conectando al servidor', '#ff4444');
+            }
+        } else {
+            // Si parece una wallet normal
+            if (/^(EQ|UQ)[A-Za-z0-9_-]{46}$/i.test(targetWallet)) {
+                mostrarMensaje('✅ Wallet válida', '#00ff88');
+            } else {
+                mostrarMensaje('⚠️ Formato de código o wallet incorrecto', '#ffaa00');
+            }
+        }
+    }
+
+    window.adminBuscarWalletPorCodigo = adminBuscarWalletPorCodigo;
+
     async function adminEnviarRegaloNFT() {
         const myWallet = _walletAddr() || _activeWalletAddr || null;
         if (!myWallet) return;
         
-        const targetWallet = $id('admin-target-wallet').value.trim();
+        let targetWallet = $id('admin-target-wallet').value.trim();
         const nftIdx = $id('admin-nft-select').value;
         
         if (!targetWallet) {
-            mostrarMensaje('⚠️ Ingresa la wallet destino', '#ffaa00');
+            mostrarMensaje('⚠️ Ingresa la wallet destino o código', '#ffaa00');
             return;
+        }
+
+        mostrarMensaje('⏳ Procesando...', '#00d4ff');
+
+        // Si el admin ingresa un código corto, buscar la wallet en la base de datos
+        if (targetWallet.toUpperCase().startsWith('FM') || targetWallet.toLowerCase().startsWith('cod.')) {
+            try {
+                const code = targetWallet.replace(/cod\./i, '').trim();
+                const res = await fetch(`${API_BASE_URL}/api/admin?action=buscar-codigo&code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
+                const data = await res.json();
+                if (data.ok && data.wallet) {
+                    targetWallet = data.wallet;
+                    $id('admin-target-wallet').value = targetWallet; // Mostrar la wallet real
+                } else {
+                    mostrarMensaje('❌ ' + (data.error || 'Código no encontrado en BD'), '#ff4444');
+                    return;
+                }
+            } catch(e) {
+                mostrarMensaje('❌ Error buscando código', '#ff4444');
+                return;
+            }
         }
         
         mostrarMensaje('⏳ Enviando regalo NFT...', '#00d4ff');
         
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/regalar-nft`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({ action: 'regalar-nft', 
                     adminWallet: myWallet,
                     targetWallet: targetWallet,
                     nftIdx: parseInt(nftIdx)
@@ -4420,67 +4532,120 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     window.adminCargarUsuarios = adminCargarUsuarios;
     window.adminEnviarRegaloNFT = adminEnviarRegaloNFT;
 
+    // Wallet encontrada por el buscador de c\u00f3digos
+    let _adminFoundWallet = null;
+
+    function adminSeleccionarWalletEncontrada() {
+        if (!_adminFoundWallet) return;
+        const input = $id('admin-target-wallet');
+        if (input) input.value = _adminFoundWallet;
+        mostrarMensaje('\u2705 Wallet lista. Ahora elige el NFT y dale a Regalar.', '#00ff88');
+    }
+    window.adminSeleccionarWalletEncontrada = adminSeleccionarWalletEncontrada;
+
     async function adminBuscarReferidosPorLink() {
         const input = $id('admin-search-ref-input');
         if (!input) return;
-        let value = input.value.trim();
+        const value = input.value.trim().toUpperCase();
         if (!value) {
-            mostrarMensaje('⚠️ Ingresa una wallet o enlace de referido', '#ffaa00');
+            mostrarMensaje('\u26a0\ufe0f Ingresa un c\u00f3digo (ej. FMUJ9FQ5)', '#ffaa00');
             return;
         }
 
-        let referrerWallet = value;
-        if (value.includes('startapp=')) {
-            const parts = value.split('startapp=');
-            const code = parts[1]?.split('&')[0];
-            if (code && code.startsWith('ref_')) {
-                referrerWallet = code.slice(4);
-            } else if (code) {
-                referrerWallet = code;
-            }
-        } else if (value.includes('#ref_')) {
-            referrerWallet = value.split('#ref_')[1];
-        }
-
-        if (!/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(referrerWallet)) {
-            mostrarMensaje('❌ Dirección TON o enlace no válido', '#ff4444');
-            return;
-        }
-
-        mostrarMensaje('⏳ Buscando referidos de este link...', '#00d4ff');
         const container = $id('admin-ref-search-results');
-        if (container) {
-            container.style.display = 'flex';
-            container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#888;">⏳ Cargando referidos...</div>';
+        const foundEl   = $id('admin-ref-found-wallet');
+        if (container) container.style.display = 'none';
+        _adminFoundWallet = null;
+
+        // -------------------------------------------------------
+        // 1. Extraer el c\u00f3digo limpio FM... de cualquier formato
+        // -------------------------------------------------------
+        let searchCode = value;
+
+        // Si es un link con startapp=ref_FMXXXXXX o ?ref=FMXXXXXX
+        const linkMatch = value.match(/(?:startapp=ref_|[?#&]ref[_=])([A-Z0-9]+)/i);
+        if (linkMatch) searchCode = linkMatch[1].toUpperCase();
+
+        // Si es el c\u00f3digo corto directo: FMUJ9FQ5
+        searchCode = searchCode.replace(/^COD[\.\s]*/i, '').trim();
+
+        if (!searchCode.startsWith('FM') || searchCode.length < 6) {
+            mostrarMensaje('\u274c El c\u00f3digo debe empezar con FM (ej. FMUJ9FQ5)', '#ff4444');
+            return;
         }
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/referidos/lista?wallet=${referrerWallet}`);
-            const data = await res.json();
-            if (data.ok && data.referidos) {
-                if (data.referidos.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#666;">No hay referidos para este enlace</div>';
-                    return;
-                }
-                
-                container.innerHTML = data.referidos.map(ref => {
-                    const shortWallet = ref.wallet.slice(0, 8) + '...' + ref.wallet.slice(-6);
-                    const label = ref.username !== '—' ? `@${ref.username}` : shortWallet;
-                    const statusText = ref.tieneNFT ? '✅ Con NFT' : '❌ Sin NFT';
-                    return `
-                        <div onclick="document.getElementById('admin-target-wallet').value='${ref.wallet}'; mostrarMensaje('Seleccionado: ${label}', '#00ff88');" 
-                             style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-bottom:2px;width:100%;box-sizing:border-box;">
-                            <div style="font-weight:bold;color:#fff;">👤 ${label}</div>
-                            <div style="font-size:0.85em;color:#aaa;">${statusText}</div>
-                        </div>
-                    `;
-                }).join('');
-            } else {
-                container.innerHTML = `<div style="text-align:center;padding:10px 0;color:#ff4444;">❌ Error: ${data.error || 'No se pudieron cargar'}</div>`;
+        mostrarMensaje('\u23f3 Buscando...', '#00d4ff');
+
+        // -------------------------------------------------------
+        // 2. Buscar LOCALMENTE primero en todas las wallets conocidas
+        //    El c\u00f3digo es determinista, no necesitamos el servidor.
+        // -------------------------------------------------------
+        function localGenerateCode(wallet) {
+            if (!wallet || wallet === 'guest') return '';
+            let hash = 0;
+            for (let i = 0; i < wallet.length; i++) {
+                const c = wallet.charCodeAt(i);
+                hash = ((hash << 5) - hash) + c;
+                hash = hash & hash;
             }
-        } catch(e) {
-            console.error(e);
-            container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#ff4444;">❌ Error de conexión</div>';
+            return 'FM' + Math.abs(hash).toString(36).toUpperCase().slice(0, 6).padStart(6, 'X');
+        }
+
+        // Recopilar todas las wallets conocidas en el dispositivo
+        const knownWalletsSrc = [];
+        try {
+            const kw = JSON.parse(localStorage.getItem('fm_known_wallets') || '[]');
+            knownWalletsSrc.push(...kw);
+        } catch(e){}
+
+        // Buscar en localStorage el que registr\u00f3 ese c\u00f3digo
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.includes('_ref_code_')) {
+                const storedCode = localStorage.getItem(key);
+                if (storedCode && storedCode.toUpperCase() === searchCode) {
+                    // key formato: fm_ref_code_WALLET
+                    const w = key.replace(/.*_ref_code_/i, '');
+                    if (w) knownWalletsSrc.push(w);
+                }
+            }
+        }
+
+        // Buscar coincidencia por hash determinista
+        let foundWallet = null;
+        for (const w of knownWalletsSrc) {
+            if (localGenerateCode(w) === searchCode) {
+                foundWallet = w;
+                break;
+            }
+        }
+
+        // -------------------------------------------------------
+        // 3. Si no encontramos localmente, intentar el servidor
+        // -------------------------------------------------------
+        if (!foundWallet) {
+            const myWallet = _walletAddr() || _activeWalletAddr || null;
+            if (myWallet) {
+                try {
+                    const rr = await fetch(`${API_BASE_URL}/api/admin?action=buscar-codigo&code=${encodeURIComponent(searchCode)}&adminWallet=${encodeURIComponent(myWallet)}`);
+                    if (rr.ok) {
+                        const dd = await rr.json();
+                        if (dd.ok && dd.wallet) foundWallet = dd.wallet;
+                    }
+                } catch(e){ /* silencioso */ }
+            }
+        }
+
+        // -------------------------------------------------------
+        // 4. Mostrar resultado
+        // -------------------------------------------------------
+        if (foundWallet) {
+            _adminFoundWallet = foundWallet;
+            if (foundEl)  foundEl.textContent = foundWallet;
+            if (container) container.style.display = 'block';
+            mostrarMensaje('\u2705 \u00a1Wallet encontrada! Pulsa "Usar esta wallet"', '#00ff88');
+        } else {
+            mostrarMensaje('\u274c C\u00f3digo no encontrado. \u00bfEse usuario ha abierto la app en este dispositivo?', '#ff4444');
         }
     }
     window.adminBuscarReferidosPorLink = adminBuscarReferidosPorLink;
@@ -4694,7 +4859,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         } catch(e){ return null; }
     }
     try{
-        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://futmundi.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button'});
+        tonConnectUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://futmundi.vercel.app/tonconnect-manifest.json',buttonRootId:'ton-connect-button',twaReturnUrl:(window.Telegram&&window.Telegram.WebApp)?'https://t.me/futmundi_bot/app':undefined});
         window.tonConnectUI=tonConnectUI;
         // Pide a la wallet que firme el payload al conectar (tonProof)
         try {
@@ -5155,36 +5320,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 // ═══════════════════════════════════════════════════════════════
 const FECHA_INICIO_MUNDIAL = new Date('2026-06-11T00:00:00Z'); // 11 de junio 2026 UTC
 
-window._adminApuestaOverride = false;
-function toggleAdminApuesta() {
-    window._adminApuestaOverride = !window._adminApuestaOverride;
-    const btn = document.getElementById('admin-apuesta-toggle');
-    if (btn) {
-        btn.innerHTML = window._adminApuestaOverride ? '🔒 Bloquear (Admin)' : '🔓 Desbloquear (Admin)';
-        btn.style.background = window._adminApuestaOverride ? 'var(--green)' : 'var(--orange)';
-    }
-    apuestaCheckFecha();
-    if (typeof window.initApuestaBadge === 'function') window.initApuestaBadge();
-}
-
 function apuestaCheckFecha() {
     const ahora = new Date();
-    let bloqueado = ahora < FECHA_INICIO_MUNDIAL;
-    
-    // Check admin wallet
-    const adminWallet = 'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg';
-    const currentWallet = typeof _walletAddr === 'function' ? _walletAddr() : (typeof _activeWalletAddr !== 'undefined' ? _activeWalletAddr : null);
-    const isAd = currentWallet === adminWallet;
-    
-    const toggleBtn = document.getElementById('admin-apuesta-toggle');
-    if (toggleBtn) {
-        toggleBtn.style.display = isAd ? 'inline-block' : 'none';
-    }
-
-    if (isAd && window._adminApuestaOverride) {
-        bloqueado = false;
-    }
-
+    const bloqueado = ahora < FECHA_INICIO_MUNDIAL;
     const modal = document.getElementById('modal-apuesta');
     if (!modal) return;
 
@@ -5498,29 +5636,18 @@ async function torneoProcesarPago() {
 }
 // ════════════════════════════════════════════════════════════════
 // Init: mostrar ícono de candado en botón apuesta si aún no abrió
-// Init: mostrar ícono de candado en botón apuesta si aún no abrió
-window.initApuestaBadge = function() {
-    const ahora = new Date();
-    const badge = document.getElementById('apuesta-lock-badge');
-    if (!badge) return;
-    
-    // Check admin override
-    const adminWallet = 'UQB9uFaCgM5HVntXHe-mq3xYiYjcLEzvgnZUCffNC5DR-7vg';
-    const currentWallet = typeof _walletAddr === 'function' ? _walletAddr() : (typeof _activeWalletAddr !== 'undefined' ? _activeWalletAddr : null);
-    const isAd = currentWallet === adminWallet;
-    
-    if (ahora < new Date('2026-06-11T00:00:00Z') && !(isAd && window._adminApuestaOverride)) {
-        badge.style.display = 'inline';
-    } else {
-        badge.style.display = 'none';
-    }
-};
-
 (function() {
+    function initApuestaBadge() {
+        const ahora = new Date();
+        const badge = document.getElementById('apuesta-lock-badge');
+        if (badge && ahora < new Date('2026-06-11T00:00:00Z')) {
+            badge.style.display = 'inline';
+        }
+    }
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', window.initApuestaBadge);
+        document.addEventListener('DOMContentLoaded', initApuestaBadge);
     } else {
-        window.initApuestaBadge();
+        initApuestaBadge();
     }
 })();
 // ════════════════════════════════════════════════════════════════
