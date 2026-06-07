@@ -1780,15 +1780,26 @@
         }catch(e){ console.warn("[TON rate] usando fallback $5:",e); }
         return _tonUsdtRate;
     }
-    async function buildContractTx(tipo,usdt){
-        const flow = assertSecureContractFlow(tipo,getContractWallet());
-        const amount = Number(usdt);
-        if(!Number.isFinite(amount) || amount<=0){throw new Error("Monto inválido — debe ser > 0 USDT");}
-        const rate = await fetchTonRate();
-        const ton = (amount / rate).toFixed(4);
-        const nanoton = String(Math.round(parseFloat(ton)*1e9));
-        console.log(`[TX] ${PAYMENT_TYPES[flow.tipo]}: $${amount} USDT = ${ton} TON (rate: $${rate})`);
-        return {validUntil:Math.floor(Date.now()/1000)+300,messages:[{address:flow.address,amount:nanoton}]};
+    async function buildContractTx(tipo, usdtAmount) {
+        const myWallet = _walletAddr() || _activeWalletAddr;
+        if (!myWallet) {
+            throw new Error("Conecta tu wallet primero");
+        }
+
+        const res = await fetch(`${API_BASE_URL}/api/usdt/build-transfer`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                senderAddress: myWallet,
+                amountUsdt: usdtAmount,
+                tipo: tipo
+            })
+        });
+        const data = await res.json();
+        if (!data.ok) {
+            throw new Error(data.error || "No se pudo preparar la transacción");
+        }
+        return data.tx;
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
@@ -3969,6 +3980,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             });
             const data = await res.json();
             if (data.ok && data.usuario) {
+                if (data.usuario.referralCode) {
+                    localStorage.setItem(_pfx()+'_my_referral_code', data.usuario.referralCode);
+                }
                 const cloudGemas = data.usuario.gemas;
                 const cloudNfts = data.usuario.nfts || [];
                 if (cloudGemas > 0 || cloudNfts.length > 0) {
@@ -4030,13 +4044,13 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     // ── Genera o recupera el refId unico del usuario ──────────────────────
     function getMyRefId(){
-        return _walletAddr() || _activeWalletAddr || localStorage.getItem(_pfx()+'_my_ref_id') || 'guest';
+        return localStorage.getItem(_pfx()+'_my_referral_code') || 'guest';
     }
 
     // ── Link de invitacion (Telegram Bot deep link) ──────────────────────
     function getMyRefLink(){
         const refId = getMyRefId();
-        return `https://t.me/futmundi_bot?start=ref_${refId}`;
+        return `https://t.me/futmundi_bot?startapp=ref_${refId}`;
     }
     function getMyRefLinkWeb(){
         const refId = getMyRefId();
@@ -4564,10 +4578,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         $id('pago-qr-ton').textContent    = ton;
         const _rateEl=$id('pago-qr-rate'); if(_rateEl) _rateEl.textContent="1 TON = $"+_tonUsdtRate.toFixed(2)+" USDT (tiempo real)";
         $id('pago-qr-address').textContent = flow.address;
-        // QR payload: deep-link TON estándar (compatible con todas las wallets TON)
-        const nano = Math.round(parseFloat(ton)*1e9);
+        const usdtUnits = Math.round(amount * 1000000);
         const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
-        const qrPayload = `ton://transfer/${flow.address}?amount=${nano}&text=${memo}`;
+        const qrPayload = `ton://transfer/${flow.address}?jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs&amount=${usdtUnits}&text=${memo}`;
         const canvas = $id('pago-qr-canvas');
         if(window.QRCode && canvas){
             QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
