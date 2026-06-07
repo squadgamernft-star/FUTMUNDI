@@ -3657,7 +3657,7 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
             fetch(`${API_BASE_URL}/api/torneo/actualizar-pts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({\n                    action: 'regalar-nft',
                     wallet: myWallet,
                     puntos: ptsGanados,
                     goles: playerGoals
@@ -4011,7 +4011,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             await fetch(`${API_BASE_URL}/api/usuarios/sync`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({\n                    action: 'regalar-nft',
                     wallet: wallet,
                     gemas: gemas,
                     nfts: carrosComprados
@@ -4028,7 +4028,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             const res = await fetch(`${API_BASE_URL}/api/usuarios/perfil`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({\n                    action: 'regalar-nft',
                     wallet: newAddr,
                     telegramId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || null,
                     telegramUsername: window.Telegram?.WebApp?.initDataUnsafe?.user?.username || null
@@ -4072,7 +4072,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             const res = await fetch(`${API_BASE_URL}/api/referidos/reclamar-nft`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: myWallet })
+                body: JSON.stringify({\n                    action: 'regalar-nft', wallet: myWallet })
             });
             const data = await res.json();
             if (data.ok) {
@@ -4225,7 +4225,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             const res = await fetch(`${API_BASE_URL}/api/referidos/registrar`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({\n                    action: 'regalar-nft',
                     referidoWallet: myWallet,
                     referidorWallet: refCode,
                     telegramId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || null,
@@ -4383,7 +4383,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         resultsEl.innerHTML = '<div style="text-align:center;padding:10px 0;color:#aaa;">⏳ Buscando usuarios...</div>';
         
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/usuarios?adminWallet=${encodeURIComponent(myWallet)}`);
+            const res = await fetch(`${API_BASE_URL}/api/admin?action=usuarios&adminWallet=${encodeURIComponent(myWallet)}`);
             const data = await res.json();
             
             if (data.ok && data.usuarios) {
@@ -4426,7 +4426,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             mostrarMensaje('⏳ Buscando wallet...', '#00d4ff');
             try {
                 const code = targetWallet.replace(/cod\./i, '').trim();
-                const res = await fetch(`${API_BASE_URL}/api/admin/buscar-codigo?code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
+                const res = await fetch(`${API_BASE_URL}/api/admin?action=buscar-codigo&code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
                 const data = await res.json();
                 if (data.ok && data.wallet) {
                     $id('admin-target-wallet').value = data.wallet;
@@ -4468,7 +4468,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if (targetWallet.toUpperCase().startsWith('FM') || targetWallet.toLowerCase().startsWith('cod.')) {
             try {
                 const code = targetWallet.replace(/cod\./i, '').trim();
-                const res = await fetch(`${API_BASE_URL}/api/admin/buscar-codigo?code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
+                const res = await fetch(`${API_BASE_URL}/api/admin?action=buscar-codigo&code=${code}&adminWallet=${encodeURIComponent(myWallet)}`);
                 const data = await res.json();
                 if (data.ok && data.wallet) {
                     targetWallet = data.wallet;
@@ -4486,10 +4486,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         mostrarMensaje('⏳ Enviando regalo NFT...', '#00d4ff');
         
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/regalar-nft`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({\n                    action: 'regalar-nft',
                     adminWallet: myWallet,
                     targetWallet: targetWallet,
                     nftIdx: parseInt(nftIdx)
@@ -5093,7 +5093,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                     const res = await fetch(`${API_BASE_URL}/api/apuestas/crear`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
+                        body: JSON.stringify({\n                    action: 'regalar-nft',
                             wallet: walletAddr,
                             txHash: txHash,
                             montoUsdt: monto,
@@ -5207,7 +5207,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             const res = await fetch(`${API_BASE_URL}/api/apuestas/cobrar`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: walletAddr, ticketId: ticketId })
+                body: JSON.stringify({\n                    action: 'regalar-nft', wallet: walletAddr, ticketId: ticketId })
             });
             const data = await res.json();
             if (data.ok) {
@@ -5538,7 +5538,7 @@ async function torneoProcesarPago() {
                     const res = await fetch(`${API_BASE_URL}/api/torneo/inscribir`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ wallet: walletAddr, txHash: txHash })
+                        body: JSON.stringify({\n                    action: 'regalar-nft', wallet: walletAddr, txHash: txHash })
                     });
                     const data = await res.json();
                     if (data.ok) {
