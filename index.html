@@ -1348,17 +1348,19 @@
                         <div style="text-align:center;padding:10px 0;color:#666;">Haz clic en 'Ver Lista' para buscar wallets registradas</div>
                     </div>
 
-                    <!-- Buscar Referidos por Link de Referidor -->
-                    <div style="margin-top:12px;margin-bottom:12px;border-top:1px dashed rgba(255,215,0,0.25);padding-top:12px;margin-bottom:10px;">
-                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;">🔍 Buscar Referidos por Enlace Exacto</label>
-                        <div style="display:flex;gap:6px;">
-                            <input id="admin-search-ref-input" type="text" placeholder="Pega el link de referido completo generado por la app" style="flex:1;padding:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.8em;outline:none;">
-                            <button onclick="adminBuscarReferidosPorLink()" style="background:rgba(168,85,247,0.15);border:1px solid var(--purple);border-radius:8px;color:var(--purple);padding:0 10px;font-size:0.75em;font-weight:bold;cursor:pointer;white-space:nowrap;">Buscar Referidos</button>
+                    <!-- Buscar por Código de Referido -->
+                    <div style="margin-top:12px;border-top:1px dashed rgba(255,215,0,0.25);padding-top:12px;margin-bottom:10px;">
+                        <label style="font-size:0.7em;color:#aaa;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">🔑 Buscar Usuario por Código de Referido</label>
+                        <div style="display:flex;gap:6px;margin-bottom:8px;">
+                            <input id="admin-search-ref-input" type="text" placeholder="Ej: FMUJ9FQ5 o link completo" style="flex:1;padding:8px 10px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-family:'Fredoka',sans-serif;font-size:0.85em;outline:none;" oninput="this.value=this.value.toUpperCase()">
+                            <button onclick="adminBuscarReferidosPorLink()" style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,165,0,0.15));border:1px solid var(--gold);border-radius:8px;color:var(--gold);padding:0 14px;font-size:0.78em;font-weight:bold;cursor:pointer;white-space:nowrap;">🔍 Buscar</button>
                         </div>
-                    </div>
-
-                    <!-- Lista de referidos encontrados -->
-                    <div id="admin-ref-search-results" style="max-height:150px;overflow-y:auto;background:rgba(0,0,0,0.25);border-radius:8px;margin-bottom:10px;font-size:0.75em;color:#aaa;padding:4px;display:none;flex-direction:column;gap:4px;">
+                        <!-- Resultado de la búsqueda -->
+                        <div id="admin-ref-search-results" style="display:none;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.3);border-radius:10px;padding:10px 12px;">
+                            <div style="font-size:0.65em;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">✅ Wallet encontrada</div>
+                            <div id="admin-ref-found-wallet" style="font-family:'Orbitron',sans-serif;font-size:0.75em;color:#00ff88;word-break:break-all;margin-bottom:8px;"></div>
+                            <button onclick="adminSeleccionarWalletEncontrada()" style="width:100%;padding:7px;background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:7px;color:var(--green);font-weight:bold;font-size:0.75em;cursor:pointer;">⬆ Usar esta wallet para el regalo NFT</button>
+                        </div>
                     </div>
 
                     <button onclick="adminEnviarRegaloNFT()" style="width:100%;padding:10px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(255,215,0,0.15));border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.8em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;">
@@ -4511,68 +4513,120 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     window.adminCargarUsuarios = adminCargarUsuarios;
     window.adminEnviarRegaloNFT = adminEnviarRegaloNFT;
 
+    // Wallet encontrada por el buscador de c\u00f3digos
+    let _adminFoundWallet = null;
+
+    function adminSeleccionarWalletEncontrada() {
+        if (!_adminFoundWallet) return;
+        const input = $id('admin-target-wallet');
+        if (input) input.value = _adminFoundWallet;
+        mostrarMensaje('\u2705 Wallet lista. Ahora elige el NFT y dale a Regalar.', '#00ff88');
+    }
+    window.adminSeleccionarWalletEncontrada = adminSeleccionarWalletEncontrada;
+
     async function adminBuscarReferidosPorLink() {
         const input = $id('admin-search-ref-input');
         if (!input) return;
-        let value = input.value.trim();
+        const value = input.value.trim().toUpperCase();
         if (!value) {
-            mostrarMensaje('⚠️ Ingresa una wallet o enlace de referido', '#ffaa00');
+            mostrarMensaje('\u26a0\ufe0f Ingresa un c\u00f3digo (ej. FMUJ9FQ5)', '#ffaa00');
             return;
         }
 
-        let referrerWallet = null;
-        
-        // Solo aceptar enlaces explícitos generados por la mini app
-        if (value.includes('startapp=ref_')) {
-            referrerWallet = value.split('startapp=ref_')[1].split('&')[0];
-        } else if (value.includes('?ref=')) {
-            referrerWallet = value.split('?ref=')[1].split('&')[0];
-        } else if (value.includes('#ref_')) {
-            referrerWallet = value.split('#ref_')[1];
-        } else {
-            mostrarMensaje('❌ Debes pegar el enlace completo generado por la app', '#ff4444');
-            return;
-        }
-
-        if (!referrerWallet || !/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(referrerWallet)) {
-            mostrarMensaje('❌ El enlace no contiene un código válido', '#ff4444');
-            return;
-        }
-
-        mostrarMensaje('⏳ Buscando referidos de este link...', '#00d4ff');
         const container = $id('admin-ref-search-results');
-        if (container) {
-            container.style.display = 'flex';
-            container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#888;">⏳ Cargando referidos...</div>';
+        const foundEl   = $id('admin-ref-found-wallet');
+        if (container) container.style.display = 'none';
+        _adminFoundWallet = null;
+
+        // -------------------------------------------------------
+        // 1. Extraer el c\u00f3digo limpio FM... de cualquier formato
+        // -------------------------------------------------------
+        let searchCode = value;
+
+        // Si es un link con startapp=ref_FMXXXXXX o ?ref=FMXXXXXX
+        const linkMatch = value.match(/(?:startapp=ref_|[?#&]ref[_=])([A-Z0-9]+)/i);
+        if (linkMatch) searchCode = linkMatch[1].toUpperCase();
+
+        // Si es el c\u00f3digo corto directo: FMUJ9FQ5
+        searchCode = searchCode.replace(/^COD[\.\s]*/i, '').trim();
+
+        if (!searchCode.startsWith('FM') || searchCode.length < 6) {
+            mostrarMensaje('\u274c El c\u00f3digo debe empezar con FM (ej. FMUJ9FQ5)', '#ff4444');
+            return;
         }
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/referidos/lista?wallet=${referrerWallet}`);
-            const data = await res.json();
-            if (data.ok && data.referidos) {
-                if (data.referidos.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#666;">No hay referidos para este enlace</div>';
-                    return;
-                }
-                
-                container.innerHTML = data.referidos.map(ref => {
-                    const shortWallet = ref.wallet.slice(0, 8) + '...' + ref.wallet.slice(-6);
-                    const label = ref.username !== '—' ? `@${ref.username}` : shortWallet;
-                    const statusText = ref.tieneNFT ? '✅ Con NFT' : '❌ Sin NFT';
-                    return `
-                        <div onclick="document.getElementById('admin-target-wallet').value='${ref.wallet}'; mostrarMensaje('Seleccionado: ${label}', '#00ff88');" 
-                             style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;cursor:pointer;transition:all 0.2s;margin-bottom:2px;width:100%;box-sizing:border-box;">
-                            <div style="font-weight:bold;color:#fff;">👤 ${label}</div>
-                            <div style="font-size:0.85em;color:#aaa;">${statusText}</div>
-                        </div>
-                    `;
-                }).join('');
-            } else {
-                container.innerHTML = `<div style="text-align:center;padding:10px 0;color:#ff4444;">❌ Error: ${data.error || 'No se pudieron cargar'}</div>`;
+        mostrarMensaje('\u23f3 Buscando...', '#00d4ff');
+
+        // -------------------------------------------------------
+        // 2. Buscar LOCALMENTE primero en todas las wallets conocidas
+        //    El c\u00f3digo es determinista, no necesitamos el servidor.
+        // -------------------------------------------------------
+        function localGenerateCode(wallet) {
+            if (!wallet || wallet === 'guest') return '';
+            let hash = 0;
+            for (let i = 0; i < wallet.length; i++) {
+                const c = wallet.charCodeAt(i);
+                hash = ((hash << 5) - hash) + c;
+                hash = hash & hash;
             }
-        } catch(e) {
-            console.error(e);
-            container.innerHTML = '<div style="text-align:center;padding:10px 0;color:#ff4444;">❌ Error de conexión</div>';
+            return 'FM' + Math.abs(hash).toString(36).toUpperCase().slice(0, 6).padStart(6, 'X');
+        }
+
+        // Recopilar todas las wallets conocidas en el dispositivo
+        const knownWalletsSrc = [];
+        try {
+            const kw = JSON.parse(localStorage.getItem('fm_known_wallets') || '[]');
+            knownWalletsSrc.push(...kw);
+        } catch(e){}
+
+        // Buscar en localStorage el que registr\u00f3 ese c\u00f3digo
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.includes('_ref_code_')) {
+                const storedCode = localStorage.getItem(key);
+                if (storedCode && storedCode.toUpperCase() === searchCode) {
+                    // key formato: fm_ref_code_WALLET
+                    const w = key.replace(/.*_ref_code_/i, '');
+                    if (w) knownWalletsSrc.push(w);
+                }
+            }
+        }
+
+        // Buscar coincidencia por hash determinista
+        let foundWallet = null;
+        for (const w of knownWalletsSrc) {
+            if (localGenerateCode(w) === searchCode) {
+                foundWallet = w;
+                break;
+            }
+        }
+
+        // -------------------------------------------------------
+        // 3. Si no encontramos localmente, intentar el servidor
+        // -------------------------------------------------------
+        if (!foundWallet) {
+            const myWallet = _walletAddr() || _activeWalletAddr || null;
+            if (myWallet) {
+                try {
+                    const rr = await fetch(`${API_BASE_URL}/api/admin?action=buscar-codigo&code=${encodeURIComponent(searchCode)}&adminWallet=${encodeURIComponent(myWallet)}`);
+                    if (rr.ok) {
+                        const dd = await rr.json();
+                        if (dd.ok && dd.wallet) foundWallet = dd.wallet;
+                    }
+                } catch(e){ /* silencioso */ }
+            }
+        }
+
+        // -------------------------------------------------------
+        // 4. Mostrar resultado
+        // -------------------------------------------------------
+        if (foundWallet) {
+            _adminFoundWallet = foundWallet;
+            if (foundEl)  foundEl.textContent = foundWallet;
+            if (container) container.style.display = 'block';
+            mostrarMensaje('\u2705 \u00a1Wallet encontrada! Pulsa "Usar esta wallet"', '#00ff88');
+        } else {
+            mostrarMensaje('\u274c C\u00f3digo no encontrado. \u00bfEse usuario ha abierto la app en este dispositivo?', '#ff4444');
         }
     }
     window.adminBuscarReferidosPorLink = adminBuscarReferidosPorLink;
