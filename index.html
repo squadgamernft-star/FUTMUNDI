@@ -1152,8 +1152,13 @@
                     <span style="font-size:0.82em;color:#888;text-transform:uppercase;letter-spacing:1px;">Saldo disponible</span>
                     <strong id="retiro-saldo-display" style="color:var(--green);font-size:1.1em;">0.0 💎</strong>
                 </div>
-                <label class="withdraw-label">Dirección Wallet (USDT)</label>
-                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección USDT (TRC20/BEP20)">
+                <label class="withdraw-label">Dirección Wallet USDT (red TON / Jetton)</label>
+                <input class="withdraw-input" type="text" id="retiro-address" placeholder="Dirección TON (debe empezar con EQ o UQ)">
+                
+                <div style="background:rgba(255,90,111,0.1);border:1px solid rgba(255,90,111,0.4);border-radius:10px;padding:10px 12px;margin:-6px 0 14px;font-size:0.78em;color:#ffa3b1;line-height:1.4;">
+                    ⚠️ <strong>¡IMPORTANTE!</strong> Solo se admiten retiros en la red TON (Jetton USDT) hacia billeteras compatibles con la red TON (como Tonkeeper, Wallet de Telegram, MyTonWallet, Tonhub, etc.). Direcciones de otras redes (TRC20, BEP20, ERC20) provocarán la pérdida de tus fondos de forma irreversible.
+                </div>
+
                 <label class="withdraw-label">
                     Cantidad de gemas 💎
                     <span style="float:right;color:var(--green);text-transform:none;letter-spacing:0;">Disponible: <strong id="retiro-saldo-inline">0.0</strong> 💎</span>
@@ -1508,9 +1513,12 @@
                 <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
             </div>
             <div class="modal-body">
-                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT (red TON) para fichar futbolistas NFT. Todos los pagos se procesan en la red TON de forma segura y transparente.</p>
+                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT (red TON) para fichar futbolistas NFT. Todos los pagos se procesan de forma descentralizada e inmediata en la red TON.</p>
                 <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
-                    💳 Pago en <strong>USDT</strong> · Los fondos se acreditan en gemas inmediatamente
+                    💳 Pago en <strong>USDT (red TON / Jetton)</strong> · Acreditación inmediata
+                </div>
+                <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:0.78em;color:#ffeaa7;line-height:1.4;">
+                    ⛽ <strong>Nota de Gas:</strong> Requiere tener un saldo pequeño de <strong>TON (aprox. 0.05 TON)</strong> en tu billetera conectada para pagar la comisión de transacción de la red.
                 </div>
                 <div class="gem-tiers">
                     <div class="gem-tier" onclick="comprarGemas(320,10)"><div class="gem-tier-left"><span class="gem-tier-icon">💎</span><div class="gem-tier-info"><h4>320 Gemas</h4><p>Pack de inicio</p></div></div><span class="gem-tier-price">$10 USDT</span></div>
@@ -1535,7 +1543,8 @@
                 <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,140,0,0.08));border:1px solid rgba(255,215,0,0.35);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
                     <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
                     <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
-                    <div style="font-size:0.74em;color:#888;margin-top:2px;">≈ <span id="pago-qr-ton">0.0000</span> TON · <span id="pago-qr-rate" style="color:var(--cyan)">calculando...</span> · Red TON (USDT)</div>
+                    <div style="font-size:0.72em;color:#ffaa00;margin-top:4px;">Red: <strong>TON Network (Jetton USDT)</strong></div>
+                    <div style="font-size:0.68em;color:#aaa;margin-top:2px;" id="pago-qr-rate-box">Tasa de referencia: <span id="pago-qr-rate">calculando...</span></div>
                 </div>
                 <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
                     <canvas id="pago-qr-canvas" style="display:block;"></canvas>
@@ -1546,7 +1555,8 @@
                     <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
                 </div>
                 <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
-                    💡 Escanea el QR con tu wallet TON o copia la dirección y envía exactamente el monto en USDT (Jetton TON).<br>
+                    💡 <strong>Cómo pagar:</strong> Escanea el QR con tu billetera TON (Tonkeeper, Telegram Wallet, MyTonWallet, Tonhub, etc.) o copia la dirección y envía exactamente el monto indicado en <strong>USDT</strong>.<br>
+                    ⛽ <em>Asegúrate de tener al menos 0.05 TON para pagar el gas de red de la transacción.</em><br>
                     🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
                 </div>
                 <div style="display:flex;gap:10px;">
@@ -3852,6 +3862,10 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const cant=parseFloat($id('retiro-cantidad').value)||0;
         const addr=($id('retiro-address').value||'').trim();
         if(!addr){mostrarMensaje(t('msg_addr_req'),'#ffaa00');return;}
+        if(!isValidTonAddress(addr)){
+            mostrarMensaje('❌ Dirección TON inválida. Debe ser una dirección de la red TON (empieza con EQ o UQ)','#ffaa00');
+            return;
+        }
         if(cant<160){mostrarMensaje(t('msg_min'),'#ff4444');return;}
         if(cant>3000){mostrarMensaje('❌ Máximo 3000 💎 por día','#ff4444');return;}
         if(cant>gemas){actualizarConversionRetiro();mostrarMensaje('🚫 No puedes hacer ese retiro: monto mayor a tu saldo disponible','#ff4444');return;}
@@ -3981,7 +3995,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             const data = await res.json();
             if (data.ok && data.usuario) {
                 if (data.usuario.referralCode) {
-                    localStorage.setItem(_pfx()+'_my_referral_code', data.usuario.referralCode);
+                    localStorage.setItem('fm_ref_code_' + newAddr.toLowerCase(), data.usuario.referralCode);
                 }
                 const cloudGemas = data.usuario.gemas;
                 const cloudNfts = data.usuario.nfts || [];
@@ -4042,9 +4056,25 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }
     }
 
+    function generateDeterministicCode(wallet) {
+        if (!wallet || wallet === 'guest') return 'guest';
+        let hash = 0;
+        for (let i = 0; i < wallet.length; i++) {
+            const char = wallet.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        const base36 = Math.abs(hash).toString(36).toUpperCase();
+        return 'FM' + base36.slice(0, 6).padStart(6, 'X');
+    }
+
     // ── Genera o recupera el refId unico del usuario ──────────────────────
     function getMyRefId(){
-        return localStorage.getItem(_pfx()+'_my_referral_code') || 'guest';
+        const wallet = _walletAddr() || _activeWalletAddr;
+        if (!wallet || wallet === 'guest') return 'guest';
+        const saved = localStorage.getItem('fm_ref_code_' + wallet.toLowerCase());
+        if (saved && saved !== 'guest') return saved;
+        return generateDeterministicCode(wallet);
     }
 
     // ── Link de invitacion (Telegram Bot deep link) ──────────────────────
@@ -4131,10 +4161,14 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const refCode = _extraerRefCode();
         if(!refCode) return;
         try{ sessionStorage.setItem('fm_pending_ref', refCode); }catch(e){}
-        if(refCode === localStorage.getItem(_pfx()+'_my_ref_id')) return; // no auto-referido
-        const alreadySet = localStorage.getItem(_pfx()+'_my_referrer_code');
+        const wallet = _walletAddr() || _activeWalletAddr;
+        if (!wallet || wallet === 'guest') return;
+        const myOwnCode = getMyRefId();
+        if(refCode.toLowerCase() === myOwnCode.toLowerCase()) return;
+        const key = 'fm_referrer_code_' + wallet.toLowerCase();
+        const alreadySet = localStorage.getItem(key);
         if(alreadySet) return;
-        localStorage.setItem(_pfx()+'_my_referrer_code', refCode);
+        localStorage.setItem(key, refCode);
         _registrarseEnReferidor(refCode);
     }
 
@@ -4158,7 +4192,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             });
             const data = await res.json();
             if (data.ok) {
-                localStorage.setItem(_pfx()+'_my_referrer_code', refCode);
+                const key = 'fm_referrer_code_' + myWallet.toLowerCase();
+                localStorage.setItem(key, refCode);
                 if (data.nftPendiente) {
                     mostrarMensaje(`🎁 ¡Recibiste a ${data.nftPendiente.nombre} de regalo!`, '#00ff88');
                     const banner = $id('banner-regalo-nft');
@@ -4522,7 +4557,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
 
     // ── IDIOMAS ───────────────────────────────────────────────────────────
     const TRANSLATIONS={
-        es:{tagline:'El juego de fútbol NFT más épico del mundo',menu_futbolistas:'👕 Futbolistas',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diaria',menu_logros:'🏅 Logros',menu_nivel:'⬆️ Nivel',menu_futcancha:'🏟️ FutCancha',menu_futsala:'🏃 Futsala',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Entrenamiento',menu_deposito:'💎 Depósito',menu_retiro:'💸 Retiro',balones_estamina:'⚽ Balones de Estamina',balones:'balones',referidos_btn:'👥 Referidos',ref_title:'👥 Programa de Referidos',ref_commission:'💰 GANA 5% DE COMISIÓN',ref_explain:'Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!',ref_total_label:'REFERIDOS',ref_earned_label:'GANADO',ref_link_label:'Tu enlace de invitación',ref_copy:'Copiar',ref_list_title:'📋 MIS REFERIDOS',ref_empty:'Aún no tienes referidos. ¡Comparte tu enlace!',ref_earned_from:'Generado',ref_copied:'Enlace copiado',msg_addr_req:'⚠️ Ingresa tu dirección USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
+        es:{tagline:'El juego de fútbol NFT más épico del mundo',menu_futbolistas:'👕 Futbolistas',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diaria',menu_logros:'🏅 Logros',menu_nivel:'⬆️ Nivel',menu_futcancha:'🏟️ FutCancha',menu_futsala:'🏃 Futsala',menu_torneo:'🏆 Torneo',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Entrenamiento',menu_deposito:'💎 Depósito',menu_retiro:'💸 Retiro',balones_estamina:'⚽ Balones de Estamina',balones:'balones',referidos_btn:'👥 Referidos',ref_title:'👥 Programa de Referidos',ref_commission:'💰 GANA 5% DE COMISIÓN',ref_explain:'Recibe el <strong style="color:var(--gold)">5%</strong> en gemas de cada retiro que realice tu referido. ¡Para siempre!',ref_total_label:'REFERIDOS',ref_earned_label:'GANADO',ref_link_label:'Tu enlace de invitación',ref_copy:'Copiar',ref_list_title:'📋 MIS REFERIDOS',ref_empty:'Aún no tienes referidos. ¡Comparte tu enlace!',ref_earned_from:'Generado',ref_copied:'Enlace copiado',msg_addr_req:'⚠️ Ingresa tu dirección USDT (red TON)',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha incorrecto, intenta de nuevo',msg_withdraw_ok:'Retiro de {usdt} USDT solicitado — se acreditará en 24h a 48h'},
         en:{tagline:"The world's most epic NFT football game",menu_futbolistas:'👕 Players',menu_marketplace:'🏪 Marketplace',menu_recompensas:'⚽ Rewards',menu_recompensa_diaria:'🎁 Daily Reward',menu_logros:'🏅 Achievements',menu_nivel:'⬆️ Level',menu_futcancha:'🏟️ FutPitch',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournament',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Training',menu_deposito:'💎 Deposit',menu_retiro:'💸 Withdraw',balones_estamina:'⚽ Stamina Balls',balones:'balls',referidos_btn:'👥 Referrals',ref_title:'👥 Referral Program',ref_commission:'💰 EARN 5% COMMISSION',ref_explain:'Get <strong style="color:var(--gold)">5%</strong> in gems from every withdrawal your referral makes. Forever!',ref_total_label:'REFERRALS',ref_earned_label:'EARNED',ref_link_label:'Your invitation link',ref_copy:'Copy',ref_list_title:'📋 MY REFERRALS',ref_empty:'No referrals yet. Share your link!',ref_earned_from:'Generated',ref_copied:'Link copied',msg_addr_req:'⚠️ Enter your USDT address',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Insufficient balance',msg_captcha:'🛡️ Wrong captcha, try again',msg_withdraw_ok:'Withdrawal of {usdt} USDT requested — credited within 24h to 48h'},
         pt:{tagline:'O jogo de futebol NFT mais épico do mundo',menu_futbolistas:'👕 Jogadores',menu_marketplace:'🏪 Mercado',menu_recompensas:'⚽ Recompensas',menu_recompensa_diaria:'🎁 Recompensa Diária',menu_logros:'🏅 Conquistas',menu_nivel:'⬆️ Nível',menu_futcancha:'🏟️ FutCampo',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Torneio',menu_ranking:'📊 Ranking',menu_entrenamiento:'🏋️ Treino',menu_deposito:'💎 Depósito',menu_retiro:'💸 Saque',balones_estamina:'⚽ Bolas de Estamina',balones:'bolas',referidos_btn:'👥 Indicações',ref_title:'👥 Programa de Indicações',ref_commission:'💰 GANHE 5% DE COMISSÃO',ref_explain:'Receba <strong style="color:var(--gold)">5%</strong> em gemas de cada saque do seu indicado. Para sempre!',ref_total_label:'INDICAÇÕES',ref_earned_label:'GANHO',ref_link_label:'Seu link de convite',ref_copy:'Copiar',ref_list_title:'📋 MEUS INDICADOS',ref_empty:'Sem indicados ainda. Compartilhe seu link!',ref_earned_from:'Gerado',ref_copied:'Link copiado',msg_addr_req:'⚠️ Insira seu endereço USDT',msg_min:'❌ Mínimo 160 💎',msg_insuf:'❌ Saldo insuficiente',msg_captcha:'🛡️ Captcha errado, tente novamente',msg_withdraw_ok:'Saque de {usdt} USDT solicitado — creditado em 24h a 48h'},
         fr:{tagline:'Le jeu de football NFT le plus épique du monde',menu_futbolistas:'👕 Joueurs',menu_marketplace:'🏪 Marché',menu_recompensas:'⚽ Récompenses',menu_recompensa_diaria:'🎁 Récompense Quotidienne',menu_logros:'🏅 Succès',menu_nivel:'⬆️ Niveau',menu_futcancha:'🏟️ FutTerrain',menu_futsala:'🏃 Futsal',menu_torneo:'🏆 Tournoi',menu_ranking:'📊 Classement',menu_entrenamiento:'🏋️ Entraînement',menu_deposito:'💎 Dépôt',menu_retiro:'💸 Retrait',balones_estamina:'⚽ Balles d\u2019Endurance',balones:'balles',referidos_btn:'👥 Parrainage',ref_title:'👥 Programme de Parrainage',ref_commission:'💰 GAGNEZ 5% DE COMMISSION',ref_explain:'Recevez <strong style="color:var(--gold)">5%</strong> en gemmes de chaque retrait de votre filleul. Pour toujours!',ref_total_label:'FILLEULS',ref_earned_label:'GAGNÉ',ref_link_label:'Votre lien d\u2019invitation',ref_copy:'Copier',ref_list_title:'📋 MES FILLEULS',ref_empty:'Aucun filleul. Partagez votre lien!',ref_earned_from:'Généré',ref_copied:'Lien copié',msg_addr_req:'⚠️ Entrez votre adresse USDT',msg_min:'❌ Minimum 160 💎',msg_insuf:'❌ Solde insuffisant',msg_captcha:'🛡️ Captcha incorrect, réessayez',msg_withdraw_ok:'Retrait de {usdt} USDT demandé — crédité sous 24h à 48h'},
@@ -4571,11 +4606,11 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         // Tasa dinamica TON/USDT (actualizada por fetchTonRate)
         const ton = (usdt/_tonUsdtRate).toFixed(4);
         // Actualizar tasa en background
-        fetchTonRate().then(r=>{ const t2=(usdt/r).toFixed(4); const el=$id("pago-qr-ton"); if(el) el.textContent=t2; const rateEl=$id("pago-qr-rate"); if(rateEl) rateEl.textContent="1 TON = $"+r.toFixed(2)+" USDT"; });
+        fetchTonRate().then(r=>{ const rateEl=$id("pago-qr-rate"); if(rateEl) rateEl.textContent="1 TON = $"+r.toFixed(2)+" USDT"; });
         $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
         $id('pago-qr-desc').textContent  = descripcion || '';
         $id('pago-qr-amount').textContent = amount.toFixed(2);
-        $id('pago-qr-ton').textContent    = ton;
+        const tonEl = $id('pago-qr-ton'); if(tonEl) tonEl.textContent = ton;
         const _rateEl=$id('pago-qr-rate'); if(_rateEl) _rateEl.textContent="1 TON = $"+_tonUsdtRate.toFixed(2)+" USDT (tiempo real)";
         $id('pago-qr-address').textContent = flow.address;
         const usdtUnits = Math.round(amount * 1000000);
