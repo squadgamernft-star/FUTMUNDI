@@ -1807,20 +1807,27 @@
         
         try {
             if (!window.TonWeb) {
-                throw new Error("Librería TonWeb no está cargada");
+                throw new Error("Librería TonWeb no está cargada en el navegador");
             }
-            const tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC'));
             
             const USDT_MASTER = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
-            const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, { address: USDT_MASTER });
             
-            const userJettonWallet = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(myWallet));
-            const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, { address: userJettonWallet });
+            // 1. Obtener la Jetton Wallet del usuario usando TonAPI (mucho más rápido y sin CORS que Toncenter)
+            const tonapiRes = await fetch(`https://tonapi.io/v2/accounts/${myWallet}/jettons/${USDT_MASTER}`);
+            if (!tonapiRes.ok) throw new Error("No se pudo leer tu saldo USDT de TonAPI");
+            const tonapiData = await tonapiRes.json();
             
+            // Si el usuario no tiene la Jetton Wallet o no tiene USDT, TonAPI puede devolver error o balance 0
+            if(!tonapiData.wallet_address || !tonapiData.wallet_address.address) {
+                throw new Error("No tienes una billetera USDT activa. Envía o recibe USDT primero.");
+            }
+            const userJettonWallet = tonapiData.wallet_address.address;
+            
+            // 2. Crear el payload de transferencia usando TonWeb de forma offline
             const destAddress = assertSecureContractFlow(tipo, getContractWallet()).address;
-            
             const jettonAmountNano = new TonWeb.utils.BN(Math.floor(usdtAmount * 1000000));
             
+            const jettonWallet = new TonWeb.token.jetton.JettonWallet(null, { address: userJettonWallet });
             const transferBody = await jettonWallet.createTransferBody({
                 jettonAmount: jettonAmountNano,
                 toAddress: new TonWeb.utils.Address(destAddress),
@@ -1835,14 +1842,14 @@
             return {
                 validUntil: Math.floor(Date.now() / 1000) + 300,
                 messages: [{
-                    address: userJettonWallet.toString(true, true, true),
+                    address: userJettonWallet,
                     amount: TonWeb.utils.toNano('0.05').toString(),
                     payload: payloadBase64
                 }]
             };
         } catch(e) {
-            console.error('Error construyendo TX local:', e);
-            throw new Error('Fallo al conectar con TON Center: ' + e.message);
+            console.error('Error construyendo TX:', e);
+            throw new Error(e.message);
         }
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
@@ -2343,7 +2350,7 @@
         if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
         mostrarMensaje(`⏳ Generando pago de $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
         let tx;
-        try { tx = await buildContractTx('torneo', COSTO_TORNEO_USDT); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
+        try { tx = await buildContractTx('torneo', COSTO_TORNEO_USDT); } catch(e) { mostrarMensaje('❌ Error: ' + e.message, '#ff4444'); return; }
         abrirPagoQR({
             tipo:'torneo',
             titulo:`🏆 Inscripción Torneo Semanal (USDT/TON)`,
