@@ -1211,8 +1211,8 @@
                     <div style="display:flex;align-items:center;gap:14px;min-width:200px;">
                         <div style="font-size:2.2em;flex-shrink:0;">🎁</div>
                         <div>
-                            <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--green);letter-spacing:2px;margin-bottom:4px;">¡NFT DE REGALO PENDIENTE!</div>
-                            <div style="color:#ccc;font-size:0.84em;line-height:1.5;">Tienes a Alexis Sánchez gratis por unirte mediante un referido.</div>
+                            <div style="font-family:'Orbitron',sans-serif;font-size:0.78em;color:var(--green);letter-spacing:2px;margin-bottom:4px;">¡TIENES UN REGALO PENDIENTE!</div>
+                            <div style="color:#ccc;font-size:0.84em;line-height:1.5;">El administrador te ha enviado un NFT de regalo disponible para reclamar.</div>
                         </div>
                     </div>
                     <button onclick="reclamarNFTRegaloServidor()" style="padding:8px 16px;background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border:1px solid rgba(168,85,247,0.5);border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;outline:none;">Reclamar NFT</button>
@@ -4119,28 +4119,28 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             if (data.ok) {
                 // Agregar NFTs regalados a la colección existente
                 const nftsRecibidos = data.nfts || [];
+                let nombresReclamados = [];
                 nftsRecibidos.forEach(idx => {
                     let finalIdx = idx;
-                    if (idx === 0) finalIdx = 2; // 2 es Alexis Sanchez de regalo
                     
                     const existing = carrosComprados.find(c => c.idx === finalIdx);
                     if (existing) {
                         existing.qty = (existing.qty || 1) + 1;
                     } else {
                         const newNft = { idx: finalIdx, qty: 1 };
-                        if (finalIdx === 2) {
-                            newNft.isGift = true;
-                            newNft.giftDate = Date.now();
-                        }
+                        newNft.isGift = true;
+                        newNft.giftDate = Date.now();
                         carrosComprados.push(newNft);
                     }
+                    if (PLAYERS[finalIdx]) nombresReclamados.push(PLAYERS[finalIdx].nombre);
                 });
                 // Guardar y actualizar UI
                 const p = _pfx();
                 localStorage.setItem(p+'_carros', JSON.stringify(carrosComprados));
                 actualizarUI();
                 buildMarket();
-                mostrarMensaje(data.mensaje || '✅ ¡Regalo reclamado con éxito!', '#00ff88');
+                const msgFinal = nombresReclamados.length > 0 ? `✅ ¡Recibiste: ${nombresReclamados.join(', ')}!` : '✅ ¡Regalo reclamado con éxito!';
+                mostrarMensaje(msgFinal, '#00ff88');
                 const banner = $id('banner-regalo-nft');
                 if (banner) banner.style.display = 'none';
             } else {
