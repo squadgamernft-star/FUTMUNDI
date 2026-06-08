@@ -1772,7 +1772,7 @@
     // Nota de Arquitectura: Cada vez que entra un depósito, el contrato recibe los USDT y emite un "recibo" en la blockchain.
     // La validación final la hace tu propio servidor/juego (backend) leyendo ese recibo.
     // Si envían un monto incorrecto (ej. 98$), el contrato guarda el dinero pero tu servidor NO debe darles gemas.
-    const CONTRACT_WALLET = Object.freeze("EQCUKWfjc7O5JNQUHiGGALZ8nPlDVkWe-SZzJffkCw5fy2yi");
+    const CONTRACT_WALLET = Object.freeze("EQD3u6SffmoBUVzumsMpfG5qzfVYrAsNiWW6lRPVqQMv9MIs");
     const WALLET = CONTRACT_WALLET;
     const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO',apuesta:'APUESTA'});
     function isValidTonAddress(addr){return typeof addr==='string' && /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(addr.trim());}
