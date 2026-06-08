@@ -704,6 +704,70 @@
         /* Ocultar badge de wallet para todos los usuarios */
         #wallet-addr-badge { display: none !important; }
 
+
+        /* Nuevos estilos para los modos de juego PVP y PVE */
+        .game-modes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+        .game-mode-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .game-mode-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            border-color: var(--green);
+        }
+        .game-mode-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .game-mode-card:hover img {
+            transform: scale(1.1);
+        }
+        .game-mode-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            pointer-events: none;
+        }
+        .game-mode-title {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            font-weight: 900;
+            color: var(--white);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 2px;
+            letter-spacing: 1px;
+        }
+        .game-mode-subtitle {
+            font-size: 0.9em;
+            color: var(--green);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
     </style>
 <script src="https://unpkg.com/tonweb@0.0.60/dist/tonweb.js"></script>
 </head>
@@ -790,11 +854,25 @@
                         <span class="fuel-count-label" data-i18n="balones">balones</span>
                     </div>
                 </div>
-                <button class="primary-btn" onclick="openModal('modal-duelo-urbano')" data-i18n="menu_futcancha">🏟️ FutCancha</button>
+                <div class="game-modes-grid" style="margin-top: 5px;">
+                    <div class="game-mode-card" onclick="openModal('modal-duelo-urbano')" title="FutCancha (PVP)">
+                        <img src="pvp_stadium.png" alt="PVP">
+                        <div class="game-mode-overlay">
+                            <span class="game-mode-title">PVP</span>
+                            <span class="game-mode-subtitle">FutCancha</span>
+                        </div>
+                    </div>
+                    <div class="game-mode-card" onclick="openModal('modal-duelo-callejero')" title="Futsala (PVE)">
+                        <img src="pve_stadium.png" alt="PVE">
+                        <div class="game-mode-overlay">
+                            <span class="game-mode-title">PVE</span>
+                            <span class="game-mode-subtitle">Futsala</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="menu-column">
-                <button class="word-btn" onclick="openModal('modal-duelo-callejero')" data-i18n="menu_futsala">🏃 Futsala</button>
                 <button class="word-btn" onclick="openModal('modal-torneo')" data-i18n="menu_torneo">🏆 Torneo</button>
                 <button class="word-btn" onclick="openModal('modal-ranking')" data-i18n="menu_ranking">📊 Ranking</button>
                 <button class="word-btn" onclick="openModal('modal-mantenimiento')" data-i18n="menu_entrenamiento">🏋️ Entrenamiento</button>
