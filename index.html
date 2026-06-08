@@ -1814,7 +1814,12 @@
             
             // 1. Obtener la Jetton Wallet del usuario usando TonAPI (mucho más rápido y sin CORS que Toncenter)
             const tonapiRes = await fetch(`https://tonapi.io/v2/accounts/${myWallet}/jettons/${USDT_MASTER}`);
-            if (!tonapiRes.ok) throw new Error("No se pudo leer tu saldo USDT de TonAPI");
+            if (tonapiRes.status === 404) {
+                throw new Error("Tu billetera no tiene saldo USDT. Por favor, recarga USDT primero para poder comprar.");
+            }
+            if (!tonapiRes.ok) {
+                throw new Error("No se pudo leer tu saldo USDT de TonAPI (Error " + tonapiRes.status + ")");
+            }
             const tonapiData = await tonapiRes.json();
             
             // Si el usuario no tiene la Jetton Wallet o no tiene USDT, TonAPI puede devolver error o balance 0
@@ -3950,7 +3955,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
         mostrarMensaje(`⏳ Generando pago de $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
         let tx;
-        try { tx = await buildContractTx('deposito', usdtAmount); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
+        try { tx = await buildContractTx('deposito', usdtAmount); } catch(e) { mostrarMensaje('❌ Error: ' + e.message, '#ff4444'); return; }
         abrirPagoQR({
             tipo:'deposito',
             titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
