@@ -24,6 +24,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://unpkg.com/tonweb@0.0.60/dist/tonweb.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1771,7 +1772,7 @@
     // Nota de Arquitectura: Cada vez que entra un depósito, el contrato recibe los USDT y emite un "recibo" en la blockchain.
     // La validación final la hace tu propio servidor/juego (backend) leyendo ese recibo.
     // Si envían un monto incorrecto (ej. 98$), el contrato guarda el dinero pero tu servidor NO debe darles gemas.
-    const CONTRACT_WALLET = Object.freeze("EQAEVi3WteuqQoqf1ODzA0jEDj9of0uA8WLgiDgXa8IWEUqX");
+    const CONTRACT_WALLET = Object.freeze("EQCUKWfjc7O5JNQUHiGGALZ8nPlDVkWe-SZzJffkCw5fy2yi");
     const WALLET = CONTRACT_WALLET;
     const PAYMENT_TYPES = Object.freeze({deposito:'DEPÓSITO',torneo:'TORNEO',entrenamiento:'ENTRENAMIENTO',retiro:'RETIRO',apuesta:'APUESTA'});
     function isValidTonAddress(addr){return typeof addr==='string' && /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(addr.trim());}
