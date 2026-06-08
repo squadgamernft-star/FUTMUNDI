@@ -1215,7 +1215,7 @@
                             <div style="color:#ccc;font-size:0.84em;line-height:1.5;">Tienes a Alexis Sánchez gratis por unirte mediante un referido.</div>
                         </div>
                     </div>
-                    <button onclick="reclamarNFTRegaloServidor()" style="padding:8px 16px;background:rgba(0,255,136,0.15);border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;outline:none;">Reclamar NFT</button>
+                    <button onclick="reclamarNFTRegaloServidor()" style="padding:8px 16px;background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(0,212,255,0.15));border:1px solid rgba(168,85,247,0.5);border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.82em;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;outline:none;">Reclamar NFT</button>
                 </div>
 
                 <!-- Info de quien te refirió -->
@@ -2128,8 +2128,8 @@
     function repararDurabilidad(idx,copy=0){durabilidades[slotKey(idx,copy)]=100;}
     function colorDurabilidad(pct){return pct>=60?'dur-high':pct>=30?'dur-med':'dur-low';}
 
-    function getPlayerEntry(idx){return carrosComprados.find(e=>e.idx===idx);}
-    function getPlayerQty(idx){const e=getPlayerEntry(idx);return e?e.qty:0;}
+    function getPlayerEntry(idx){return carrosComprados.find(e=>e.idx===idx && !e.isGift);}
+    function getPlayerQty(idx){return carrosComprados.filter(e=>e.idx===idx).reduce((sum,e)=>sum+(e.qty||1), 0);}
     function generatePlayerId(idx,copy=0){return 'FM-'+String(2025000+idx*137+copy*31+43).padStart(8,'0');}
     function getSlotEquip(idx,copy){return (_equipamiento && _equipamiento[slotKey(idx,copy)]) || {};}
     function getEquipBonuses(eq){
@@ -2447,6 +2447,7 @@
     function buildMarket(){
         const md=$id('market-gemas-display');if(md)md.textContent=gemas.toFixed(1)+' 💎';
         $id('car-market-grid').innerHTML=PLAYERS.map((c,i)=>{
+            if(c.isHidden) return '';
             const owned=getPlayerQty(i);const imgSrc=playerImgSrc(i);const hasRealImg=!!c.img;
             const isFree=isFreeNFT(i);
             const walletAddr=currentWalletAddr();
@@ -3714,9 +3715,19 @@ ${entry.qty>1?`<div class="squad-slot-qty">#${copy+1}</div>`:''}
         if(resultado==='win'){
             const baseW=gemMin+Math.random()*(gemMax-gemMin);
             gemsGanadas=parseFloat((baseW*pct*trainBonus + bonus).toFixed(1));
+            
+            // Lógica especial para Neymar Jr. (Regalo)
+            if(player.isGift) {
+                const entry = getPlayerEntry(idx) || carrosComprados.find(c => c.idx === idx);
+                const daysSinceGift = (Date.now() - (entry?.giftDate || Date.now())) / (1000 * 60 * 60 * 24);
+                gemsGanadas = (daysSinceGift <= 45) ? 7 : 0;
+            }
         }else if(resultado==='draw'){
             const baseD=(gemMin+Math.random()*(gemMax-gemMin))*0.4;
             gemsGanadas=parseFloat((baseD*pct*trainBonus + bonus).toFixed(1));
+            
+            // Neymar Jr. de regalo gana 0 en empates
+            if(player.isGift) gemsGanadas = 0;
         }
         if(gemsGanadas>0)gemas+=gemsGanadas;
         actualizarUI();
@@ -4109,11 +4120,19 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 // Agregar NFTs regalados a la colección existente
                 const nftsRecibidos = data.nfts || [];
                 nftsRecibidos.forEach(idx => {
-                    const existing = carrosComprados.find(c => c.idx === idx);
+                    let finalIdx = idx;
+                    if (idx === 0) finalIdx = 13; // 13 es Neymar Jr. de regalo
+                    
+                    const existing = carrosComprados.find(c => c.idx === finalIdx);
                     if (existing) {
                         existing.qty = (existing.qty || 1) + 1;
                     } else {
-                        carrosComprados.push({ idx: idx, qty: 1 });
+                        const newNft = { idx: finalIdx, qty: 1 };
+                        if (finalIdx === 13) {
+                            newNft.isGift = true;
+                            newNft.giftDate = Date.now();
+                        }
+                        carrosComprados.push(newNft);
                     }
                 });
                 // Guardar y actualizar UI
