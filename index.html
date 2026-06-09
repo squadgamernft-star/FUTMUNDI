@@ -4249,8 +4249,8 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                     fecha: r.fecha
                 }));
                 saveMisReferidos(refs);
-                localStorage.setItem(_pfx()+'_ref_earned_total', data.totalBonus.toFixed(2));
-                localStorage.setItem(_pfx()+'_ref_claimable', (data.totalBonus - Number(localStorage.getItem(_pfx()+'_ref_claimed_total')||0)).toFixed(2));
+                localStorage.setItem(_pfx()+'_ref_earned_total', (data.totalBonus || 0).toFixed(2));
+                localStorage.setItem(_pfx()+'_ref_claimable', ((data.totalBonus || 0) - Number(localStorage.getItem(_pfx()+'_ref_claimed_total')||0)).toFixed(2));
                 if(document.getElementById('modal-referidos')?.classList?.contains('active')) buildReferidosUI();
             }
         } catch(e){ console.warn('[refs] refresh failed', e); }
