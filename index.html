@@ -1840,11 +1840,17 @@
             const jettonAmountNano = new TonWeb.utils.BN(Math.floor(usdtAmount * 1000000));
             
             const jettonWallet = new TonWeb.token.jetton.JettonWallet(null, { address: userJettonWallet });
+            const textEncoder = new TextEncoder();
+            const textData = textEncoder.encode(tipo);
+            const payload = new TonWeb.boc.Cell();
+            payload.bits.writeUint(0, 32);
+            payload.bits.writeBytes(textData);
+            
             const transferBody = await jettonWallet.createTransferBody({
                 jettonAmount: jettonAmountNano,
                 toAddress: new TonWeb.utils.Address(destAddress),
                 forwardAmount: TonWeb.utils.toNano('0.001'),
-                forwardPayload: new TextEncoder().encode(tipo),
+                forwardPayload: payload,
                 responseAddress: new TonWeb.utils.Address(myWallet)
             });
             
@@ -4013,16 +4019,36 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         if(cant>gemas){actualizarConversionRetiro();mostrarMensaje('🚫 No puedes hacer ese retiro: monto mayor a tu saldo disponible','#ff4444');return;}
         const userAns=parseInt($id('captcha-answer').value);
         if(isNaN(userAns)||userAns!==_captchaAnswer){mostrarMensaje(t('msg_captcha'),'#ff4444');generarCaptcha();return;}
+        const myWallet = _walletAddr() || _activeWalletAddr;
+        if (!myWallet) {mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');return;}
+
         const bruto=cant/32;const descuento=bruto*0.06;const fijo=1;const usdt=Math.max(0,(bruto-descuento-fijo)).toFixed(2);
         const feesToContract=(descuento+fijo).toFixed(2);
         const withdrawalOrder=getWithdrawalOrder(cant,usdt,addr,feesToContract);
         if(withdrawalOrder.contrato!==getContractWallet()){mostrarMensaje('❌ Orden de retiro con contrato inválido','#ff4444');return;}
-        gemas-=cant;
-        actualizarUI();
-        syncStateToCloud();
-        mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
-        closeModal('modal-retiro');
-        generarCaptcha();
+        
+        mostrarMensaje('⏳ Procesando retiro...', '#00d4ff');
+        const submitRetiro = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/retiros/crear`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet: myWallet, destino: addr, gemas: cant, usdt: usdt })
+                });
+                const data = await res.json();
+                if(!data.ok) throw new Error(data.error || 'Error del servidor');
+                
+                gemas-=cant;
+                actualizarUI();
+                syncStateToCloud();
+                mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
+                closeModal('modal-retiro');
+            } catch (e) {
+                mostrarMensaje('❌ Error de retiro: ' + e.message, '#ff4444');
+            }
+            generarCaptcha();
+        };
+        submitRetiro();
     }
 
     async function comprarGemas(cantidad,usdtAmount){
