@@ -1551,7 +1551,7 @@
         </div>
     </div>
 
-    <!-- PAGO QR — CONTRATO INTELIGENTE -->
+    <!-- PAGO — CONTRATO INTELIGENTE -->
     <div class="modal-overlay" id="modal-pago-qr">
         <div class="modal">
             <div class="modal-header">
@@ -1564,10 +1564,6 @@
                     <div style="font-size:0.72em;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Monto a pagar</div>
                     <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8em;color:var(--gold);"><span id="pago-qr-amount">0.00</span> USDT</div>
                     <div style="font-size:0.72em;color:#ffaa00;margin-top:4px;">Red: <strong>TON Network (Jetton USDT)</strong></div>
-                    <div style="font-size:0.68em;color:#aaa;margin-top:2px;" id="pago-qr-rate-box">Tasa de referencia: <span id="pago-qr-rate">calculando...</span></div>
-                </div>
-                <div style="background:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;margin-bottom:14px;">
-                    <canvas id="pago-qr-canvas" style="display:block;"></canvas>
                 </div>
                 <div style="font-size:0.72em;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Dirección del Contrato</div>
                 <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:14px;">
@@ -1575,13 +1571,12 @@
                     <button onclick="copiarDireccionContrato()" style="padding:8px 12px;background:rgba(0,212,255,0.15);border:1px solid var(--cyan);border-radius:8px;color:var(--cyan);font-size:0.74em;font-weight:700;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
                 </div>
                 <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
-                    💡 <strong>Cómo pagar:</strong> Escanea el QR con tu billetera TON (Tonkeeper, Telegram Wallet, MyTonWallet, Tonhub, etc.) o copia la dirección y envía exactamente el monto indicado en <strong>USDT</strong>.<br>
-                    ⛽ <em>Asegúrate de tener al menos 0.05 TON para pagar el gas de red de la transacción.</em><br>
-                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
+                    💡 Pulsa <strong>Pagar con Billetera</strong> para abrir tu wallet TON (Tonkeeper, Telegram Wallet, etc.) y confirmar el envío de USDT al contrato.<br>
+                    ⛽ Necesitas al menos <strong>0.05 TON</strong> en tu billetera para pagar el gas de red.
                 </div>
                 <div style="display:flex;gap:10px;">
                     <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
-                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con TON Connect</button>
+                    <button id="pago-qr-confirm-btn" onclick="confirmarPagoQR()" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));border:1px solid var(--green);border-radius:10px;color:var(--green);font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">✅ Pagar con Billetera</button>
                 </div>
             </div>
         </div>
@@ -1814,8 +1809,19 @@
         }catch(e){ console.warn("[TON rate] usando fallback $5:",e); }
         return _tonUsdtRate;
     }
+    function normalizeTonAddress(addr){
+        if(!addr || typeof addr!=='string') return null;
+        const raw = addr.trim();
+        if(!window.TonWeb) return raw;
+        try{
+            return new TonWeb.utils.Address(raw).toString(true, true, true);
+        }catch(e){
+            try{ return new TonWeb.utils.Address(raw).toString(false, true, true); }
+            catch(e2){ return raw; }
+        }
+    }
     async function buildContractTx(tipo, usdtAmount) {
-        const myWallet = _walletAddr() || _activeWalletAddr;
+        const myWallet = normalizeTonAddress(_walletAddr() || _activeWalletAddr);
         if (!myWallet) {
             throw new Error("Conecta tu wallet primero");
         }
@@ -1827,8 +1833,7 @@
             
             const USDT_MASTER = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
             
-            // 1. Obtener la Jetton Wallet del usuario usando TonAPI (mucho más rápido y sin CORS que Toncenter)
-            const tonapiRes = await fetch(`https://tonapi.io/v2/accounts/${myWallet}/jettons/${USDT_MASTER}`);
+            const tonapiRes = await fetch(`https://tonapi.io/v2/accounts/${encodeURIComponent(myWallet)}/jettons/${USDT_MASTER}`);
             if (tonapiRes.status === 404) {
                 throw new Error("Tu billetera no tiene saldo USDT. Por favor, recarga USDT primero para poder comprar.");
             }
@@ -1837,13 +1842,12 @@
             }
             const tonapiData = await tonapiRes.json();
             
-            // Si el usuario no tiene la Jetton Wallet o no tiene USDT, TonAPI puede devolver error o balance 0
             if(!tonapiData.wallet_address || !tonapiData.wallet_address.address) {
                 throw new Error("No tienes una billetera USDT activa. Envía o recibe USDT primero.");
             }
-            const userJettonWallet = tonapiData.wallet_address.address;
+            const userJettonWallet = normalizeTonAddress(tonapiData.wallet_address.address);
+            if(!userJettonWallet) throw new Error("No se pudo obtener tu billetera USDT");
             
-            // 2. Crear el payload de transferencia usando TonWeb de forma offline
             const destAddress = assertSecureContractFlow(tipo, getContractWallet()).address;
             const jettonAmountNano = new TonWeb.utils.BN(Math.floor(usdtAmount * 1000000));
             
@@ -1851,7 +1855,7 @@
             const textEncoder = new TextEncoder();
             const textData = textEncoder.encode(tipo);
             const payloadBytes = new Uint8Array(4 + textData.length);
-            payloadBytes.set(textData, 4); // First 4 bytes remain 0
+            payloadBytes.set(textData, 4);
             
             const transferBody = await jettonWallet.createTransferBody({
                 jettonAmount: jettonAmountNano,
@@ -1865,7 +1869,7 @@
             const payloadBase64 = TonWeb.utils.bytesToBase64(payloadCell);
             
             return {
-                validUntil: Math.floor(Date.now() / 1000) + 300,
+                validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [{
                     address: userJettonWallet,
                     amount: TonWeb.utils.toNano('0.05').toString(),
@@ -1874,7 +1878,7 @@
             };
         } catch(e) {
             console.error('Error construyendo TX:', e);
-            throw new Error(e.message);
+            throw new Error(e.message || 'Error al preparar la transacción');
         }
     }
     function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
@@ -2385,24 +2389,13 @@
     async function irADepositoTorneo(){
         closeModal('modal-torneo');
         if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
-        mostrarMensaje(`⏳ Generando pago de $${COSTO_TORNEO_USDT.toFixed(2)} USDT...`,'#00d4ff');
-        let tx;
-        try { tx = await buildContractTx('torneo', COSTO_TORNEO_USDT); } catch(e) { mostrarMensaje('❌ Error: ' + e.message, '#ff4444'); return; }
         abrirPagoQR({
             tipo:'torneo',
             titulo:`🏆 Inscripción Torneo Semanal (USDT/TON)`,
             descripcion:`Inscripción al torneo. El pago se realiza en USDT sobre la red TON y se envía directamente al contrato inteligente de FUTMUNDI.`,
             usdt:COSTO_TORNEO_USDT,
-            onConfirmar:async()=>{
-                try{
-                    const freshTx = await buildContractTx('torneo', COSTO_TORNEO_USDT);
-                    await sendWalletTransaction(freshTx, { manageUi: false });
-                    mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
-                    return true;
-                }catch(e){
-                    mostrarMensaje('❌ Error de inscripción: ' + (e.message || 'Transacción cancelada'),'#ff4444');
-                    return false;
-                }
+            onExito:async()=>{
+                mostrarMensaje('✅ ¡Inscripción al torneo confirmada!','#00ff88');
             }
         });
     }
@@ -3977,33 +3970,21 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const c=PLAYERS[idx];
         const costo=getCostoMantenimiento(c.precio);
         if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet primero','#ffaa00');openWalletModal();return;}
-        mostrarMensaje(`⏳ Generando pago de $${costo.toFixed(2)} USDT...`,'#00d4ff');
-        let tx;
-        try { tx = await buildContractTx('entrenamiento', costo); } catch(e) { mostrarMensaje('❌ Error de red', '#ff4444'); return; }
-        // Abrir modal QR con la dirección del contrato inteligente
         abrirPagoQR({
             tipo:'entrenamiento',
             titulo:`🏋️ Entrenamiento — ${c.nombre}`,
             descripcion:`Restaura durabilidad al 100% y aplica bonus de rendimiento progresivo.`,
             usdt:costo,
-            onConfirmar:async()=>{
-                try{
-                    const freshTx = await buildContractTx('entrenamiento', costo);
-                    await sendWalletTransaction(freshTx, { manageUi: false });
-                    repararDurabilidad(idx,copy);
-                    const res=applyTrainingBonus(idx,copy);
-                    actualizarUI();
-                    buildMantenimiento();
-                    syncStateToCloud();
-                    const msg=res.reinicio
-                        ? `✅ Durabilidad 100% · Bonus alcanzó 80% y se reinició a 0%`
-                        : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
-                    mostrarMensaje(msg,'#00ff88');
-                    return true;
-                }catch(e){
-                    mostrarMensaje('❌ Error de entrenamiento: ' + (e.message || 'Transacción cancelada'),'#ff4444');
-                    return false;
-                }
+            onExito:async()=>{
+                repararDurabilidad(idx,copy);
+                const res=applyTrainingBonus(idx,copy);
+                actualizarUI();
+                buildMantenimiento();
+                syncStateToCloud();
+                const msg=res.reinicio
+                    ? `✅ Durabilidad 100% · Bonus alcanzó 80% y se reinició a 0%`
+                    : `✅ Durabilidad 100% · Rendimiento +${res.incremento}% (total +${res.nuevoBonus}%)`;
+                mostrarMensaje(msg,'#00ff88');
             }
         });
     }
@@ -4061,27 +4042,16 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     async function comprarGemas(cantidad,usdtAmount){
         closeModal('modal-deposito');
         if(!isWalletConnected()){mostrarMensaje('⚠️ Conecta tu wallet','#ffaa00');openWalletModal();return;}
-        mostrarMensaje(`⏳ Generando pago de $${Number(usdtAmount).toFixed(2)} USDT...`,'#00d4ff');
-        let tx;
-        try { tx = await buildContractTx('deposito', usdtAmount); } catch(e) { mostrarMensaje('❌ Error: ' + e.message, '#ff4444'); return; }
         abrirPagoQR({
             tipo:'deposito',
             titulo:`💎 Depósito — ${cantidad.toLocaleString()} Gemas`,
-            descripcion:`Depósito de gemas. El pago se envía directamente al mismo contrato inteligente usado en torneo y entrenamiento.`,
+            descripcion:`Depósito de gemas. El pago se envía directamente al contrato inteligente de FUTMUNDI.`,
             usdt:usdtAmount,
-            onConfirmar:async()=>{
-                try{
-                    const freshTx = await buildContractTx('deposito', usdtAmount);
-                    await sendWalletTransaction(freshTx, { manageUi: false });
-                    gemas+=cantidad;
-                    actualizarUI();
-                    syncStateToCloud();
-                    mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');
-                    return true;
-                }catch(e){
-                    mostrarMensaje('❌ Error de depósito: ' + (e.message || 'Transacción cancelada'),'#ff4444');
-                    return false;
-                }
+            onExito:async()=>{
+                gemas+=cantidad;
+                actualizarUI();
+                syncStateToCloud();
+                mostrarMensaje(`✅ +${cantidad} 💎 añadidas!`,'#00ff88');
             }
         });
     }
@@ -4904,32 +4874,32 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
     function buildFlagsBg(){const bg=$id('flags-bg');FLAG_DATA.forEach((item,i)=>{const el=document.createElement('div');el.className='flag-float';el.textContent=item.flag;el.style.cssText=`left:${item.lane}%;animation-duration:${18+i*2.8}s;animation-delay:${-(i*3.1)}s;`;bg.appendChild(el);});[8,22,38,52,68,82,12,45,77].forEach((lane,i)=>{const el=document.createElement('div');el.className='ball-float';el.textContent='⚽';el.style.cssText=`left:${lane}%;top:${15+i*9}%;animation-duration:${6+i*1.5}s;animation-delay:${-(i*0.8)}s;font-size:${1.2+(i%3)*0.4}em;`;bg.appendChild(el);});}
     buildFlagsBg();
 
-    // ── PAGO QR (CONTRATO INTELIGENTE) ────────────────────────────────────
-    let _pagoQRPendiente = null;
-    function abrirPagoQR({tipo,titulo,descripcion,usdt,onConfirmar}){
+    // ── PAGO CONTRATO INTELIGENTE ─────────────────────────────────────────
+    let _pagoPendiente = null;
+    function closeAllModalsForWallet(){
+        document.querySelectorAll('.modal-overlay.active, .car-detail-overlay.active, .video-overlay.active').forEach(el=>{
+            el.classList.remove('active');
+        });
+        document.body.style.overflow='';
+        document.body.classList.remove('modal-open');
+        document.body.classList.remove('wallet-tx-pending');
+    }
+    function abrirPagoQR({tipo,titulo,descripcion,usdt,onConfirmar,onExito}){
         const flow = assertSecureContractFlow(tipo,getContractWallet());
         const amount = Number(usdt);
         if(!Number.isFinite(amount) || amount<=0){mostrarMensaje('❌ Monto de pago inválido','#ff4444');return;}
-        _pagoQRPendiente = {tipo:flow.tipo,usdt:amount,address:flow.address,onConfirmar};
-        // Tasa dinamica TON/USDT (actualizada por fetchTonRate)
-        const ton = (usdt/_tonUsdtRate).toFixed(4);
-        // Actualizar tasa en background
-        fetchTonRate().then(r=>{ const rateEl=$id("pago-qr-rate"); if(rateEl) rateEl.textContent="1 TON = $"+r.toFixed(2)+" USDT"; });
-        $id('pago-qr-title').textContent = titulo || '💳 Pago al Contrato Inteligente';
-        $id('pago-qr-desc').textContent  = descripcion || '';
+        _pagoPendiente = {
+            tipo:flow.tipo,
+            usdt:amount,
+            address:flow.address,
+            titulo:titulo||'💳 Pago al Contrato Inteligente',
+            descripcion:descripcion||'',
+            onExito:onExito||onConfirmar||null
+        };
+        $id('pago-qr-title').textContent = _pagoPendiente.titulo;
+        $id('pago-qr-desc').textContent  = _pagoPendiente.descripcion;
         $id('pago-qr-amount').textContent = amount.toFixed(2);
-        const tonEl = $id('pago-qr-ton'); if(tonEl) tonEl.textContent = ton;
-        const _rateEl=$id('pago-qr-rate'); if(_rateEl) _rateEl.textContent="1 TON = $"+_tonUsdtRate.toFixed(2)+" USDT (tiempo real)";
         $id('pago-qr-address').textContent = flow.address;
-        const usdtUnits = Math.round(amount * 1000000);
-        const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
-        const qrPayload = `ton://transfer/${flow.address}?jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs&amount=${usdtUnits}&text=${memo}`;
-        const canvas = $id('pago-qr-canvas');
-        if(window.QRCode && canvas){
-            QRCode.toCanvas(canvas, qrPayload, {width:220, margin:1, color:{dark:'#000', light:'#fff'}}, err=>{
-                if(err) console.warn('QR error',err);
-            });
-        }
         openModal('modal-pago-qr');
     }
     function copiarDireccionContrato(){
@@ -4947,41 +4917,55 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         }
     }
     async function confirmarPagoQR(){
-        if(!_pagoQRPendiente) return;
-        try{assertSecureContractFlow(_pagoQRPendiente.tipo,_pagoQRPendiente.address);}catch(e){mostrarMensaje('❌ Pago bloqueado: contrato no coincide','#ff4444');return;}
+        if(!_pagoPendiente) return;
+        if(window.location.protocol === 'file:'){
+            mostrarMensaje('⚠️ Para pagar con billetera abre el juego en https://futmundi.vercel.app (no desde archivo local)','#ffaa00');
+            return;
+        }
+        const pendiente = _pagoPendiente;
+        const btn = $id('pago-qr-confirm-btn');
+        if(!btn || btn.disabled) return;
+
         if(!isWalletConnected()){
             mostrarMensaje('⚠️ Conecta tu wallet para pagar','#ffaa00');
+            window._reopenPagoAfterConnect = true;
+            closeAllModalsForWallet();
             openWalletModal();
             return;
         }
-        const btn = $id('pago-qr-confirm-btn');
-        if(!btn) return;
+
         const original = btn.innerHTML;
-        btn.disabled = true; btn.innerHTML = '⏳ Abriendo wallet...';
-        let walletOpened = false;
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Abriendo billetera...';
+        closeAllModalsForWallet();
+        _pagoPendiente = null;
+
         try{
-            walletOpened = prepareWalletTransactionUI();
-            closeModal('modal-pago-qr');
+            assertSecureContractFlow(pendiente.tipo, pendiente.address);
+            mostrarMensaje('⏳ Preparando transacción...','#00d4ff');
+            const tx = await buildContractTx(pendiente.tipo, pendiente.usdt);
             mostrarMensaje('⏳ Confirma el pago en tu billetera...','#00d4ff');
-            const ok = await _pagoQRPendiente.onConfirmar();
-            if(ok){
-                _pagoQRPendiente = null;
-                closeModal('modal-pago-qr');
-            } else if(walletOpened){
-                openModal('modal-pago-qr');
+            window._lastWalletTxResult = await sendWalletTransaction(tx);
+            if(typeof pendiente.onExito === 'function'){
+                await pendiente.onExito(window._lastWalletTxResult);
             }
-        } catch(e) {
-            console.error('[confirmarPagoQR] Error:', e);
+        }catch(e){
+            console.error('[confirmarPagoQR]', e);
             const msg = String(e?.message || e || '');
-            if(msg && !/cancel|reject|declin|denied|user/i.test(msg)){
-                mostrarMensaje('❌ Error al procesar: ' + msg, '#ff4444');
-            } else {
+            if(/cancel|reject|declin|denied|user/i.test(msg)){
                 mostrarMensaje('❌ Pago cancelado en la billetera','#ffaa00');
+            }else{
+                mostrarMensaje('❌ ' + (msg || 'Error al procesar el pago'), '#ff4444');
             }
-            if(walletOpened) openModal('modal-pago-qr');
-        } finally {
-            restoreWalletTransactionUI();
-            btn.disabled = false; btn.innerHTML = original;
+            _pagoPendiente = pendiente;
+            $id('pago-qr-title').textContent = pendiente.titulo;
+            $id('pago-qr-desc').textContent = pendiente.descripcion;
+            $id('pago-qr-amount').textContent = pendiente.usdt.toFixed(2);
+            $id('pago-qr-address').textContent = pendiente.address;
+            openModal('modal-pago-qr');
+        }finally{
+            btn.disabled = false;
+            btn.innerHTML = original;
         }
     }
 
@@ -4992,41 +4976,16 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         try{ return Boolean(window.tonConnectUI&&(tonConnectUI.connected||getConnectedWallet()?.account?.address||getConnectedWallet()?.address)); }
         catch(e){ return false; }
     }
-    function prepareWalletTransactionUI(){
-        document.body.classList.add('wallet-tx-pending');
-        document.querySelectorAll('.modal-overlay.active, .car-detail-overlay.active, .video-overlay.active').forEach(el=>{
-            el.dataset.walletHidden='1';
-        });
-        document.body.style.overflow='';
-        document.body.classList.remove('modal-open');
-        return true;
-    }
-    function restoreWalletTransactionUI(){
-        document.body.classList.remove('wallet-tx-pending');
-        document.querySelectorAll('[data-wallet-hidden="1"]').forEach(el=>{
-            delete el.dataset.walletHidden;
-        });
-        if(document.querySelector('.modal-overlay.active, .car-detail-overlay.active, .video-overlay.active')){
-            document.body.style.overflow='hidden';
-            document.body.classList.add('modal-open');
-        }
-    }
-    async function sendWalletTransaction(tx, opts={}){
+    async function sendWalletTransaction(tx){
         if(!window.tonConnectUI) throw new Error('TON Connect no disponible');
-        if(!isWalletConnected()){
-            openWalletModal();
-            throw new Error('Conecta tu wallet primero');
-        }
-        const manageUi = opts.manageUi !== false;
-        if(manageUi) prepareWalletTransactionUI();
-        try{
-            await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-            return await tonConnectUI.sendTransaction(tx);
-        } finally {
-            if(manageUi) restoreWalletTransactionUI();
-        }
+        if(!isWalletConnected()) throw new Error('Conecta tu wallet primero');
+        closeAllModalsForWallet();
+        await new Promise(r=>setTimeout(r, 200));
+        const result = await tonConnectUI.sendTransaction(tx);
+        return result;
     }
     function openWalletModal(){
+        closeAllModalsForWallet();
         if(window.tonConnectUI && typeof tonConnectUI.openModal==='function'){
             tonConnectUI.openModal();
         }
@@ -5081,6 +5040,12 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 }
             } catch(e){ console.warn('[tonProof] capture failed', e); }
             onWalletChange(addr);
+            if(addr && window._reopenPagoAfterConnect && _pagoPendiente){
+                window._reopenPagoAfterConnect = false;
+                setTimeout(()=>{
+                    if(_pagoPendiente) openModal('modal-pago-qr');
+                }, 400);
+            }
         });
     }
     catch(e){console.warn('TonConnect no disponible:',e);}
@@ -5348,39 +5313,29 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             titulo: `🎲 Apuesta — ${p.local} vs ${p.visita}`,
             descripcion: `Pronóstico: ${labels[_apResultadoElegido]} · Cuota ${cuota}x`,
             usdt: monto,
-            onConfirmar: async () => {
-                if (!isWalletConnected()) { mostrarMensaje('⚠️ Conecta tu wallet TON primero', '#ffaa00'); openWalletModal(); return false; }
-                try {
-                    const tx = await buildContractTx('apuesta', monto);
-                    const txResult = await sendWalletTransaction(tx, { manageUi: false });
-                    const txHash = txResult.boc || 'tx_' + Date.now();
-                    
-                    const res = await fetch(`${API_BASE_URL}/api/apuestas/crear`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            wallet: walletAddr,
-                            txHash: txHash,
-                            montoUsdt: monto,
-                            eventoId: p._id,
-                            tipoApuesta: tipoAp,
-                            seleccion: labels[_apResultadoElegido]
-                        })
-                    });
-                    const data = await res.json();
-                    if (data.ok) {
-                        mostrarMensaje(`🎫 ¡Ticket registrado con éxito!`, '#42f58d');
-                        apCancelarPanel();
-                        apTabSwitch('mistickets');
-                        apRenderTickets();
-                        return true;
-                    } else {
-                        mostrarMensaje('❌ Error: ' + (data.error || 'No se pudo registrar la apuesta'), '#ff4444');
-                        return false;
-                    }
-                } catch(e) {
-                    mostrarMensaje('❌ Pago cancelado o fallido', '#ff4444');
-                    return false;
+            onExito: async () => {
+                const txResult = window._lastWalletTxResult || {};
+                const txHash = txResult.boc || 'tx_' + Date.now();
+                const res = await fetch(`${API_BASE_URL}/api/apuestas/crear`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: walletAddr,
+                        txHash: txHash,
+                        montoUsdt: monto,
+                        eventoId: p._id,
+                        tipoApuesta: tipoAp,
+                        seleccion: labels[_apResultadoElegido]
+                    })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    mostrarMensaje(`🎫 ¡Ticket registrado con éxito!`, '#42f58d');
+                    apCancelarPanel();
+                    apTabSwitch('mistickets');
+                    apRenderTickets();
+                } else {
+                    throw new Error(data.error || 'No se pudo registrar la apuesta');
                 }
             }
         });
@@ -5804,35 +5759,21 @@ async function torneoProcesarPago() {
             titulo: '🏆 Inscripción al Torneo',
             descripcion: `Inscripción al torneo FUTMUNDI. El pago de $10 USDT se envía al contrato inteligente.`,
             usdt: 10,
-            onConfirmar: async () => {
-                if (!isWalletConnected()) {
-                    mostrarMensaje('⚠️ Conecta tu wallet', '#ffaa00');
-                    openWalletModal();
-                    return false;
-                }
-                try {
-                    const tx = await buildContractTx('torneo', 10);
-                    const txResult = await sendWalletTransaction(tx, { manageUi: false });
-                    const txHash = txResult.boc || 'tx_' + Date.now();
-                    
-                    const res = await fetch(`${API_BASE_URL}/api/torneo/inscribir`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ wallet: walletAddr, txHash: txHash })
-                    });
-                    const data = await res.json();
-                    if (data.ok) {
-                        mostrarMensaje('✅ ¡Inscripción confirmada!', '#00ff88');
-                        localStorage.setItem('torneoData', JSON.stringify({ matchesLeft: 10, wins: 0, points: 0 }));
-                        torneoRenderRegistro();
-                        return true;
-                    } else {
-                        mostrarMensaje('❌ Error: ' + (data.error || 'No se pudo registrar la inscripción'), '#ff4444');
-                        return false;
-                    }
-                } catch(e) {
-                    mostrarMensaje('❌ Pago cancelado', '#ff4444');
-                    return false;
+            onExito: async () => {
+                const txResult = window._lastWalletTxResult || {};
+                const txHash = txResult.boc || 'tx_' + Date.now();
+                const res = await fetch(`${API_BASE_URL}/api/torneo/inscribir`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet: walletAddr, txHash: txHash })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    mostrarMensaje('✅ ¡Inscripción confirmada!', '#00ff88');
+                    localStorage.setItem('torneoData', JSON.stringify({ matchesLeft: 10, wins: 0, points: 0 }));
+                    torneoRenderRegistro();
+                } else {
+                    throw new Error(data.error || 'No se pudo registrar la inscripción');
                 }
             }
         });
