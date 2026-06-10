@@ -1945,6 +1945,7 @@
         }
         throw new Error("La transacción no se pudo confirmar on-chain en el tiempo esperado. Verifica en Tonviewer antes de continuar." + (lastErr ? ' ('+lastErr.message+')' : ''));
     }
+    function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
     }
 
