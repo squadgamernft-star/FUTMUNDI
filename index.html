@@ -1842,15 +1842,14 @@
             const jettonWallet = new TonWeb.token.jetton.JettonWallet(null, { address: userJettonWallet });
             const textEncoder = new TextEncoder();
             const textData = textEncoder.encode(tipo);
-            const payload = new TonWeb.boc.Cell();
-            payload.bits.writeUint(0, 32);
-            payload.bits.writeBytes(textData);
+            const payloadBytes = new Uint8Array(4 + textData.length);
+            payloadBytes.set(textData, 4); // First 4 bytes remain 0
             
             const transferBody = await jettonWallet.createTransferBody({
                 jettonAmount: jettonAmountNano,
                 toAddress: new TonWeb.utils.Address(destAddress),
                 forwardAmount: TonWeb.utils.toNano('0.001'),
-                forwardPayload: payload,
+                forwardPayload: payloadBytes,
                 responseAddress: new TonWeb.utils.Address(myWallet)
             });
             
