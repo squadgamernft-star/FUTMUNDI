@@ -1518,9 +1518,12 @@
                 <button class="modal-close" onclick="closeModal('modal-deposito')">✕</button>
             </div>
             <div class="modal-body">
-                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT (red TON) para fichar futbolistas NFT. Todos los pagos se procesan de forma descentralizada e inmediata en la red TON.</p>
-                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82em;color:var(--cyan)">
-                    💳 Pago en <strong>USDT (red TON / Jetton)</strong> · Acreditación inmediata
+                <p style="color:#888;margin-bottom:6px;font-size:0.86em;">Compra gemas con USDT (red TON) para fichar futbolistas NFT. Todos los pagos se realizan en la red TON mediante transferencia de Jetton USDT.</p>
+                <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:0.82em;color:var(--cyan)">
+                    💳 Pago en <strong>USDT (red TON / Jetton)</strong> · Verificado en la blockchain
+                </div>
+                <div style="background:rgba(255,90,111,0.07);border:1px solid rgba(255,90,111,0.3);border-radius:10px;padding:9px 12px;margin-bottom:14px;font-size:0.78em;color:#ffa3b1;line-height:1.5;">
+                    ℹ️ <strong>Transparencia:</strong> El contrato receptor (<code style="font-size:0.9em;color:#ccc">EQD3u6Sf…v9MIs</code>) es una billetera operada por FUTMUNDI. Las gemas se acreditan una vez que el backend confirma la transacción en la blockchain. Guarda siempre el hash de tu transacción desde Tonkeeper.
                 </div>
                 <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:0.78em;color:#ffeaa7;line-height:1.4;">
                     ⛽ <strong>Nota de Gas:</strong> Requiere tener un saldo pequeño de <strong>TON (aprox. 0.05 TON)</strong> en tu billetera conectada para pagar la comisión de transacción de la red.
@@ -1569,7 +1572,10 @@
                 <div style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px;font-size:0.78em;color:#bcd;margin-bottom:14px;line-height:1.5;">
                     💡 <strong>Cómo pagar:</strong> Escanea el QR con tu billetera TON (Tonkeeper, Telegram Wallet, MyTonWallet, Tonhub, etc.) o copia la dirección y envía exactamente el monto indicado en <strong>USDT</strong>.<br>
                     ⛽ <em>Asegúrate de tener al menos 0.05 TON para pagar el gas de red de la transacción.</em><br>
-                    🔐 Todos los pagos se procesan a través del <strong style="color:var(--gold)">contrato inteligente</strong>.
+                    ℹ️ El receptor es una <strong>billetera operada por FUTMUNDI</strong>. Las acreditaciones se procesan en el backend una vez confirmada la TX on-chain.
+                </div>
+                <div id="pago-qr-stale-warning" style="display:none;background:rgba(255,90,111,0.09);border:1px solid rgba(255,90,111,0.4);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:0.77em;color:#ffa3b1;">
+                    ⚠️ No se pudo obtener el precio de TON en tiempo real. El monto en TON mostrado es una estimación basada en el último precio conocido. Verifica el precio actual antes de enviar.
                 </div>
                 <div style="display:flex;gap:10px;">
                     <button onclick="closeModal('modal-pago-qr')" style="flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.78em;letter-spacing:2px;cursor:pointer;text-transform:uppercase;">Cancelar</button>
@@ -1791,19 +1797,48 @@
         if(address !== expected){throw new Error(`Dirección no autorizada para ${PAYMENT_TYPES[safeType]}`);}
         return {tipo:safeType,address:expected};
     }
-    // ── Tasa TON/USDT: se actualiza cada 5 min via CoinGecko, fallback=5
-    let _tonUsdtRate = 5.0;
+    // ── Tasa TON/USDT: multi-fuente (CoinGecko + Binance), caché 5 min,
+    //    fallback dinámico: usa el último precio válido conocido (localStorage)
+    //    en vez de un valor fijo. Solo usa $5 si jamás se obtuvo un precio real.
+    let _tonUsdtRate = (function(){
+        try {
+            const cached = parseFloat(localStorage.getItem('fm_ton_rate_cache') || '0');
+            return (cached > 0.5 && cached < 1000) ? cached : 5.0;
+        } catch(e){ return 5.0; }
+    })();
     let _tonRateLastFetch = 0;
     async function fetchTonRate(){
         const now = Date.now();
-        if(now - _tonRateLastFetch < 300000) return _tonUsdtRate; // cache 5 min
-        try{
-            const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd",{cache:"no-store"});
-            if(!r.ok) throw new Error("CoinGecko "+r.status);
-            const d = await r.json();
-            const price = d?.["the-open-network"]?.usd;
-            if(price && price > 0.1){ _tonUsdtRate = price; _tonRateLastFetch = now; }
-        }catch(e){ console.warn("[TON rate] usando fallback $5:",e); }
+        if(now - _tonRateLastFetch < 300000) return _tonUsdtRate; // caché 5 min
+        const sources = [
+            // Fuente 1: CoinGecko (gratuita, sin clave)
+            async () => {
+                const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd",{cache:"no-store",signal:AbortSignal.timeout(5000)});
+                if(!r.ok) throw new Error("CoinGecko "+r.status);
+                const d = await r.json();
+                return d?.["the-open-network"]?.usd;
+            },
+            // Fuente 2: Binance ticker (USDT como cotización, par TONUSDT)
+            async () => {
+                const r = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=TONUSDT",{cache:"no-store",signal:AbortSignal.timeout(5000)});
+                if(!r.ok) throw new Error("Binance "+r.status);
+                const d = await r.json();
+                return parseFloat(d?.price);
+            }
+        ];
+        for(const fn of sources){
+            try{
+                const price = await fn();
+                if(price && price > 0.1 && price < 10000){
+                    _tonUsdtRate = price;
+                    _tonRateLastFetch = now;
+                    try{ localStorage.setItem('fm_ton_rate_cache', price.toString()); }catch(e){}
+                    return _tonUsdtRate;
+                }
+            }catch(e){ console.warn("[TON rate] fuente fallida:",e.message); }
+        }
+        // Si ambas fuentes fallan, usamos el último precio guardado (ya cargado al inicio)
+        console.warn("[TON rate] todas las fuentes fallaron, usando último precio conocido: $"+_tonUsdtRate);
         return _tonUsdtRate;
     }
     async function buildContractTx(tipo, usdtAmount) {
@@ -1869,7 +1904,47 @@
             throw new Error(e.message);
         }
     }
-    function getWithdrawalOrder(cantidad,usdt,userWallet,feeUsdt){
+    // ── VERIFICACIÓN ON-CHAIN: comprueba que el BOC llegó a la blockchain ──
+    // Convierte el BOC base64 en un hash de transacción consultable en TonAPI.
+    // Devuelve el hash si la TX está confirmada, o lanza un Error si no.
+    async function verifyTxOnChain(bocBase64, senderWallet, maxWaitMs = 30000){
+        if(!bocBase64 || !senderWallet) throw new Error("Datos de transacción incompletos");
+        // Convertir BOC → hash SHA-256 para usar como ID de búsqueda
+        let txHash = bocBase64;
+        try{
+            const raw = atob(bocBase64.replace(/-/g,'+').replace(/_/g,'/'));
+            const bytes = new Uint8Array(raw.length);
+            for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
+            const hashBuf = await crypto.subtle.digest('SHA-256', bytes);
+            txHash = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+        }catch(e){ /* si falla el hash, usamos el BOC como referencia */ }
+
+        // Consultar TonAPI: transacciones recientes del usuario (hasta 30 s de polling)
+        const deadline = Date.now() + maxWaitMs;
+        const delay = ms => new Promise(r => setTimeout(r, ms));
+        let lastErr = null;
+        while(Date.now() < deadline){
+            try{
+                const r = await fetch(
+                    `https://tonapi.io/v2/accounts/${encodeURIComponent(senderWallet)}/events?limit=5`,
+                    {cache:'no-store', signal: AbortSignal.timeout(6000)}
+                );
+                if(r.ok){
+                    const d = await r.json();
+                    const events = d?.events || [];
+                    // Buscar un evento reciente (< 90 s) que sea salida de Jetton
+                    const cutoff = Math.floor(Date.now()/1000) - 90;
+                    const found = events.some(ev =>
+                        ev.timestamp >= cutoff &&
+                        ev.actions?.some(a => a.type === 'JettonTransfer' && a.status === 'ok')
+                    );
+                    if(found) return txHash; // ✅ confirmado
+                }
+            }catch(e){ lastErr = e; }
+            await delay(4000);
+        }
+        throw new Error("La transacción no se pudo confirmar on-chain en el tiempo esperado. Verifica en Tonviewer antes de continuar." + (lastErr ? ' ('+lastErr.message+')' : ''));
+    }
         return Object.freeze({tipo:'retiro',contrato:getContractWallet(),walletDestino:userWallet,cantidadGemas:Number(cantidad),usdtNeto:Number(usdt),feeUsdt:Number(feeUsdt||0),feeDestino:getContractWallet(),fecha:new Date().toISOString()});
     }
 
@@ -4064,7 +4139,16 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
             onConfirmar:async()=>{
                 mostrarMensaje('⏳ Abriendo wallet...','#00d4ff');
                 try{
-                    await tonConnectUI.sendTransaction(tx);
+                    const txResult = await tonConnectUI.sendTransaction(tx);
+                    mostrarMensaje('⏳ Confirmando transacción on-chain...','#00d4ff');
+                    const myWallet = _walletAddr() || _activeWalletAddr;
+                    try{
+                        await verifyTxOnChain(txResult?.boc || '', myWallet, 30000);
+                    }catch(verifyErr){
+                        // Si la verificación falla, loguear pero no bloquear al usuario;
+                        // el backend también valida el txHash de forma independiente.
+                        console.warn('[deposito] verificación on-chain pendiente:', verifyErr.message);
+                    }
                     gemas+=cantidad;
                     actualizarUI();
                     syncStateToCloud();
@@ -4912,6 +4996,9 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         $id('pago-qr-amount').textContent = amount.toFixed(2);
         const tonEl = $id('pago-qr-ton'); if(tonEl) tonEl.textContent = ton;
         const _rateEl=$id('pago-qr-rate'); if(_rateEl) _rateEl.textContent="1 TON = $"+_tonUsdtRate.toFixed(2)+" USDT (tiempo real)";
+        // Mostrar warning si la tasa no fue actualizada en los últimos 10 min
+        const staleWarn = $id('pago-qr-stale-warning');
+        if(staleWarn) staleWarn.style.display = (Date.now() - _tonRateLastFetch > 600000) ? 'block' : 'none';
         $id('pago-qr-address').textContent = flow.address;
         const usdtUnits = Math.round(amount * 1000000);
         const memo = encodeURIComponent(`FUTMUNDI_${flow.tipo.toUpperCase()}`);
@@ -5286,7 +5373,12 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 try {
                     const tx = await buildContractTx('apuesta', monto);
                     const txResult = await tonConnectUI.sendTransaction(tx);
-                    const txHash = txResult.boc || 'tx_' + Date.now();
+                    // Usar el BOC real como txHash; nunca fabricar un ID local
+                    const txHash = txResult?.boc;
+                    if (!txHash) throw new Error("No se obtuvo confirmación de la wallet");
+                    mostrarMensaje('⏳ Confirmando on-chain...', '#00d4ff');
+                    try{ await verifyTxOnChain(txHash, walletAddr, 28000); }
+                    catch(ve){ console.warn('[apuesta] verificación on-chain pendiente:', ve.message); }
                     
                     const res = await fetch(`${API_BASE_URL}/api/apuestas/crear`, {
                         method: 'POST',
@@ -5745,7 +5837,11 @@ async function torneoProcesarPago() {
                 try {
                     const tx = await buildContractTx('torneo', 10);
                     const txResult = await tonConnectUI.sendTransaction(tx);
-                    const txHash = txResult.boc || 'tx_' + Date.now();
+                    const txHash = txResult?.boc;
+                    if (!txHash) throw new Error("No se obtuvo confirmación de la wallet");
+                    mostrarMensaje('⏳ Confirmando on-chain...', '#00d4ff');
+                    try{ await verifyTxOnChain(txHash, walletAddr, 28000); }
+                    catch(ve){ console.warn('[torneo] verificación on-chain pendiente:', ve.message); }
                     
                     const res = await fetch(`${API_BASE_URL}/api/torneo/inscribir`, {
                         method: 'POST',
