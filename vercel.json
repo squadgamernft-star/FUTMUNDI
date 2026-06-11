@@ -1,17 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "api/retiro.js":       { "maxDuration": 15 },
+    "api/retiro.js": { "maxDuration": 15 },
     "api/cron-retiros.js": { "maxDuration": 60 }
-  },
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin",  "value": "https://futmundi.vercel.app" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
-      ]
-    }
-  ]
+  }
 }
