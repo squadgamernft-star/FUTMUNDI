@@ -4018,18 +4018,24 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         mostrarMensaje('⏳ Procesando retiro...', '#00d4ff');
         const submitRetiro = async () => {
             try {
-                const res = await fetch(`${API_BASE_URL}/api/perfil`, {
+                const res = await fetch(`${API_BASE_URL}/api/retiro`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: 'retiro', wallet: myWallet, destino: addr, gemas: cant, usdt: usdt })
+                    body: JSON.stringify({ wallet: myWallet, destino: addr, gemas: cant, usdt: parseFloat(usdt) })
                 });
                 const data = await res.json();
                 if(!data.ok) throw new Error(data.error || 'Error del servidor');
-                
-                gemas-=cant;
+
+                // Solo descontar gemas cuando el backend confirma (saldo real en Supabase)
+                if(typeof data.gemasRestantes === 'number') {
+                    gemas = data.gemasRestantes;
+                } else {
+                    gemas = Math.max(0, gemas - cant);
+                }
                 actualizarUI();
-                syncStateToCloud();
-                mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}`,'#00ff88');
+                await syncStateToCloud();
+                const retiroRef = data.retiroId ? ` (ID: ${String(data.retiroId).slice(0,8)}…)` : '';
+                mostrarMensaje(`✅ ${t('msg_withdraw_ok').replace('{usdt}',usdt)}${retiroRef}`,'#00ff88');
                 closeModal('modal-retiro');
             } catch (e) {
                 mostrarMensaje('❌ Error de retiro: ' + e.message, '#ff4444');
@@ -4116,7 +4122,7 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
         const wallet = _walletAddr() || _activeWalletAddr || null;
         if (!wallet || wallet === 'guest') return;
         try {
-            await fetch(`${API_BASE_URL}/api/usuarios/sync`, {
+            const res = await fetch(`${API_BASE_URL}/api/usuarios/sync`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -4125,6 +4131,11 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                     nfts: carrosComprados
                 })
             });
+            const data = await res.json();
+            if(data.ok && typeof data.gemas === 'number') {
+                gemas = data.gemas;
+                actualizarUI();
+            }
         } catch(e) {
             console.warn('[sync] failed to sync to cloud', e);
         }
@@ -4149,19 +4160,18 @@ ${canClaim?`✅ Reclamar +${m.gems} 💎`:'⏳ Necesitas más goles'}</button>`
                 }
                 const cloudGemas = data.usuario.gemas;
                 const cloudNfts = data.usuario.nfts || [];
-                if (cloudGemas > 0 || cloudNfts.length > 0) {
-                    gemas = cloudGemas;
-                    if (cloudNfts.length && typeof cloudNfts[0] === 'number') {
+                if (typeof cloudGemas === 'number') gemas = cloudGemas;
+                if (cloudNfts.length) {
+                    if (typeof cloudNfts[0] === 'number') {
                         carrosComprados = cloudNfts.map(idx => ({ idx, qty: 1 }));
                     } else {
                         carrosComprados = cloudNfts;
                     }
-                    // Actualizar localStorage y UI sin bucle de sync
-                    const p=_pfx();
-                    localStorage.setItem(p+'_gemas',gemas.toString());
-                    localStorage.setItem(p+'_carros',JSON.stringify(carrosComprados));
-                    actualizarUI();
                 }
+                const p=_pfx();
+                localStorage.setItem(p+'_gemas',gemas.toString());
+                localStorage.setItem(p+'_carros',JSON.stringify(carrosComprados));
+                actualizarUI();
                 const banner = $id('banner-regalo-nft');
                 if (banner) {
                     banner.style.display = data.usuario.tieneRegaloPendiente ? 'flex' : 'none';
