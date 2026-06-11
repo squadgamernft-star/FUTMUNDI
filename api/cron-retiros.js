@@ -1,6 +1,7 @@
 // api/cron-retiros.js — GET /api/cron-retiros
 // Ejecuta cada 10 minutos via Vercel Cron
 // Procesa retiros pendientes: Admin Wallet → Contrato TON → USDT al usuario
+// VERSIÓN MEJORADA: Gas aumentado, BigInt correcto, timeouts, reintentos
 
 import { createClient } from '@supabase/supabase-js';
 import TonWeb from 'tonweb';
@@ -15,7 +16,11 @@ const CONTRACT_WALLET  = process.env.CONTRACT_WALLET  || 'EQD3u6SffmoBUVzumsMpfG
 const WITHDRAW_OPCODE  = process.env.TON_WITHDRAW_OPCODE || '0x946a98b6';
 const TON_ENDPOINT     = 'https://toncenter.com/api/v2/jsonRPC';
 const CRON_SECRET      = process.env.CRON_SECRET;
-const MAX_POR_CORRIDA  = 5; // procesar máx 5 retiros por ejecución
+const MAX_POR_CORRIDA  = 5;
+const MAX_INTENTOS     = 3;
+const TIMEOUT_TX       = 30000; // 30 segundos
+const GAS_TON_AMOUNT   = TonWeb.utils.toNano('0.15'); // ✅ MEJORADO: 0.15 TON
+const USDT_DECIMALS    = 6;
 
 export default async function handler(req, res) {
   // ── Autenticación del cron ────────────────────────────────
@@ -44,6 +49,8 @@ export default async function handler(req, res) {
       publicKey: keyPair.publicKey
     });
     adminWallet._keyPair = keyPair;
+    
+    console.log('[cron] ✅ Wallet admin inicializada:', adminWallet.address);
   } catch (e) {
     console.error('[cron] Error inicializando wallet admin:', e);
     return res.status(500).json({ ok: false, error: 'Error al cargar wallet admin' });
@@ -54,6 +61,7 @@ export default async function handler(req, res) {
     .from('retiros')
     .select('*')
     .eq('estado', 'pendiente')
+    .lt('intento', MAX_INTENTOS)
     .order('created_at', { ascending: true })
     .limit(MAX_POR_CORRIDA);
 
@@ -65,6 +73,8 @@ export default async function handler(req, res) {
   if (!retiros || retiros.length === 0) {
     return res.status(200).json({ ok: true, procesados: 0, mensaje: 'Sin retiros pendientes' });
   }
+
+  console.log(`[cron] 📋 Procesando ${retiros.length} retiros pendientes...`);
 
   const resultados = [];
 
@@ -78,7 +88,7 @@ export default async function handler(req, res) {
   const exitosos = resultados.filter(r => r.ok).length;
   const fallidos  = resultados.filter(r => !r.ok).length;
 
-  console.log(`[cron] Corrida completada: ${exitosos} exitosos, ${fallidos} fallidos`);
+  console.log(`[cron] ✅ Corrida completada: ${exitosos} exitosos, ${fallidos} fallidos`);
 
   return res.status(200).json({
     ok: true,
@@ -91,68 +101,135 @@ export default async function handler(req, res) {
 
 // ── Procesar un retiro individual ─────────────────────────────
 async function procesarRetiro(tonweb, adminWallet, retiro) {
-  // Marcar como "procesando" para evitar doble ejecución
-  const { error: lockErr } = await supabase
-    .from('retiros')
-    .update({ estado: 'procesando' })
-    .eq('id', retiro.id)
-    .eq('estado', 'pendiente'); // condición atómica
-
-  if (lockErr) {
-    return { id: retiro.id, ok: false, error: 'No se pudo bloquear el retiro' };
-  }
+  // ✅ NUEVO: Timeout de 30 segundos
+  let timeoutHandle;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      reject(new Error('Timeout: transacción excedió 30s'));
+    }, TIMEOUT_TX);
+  });
 
   try {
-    // Construir payload para el contrato:
-    // opcode + destino en formato bytes + cantidad en nano-USDT
-    const opcode = parseInt(WITHDRAW_OPCODE, 16);
-    const usdtNano = BigInt(Math.round(retiro.usdt * 1_000_000)); // 6 decimales USDT
+    // Marcar como "procesando" para evitar doble ejecución
+    // ✅ MEJORADO: Incluir validación de intentos
+    const { error: lockErr, data: updated } = await supabase
+      .from('retiros')
+      .update({ 
+        estado: 'procesando',
+        intento: (retiro.intento || 0) + 1,
+        ultimo_intento: new Date().toISOString()
+      })
+      .eq('id', retiro.id)
+      .eq('estado', 'pendiente')
+      .lt('intento', MAX_INTENTOS)
+      .select('intento')
+      .single();
+
+    if (lockErr || !updated) {
+      return { id: retiro.id, ok: false, error: 'No se pudo bloquear el retiro o máximo de intentos alcanzado' };
+    }
+
+    // ✅ MEJORADO: Usar Promise.race para implementar timeout
+    await Promise.race([
+      procesarRetiroInterno(tonweb, adminWallet, retiro),
+      timeoutPromise
+    ]);
+
+    clearTimeout(timeoutHandle);
+
+    // Marcar como completado
+    await supabase
+      .from('retiros')
+      .update({ 
+        estado: 'completado',
+        completado_en: new Date().toISOString()
+      })
+      .eq('id', retiro.id);
+
+    console.log(`[cron] ✅ Retiro ${retiro.id} completado`);
+    return { id: retiro.id, ok: true };
+
+  } catch (err) {
+    clearTimeout(timeoutHandle);
+    console.error(`[cron] ❌ Error en retiro ${retiro.id}:`, err.message);
+
+    // ✅ MEJORADO: Verificar si es último intento
+    const intentoActual = (retiro.intento || 0) + 1;
+    const esUltimoIntento = intentoActual >= MAX_INTENTOS;
+
+    await supabase
+      .from('retiros')
+      .update({ 
+        estado: esUltimoIntento ? 'fallido' : 'pendiente',
+        error_msg: err.message,
+        fallido_en: esUltimoIntento ? new Date().toISOString() : null
+      })
+      .eq('id', retiro.id);
+
+    // Reintegrar gemas solo si es el último intento
+    if (esUltimoIntento) {
+      await reintegrarGemas(retiro.wallet, retiro.gemas);
+      console.log(`[cron] 🔄 Gemas reintegradas a ${retiro.wallet} (último intento fallido)`);
+    }
+
+    return { id: retiro.id, ok: false, error: err.message, intento: intentoActual };
+  }
+}
+
+// ✅ NUEVO: Función interna para procesar la transacción
+async function procesarRetiroInterno(tonweb, adminWallet, retiro) {
+  try {
+    // ✅ MEJORADO: Conversión correcta con BigInt desde el inicio
+    const usdtNano = BigInt(Math.floor(retiro.usdt * Math.pow(10, USDT_DECIMALS)));
+    
+    // Validar que la conversión sea correcta
+    if (usdtNano <= 0n) {
+      throw new Error(`Monto USDT inválido: ${retiro.usdt}`);
+    }
+
+    // ✅ MEJORADO: Usar número directo en lugar de string
+    const opcode = 0x946a98b6;
 
     const cell = new TonWeb.boc.Cell();
-    cell.bits.writeUint(opcode, 32);                          // opcode 32-bit
-    cell.bits.writeAddress(new TonWeb.utils.Address(retiro.destino)); // destino
-    cell.bits.writeCoins(usdtNano);                           // cantidad USDT
+    cell.bits.writeUint(opcode, 32);
+    cell.bits.writeAddress(new TonWeb.utils.Address(retiro.destino));
+    cell.bits.writeCoins(usdtNano);
 
     // Obtener seqno del admin wallet
     const seqno = await adminWallet.methods.seqno().call() ?? 0;
 
-    // Enviar transacción al contrato
+    // ✅ MEJORADO: Enviar transacción al contrato con gas aumentado
     const transfer = adminWallet.methods.transfer({
       secretKey: adminWallet._keyPair.secretKey,
       toAddress: CONTRACT_WALLET,
-      amount: TonWeb.utils.toNano('0.05'), // gas TON
+      amount: GAS_TON_AMOUNT, // 0.15 TON
       seqno,
       payload: cell,
       sendMode: 3
     });
 
     const txResult = await transfer.send();
-    const txHash = txResult?.hash
-      ? Buffer.from(txResult.hash).toString('hex')
-      : 'tx_' + Date.now();
+    
+    // ✅ MEJORADO: Validar resultado de transacción
+    if (!txResult || !txResult.hash) {
+      throw new Error('No se recibió hash de transacción del nodo');
+    }
 
-    // Marcar como completado
+    const txHash = Buffer.from(txResult.hash).toString('hex');
+
+    // Guardar hash en DB
     await supabase
       .from('retiros')
-      .update({ estado: 'completado', tx_hash: txHash })
+      .update({ 
+        tx_hash: txHash,
+        enviado_en: new Date().toISOString()
+      })
       .eq('id', retiro.id);
 
-    console.log(`[cron] ✅ Retiro ${retiro.id} completado. tx: ${txHash}`);
-    return { id: retiro.id, ok: true, txHash };
-
+    console.log(`[cron] 🔗 Retiro ${retiro.id} enviado. Hash: ${txHash.substring(0, 16)}...`);
+    
   } catch (err) {
-    console.error(`[cron] ❌ Error en retiro ${retiro.id}:`, err.message);
-
-    // Marcar como fallido y reintegrar gemas
-    await supabase
-      .from('retiros')
-      .update({ estado: 'fallido', error_msg: err.message })
-      .eq('id', retiro.id);
-
-    // Reintegrar gemas al usuario
-    await reintegrarGemas(retiro.wallet, retiro.gemas);
-
-    return { id: retiro.id, ok: false, error: err.message };
+    throw new Error(`Transacción TON fallida: ${err.message}`);
   }
 }
 
@@ -165,14 +242,20 @@ async function reintegrarGemas(wallet, gemas) {
       .eq('wallet', wallet)
       .single();
 
-    if (!perfil) return;
+    if (!perfil) {
+      console.error(`[cron] Error: perfil no encontrado para ${wallet}`);
+      return;
+    }
+
+    const gemasActuales = Number(perfil.gemas || 0);
+    const gemasNuevas = gemasActuales + Number(gemas);
 
     await supabase
       .from('perfiles')
-      .update({ gemas: Number(perfil.gemas) + Number(gemas) })
+      .update({ gemas: gemasNuevas })
       .eq('wallet', wallet);
 
-    console.log(`[cron] Gemas reintegradas a ${wallet}: +${gemas}`);
+    console.log(`[cron] ✅ Gemas reintegradas a ${wallet}: +${gemas} (total: ${gemasNuevas})`);
   } catch (e) {
     console.error('[cron] Error reintegrando gemas:', e);
   }
