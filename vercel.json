@@ -1,7 +1,12 @@
 {
   "version": 2,
   "functions": {
-    "api/retiro.js": { "maxDuration": 15 },
-    "api/cron-retiros.js": { "maxDuration": 60 }
-  }
+    "Api/retiro.js": {
+      "maxDuration": 15
+    },
+    "Api/cron-retiros.js": {
+      "maxDuration": 60
+    }
+  },
+  "buildCommand": "npm ci"
 }
